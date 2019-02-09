@@ -1,0 +1,1 @@
+(and remember to put -assets.zip files in "assets", and .jar files in "jars")

@@ -1,0 +1,18 @@
+<component name="libraryTable">
+  <library name="JOAL">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/joal-natives-windows-amd64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/joal-natives-windows-i586.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/joal.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gluegen-rt-natives-windows-amd64.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gluegen-rt-natives-windows-i586.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/gluegen-rt.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/docjars/joal-javadoc.zip!/joal-javadoc" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/srcjars/joal-java-src.zip!/" />
+    </SOURCES>
+  </library>
+</component>

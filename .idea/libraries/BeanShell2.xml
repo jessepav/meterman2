@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="BeanShell2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/bsh-2.1.9-JP.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../Common/docjars/bsh-2.1.9-JP-javadoc.zip!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../Common/srcjars/bsh-2.1.9-JP-src.zip!/" />
+    </SOURCES>
+  </library>
+</component>
