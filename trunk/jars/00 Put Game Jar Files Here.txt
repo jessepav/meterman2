@@ -1,0 +1,1 @@
+(and remember to put .glue files in "glue", and -assets.zip files in "assets")
