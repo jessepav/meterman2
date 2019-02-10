@@ -5,6 +5,7 @@
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/../Common/docjars/bsh-2.1.9-JP-javadoc.zip!/" />
+      <root url="file://$PROJECT_DIR$/../Common/expanded-javadoc/bsh-2.1.9-JP-javadoc" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../Common/srcjars/bsh-2.1.9-JP-src.zip!/" />
