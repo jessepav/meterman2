@@ -10,7 +10,7 @@ import org.jdom2.input.sax.XMLReaders;
 
 import java.io.File;
 
-public class XBundle
+public final class XBundle
 {
     public static void main(String[] args) {
     }
