@@ -1,4 +1,4 @@
-package com.illcode.meterman2;
+package com.illcode.meterman2.bundle;
 
 /**
  * A BundleGroup maintains a list of {@code XBundle}S and supports operations that
