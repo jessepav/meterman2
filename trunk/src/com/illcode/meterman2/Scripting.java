@@ -39,17 +39,17 @@ public final class Scripting
     public Scripting() {
         intr = new Interpreter();
         systemNameSpace = intr.getNameSpace();
-        unimportUnneededDefaultPackages(systemNameSpace);
+        unimportUnneededDefaults(systemNameSpace);
         gameNameSpace = new NameSpace(systemNameSpace, "gameNameSpace");
     }
 
-    private void unimportUnneededDefaultPackages(NameSpace ns) {
+    private void unimportUnneededDefaults(NameSpace ns) {
         ns.unimportPackage("javax.swing.event");
         ns.unimportPackage("javax.swing");
         ns.unimportPackage("java.awt.event");
         ns.unimportPackage("java.awt");
         ns.unimportPackage("java.net");
-        ns.unimportPackage("java.util");
-        ns.unimportPackage("java.lang");
+        ns.unimportPackage("java.io");
+        ns.unimportCommands("/bsh/commands");
     }
 }
