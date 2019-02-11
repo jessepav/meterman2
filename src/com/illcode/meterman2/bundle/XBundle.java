@@ -6,8 +6,8 @@ import org.jdom2.Element;
 
 
 /**
- * An {@code XBundle} is a thin wrapper around a JDOM XML tree, providing access to DOM {@link Element}S and
- * {@link TextSource}S by their {@code id} attributes.
+ * An {@code XBundle} is a wrapper around a JDOM XML tree, providing access to DOM {@link Element} and
+ * {@link TextSource} instances by their {@code id} attributes.
  */
 public final class XBundle
 {
