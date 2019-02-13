@@ -1,5 +1,6 @@
 package com.illcode.meterman2;
 
+import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapperBuilder;
 
@@ -9,6 +10,7 @@ import freemarker.template.DefaultObjectWrapperBuilder;
 public class MMTemplate
 {
     private Configuration cfg;
+    private StringTemplateLoader strLoader;
 
     public MMTemplate() {
         cfg = new Configuration(Configuration.VERSION_2_3_28);
@@ -18,5 +20,11 @@ public class MMTemplate
         b.setForceLegacyNonListCollections(false);
         b.setExposeFields(true);
         cfg.setObjectWrapper(b.build());
+        strLoader = new StringTemplateLoader();
+        cfg.setTemplateLoader(strLoader);
+        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+        cfg.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+        // TODO: cfg.setTemplateExceptionHandler(...);
+        
     }
 }
