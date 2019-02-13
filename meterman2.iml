@@ -26,6 +26,7 @@
     <orderEntry type="library" name="kryo" level="project" />
     <orderEntry type="library" name="PaulsCodeSoundSystem" level="project" />
     <orderEntry type="library" name="JOAL" level="project" />
+    <orderEntry type="library" name="freemarker-2.3.28" level="project" />
   </component>
 </module>
 

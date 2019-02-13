@@ -15,7 +15,7 @@ import bsh.This;
  *         namespace when they're deserialized</li>
  * </ul>
  */
-public final class Scripter
+public final class MMScript
 {
     /**
      * The global BeanShell interpreter that is created once upon construction and used
@@ -36,7 +36,7 @@ public final class Scripter
      */
     private NameSpace gameNameSpace;
 
-    public Scripter() {
+    public MMScript() {
         intr = new Interpreter();
         systemNameSpace = intr.getNameSpace();
         unimportUnneededDefaults(systemNameSpace);
