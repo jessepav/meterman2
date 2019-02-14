@@ -6,4 +6,5 @@ package com.illcode.meterman2.text;
 
 public class TemplateSource
 {
+    private String templateName;
 }
