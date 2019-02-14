@@ -40,6 +40,7 @@ public final class MMScript
         intr = new Interpreter();
         systemNameSpace = intr.getNameSpace();
         unimportUnneededDefaults(systemNameSpace);
+        importMMPackages(systemNameSpace);
         gameNameSpace = new NameSpace(systemNameSpace, "gameNameSpace");
     }
 
@@ -51,5 +52,10 @@ public final class MMScript
         ns.unimportPackage("java.net");
         ns.unimportPackage("java.io");
         ns.unimportCommands("/bsh/commands");
+    }
+
+    private void importMMPackages(NameSpace ns) {
+        ns.importPackage("com.illcode.meterman2");
+        ns.importPackage("com.illcode.meterman2.model");
     }
 }

@@ -34,6 +34,9 @@ public final class Meterman2
             logger.severe("Assets path doesn't exist!");
             return;
         }
+        MMAssets.init();
+        MMAssets.setAssetsPath(assetsPath);
+        MMAssets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
         gluePath = Paths.get(Utils.pref("glue-path", "glue"));
         if (Files.notExists(gluePath)) {
@@ -41,6 +44,7 @@ public final class Meterman2
             return;
         }
 
+        shutdown();
     }
 
     private static boolean loadPrefs(Path path) {
@@ -68,5 +72,6 @@ public final class Meterman2
     public static void shutdown() {
         logger.info("Meterman shutting down...");
         savePrefs(prefsPath);
+        MMAssets.dispose();
     }
 }
