@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-public class MMLogging
+public final class MMLogging
 {
     public static Logger logger;
 
