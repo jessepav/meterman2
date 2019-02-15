@@ -1,5 +1,7 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.ui.Meterman2UI;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,6 +17,12 @@ public final class Meterman2
 {
     public static Path prefsPath, savesPath, assetsPath, gluePath;
     static Properties prefs;
+
+    /** The MMAssets instance handling the game assets. */
+    public static MMAssets assets;
+
+    /** The Meterman2UI displaying the current game */
+    public static Meterman2UI ui;
 
     public static void main(String[] args) throws IOException {
         prefsPath = Paths.get("config/meterman2.properties");
@@ -34,9 +42,6 @@ public final class Meterman2
             logger.severe("Assets path doesn't exist!");
             return;
         }
-        MMAssets.init();
-        MMAssets.setAssetsPath(assetsPath);
-        MMAssets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
         gluePath = Paths.get(Utils.pref("glue-path", "glue"));
         if (Files.notExists(gluePath)) {
@@ -44,7 +49,13 @@ public final class Meterman2
             return;
         }
 
-        shutdown();
+        assets = new MMAssets();
+        assets.setAssetsPath(assetsPath);
+        assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
+
+
+        ui = new Meterman2UI();
+        ui.show();
     }
 
     private static boolean loadPrefs(Path path) {
@@ -71,7 +82,11 @@ public final class Meterman2
     /** Called when the program is shutting down. */
     public static void shutdown() {
         logger.info("Meterman shutting down...");
+        //persistence.dispose();
+        //sound.dispose();
+        ui.dispose();
+        //gm.dispose();
+        assets.dispose();
         savePrefs(prefsPath);
-        MMAssets.dispose();
     }
 }
