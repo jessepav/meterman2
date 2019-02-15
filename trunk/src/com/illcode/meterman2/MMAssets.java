@@ -12,18 +12,18 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMAssets
 {
-    private static Path assetsPath, systemAssetsPath, gameAssetsPath;
-    private static FileSystem systemZipFs, gameZipFs;
+    private Path assetsPath, systemAssetsPath, gameAssetsPath;
+    private FileSystem systemZipFs, gameZipFs;
 
-    public static void init() {
+    public MMAssets() {
     }
 
-    public static void dispose() {
+    public void dispose() {
         closeSystemZipFs();
         closeGameZipFs();
     }
 
-    public static void closeSystemZipFs() {
+    public void closeSystemZipFs() {
         if (systemZipFs != null) {
             try {
                 systemZipFs.close();
@@ -34,7 +34,7 @@ public final class MMAssets
         }
     }
 
-    public static void closeGameZipFs() {
+    public void closeGameZipFs() {
         if (gameZipFs != null) {
             try {
                 gameZipFs.close();
@@ -49,13 +49,13 @@ public final class MMAssets
      * Sets the base assets path against which the system and game assets paths will be resolved.
      * @param assetsPath
      */
-    public static void setAssetsPath(Path assetsPath) {
-        MMAssets.assetsPath = assetsPath;
+    public void setAssetsPath(Path assetsPath) {
+        this.assetsPath = assetsPath;
     }
 
     /** Sets the system assets path. This can be a directory or a ZIP file.
      * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
-    public static void setSystemAssetsPath(String path) {
+    public void setSystemAssetsPath(String path) {
         closeSystemZipFs();
         if (path != null) {
             systemAssetsPath = assetsPath.resolve(path);
@@ -75,7 +75,7 @@ public final class MMAssets
 
     /** Sets the game assets path. This can be a directory or a ZIP file.
      * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
-    public static void setGameAssetsPath(String path) {
+    public void setGameAssetsPath(String path) {
         closeGameZipFs();
         if (path != null) {
             gameAssetsPath = assetsPath.resolve(path);
@@ -98,7 +98,7 @@ public final class MMAssets
      * @param asset path (relative to the game assets path) of the asset we want
      * @return the resolved path
      */
-    public static Path pathForGameAsset(String asset) {
+    public Path pathForGameAsset(String asset) {
         return gameAssetsPath.resolve(asset);
     }
 
@@ -110,7 +110,7 @@ public final class MMAssets
      * @param asset (relative to the system assets path) of the asset we want
      * @return the resolved path
      */
-    public static Path pathForSystemAsset(String asset) {
+    public Path pathForSystemAsset(String asset) {
         return systemAssetsPath.resolve(asset);
     }
 

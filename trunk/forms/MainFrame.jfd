@@ -20,7 +20,7 @@ new FormModel {
 				}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
 					"$columnSpecs": "default:grow"
-					"$rowSpecs": "default, relgap, fill:default:grow, unrelgap, default, linegap, fill:default:grow(0.19999999999999998)"
+					"$rowSpecs": "default, relgap, fill:default:grow"
 				} ) {
 					name: "textPanel"
 					"background": sfield java.awt.Color darkGray
@@ -60,7 +60,7 @@ new FormModel {
 						"verticalScrollBarPolicy": 22
 						"horizontalScrollBarPolicy": 31
 						add( new FormComponent( "javax.swing.JTextArea" ) {
-							name: "mainTextArea"
+							name: "textArea"
 							"columns": 35
 							"rows": 14
 							"background": &Color2 new java.awt.Color( 220, 220, 220, 255 )
@@ -75,33 +75,6 @@ new FormModel {
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 1
 						"gridY": 3
-					} )
-					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "objectNameLabel"
-						"text": "(object name label)"
-						"foreground": #Color0
-						"font": new java.awt.Font( "Serif", 0, 16 )
-					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridX": 1
-						"gridY": 5
-					} )
-					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
-						name: "scrollPane2"
-						add( new FormComponent( "javax.swing.JTextArea" ) {
-							name: "objectTextArea"
-							"rows": 4
-							"background": #Color2
-							"lineWrap": true
-							"wrapStyleWord": true
-							"editable": false
-							"text": "This is the description of the selected object"
-							"font": new java.awt.Font( "Serif", 0, 15 )
-							"border": sfield com.jgoodies.forms.factories.Borders DLU2_BORDER
-							"focusable": false
-						} )
-					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
-						"gridX": 1
-						"gridY": 7
 					} )
 				}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 					"gridX": 3
@@ -510,15 +483,6 @@ new FormModel {
 						"mnemonic": 76
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
-						name: "separator10"
-					} )
-					add( new FormComponent( "javax.swing.JMenuItem" ) {
-						name: "undoMenuItem"
-						"text": "Undo"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 90, 130, false )
-						"mnemonic": 85
-					} )
-					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator1"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
@@ -553,11 +517,6 @@ new FormModel {
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator8"
-					} )
-					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
-						name: "enableUndoCheckBoxMenuItem"
-						"text": "Enable Undo"
-						"mnemonic": 69
 					} )
 					add( new FormComponent( "javax.swing.JCheckBoxMenuItem" ) {
 						name: "promptToQuitCheckBoxMenuItem"
