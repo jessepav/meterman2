@@ -28,7 +28,6 @@ public class MMTemplate
         cfg.setTemplateUpdateDelayMilliseconds(86400000);  // 24 hours
         cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
         cfg.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
-        // TODO: cfg.setTemplateExceptionHandler(...);
         cfg.setCacheStorage(new MruCacheStorage(0, 50));
 
     }

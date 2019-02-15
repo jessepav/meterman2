@@ -1,7 +1,6 @@
 package com.illcode.meterman2.ui;
 
 import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
@@ -105,8 +104,8 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             centerStatusLabel = cr.getLabel("centerStatusLabel");
             rightStatusLabel = cr.getLabel("rightStatusLabel");
 
-            lookButton.setText(SystemActions.LOOK);
-            waitButton.setText(SystemActions.WAIT);
+            //lookButton.setText(SystemActions.LOOK);
+            //waitButton.setText(SystemActions.WAIT);
 
             imageComponent = new FrameImageComponent();
             imagePanel.add(imageComponent);
@@ -159,12 +158,14 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     }
 
     private void close() {
+        /*
         if (Utils.booleanPref("prompt-to-quit", true)) {
-            if (/*TODO: Meterman2.gm.getGame() != null &&*/
+            if (Meterman2.gm.getGame() != null &&
                 JOptionPane.showConfirmDialog(frame, "Quit Meterman?", "Quit",
                    JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
                 return;  // don't quit
         }
+        */
         Meterman2.shutdown();
     }
 
