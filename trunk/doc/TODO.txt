@@ -28,7 +28,7 @@ Get rid of undo, so I don't worry about the performance of serializing game stat
 
 == UI ==
 
-Create a UIListener interface that will process UI actions, rather than having the UI call directly into GameManager.
+Create a UIListener interface that will process UI actions, rather than having the UI call directly into GameManager. This will also let me write the new UI without first completing the GameManager & co -- and in fact the methods I add to UIListener show what will need to be implemented on the backend.
 
 Wire up the MM1 SwingUI with the new infrastructure and GameManager classes.
 
@@ -41,6 +41,6 @@ Add a new dialog for conversations, instead of re-using the list dialog.
 Add a new dialog for the startup game list with descriptions.
 
 # ----------------------------------------------- #
-  :autoIndent=simple:maxLineLen=84:mode=text:    
-  :noTabs=true:tabSize=4:wrap=soft:indentSize=2: 
+  :autoIndent=simple:maxLineLen=84:mode=text:
+  :noTabs=true:tabSize=4:wrap=soft:indentSize=2:
 # ----------------------------------------------- #
