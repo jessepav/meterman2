@@ -1,6 +1,6 @@
 package com.illcode.meterman2;
 
-import com.illcode.meterman2.ui.Meterman2UI;
+import com.illcode.meterman2.ui.MMUI;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,8 +21,8 @@ public final class Meterman2
     /** The MMAssets instance handling the game assets. */
     public static MMAssets assets;
 
-    /** The Meterman2UI displaying the current game */
-    public static Meterman2UI ui;
+    /** The MMUI displaying the current game */
+    public static MMUI ui;
 
     public static void main(String[] args) throws IOException {
         prefsPath = Paths.get("config/meterman2.properties");
@@ -54,7 +54,7 @@ public final class Meterman2
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
 
-        ui = new Meterman2UI();
+        ui = new MMUI();
         ui.show();
     }
 

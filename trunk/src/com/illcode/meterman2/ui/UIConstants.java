@@ -29,11 +29,11 @@ public final class UIConstants
     /** The number of exit buttons in the UI */
     public static final int NUM_EXIT_BUTTONS = 12;
 
-    /** Parameter to {@link Meterman2UI#setFrameImage} to show the default frame image. */
+    /** Parameter to {@link MMUI#setFrameImage} to show the default frame image. */
     public static final String DEFAULT_FRAME_IMAGE = "default";
 
-    /** Parameter to {@link Meterman2UI#setFrameImage}, {@link Meterman2UI#setEntityImage},
-     *  or {@link Meterman2UI#showImageDialog} to show no image. */
+    /** Parameter to {@link MMUI#setFrameImage}, {@link MMUI#setEntityImage},
+     *  or {@link MMUI#showImageDialog} to show no image. */
     public static final String NO_IMAGE = "empty";
 
     private static final String[] BUTTON_NAMES =

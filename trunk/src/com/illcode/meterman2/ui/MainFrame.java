@@ -34,7 +34,7 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     private static final KeyStroke LOOK_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.SHIFT_MASK);
     private static final KeyStroke WAIT_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.SHIFT_MASK);
 
-    private Meterman2UI ui;
+    private MMUI ui;
 
     JFrame frame;
     JMenu gameMenu, settingsMenu, helpMenu;
@@ -63,7 +63,7 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     private boolean suppressValueChanged;
 
     @SuppressWarnings("unchecked")
-    MainFrame(Meterman2UI ui) {
+    MainFrame(MMUI ui) {
         this.ui = ui;
         try {
             FormModel formModel = FormLoader.load("com/illcode/meterman2/ui/MainFrame.jfd");
