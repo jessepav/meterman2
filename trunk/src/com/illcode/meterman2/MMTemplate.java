@@ -3,15 +3,14 @@ package com.illcode.meterman2;
 import freemarker.cache.MruCacheStorage;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.Environment;
-import freemarker.template.Configuration;
-import freemarker.template.DefaultObjectWrapperBuilder;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateExceptionHandler;
+import freemarker.template.*;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -33,22 +32,57 @@ public class MMTemplate
         cfg.setObjectWrapper(b.build());
         strLoader = new StringTemplateLoader();
         cfg.setTemplateLoader(strLoader);
-        cfg.setTemplateUpdateDelayMilliseconds(86400000);  // 24 hours
-        cfg.setInterpolationSyntax(Configuration.SQUARE_BRACKET_INTERPOLATION_SYNTAX);
+        cfg.setTemplateUpdateDelayMilliseconds(10000);
+        cfg.setInterpolationSyntax(Configuration.DOLLAR_INTERPOLATION_SYNTAX);
         cfg.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         cfg.setCacheStorage(new MruCacheStorage(0, 50));
 
+    }
+
+    public void putTemplate(String name, String templateSource) {
+        strLoader.putTemplate(name, templateSource);
+    }
+
+    public void removeTemplate(String name) {
+        strLoader.removeTemplate(name);
     }
 
     public void clearTemplateCache() {
         cfg.clearTemplateCache();
     }
 
-    public void removeTemplateFromCache(String templateName) {
+    public void removeTemplateFromCache(String name) {
         try {
-            cfg.removeTemplateFromCache(templateName);
+            cfg.removeTemplateFromCache(name);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Combines a template with a root data model.
+     * @param templateName name of the template, as passed to {@link Configuration#getTemplate}.
+     * @param root map used as the root data model
+     * @return the template output, as a string.
+     */
+    public String renderTemplate(String templateName, Map<String,Object> root) {
+        StringWriter w = new StringWriter();
+        renderTemplate(templateName, root, w);
+        return w.toString();
+    }
+
+    /**
+     * Combines a template with a root data model.
+     * @param templateName name of the template, as passed to {@link Configuration#getTemplate}.
+     * @param root map used as the root data model
+     * @param out the writer to which the template output is written. The writer is flushed, but not closed.
+     */
+    public void renderTemplate(String templateName, Map<String,Object> root, Writer out) {
+        try {
+            Template t = cfg.getTemplate(templateName);
+            t.process(root, out);
+        } catch (IOException|TemplateException e) {
+            logger.log(Level.WARNING, "Template rendering error: ", e);
         }
     }
 
