@@ -38,8 +38,8 @@ public final class UIConstants
 
     private static final String[] BUTTON_NAMES =
         {"NW", "N", "NE", "X1",
-            "W", "MID", "E", "X2",
-            "SW", "S", "SE", "X3"};
+         "W", "MID", "E", "X2",
+         "SW", "S", "SE", "X3"};
 
     /**
      * Returns a string representation of the direction indicated by a given button position

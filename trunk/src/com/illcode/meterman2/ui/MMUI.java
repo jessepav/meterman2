@@ -2,14 +2,18 @@ package com.illcode.meterman2.ui;
 
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
-import com.illcode.meterman2.model.Entity;
+import org.apache.commons.lang3.text.WordUtils;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,24 +24,27 @@ import java.util.logging.Level;
 public final class MMUI
 {
     MainFrame mainFrame;
-    //TextDialog textDialog;
-    //PromptDialog promptDialog;
-    //ListDialog listDialog;
-    //ImageDialog imageDialog;
-    //SelectItemDialog selectItemDialog;
+    TextDialog textDialog;
+    PromptDialog promptDialog;
+    ListDialog listDialog;
+    ImageDialog imageDialog;
+    SelectItemDialog selectItemDialog;
     WaitDialog waitDialog;
-
-    private List<Entity> roomEntities, inventoryEntities;
 
     private Map<String,BufferedImage> imageMap;
     private BufferedImage defaultFrameImage;
     private String currentFrameImage, currentEntityImage;
 
-    int maxBufferSize;
+    private int maxBufferSize;
+    private int dialogTextColumns;
+
+    private UIHandler handler;
 
     public MMUI() {
-        roomEntities = new ArrayList<>();
-        inventoryEntities = new ArrayList<>();
+    }
+
+    public void init(UIHandler handler) {
+        this.handler = handler;
         imageMap = new HashMap<>();
     }
 
@@ -60,12 +67,12 @@ public final class MMUI
 
                 GuiUtils.initGraphics();
 
-                mainFrame = new MainFrame(MMUI.this);
-                //textDialog = new TextDialog(mainFrame.frame);
-                //promptDialog = new PromptDialog(mainFrame.frame);
-                //listDialog = new ListDialog(mainFrame.frame);
-                //imageDialog = new ImageDialog(mainFrame.frame);
-                //selectItemDialog = new SelectItemDialog(mainFrame.frame);
+                mainFrame = new MainFrame(MMUI.this, handler);
+                textDialog = new TextDialog(mainFrame.frame);
+                promptDialog = new PromptDialog(mainFrame.frame);
+                listDialog = new ListDialog(mainFrame.frame);
+                imageDialog = new ImageDialog(mainFrame.frame);
+                selectItemDialog = new SelectItemDialog(mainFrame.frame);
                 waitDialog = new WaitDialog(mainFrame.frame);
 
                 setStatusLabel(UIConstants.LEFT_LABEL, "");
@@ -77,6 +84,7 @@ public final class MMUI
                 currentEntityImage = UIConstants.NO_IMAGE;
 
                 maxBufferSize = Utils.intPref("max-text-buffer-size", 50000);
+                dialogTextColumns = Utils.intPref("dialog-text-columns", 60);
                 setGameName(null);
                 mainFrame.setVisible(true);
                 mainFrame.startup();
@@ -88,7 +96,29 @@ public final class MMUI
      * Hides the interface and disposes of any resources used by the UI.
      */
     public void dispose() {
-
+        Runnable doRun = new Runnable() {
+            public void run() {
+                unloadAllImages();
+                defaultFrameImage.flush();
+                defaultFrameImage = null;
+                waitDialog.dispose();
+                selectItemDialog.dispose();
+                imageDialog.dispose();
+                listDialog.dispose();
+                promptDialog.dispose();
+                textDialog.dispose();
+                mainFrame.dispose();
+            }
+        };
+        if (SwingUtilities.isEventDispatchThread()) {
+            doRun.run();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(doRun);
+            } catch (InterruptedException | InvocationTargetException e) {
+                logger.log(Level.WARNING, "MMUI.dispose()", e);
+            }
+        }
     }
 
     /**
@@ -96,7 +126,15 @@ public final class MMUI
      * @param name game name, or null if no game loaded
      */
     public void setGameName(String name) {
-
+        if (name == null) {
+            mainFrame.frame.setTitle("Meterman2 (no game loaded)");
+            mainFrame.aboutMenuItem.setText("About...");
+            mainFrame.aboutMenuItem.setEnabled(false);
+        } else {
+            mainFrame.frame.setTitle("Meterman - " + name);
+            mainFrame.aboutMenuItem.setText("About " + name);
+            mainFrame.aboutMenuItem.setEnabled(true);
+        }
     }
 
     /**
@@ -105,7 +143,7 @@ public final class MMUI
      * @param url URL to open
      */
     public void openURL(String url) {
-
+        DesktopUtils.browseURI(url);
     }
 
     /**
@@ -114,7 +152,11 @@ public final class MMUI
      * @param p path of the image file.
      */
     public void loadImage(String name, Path p) {
-
+        if (!imageMap.containsKey(name)) {
+            BufferedImage img = GuiUtils.loadBitmaskImage(p);
+            if (img != null)
+                imageMap.put(name, img);
+        }
     }
 
     /**
@@ -122,12 +164,21 @@ public final class MMUI
      * @param name name of image
      */
     public void unloadImage(String name) {
-
+        BufferedImage img = imageMap.get(name);
+        if (img != null)
+            img.flush();
+        imageMap.remove(name);
     }
 
     /** Unload all images from the UI. */
     public void unloadAllImages() {
-
+        mainFrame.setFrameImage(null);
+        currentFrameImage = UIConstants.NO_IMAGE;
+        mainFrame.setEntityImage(null);
+        currentEntityImage = UIConstants.NO_IMAGE;
+        for (BufferedImage img : imageMap.values())
+            img.flush();
+        imageMap.clear();
     }
 
 
@@ -138,7 +189,17 @@ public final class MMUI
      * @param imageName name of the image, as chosen in {@link #loadImage(String, Path)}
      */
     public void setFrameImage(String imageName) {
-
+        if (currentFrameImage.equals(imageName))
+            return;
+        currentFrameImage = imageName;
+        BufferedImage img;
+        if (imageName == UIConstants.DEFAULT_FRAME_IMAGE)
+            img = defaultFrameImage;
+        else if (imageName == UIConstants.NO_IMAGE)
+            img = null;
+        else
+            img = imageMap.get(imageName);
+        mainFrame.setFrameImage(img);
     }
 
     /**
@@ -147,7 +208,7 @@ public final class MMUI
      * @return the name of the current frame image.
      */
     public String getFrameImage() {
-        return null;
+        return currentFrameImage;
     }
 
     /**
@@ -157,7 +218,15 @@ public final class MMUI
      * @param imageName name of the image, as chosen in {@link #loadImage(String, Path)}
      */
     public void setEntityImage(String imageName) {
-
+        if (currentEntityImage.equals(imageName))
+            return;
+        currentEntityImage = imageName;
+        BufferedImage img;
+        if (imageName == UIConstants.NO_IMAGE)
+            img = null;
+        else
+            img = imageMap.get(imageName);
+        mainFrame.setEntityImage(img);
     }
 
     /**
@@ -166,7 +235,7 @@ public final class MMUI
      * @return the name of the current entity image.
      */
     public String getEntityImage() {
-        return null;
+        return currentEntityImage;
     }
 
     /**
@@ -174,14 +243,14 @@ public final class MMUI
      * @param name room name
      */
     public void setRoomName(String name) {
-
+        mainFrame.roomNameLabel.setText(name);
     }
 
     /**
      * Clears the main text area.
      */
     public void clearText() {
-
+        mainFrame.textArea.setText(null);
     }
 
     /**
@@ -189,14 +258,26 @@ public final class MMUI
      * @param text text to append
      */
     public void appendText(String text) {
-
+        JTextArea ta = mainFrame.textArea;
+        ta.append(text);
+        Document doc = ta.getDocument();
+        int len = doc.getLength();
+        if (len > maxBufferSize) {
+            try {
+                doc.remove(0, len - maxBufferSize);
+                len = maxBufferSize;
+            } catch (BadLocationException e) {
+                logger.log(Level.WARNING, "SwingUI.appendText()", e);
+            }
+        }
+        ta.setCaretPosition(len); // scroll to the bottom of the text area
     }
 
     /**
      * Appens a newline to the main text area.
      */
     public void appendNewline() {
-
+        mainFrame.textArea.append("\n");
     }
 
     /**
@@ -204,37 +285,33 @@ public final class MMUI
      * @param text text to append
      */
     public void appendTextLn(String text) {
-
+        appendText(text);
+        appendNewline();
     }
+
+
+    // TODO: Rejigger the room and inventory system so MMUI doesn't need to know about domain classes
 
     /**
      * Clears the list displaying Entities in the current room.
      */
     public void clearRoomEntities() {
-
+        mainFrame.roomListModel.clear();
     }
 
     /**
      * Adds an entity to the list of entities in the current room.
-     * @param e entity to add
+     * @param name name of entity to add
      */
-    public void addRoomEntity(Entity e) {
+    public void addRoomEntity(String name) {
 
     }
 
     /**
      * Removes an entity from the list of entities in the current room.
-     * @param e entity to remove
+     * @param idx index in the room entity list of the entity to remove.
      */
-    public void removeRoomEntity(Entity e) {
-
-    }
-
-    /**
-     * Refresh the list item corresponding to an entity in the current room.
-     * @param e entity to refresh
-     */
-    public void refreshRoomEntity(Entity e) {
+    public void removeRoomEntity(int idx) {
 
     }
 
@@ -242,24 +319,24 @@ public final class MMUI
      * Clears the list displaying Entities in the player's inventory.
      */
     public void clearInventoryEntities() {
-
+        mainFrame.inventoryListModel.clear();
     }
 
     /**
      * Adds an entity to the list of entities in the player's inventory.
-     * @param e entity to add
+     * @param name name of the entity to add
      * @param modifiers string to append to the list display for the entity, to indicate status like worn or
      *                  equipped. Will be <tt>null</tt> if there are no modifiers.
      */
-    public void addInventoryEntity(Entity e, String modifiers) {
+    public void addInventoryEntity(String name, String modifiers) {
 
     }
 
     /**
      * Removes an entity from the list of entities in the player's inventory.
-     * @param e entity to remove
+     * @param idx index in the inventory entity list of the entity to refresh
      */
-    public void removeInventoryEntity(Entity e) {
+    public void removeInventoryEntity(int idx) {
 
     }
 
@@ -269,7 +346,7 @@ public final class MMUI
      * @param modifiers string to append to the list display for the entity, to indicate status like worn or
      *                  equipped. Will be <tt>null</tt> if there are no modifiers.
      */
-    public void refreshInventoryEntity(Entity e, String modifiers) {
+    public void refreshInventoryEntity(int idx, String modifiers) {
 
     }
 
@@ -278,7 +355,7 @@ public final class MMUI
      * or inventory lists.
      * @param e entity to select
      */
-    public void selectEntity(Entity e) {
+    public void selectEntity(int entityToken) {
 
     }
 
@@ -286,7 +363,8 @@ public final class MMUI
      * Clears any selection in the room and inventory entity lists.
      */
     public void clearEntitySelection() {
-
+        mainFrame.roomList.clearSelection();
+        mainFrame.inventoryList.clearSelection();
     }
 
 
@@ -294,7 +372,7 @@ public final class MMUI
      * Clears the exit button list.
      */
     public void clearExits() {
-
+        mainFrame.clearExits();
     }
 
     /**
@@ -303,14 +381,14 @@ public final class MMUI
      * @param label label to use for the specified exit button; if null, the given button will be hidden.
      */
     public void setExitLabel(int buttonPos, String label) {
-
+        mainFrame.setExitLabel(buttonPos, label);
     }
 
     /**
      * Clears the action button group.
      */
     public void clearActions() {
-
+        mainFrame.clearActions();
     }
 
     /**
@@ -319,7 +397,7 @@ public final class MMUI
      * @param actionLabel action to add
      */
     public void addAction(String actionLabel) {
-
+        mainFrame.addAction(actionLabel);
     }
 
     /**
@@ -327,7 +405,7 @@ public final class MMUI
      * @param actionLabel action to remove
      */
     public void removeAction(String actionLabel) {
-
+        mainFrame.removeAction(actionLabel);
     }
 
     /**
@@ -337,43 +415,53 @@ public final class MMUI
      * @param label the text to show for the given label
      */
     public void setStatusLabel(int labelPosition, String label) {
-
+        switch (labelPosition) {
+        case UIConstants.LEFT_LABEL:
+            mainFrame.leftStatusLabel.setText(label);
+            break;
+        case UIConstants.CENTER_LABEL:
+            mainFrame.centerStatusLabel.setText(label);
+            break;
+        case UIConstants.RIGHT_LABEL:
+            mainFrame.rightStatusLabel.setText(label);
+            break;
+        }
     }
 
     /**
      * Displays a modal dialog showing a passage of text.
      * @param header header surmounted above the text passage
-     * @param text text passage (line-breaks kept intact)
+     * @param text text passage
      * @param buttonLabel label of the button to dismiss dialog
      */
     public void showTextDialog(String header, String text, String buttonLabel) {
-
+        textDialog.show(header, wrapDialogText(text), buttonLabel);
     }
 
     /**
      * Displays a modal dialog showing a passage of text and a field for the user to
      * enter a line of text.
      * @param header header surmounted above the text passage
-     * @param text text passage (line-breaks kept intact)
+     * @param text text passage
      * @param prompt prompt displayed in front of the field
      * @param initialText the text initially set in the text field
      * @return the text entered by the user
      */
     public String showPromptDialog(String header, String text, String prompt, String initialText) {
-        return null;
+        return promptDialog.show(header, wrapDialogText(text), prompt, initialText);
     }
 
     /**
      * Shows a dialog allowing the user to select one of a list of items.
      * @param header header surmounted above the text passage
-     * @param text text passage (line-breaks kept intact)
+     * @param text text passage
      * @param items items from which the user can select one
      * @param showCancelButton if true, a cancel button will be shown; if clicked,
      *          this method will return null
      * @return the item selected, or null if no item selected.
      */
     public <T> T showListDialog(String header, String text, List<T> items, boolean showCancelButton) {
-        return null;
+        return listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
     }
 
     /**
@@ -381,11 +469,14 @@ public final class MMUI
      * @param header header surmounted above the image
      * @param imageName name of the image, as chosen in {@link #loadImage(String, Path)}
      * @param scale the factor (>= 1) by which the image will be scaled before being shown
-     * @param text text passage (line-breaks kept intact) shown below the image
+     * @param text text passage shown below the image
      * @param buttonLabel label of the button used to dismiss dialog
      */
     public void showImageDialog(String header, String imageName, int scale, String text, String buttonLabel) {
-
+        BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : imageMap.get(imageName);
+        if (image != null && scale > 1)
+            image = GuiUtils.getScaledImage(image, scale);
+        imageDialog.show(header, image, wrapDialogText(text), buttonLabel);
     }
 
     /**
@@ -394,13 +485,19 @@ public final class MMUI
      * @param message message to show
      */
     public void showWaitDialog(String message) {
-
+        waitDialog.show(message);
     }
 
     /**
      * Hides the dialog previously shown by {@link #showWaitDialog(String)}.
      */
     public void hideWaitDialog() {
-
+        waitDialog.hide();
     }
+
+    /** Wraps text according to the current "dialog-text-columns" config property. */
+    String wrapDialogText(String text) {
+        return WordUtils.wrap(text, dialogTextColumns, "\n", true);
+    }
+
 }

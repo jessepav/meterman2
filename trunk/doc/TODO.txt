@@ -34,7 +34,7 @@ Wire up the MM1 SwingUI with the new infrastructure and GameManager classes.
 
 Change the font used in the interface, and distribute it with the program. If someone wants to internationalize the program, he can supply a different font and hand-edit the .properties file to load it.
 
-Set a minimum width for the text areas of the various dialogs -- all text is henceforth flowed (aka normalized, in XML parlance).
+All text is henceforth flowed (aka normalized, in XML parlance). Before sending the text to the various dialogs, we'll need to wrap it ourselves using WordUtils.wrap().
 
 Add a new dialog for conversations, instead of re-using the list dialog.
 
