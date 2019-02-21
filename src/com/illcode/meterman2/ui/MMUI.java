@@ -3,7 +3,6 @@ package com.illcode.meterman2.ui;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.Room;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -11,7 +10,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.image.BufferedImage;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-public final class Meterman2UI
+public final class MMUI
 {
     MainFrame mainFrame;
     //TextDialog textDialog;
@@ -37,7 +35,7 @@ public final class Meterman2UI
 
     int maxBufferSize;
 
-    public Meterman2UI() {
+    public MMUI() {
         roomEntities = new ArrayList<>();
         inventoryEntities = new ArrayList<>();
         imageMap = new HashMap<>();
@@ -62,7 +60,7 @@ public final class Meterman2UI
 
                 GuiUtils.initGraphics();
 
-                mainFrame = new MainFrame(Meterman2UI.this);
+                mainFrame = new MainFrame(MMUI.this);
                 //textDialog = new TextDialog(mainFrame.frame);
                 //promptDialog = new PromptDialog(mainFrame.frame);
                 //listDialog = new ListDialog(mainFrame.frame);
