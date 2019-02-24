@@ -23,16 +23,10 @@ public interface UIHandler
     void debugCommand(String cmd);
 
     /**
-     * Called when the user selects an item from the room entity list.
-     * @param selectedIndex index of the selected item
+     * Called when the user selects an item from the room or inventory entity lists.
+     * @param id entity ID of selected item
      */
-    void roomEntitySelected(int selectedIndex);
-
-    /**
-     * Called when the user selects an item from the inventory entity list.
-     * @param selectedIndex index of the selected item
-     */
-    void inventoryEntitySelected(int selectedIndex);
+    void entitySelected(String id);
 
     /**
      * Get the description associated with a given game name.

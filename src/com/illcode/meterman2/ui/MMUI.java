@@ -290,8 +290,6 @@ public final class MMUI
     }
 
 
-    // TODO: Rejigger the room and inventory system so MMUI doesn't need to know about domain classes
-
     /**
      * Clears the list displaying Entities in the current room.
      */
@@ -301,17 +299,27 @@ public final class MMUI
 
     /**
      * Adds an entity to the list of entities in the current room.
-     * @param name name of entity to add
+     * @param id unique entity ID
+     * @param text text to show in the list
      */
-    public void addRoomEntity(String name) {
+    public void addRoomEntity(String id, String text) {
 
     }
 
     /**
      * Removes an entity from the list of entities in the current room.
-     * @param idx index in the room entity list of the entity to remove.
+     * @param id unique entity ID
      */
-    public void removeRoomEntity(int idx) {
+    public void removeRoomEntity(String id) {
+
+    }
+
+    /**
+     * Update the list item corresponding to an entity in the current room.
+     * @param id unique entity ID
+     * @param text text to show in the list
+     */
+    public void updateRoomEntity(String id, String text) {
 
     }
 
@@ -324,38 +332,36 @@ public final class MMUI
 
     /**
      * Adds an entity to the list of entities in the player's inventory.
-     * @param name name of the entity to add
-     * @param modifiers string to append to the list display for the entity, to indicate status like worn or
-     *                  equipped. Will be <tt>null</tt> if there are no modifiers.
+     * @param id unique entity ID
+     * @param text text to show in the list
      */
-    public void addInventoryEntity(String name, String modifiers) {
+    public void addInventoryEntity(String id, String text) {
 
     }
 
     /**
      * Removes an entity from the list of entities in the player's inventory.
-     * @param idx index in the inventory entity list of the entity to refresh
+     * @param id unique entity ID
      */
-    public void removeInventoryEntity(int idx) {
+    public void removeInventoryEntity(String id) {
 
     }
 
     /**
-     * Refresh the list item corresponding to an entity in inventory.
-     * @param e entity to refresh
-     * @param modifiers string to append to the list display for the entity, to indicate status like worn or
-     *                  equipped. Will be <tt>null</tt> if there are no modifiers.
+     * Update the list item corresponding to an entity in inventory.
+     * @param id unique entity ID
+     * @param text text to show in the list
      */
-    public void refreshInventoryEntity(int idx, String modifiers) {
+    public void updateInventoryEntity(String id, String text) {
 
     }
 
     /**
      * Cause a given entity to be selected in the UI, if it is present in the room
      * or inventory lists.
-     * @param e entity to select
+     * @param id unique entity ID
      */
-    public void selectEntity(int entityToken) {
+    public void selectEntity(String id) {
 
     }
 
