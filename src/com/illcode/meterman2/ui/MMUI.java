@@ -15,6 +15,7 @@ import javax.swing.text.Document;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,20 +31,24 @@ public final class MMUI
     SelectItemDialog selectItemDialog;
     WaitDialog waitDialog;
 
+    List<String> roomEntityIds, inventoryEntityIds;
+
     private Map<String,BufferedImage> imageMap;
     private BufferedImage defaultFrameImage;
     private String currentFrameImage, currentEntityImage;
 
-    private int maxBufferSize;
-    private int dialogTextColumns;
+    int maxBufferSize;
+    int dialogTextColumns;
 
-    private UIHandler handler;
+    UIHandler handler;
 
     public MMUI() {
     }
 
     public void init(UIHandler handler) {
         this.handler = handler;
+        roomEntityIds = new ArrayList<>(16);
+        inventoryEntityIds = new ArrayList<>(16);
         imageMap = new HashMap<>();
     }
 
@@ -66,7 +71,7 @@ public final class MMUI
 
                 GuiUtils.initGraphics();
 
-                mainFrame = new MainFrame(MMUI.this, handler);
+                mainFrame = new MainFrame(MMUI.this);
                 textDialog = new TextDialog(mainFrame.frame);
                 promptDialog = new PromptDialog(mainFrame.frame);
                 listDialog = new ListDialog(mainFrame.frame);
@@ -118,6 +123,10 @@ public final class MMUI
                 logger.log(Level.WARNING, "MMUI.dispose()", e);
             }
         }
+        imageMap = null;
+        inventoryEntityIds = null;
+        roomEntityIds = null;
+        this.handler = null;
     }
 
     /**
@@ -130,7 +139,7 @@ public final class MMUI
             mainFrame.aboutMenuItem.setText("About...");
             mainFrame.aboutMenuItem.setEnabled(false);
         } else {
-            mainFrame.frame.setTitle("Meterman - " + name);
+            mainFrame.frame.setTitle("Meterman2 - " + name);
             mainFrame.aboutMenuItem.setText("About " + name);
             mainFrame.aboutMenuItem.setEnabled(true);
         }
@@ -164,9 +173,18 @@ public final class MMUI
      */
     public void unloadImage(String name) {
         BufferedImage img = imageMap.get(name);
-        if (img != null)
+        if (img != null) {
+            if (currentFrameImage.equals(name)) {
+                currentFrameImage = UIConstants.NO_IMAGE;
+                mainFrame.setFrameImage(null);
+            }
+            if (currentEntityImage.equals(name)) {
+                currentEntityImage = UIConstants.NO_IMAGE;
+                mainFrame.setEntityImage(null);
+            }
             img.flush();
-        imageMap.remove(name);
+            imageMap.remove(name);
+        }
     }
 
     /** Unload all images from the UI. */
@@ -293,75 +311,98 @@ public final class MMUI
      * Clears the list displaying Entities in the current room.
      */
     public void clearRoomEntities() {
+        roomEntityIds.clear();
         mainFrame.roomListModel.clear();
     }
 
     /**
      * Adds an entity to the list of entities in the current room.
-     * @param id unique entity ID
+     * @param id entity ID
      * @param name name to show in the list
      */
     public void addRoomEntity(String id, String name) {
-
+        roomEntityIds.add(id);
+        mainFrame.roomListModel.addElement(name);
     }
 
     /**
      * Removes an entity from the list of entities in the current room.
-     * @param id unique entity ID
+     * @param id entity ID
      */
     public void removeRoomEntity(String id) {
-
+        int idx = roomEntityIds.indexOf(id);
+        if (idx != -1) {
+            roomEntityIds.remove(idx);
+            mainFrame.roomListModel.remove(idx);
+        }
     }
 
     /**
      * Update the list item corresponding to an entity in the current room.
-     * @param id unique entity ID
+     * @param id entity ID
      * @param name name to show in the list
      */
     public void updateRoomEntity(String id, String name) {
-
+        int idx = roomEntityIds.indexOf(id);
+        if (idx != -1)
+            mainFrame.roomListModel.set(idx, name);
     }
 
     /**
      * Clears the list displaying Entities in the player's inventory.
      */
     public void clearInventoryEntities() {
+        inventoryEntityIds.clear();
         mainFrame.inventoryListModel.clear();
     }
 
     /**
      * Adds an entity to the list of entities in the player's inventory.
-     * @param id unique entity ID
+     * @param id entity ID
      * @param name name to show in the list
      */
     public void addInventoryEntity(String id, String name) {
-
+        inventoryEntityIds.add(id);
+        mainFrame.inventoryListModel.addElement(name);
     }
 
     /**
      * Removes an entity from the list of entities in the player's inventory.
-     * @param id unique entity ID
+     * @param id entity ID
      */
     public void removeInventoryEntity(String id) {
-
+        int idx = inventoryEntityIds.indexOf(id);
+        if (idx != -1) {
+            inventoryEntityIds.remove(idx);
+            mainFrame.inventoryListModel.remove(idx);
+        }
     }
 
     /**
      * Update the list item corresponding to an entity in inventory.
-     * @param id unique entity ID
+     * @param id entity ID
      * @param name name to show in the list
      */
     public void updateInventoryEntity(String id, String name) {
-
+        int idx = inventoryEntityIds.indexOf(id);
+        if (idx != -1)
+            mainFrame.inventoryListModel.set(idx, name);
     }
 
     /**
      * Cause a given entity to be selected in the UI, if it is present in the room
      * or inventory lists.
-     * @param id unique entity ID
+     * @param id entity ID
      */
     public void selectEntity(String id) {
-
+        int idx = roomEntityIds.indexOf(id);
+        if (idx != -1) {
+            mainFrame.roomList.setSelectedIndex(idx);
+        } else {
+            idx = inventoryEntityIds.indexOf(id);
+            if (idx != -1)
+                mainFrame.inventoryList.setSelectedIndex(idx);
+        }
     }
 
     /**
