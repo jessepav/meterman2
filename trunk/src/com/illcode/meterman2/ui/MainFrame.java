@@ -5,6 +5,7 @@ import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
+import org.apache.commons.lang3.ArrayUtils;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -15,7 +16,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -35,7 +36,6 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     private static final KeyStroke WAIT_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.SHIFT_MASK);
 
     private MMUI ui;
-    private UIHandler handler;
 
     JFrame frame;
     JMenu gameMenu, settingsMenu, helpMenu;
@@ -64,9 +64,8 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     private boolean suppressValueChanged;
 
     @SuppressWarnings("unchecked")
-    MainFrame(MMUI ui, UIHandler handler) {
+    MainFrame(MMUI ui) {
         this.ui = ui;
-        this.handler = handler;
         try {
             FormModel formModel = FormLoader.load("com/illcode/meterman2/ui/MainFrame.jfd");
             FormCreator cr = new FormCreator(formModel);
@@ -212,10 +211,10 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     }
 
     private void debugTriggered() {
-        if (handler.isGameActive()) {
+        if (ui.handler.isGameActive()) {
             String command = ui.showPromptDialog("Debug Command",
                 "What is your debug command, oh Implementer?", "Command", "");
-            handler.debugCommand(command);
+            ui.handler.debugCommand(command);
         }
     }
 
@@ -223,13 +222,14 @@ public final class MainFrame implements ActionListener, ListSelectionListener
         frame.setVisible(visible);
     }
 
+    // TODO: startup()
     void startup() {
 
     }
 
     private void close() {
         if (Utils.booleanPref("prompt-to-quit", true)) {
-            if (handler.isGameActive() &&
+            if (ui.handler.isGameActive() &&
                 JOptionPane.showConfirmDialog(frame, "Quit Meterman2?", "Quit",
                    JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
                 return;  // don't quit
@@ -297,10 +297,93 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     }
 
     public void actionPerformed(ActionEvent e) {
+        Object source = e.getSource();
+        int buttonIdx;
 
+        if (source == lookButton) {
+            ui.handler.lookCommand();
+        } else if (source == waitButton) {
+            ui.handler.waitCommand();
+        } else if ((buttonIdx = ArrayUtils.indexOf(exitButtons, source)) != -1) {
+            ui.handler.exitSelected(buttonIdx);
+        } else if ((buttonIdx = ArrayUtils.indexOf(actionButtons, source)) != -1) {
+            ui.handler.entityActionSelected(actionButtons[buttonIdx].getText());
+        } else if (source == moreActionCombo) {
+            int idx = moreActionCombo.getSelectedIndex();
+            if (idx > 0)   // index 0 is "More..."
+                ui.handler.entityActionSelected(moreActionCombo.getItemAt(idx));
+        } else if (source == newMenuItem) {
+            String gameName = Utils.getPref("single-game-name");
+            if (gameName == null) {
+                ui.listDialog.list.addListSelectionListener(this);
+                gameName = ui.showListDialog("New Game", ui.handler.getGameDescription(null),
+                    ui.handler.getGameNames(), true);
+                ui.listDialog.list.removeListSelectionListener(this);
+            }
+            if (gameName != null)
+                ui.handler.newGame(gameName);
+        } else if (source == loadMenuItem) {
+            int r = fc.showOpenDialog(frame);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                File f = fc.getSelectedFile();
+                try (InputStream in = new FileInputStream(f)) {
+                    ui.handler.loadGameState(in);
+                } catch (Exception ex) {
+                    logger.log(Level.WARNING, "MainFrame loadMenuItem", ex);
+                    ui.showTextDialog("Load Error", ex.getMessage(), "OK");
+                }
+            }
+        } else if (source == saveMenuItem) {
+            if (lastSaveFile == null) {
+                saveAsMenuItem.doClick();
+                return;
+            }
+            try (OutputStream out = new FileOutputStream(lastSaveFile)) {
+                ui.handler.saveGameState(out);
+            } catch (Exception ex) {
+                logger.log(Level.WARNING, "MainFrame saveMenuItem", ex);
+                ui.showTextDialog("Save Error", ex.getMessage(), "OK");
+            }
+        } else if (source == saveAsMenuItem) {
+            int r = fc.showSaveDialog(frame);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                lastSaveFile = fc.getSelectedFile();
+                saveMenuItem.doClick();
+            }
+        } else if (source == quitMenuItem) {
+            close();
+        } else if (source == musicCheckBoxMenuItem) {
+            boolean enabled = musicCheckBoxMenuItem.isSelected();
+            ui.handler.setMusicEnabled(enabled);
+            Utils.setPref("music-enabled", Boolean.toString(enabled));
+        } else if (source == soundCheckBoxMenuItem) {
+            boolean enabled = soundCheckBoxMenuItem.isSelected();
+            ui.handler.setSoundEnabled(enabled);
+            Utils.setPref("sound-enabled", Boolean.toString(enabled));
+        } else if (source == alwaysLookCheckBoxMenuItem) {
+            boolean alwaysLook = alwaysLookCheckBoxMenuItem.isSelected();
+            ui.handler.setAlwaysLook(alwaysLook);
+            Utils.setPref("always-look", Boolean.toString(alwaysLook));
+        } else if (source == promptToQuitCheckBoxMenuItem) {
+            Utils.setPref("prompt-to-quit", Boolean.toString(promptToQuitCheckBoxMenuItem.isSelected()));
+        } else if (source == scrollbackMenuItem) {
+            int newval = Utils.parseInt(ui.showPromptDialog("Scrollback",
+                "Scrollback buffer size, in characters:", "Size:", Integer.toString(ui.maxBufferSize)));
+            if (newval == 0) {
+                ui.showTextDialog("Scrollback", "That's not a valid size!", "Sorry, I'll try again");
+            } else {
+                ui.maxBufferSize = newval;
+                Utils.setPref("max-text-buffer-size", Integer.toString(newval));
+            }
+        } else if (source == webSiteMenuItem) {
+            ui.openURL("https://jessepav.github.io/meterman/");
+        } else if (source == onlineManualMenuItem) {
+            ui.openURL("https://jessepav.github.io/meterman/manual.html");
+        } else if (source == aboutMenuItem) {
+            ui.handler.aboutMenuClicked();
+        }
     }
 
-    // TODO: update valueChanged() once the entity list management system is implemented
     public void valueChanged(ListSelectionEvent e) {
         if (suppressValueChanged)
             return;
@@ -309,15 +392,17 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             suppressValueChanged = true;
             inventoryList.clearSelection();
             suppressValueChanged = false;
-            //handler.roomEntitySelected(roomList.getSelectedIndex());
+            String id = ui.roomEntityIds.get(roomList.getSelectedIndex());
+            ui.handler.entitySelected(id);
         } else if (source == inventoryList) {
             suppressValueChanged = true;
             roomList.clearSelection();
             suppressValueChanged = false;
-            //handler.inventoryEntitySelected(inventoryList.getSelectedIndex());
+            String id = ui.inventoryEntityIds.get(inventoryList.getSelectedIndex());
+            ui.handler.entitySelected(id);
         } else if (source == ui.listDialog.list) {  // used only when starting a new game
             String selectedGame = ui.listDialog.list.getSelectedValue();
-            ui.listDialog.textArea.setText(ui.wrapDialogText(handler.getGameDescription(selectedGame)));
+            ui.listDialog.textArea.setText(ui.wrapDialogText(ui.handler.getGameDescription(selectedGame)));
         }
     }
 
@@ -406,7 +491,7 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             } else if (actionsList != null && !actionsList.isEmpty()) {
                 int idx = ui.selectItemDialog.showSelectItemDialog(header, prompt, actionsList, -1);
                 if (idx != -1)
-                    handler.entityActionSelected(actionsList.get(idx));
+                    ui.handler.entityActionSelected(actionsList.get(idx));
             }
         }
     }
