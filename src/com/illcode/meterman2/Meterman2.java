@@ -1,6 +1,7 @@
 package com.illcode.meterman2;
 
 import com.illcode.meterman2.ui.MMUI;
+import com.illcode.meterman2.ui.SoundManager;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -24,7 +25,10 @@ public final class Meterman2
     /** The MMUI displaying the current game */
     public static MMUI ui;
 
-    private static MMHandler handler;
+    /** The SoundManager handling the game's sound and music playback. */
+    public static SoundManager sound;
+
+    private static MMHandler uiHandler;
 
     public static void main(String[] args) throws IOException {
         prefsPath = Paths.get("config/meterman2.properties");
@@ -55,10 +59,12 @@ public final class Meterman2
         assets.setAssetsPath(assetsPath);
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
-        handler = new MMHandler();
+        sound = new SoundManager();
+        sound.init();
 
+        uiHandler = new MMHandler();
         ui = new MMUI();
-        ui.init(handler);
+        ui.init(uiHandler);
         ui.show();
     }
 
@@ -87,8 +93,8 @@ public final class Meterman2
     public static void shutdown() {
         logger.info("Meterman shutting down...");
         //persistence.dispose();
-        //sound.dispose();
         ui.dispose();
+        sound.dispose();
         //gm.dispose();
         assets.dispose();
         savePrefs(prefsPath);
