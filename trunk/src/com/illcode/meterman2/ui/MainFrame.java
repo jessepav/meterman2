@@ -300,6 +300,7 @@ public final class MainFrame implements ActionListener, ListSelectionListener
 
     }
 
+    // TODO: update valueChanged() once the entity list management system is implemented
     public void valueChanged(ListSelectionEvent e) {
         if (suppressValueChanged)
             return;
@@ -308,12 +309,12 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             suppressValueChanged = true;
             inventoryList.clearSelection();
             suppressValueChanged = false;
-            handler.roomEntitySelected(roomList.getSelectedIndex());
+            //handler.roomEntitySelected(roomList.getSelectedIndex());
         } else if (source == inventoryList) {
             suppressValueChanged = true;
             roomList.clearSelection();
             suppressValueChanged = false;
-            handler.inventoryEntitySelected(inventoryList.getSelectedIndex());
+            //handler.inventoryEntitySelected(inventoryList.getSelectedIndex());
         } else if (source == ui.listDialog.list) {  // used only when starting a new game
             String selectedGame = ui.listDialog.list.getSelectedValue();
             ui.listDialog.textArea.setText(ui.wrapDialogText(handler.getGameDescription(selectedGame)));
