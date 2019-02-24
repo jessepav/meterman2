@@ -83,6 +83,8 @@ public final class MMUI
                 setStatusLabel(UIConstants.CENTER_LABEL, "");
                 setStatusLabel(UIConstants.RIGHT_LABEL, "");
 
+                setRoomName("");
+
                 defaultFrameImage = GuiUtils.loadBitmaskImage(Meterman2.assets.pathForSystemAsset("default-frame-image.png"));
                 currentFrameImage = UIConstants.NO_IMAGE;
                 currentEntityImage = UIConstants.NO_IMAGE;
