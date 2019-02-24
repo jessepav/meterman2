@@ -1,6 +1,10 @@
 Meterman2 To-do
 -----------------
 
+== Sound ==
+
+Write a SoundManager based on PaulsCode SoundSystem.
+
 == Infrastructure ==
 
 Implement XBundle and BundleGroup.
@@ -28,13 +32,9 @@ Get rid of undo, so I don't worry about the performance of serializing game stat
 
 == UI ==
 
-Create a UIListener interface that will process UI actions, rather than having the UI call directly into GameManager. This will also let me write the new UI without first completing the GameManager & co -- and in fact the methods I add to UIListener show what will need to be implemented on the backend.
-
 Wire up the MM1 SwingUI with the new infrastructure and GameManager classes.
 
 Change the font used in the interface, and distribute it with the program. If someone wants to internationalize the program, he can supply a different font and hand-edit the .properties file to load it.
-
-All text is henceforth flowed (aka normalized, in XML parlance). Before sending the text to the various dialogs, we'll need to wrap it ourselves using WordUtils.wrap().
 
 Add a new dialog for conversations, instead of re-using the list dialog.
 
