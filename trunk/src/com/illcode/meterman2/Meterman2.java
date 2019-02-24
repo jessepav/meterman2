@@ -24,6 +24,8 @@ public final class Meterman2
     /** The MMUI displaying the current game */
     public static MMUI ui;
 
+    private static MMHandler handler;
+
     public static void main(String[] args) throws IOException {
         prefsPath = Paths.get("config/meterman2.properties");
         if (!loadPrefs(prefsPath)) {
@@ -53,8 +55,10 @@ public final class Meterman2
         assets.setAssetsPath(assetsPath);
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
+        handler = new MMHandler();
 
         ui = new MMUI();
+        ui.init(handler);
         ui.show();
     }
 

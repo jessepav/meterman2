@@ -18,6 +18,7 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -222,9 +223,36 @@ public final class MainFrame implements ActionListener, ListSelectionListener
         frame.setVisible(visible);
     }
 
-    // TODO: startup()
     void startup() {
+        soundCheckBoxMenuItem.setSelected(ui.handler.isSoundEnabled());
+        musicCheckBoxMenuItem.setSelected(ui.handler.isMusicEnabled());
+        alwaysLookCheckBoxMenuItem.setSelected(ui.handler.isAlwaysLook());
+        promptToQuitCheckBoxMenuItem.setSelected(Utils.booleanPref("prompt-to-quit", true));
 
+        ui.clearActions();
+        ui.clearExits();
+        ui.clearText();
+        ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
+
+        initGame:  // make the user keep selecting choices until a game is
+        do {       // successfully started or loaded
+            String choice;
+            do {  // don't let the user avoid making a choice
+                choice = ui.showListDialog("Meterman2", "Select an option",
+                    Arrays.asList("New Game", "Load Game", "Quit"), false);
+            } while (choice == null);
+            switch (choice) {
+            case "New Game":
+                newMenuItem.doClick();
+                break;
+            case "Load Game":
+                loadMenuItem.doClick();
+                break;
+            case "Quit":
+                close();
+                break initGame;
+            }
+        } while (ui.handler.isGameActive() == false);
     }
 
     private void close() {
