@@ -15,7 +15,6 @@ import javax.swing.text.Document;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -300,9 +299,9 @@ public final class MMUI
     /**
      * Adds an entity to the list of entities in the current room.
      * @param id unique entity ID
-     * @param text text to show in the list
+     * @param name name to show in the list
      */
-    public void addRoomEntity(String id, String text) {
+    public void addRoomEntity(String id, String name) {
 
     }
 
@@ -317,9 +316,9 @@ public final class MMUI
     /**
      * Update the list item corresponding to an entity in the current room.
      * @param id unique entity ID
-     * @param text text to show in the list
+     * @param name name to show in the list
      */
-    public void updateRoomEntity(String id, String text) {
+    public void updateRoomEntity(String id, String name) {
 
     }
 
@@ -333,9 +332,9 @@ public final class MMUI
     /**
      * Adds an entity to the list of entities in the player's inventory.
      * @param id unique entity ID
-     * @param text text to show in the list
+     * @param name name to show in the list
      */
-    public void addInventoryEntity(String id, String text) {
+    public void addInventoryEntity(String id, String name) {
 
     }
 
@@ -350,9 +349,9 @@ public final class MMUI
     /**
      * Update the list item corresponding to an entity in inventory.
      * @param id unique entity ID
-     * @param text text to show in the list
+     * @param name name to show in the list
      */
-    public void updateInventoryEntity(String id, String text) {
+    public void updateInventoryEntity(String id, String name) {
 
     }
 
