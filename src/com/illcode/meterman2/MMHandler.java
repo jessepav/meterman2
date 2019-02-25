@@ -28,10 +28,6 @@ public class MMHandler implements UIHandler
         return gameNames;
     }
 
-    public String getGameDescription(String gameName) {
-        return "A regular game";
-    }
-
     public void newGame(String gameName) {
 
     }
@@ -65,19 +61,19 @@ public class MMHandler implements UIHandler
     }
 
     public void setMusicEnabled(boolean enabled) {
-
+        Meterman2.sound.setMusicEnabled(enabled);
     }
 
     public boolean isMusicEnabled() {
-        return false;
+        return Meterman2.sound.isMusicEnabled();
     }
 
     public void setSoundEnabled(boolean enabled) {
-
+        Meterman2.sound.setSoundEnabled(enabled);
     }
 
     public boolean isSoundEnabled() {
-        return false;
+        return Meterman2.sound.isSoundEnabled();
     }
 
     public void setAlwaysLook(boolean alwaysLook) {

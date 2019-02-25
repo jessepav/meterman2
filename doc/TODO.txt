@@ -1,14 +1,6 @@
 Meterman2 To-do
 -----------------
 
-== Sound ==
-
-Write a SoundManager based on PaulsCode SoundSystem.
-
-TODO: make SoundManager more opinionated
- - only one source of background music, which can be paused or resumed
- - sounds can only be played, not paused, etc.
-
 == Infrastructure ==
 
 Implement XBundle and BundleGroup.

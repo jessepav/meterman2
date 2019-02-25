@@ -14,23 +14,14 @@ public interface UIHandler
     /** Return true if a game is currently active. */
     boolean isGameActive();
 
+    /** Return a list of the names of the games available. */
+    List<String> getGameNames();
+
     /** Called by when the user selects the "About..." menu item.*/
     void aboutMenuClicked();
 
     /** Called when the user invokes a debug command.  */
     void debugCommand(String cmd);
-
-    /** Return a list of the names of the games available. */
-    List<String> getGameNames();
-
-    /**
-     * Get the description associated with a given game name.
-     * @param gameName the name of the game whose description to get. This will either be {@code null}
-     *      or one of the names returned by {@link #getGameNames()}.
-     * @return description of the game. If {@code gameName} is null or doesn't exist,
-     *      generic "choose a game" text should be returned.
-     */
-    String getGameDescription(String gameName);
 
     /**
      * Start a new game.
