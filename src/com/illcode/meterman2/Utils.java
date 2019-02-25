@@ -1,7 +1,10 @@
 package com.illcode.meterman2;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Properties;
 import java.util.Random;
 
@@ -224,5 +227,15 @@ public final class Utils
         if (in != null)
             val = Utils.slurpReaderText(new InputStreamReader(in, StandardCharsets.UTF_8), 512);
         return val != null ? val : "";
+    }
+
+    /**
+     * Return the filename extension of a path.
+     * @param p path
+     * @return the filename extension without the '.'. If the given path has no filename extension,
+     *      then we return the empty string "".
+     */
+    public static String getPathExtension(Path p) {
+        return FilenameUtils.getExtension(p.toString());
     }
 }
