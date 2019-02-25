@@ -13,6 +13,7 @@ import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.codecs.CodecJOrbis;
 
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -206,6 +207,18 @@ public class SoundManager
      * @param p the Path to load sound from
      */
     void loadSound(String name, Path p) {
+        if (!loadedSounds.contains(name)) {
+            try {
+                URL url = p.toUri().toURL();
+                soundSystem.loadSound(url, name);
+                loadedSounds.add(name);
+                soundSystem.newSource(false, name, url, name,
+                    false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
+                loadedSources.add(name);
+            } catch (MalformedURLException e) {
+                logger.warning("SoundManager: Malformed URL for Path " + p.toString());
+            }
+        }
     }
 
     /**
@@ -214,6 +227,8 @@ public class SoundManager
      * @param name name of the sound, as specified in {@link #loadSound}
      */
     void playSound(String name) {
+        if (soundEnabled)
+            soundSystem.play(name);
     }
 
     /**
@@ -221,5 +236,10 @@ public class SoundManager
      * @param name the name under which the audio was loaded
      */
     void unloadSound(String name) {
+        if (loadedSounds.remove(name)) {
+            soundSystem.unloadSound(name);
+            soundSystem.removeSource(name);
+            loadedSources.remove(name);
+        }
     }
 }
