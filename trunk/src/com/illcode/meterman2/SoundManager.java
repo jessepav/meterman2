@@ -1,4 +1,4 @@
-package com.illcode.meterman2.ui;
+package com.illcode.meterman2;
 
 import paulscode.sound.Library;
 import paulscode.sound.SoundSystem;
@@ -86,7 +86,7 @@ public class SoundManager
     /**
      * Unload all sound and music.
      */
-    void clearAudio() {
+    public void clearAudio() {
         stopMusic();
         for (String sourcename : loadedSources)
             soundSystem.removeSource(sourcename);
@@ -100,7 +100,7 @@ public class SoundManager
      * Set a global volume multiplier.
      * @param volume global volume multiplier (nominal is 1.0)
      */
-    void setGlobalVolume(float volume) {
+    public void setGlobalVolume(float volume) {
         soundSystem.setMasterVolume(volume);
     }
 
@@ -108,7 +108,7 @@ public class SoundManager
      * Enables or disables the playing of music
      * @param enabled true if music should be enabled
      */
-    void setMusicEnabled(boolean enabled) {
+    public void setMusicEnabled(boolean enabled) {
         if (musicEnabled != enabled) {
             musicEnabled = enabled;
             if (!musicEnabled)
@@ -117,7 +117,7 @@ public class SoundManager
     }
 
     /** Returns true if the playing of music is enabled.*/
-    boolean isMusicEnabled() {
+    public boolean isMusicEnabled() {
         return musicEnabled;
     }
 
@@ -127,7 +127,7 @@ public class SoundManager
      *      should have an extension (ex. ".ogg") indicating the type of audio data that will be loaded.
      * @param p the Path to load music from
      */
-    void loadMusic(String name, Path p) {
+    public void loadMusic(String name, Path p) {
         if (loadedSources.contains(name))
             return;
         try {
@@ -144,7 +144,7 @@ public class SoundManager
      * @param name name of the Music, as specified in {@link #loadMusic}
      *
      */
-    void playMusic(String name, boolean loop) {
+    public void playMusic(String name, boolean loop) {
         if (musicEnabled) {
             stopMusic();
             musicSource = name;
@@ -156,7 +156,7 @@ public class SoundManager
     /**
      * Stops playback for the currently playing music, if any.
      */
-    void stopMusic() {
+    public void stopMusic() {
         if (musicSource != null) {
             soundSystem.stop(musicSource);
             musicSource = null;
@@ -164,13 +164,13 @@ public class SoundManager
     }
 
     /** Pauses any music currently playing. */
-    void pauseMusic() {
+    public void pauseMusic() {
         if (musicSource != null)
             soundSystem.pause(musicSource);
     }
 
     /** Resumes playing the current music piece.. */
-    void resumeMusic() {
+    public void resumeMusic() {
         if (musicEnabled && musicSource != null)
             soundSystem.play(musicSource);
     }
@@ -179,7 +179,7 @@ public class SoundManager
      * Unloads Music previously loaded by this SoundManager
      * @param name the name under which the audio was loaded
      */
-    void unloadMusic(String name) {
+    public void unloadMusic(String name) {
         if (musicSource != null && musicSource.equals(name))
             stopMusic();
         if (loadedSources.remove(name))
@@ -190,13 +190,13 @@ public class SoundManager
      * Enables or disables the playing of sounds
      * @param enabled true if sounds should be enabled
      */
-    void setSoundEnabled(boolean enabled) {
+    public void setSoundEnabled(boolean enabled) {
         if (soundEnabled != enabled)
             soundEnabled = enabled;
     }
 
     /** Returns true if the playing of sounds is enabled.*/
-    boolean isSoundEnabled() {
+    public boolean isSoundEnabled() {
         return soundEnabled;
     }
 
@@ -206,7 +206,7 @@ public class SoundManager
      *      should have an extension (ex. ".wav") indicating the type of audio data that will be loaded.
      * @param p the Path to load sound from
      */
-    void loadSound(String name, Path p) {
+    public void loadSound(String name, Path p) {
         if (!loadedSounds.contains(name)) {
             try {
                 URL url = p.toUri().toURL();
@@ -226,16 +226,16 @@ public class SoundManager
      * <p/>
      * @param name name of the sound, as specified in {@link #loadSound}
      */
-    void playSound(String name) {
+    public void playSound(String name) {
         if (soundEnabled)
             soundSystem.play(name);
     }
 
     /**
      * Unloads a Sound previously loaded by this SoundManager
-     * @param name the name under which the audio was loaded
+     * @param name the name under which the sound was loaded
      */
-    void unloadSound(String name) {
+    public void unloadSound(String name) {
         if (loadedSounds.remove(name)) {
             soundSystem.unloadSound(name);
             soundSystem.removeSource(name);

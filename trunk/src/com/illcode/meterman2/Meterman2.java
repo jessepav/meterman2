@@ -1,7 +1,6 @@
 package com.illcode.meterman2;
 
 import com.illcode.meterman2.ui.MMUI;
-import com.illcode.meterman2.ui.SoundManager;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -61,6 +60,8 @@ public final class Meterman2
 
         sound = new SoundManager();
         sound.init();
+        sound.setSoundEnabled(Utils.booleanPref("sound-enabled", true));
+        sound.setMusicEnabled(Utils.booleanPref("music-enabled", true));
 
         uiHandler = new MMHandler();
         ui = new MMUI();

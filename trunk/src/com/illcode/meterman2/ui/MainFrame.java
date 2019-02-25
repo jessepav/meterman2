@@ -6,6 +6,7 @@ import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -342,12 +343,8 @@ public final class MainFrame implements ActionListener, ListSelectionListener
                 ui.handler.entityActionSelected(moreActionCombo.getItemAt(idx));
         } else if (source == newMenuItem) {
             String gameName = Utils.getPref("single-game-name");
-            if (gameName == null) {
-                ui.listDialog.list.addListSelectionListener(this);
-                gameName = ui.showListDialog("New Game", ui.handler.getGameDescription(null),
-                    ui.handler.getGameNames(), true);
-                ui.listDialog.list.removeListSelectionListener(this);
-            }
+            if (gameName == null)
+                gameName = ui.showListDialog("New Game", "Choose a game:", ui.handler.getGameNames(), true);
             if (gameName != null)
                 ui.handler.newGame(gameName);
         } else if (source == loadMenuItem) {
@@ -428,9 +425,6 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             suppressValueChanged = false;
             String id = ui.inventoryEntityIds.get(inventoryList.getSelectedIndex());
             ui.handler.entitySelected(id);
-        } else if (source == ui.listDialog.list) {  // used only when starting a new game
-            String selectedGame = ui.listDialog.list.getSelectedValue();
-            ui.listDialog.textArea.setText(ui.wrapDialogText(ui.handler.getGameDescription(selectedGame)));
         }
     }
 
