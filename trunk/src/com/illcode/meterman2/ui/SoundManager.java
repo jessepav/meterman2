@@ -1,22 +1,21 @@
 package com.illcode.meterman2.ui;
 
-import static com.illcode.meterman2.MMLogging.logger;
-
-import org.apache.commons.lang3.StringUtils;
 import paulscode.sound.Library;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
 import paulscode.sound.SoundSystemException;
+import paulscode.sound.codecs.CodecJOrbis;
+import paulscode.sound.codecs.CodecWav;
 import paulscode.sound.libraries.LibraryJOAL;
 import paulscode.sound.libraries.LibraryJavaSound;
-import paulscode.sound.codecs.CodecWav;
-import paulscode.sound.codecs.CodecJOrbis;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 /**
  * Class for handling music (long streaming audio) and sounds (short buffered audio).
@@ -147,6 +146,7 @@ public class SoundManager
      */
     void playMusic(String name, boolean loop) {
         if (musicEnabled) {
+            stopMusic();
             musicSource = name;
             soundSystem.setLooping(musicSource, loop);
             soundSystem.play(musicSource);
