@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="commons-collections4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/commons-collections4-4.2.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../Common/docjars/commons-collections4-4.2-javadoc.jar!/" />
+      <root url="file://$PROJECT_DIR$/../Common/expanded-javadoc/commons-collections4-4.2-javadoc" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../Common/srcjars/commons-collections4-4.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
