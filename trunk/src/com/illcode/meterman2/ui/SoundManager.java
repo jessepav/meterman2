@@ -1,8 +1,18 @@
 package com.illcode.meterman2.ui;
 
+import static com.illcode.meterman2.MMLogging.logger;
+
+import paulscode.sound.Library;
 import paulscode.sound.SoundSystem;
+import paulscode.sound.SoundSystemConfig;
+import paulscode.sound.SoundSystemException;
+import paulscode.sound.libraries.LibraryJOAL;
+import paulscode.sound.libraries.LibraryJavaSound;
+import paulscode.sound.codecs.CodecWav;
+import paulscode.sound.codecs.CodecJOrbis;
 
 import java.nio.file.Path;
+import java.util.logging.Level;
 
 public class SoundManager
 {
@@ -18,7 +28,22 @@ public class SoundManager
         if (initialized)
             return;
 
-        soundSystem = new SoundSystem();
+        Class<?> libraryType;
+        if (SoundSystem.libraryCompatible(LibraryJOAL.class))
+            libraryType = LibraryJOAL.class;
+        else if (SoundSystem.libraryCompatible(LibraryJavaSound.class))
+            libraryType = LibraryJavaSound.class;
+        else
+            libraryType = Library.class;
+
+        try {
+            SoundSystemConfig.setCodec("wav", CodecWav.class);
+            SoundSystemConfig.setCodec("ogg", CodecJOrbis.class);
+            soundSystem = new SoundSystem(libraryType);
+            logger.info("SoundManager using SoundSystem class " + libraryType.getName());
+        } catch (SoundSystemException ex) {
+            logger.log(Level.WARNING, "SoundManager.init()", ex);
+        }
 
         initialized = true;
     }
