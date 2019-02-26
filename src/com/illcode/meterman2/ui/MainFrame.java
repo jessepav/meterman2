@@ -1,5 +1,6 @@
 package com.illcode.meterman2.ui;
 
+import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
@@ -107,9 +108,8 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             centerStatusLabel = cr.getLabel("centerStatusLabel");
             rightStatusLabel = cr.getLabel("rightStatusLabel");
 
-            // TODO: once MMActions is up and running, set button labels
-            //lookButton.setText(SystemActions.LOOK);
-            //waitButton.setText(SystemActions.WAIT);
+            lookButton.setText(MMActions.LOOK);
+            waitButton.setText(MMActions.WAIT);
 
             imageComponent = new FrameImageComponent();
             imagePanel.add(imageComponent);
