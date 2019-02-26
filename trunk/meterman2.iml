@@ -7,13 +7,16 @@
       <sourceFolder url="file://$MODULE_DIR$/forms" isTestSource="false" packagePrefix="com.illcode.meterman2.ui" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/assets-src" />
+      <excludeFolder url="file://$MODULE_DIR$/docjars" />
       <excludeFolder url="file://$MODULE_DIR$/docs" />
+      <excludeFolder url="file://$MODULE_DIR$/expanded-javadoc" />
       <excludeFolder url="file://$MODULE_DIR$/games" />
       <excludeFolder url="file://$MODULE_DIR$/glue" />
       <excludeFolder url="file://$MODULE_DIR$/jars" />
       <excludeFolder url="file://$MODULE_DIR$/lib" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
       <excludeFolder url="file://$MODULE_DIR$/saves" />
+      <excludeFolder url="file://$MODULE_DIR$/srcjars" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
