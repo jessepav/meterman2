@@ -27,6 +27,9 @@ public final class Meterman2
     /** The SoundManager handling the game's sound and music playback. */
     public static SoundManager sound;
 
+    /** MMActions instance in which system and game actions are registered. */
+    public static MMActions actions;
+
     private static MMHandler uiHandler;
 
     public static void main(String[] args) throws IOException {
@@ -57,6 +60,9 @@ public final class Meterman2
         assets = new MMAssets();
         assets.setAssetsPath(assetsPath);
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
+
+        actions = new MMActions();
+        SystemActions.init();
 
         sound = new SoundManager();
         sound.init();
