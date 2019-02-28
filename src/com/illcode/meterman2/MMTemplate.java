@@ -28,6 +28,7 @@ public class MMTemplate
         cfg.setTemplateExceptionHandler(new MMTemplateExceptionHandler());
         DefaultObjectWrapperBuilder b = new DefaultObjectWrapperBuilder(Configuration.VERSION_2_3_28);
         b.setForceLegacyNonListCollections(false);
+        b.setIterableSupport(true);
         b.setExposeFields(true);
         cfg.setObjectWrapper(b.build());
         strLoader = new StringTemplateLoader();
