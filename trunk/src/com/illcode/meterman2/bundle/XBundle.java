@@ -177,11 +177,19 @@ public final class XBundle
         return sb.toString();
     }
 
+    /**
+     * Normalize and expand escape sequences in text.
+     * @param text text to process
+     * @return processed text
+     */
+    public String formatText(final String text) {
+        return unescapeText(StringUtils.normalizeSpace(text));
+    }
+
     public static void main(String[] args) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(args[0]));
         String text = new String(bytes, StandardCharsets.UTF_8);
-        text = StringUtils.normalizeSpace(text);
         XBundle xb = new XBundle();
-        System.out.print(xb.unescapeText(text));
+        System.out.print(xb.formatText(text));
     }
 }
