@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/forms" isTestSource="false" packagePrefix="com.illcode.meterman2.ui" />
+      <sourceFolder url="file://$MODULE_DIR$/classloader-resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/assets-src" />
       <excludeFolder url="file://$MODULE_DIR$/docjars" />

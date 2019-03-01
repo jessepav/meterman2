@@ -33,6 +33,9 @@ public final class Meterman2
     /** MMTemplate instance responsible for rendering template text sources. */
     public static MMTemplate template;
 
+    /** MMScript instance that handles our scripting needs. */
+    public static MMScript script;
+
     private static MMHandler uiHandler;
 
     public static void main(String[] args) throws IOException {
@@ -68,6 +71,7 @@ public final class Meterman2
         SystemActions.init();
 
         template = new MMTemplate();
+        script = new MMScript();
 
         sound = new SoundManager();
         sound.init();
@@ -86,6 +90,7 @@ public final class Meterman2
         //persistence.dispose();
         ui.dispose();
         sound.dispose();
+        script.dispose();
         template.dispose();
         //gm.dispose();
         assets.dispose();

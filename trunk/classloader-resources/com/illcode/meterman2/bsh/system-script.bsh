@@ -1,0 +1,4 @@
+void out(String s) {
+    outputBuilder.append(s);
+}
+

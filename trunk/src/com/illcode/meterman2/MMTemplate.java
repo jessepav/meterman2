@@ -57,6 +57,9 @@ public class MMTemplate
         clearTemplateCache();
         removeAllTemplates();
         clearBindings();
+        loadedTemplates = null;
+        strLoader = null;
+        cfg = null;
     }
 
     /**
