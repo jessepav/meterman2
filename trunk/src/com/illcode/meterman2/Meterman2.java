@@ -30,6 +30,9 @@ public final class Meterman2
     /** MMActions instance in which system and game actions are registered. */
     public static MMActions actions;
 
+    /** MMTemplate instance responsible for rendering template text sources. */
+    public static MMTemplate template;
+
     private static MMHandler uiHandler;
 
     public static void main(String[] args) throws IOException {
@@ -64,6 +67,8 @@ public final class Meterman2
         actions = new MMActions();
         SystemActions.init();
 
+        template = new MMTemplate();
+
         sound = new SoundManager();
         sound.init();
         sound.setSoundEnabled(Utils.booleanPref("sound-enabled", true));
@@ -74,6 +79,19 @@ public final class Meterman2
         ui.init(uiHandler);
         ui.show();
     }
+
+    /** Called when the program is shutting down. */
+    public static void shutdown() {
+        logger.info("Meterman shutting down...");
+        //persistence.dispose();
+        ui.dispose();
+        sound.dispose();
+        template.dispose();
+        //gm.dispose();
+        assets.dispose();
+        savePrefs(prefsPath);
+    }
+
 
     private static boolean loadPrefs(Path path) {
         prefs = new Properties();
@@ -94,16 +112,5 @@ public final class Meterman2
         } catch (IOException ex) {
             logger.log(Level.WARNING, "savePrefs " + path.toString(), ex);
         }
-    }
-
-    /** Called when the program is shutting down. */
-    public static void shutdown() {
-        logger.info("Meterman shutting down...");
-        //persistence.dispose();
-        ui.dispose();
-        sound.dispose();
-        //gm.dispose();
-        assets.dispose();
-        savePrefs(prefsPath);
     }
 }

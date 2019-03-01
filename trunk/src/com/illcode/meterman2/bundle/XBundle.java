@@ -113,9 +113,9 @@ public final class XBundle
             logger.warning("XBundle passage " + e.getName() + " is trying to be a template *and* a script!");
             return ERROR_TEXT_SOURCE;
         }
-        // TODO: script and template sources
+        // TODO: script sources
         if (isTemplate) {
-            return new StringSource("[not yet implemented]");
+            return new TemplateSource(e.getAttributeValue("id"), e.getText(), this);
         } else if (isScript) {
             return new StringSource("[not yet implemented]");
         } else { // a normal text passage
@@ -131,10 +131,12 @@ public final class XBundle
         return templateAttr != null && idAttr != null;
     }
 
-    /** A script text source element must have a "script" attribute. */
+    /** A script text source element must have both "script" and "id" attributes. */
     private boolean isScriptElement(final Element e) {
         final Attribute scriptAttr = e.getAttribute("script");
-        return scriptAttr != null;  // in the future we can check for the actual value, like "bsh"
+        final Attribute idAttr = e.getAttribute("id");
+        // in the future we can check for the actual value of the script attribute, like "bsh"
+        return scriptAttr != null && idAttr != null;
     }
 
     /**

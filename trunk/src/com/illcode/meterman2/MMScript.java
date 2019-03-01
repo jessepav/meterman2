@@ -53,4 +53,8 @@ public final class MMScript
         ns.importPackage("com.illcode.meterman2");
         ns.importPackage("com.illcode.meterman2.model");
     }
+
+    public NameSpace createScriptNameSpace(String id) {
+        return new NameSpace(gameNameSpace, id);
+    }
 }
