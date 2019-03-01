@@ -7,10 +7,19 @@ import bsh.NameSpace;
  */
 public class ScriptSource implements TextSource
 {
-    private String source;
+    private final String id;
+    private final String source;
     private NameSpace ns;
-    
+
+    public ScriptSource(String id, String source) {
+        this.id = id;
+        this.source = source;
+    }
+
     public String getText() {
+        if (ns == null) {  // this is the first time we're invoked
+            //ns =
+        }
         return null;
     }
 }

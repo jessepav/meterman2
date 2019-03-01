@@ -1,8 +1,14 @@
 package com.illcode.meterman2;
 
-import bsh.Interpreter;
-import bsh.NameSpace;
-import bsh.This;
+import bsh.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 /**
  * This class handles Meterman's interaction with a scripting engine, in our case BeanShell.
@@ -31,12 +37,23 @@ public final class MMScript
      */
     private NameSpace gameNameSpace;
 
+    // Used to gather up the output emitted by a script using the out() BeanShell method.
+    private StringBuilder outputBuilder;
+
     public MMScript() {
         intr = new Interpreter();
         systemNameSpace = intr.getNameSpace();
         unimportUnneededDefaults(systemNameSpace);
         importMMPackages(systemNameSpace);
         gameNameSpace = new NameSpace(systemNameSpace, "gameNameSpace");
+        initSystemNameSpace();
+    }
+
+    /** Free any resources allocated by this MMScript instance. */
+    public void dispose() {
+        gameNameSpace = null;
+        systemNameSpace = null;
+        intr = null;
     }
 
     private void unimportUnneededDefaults(NameSpace ns) {
@@ -54,7 +71,98 @@ public final class MMScript
         ns.importPackage("com.illcode.meterman2.model");
     }
 
-    public NameSpace createScriptNameSpace(String id) {
-        return new NameSpace(gameNameSpace, id);
+    private void initSystemNameSpace() {
+        StringBuilder outputBuilder = new StringBuilder(1024);
+        try {
+            intr.set("outputBuilder", outputBuilder);
+            intr.eval(Utils.getStringResource("bsh/system-script.bsh"));
+        } catch (EvalError ex) {
+            logger.log(Level.WARNING, "MMScript error:", ex);
+        }
+    }
+
+    /**
+     * Add a map of game-state bindings to our game namespace.
+     * @param bindings name to game-state object mapping
+     */
+    public void putBindings(Map<String,Object> bindings) {
+        try {
+            for (Map.Entry<String,Object> entry : bindings.entrySet()) {
+                Object value = entry.getValue();
+                String name = entry.getKey();
+                gameNameSpace.setTypedVariable(name, value.getClass(), value, null);
+            }
+        } catch (UtilEvalError err) {
+            logger.log(Level.WARNING, "MMScript error:", err);
+        }
+    }
+
+    /** Clear all game-state bindings from our game namespace. */
+    public void clearBindings() {
+        gameNameSpace.clear();
+    }
+
+    /**
+     * Evaluate a script and retrieve methods declared in it.
+     * <p/>
+     * NOTE: scripted methods should not use primitive types in their parameter lists; instead,
+     * use the wrapper classes (Integer, etc.).
+     * @param id script ID (aka name)
+     * @param source script source
+     * @return a list of ScriptedMethod instances that can be used to query and
+     *         invoke the methods declared in the script.
+     */
+    public List<ScriptedMethod> evalScript(String id, String source) {
+        NameSpace ns = new NameSpace(gameNameSpace, id);
+        List<ScriptedMethod> methods = null;
+        try {
+            intr.eval(source, ns);
+            BshMethod[] bshMethods = ns.getMethods();
+            methods = new ArrayList<>(bshMethods.length);
+            for (BshMethod m : bshMethods)
+                methods.add(new ScriptedMethod(m));
+        } catch (EvalError err) {
+            logger.log(Level.WARNING, "MMScript error:", err);
+            methods = Collections.emptyList();
+        }
+        return methods;
+    }
+
+    /**
+     * A ScriptedMethod encapsulates the particular machinery of our script engine,
+     * and allows users to query and invoke methods defined in a script.
+     */
+    public class ScriptedMethod
+    {
+        private final BshMethod bshMethod;
+
+        private ScriptedMethod(BshMethod bshMethod) {
+            this.bshMethod = bshMethod;
+        }
+
+        /** Return the name of the method. */
+        public String getName() {
+            return bshMethod.getName();
+        }
+
+        /** Invoke the method, passing a list of arguments. */
+        public Object invoke(Object... args) {
+            try {
+                Object[] bshArgs = new Object[args.length];  // we need to wrap null values as Primitive.NULL
+                for (int i = 0; i < args.length; i++)
+                    bshArgs[i] = args[i] == null ? Primitive.NULL : args[i];
+                return bshMethod.invoke(bshArgs, intr);
+            } catch (EvalError err) {
+                logger.log(Level.WARNING, "MMScript error:", err);
+                return null;
+            }
+        }
+
+        public Object invokeAndGetOutput(StringBuilder out, Object... args) {
+            Object retVal = invoke(args);
+            out.append(outputBuilder);
+            outputBuilder.setLength(0);
+            return retVal;
+        }
     }
 }
