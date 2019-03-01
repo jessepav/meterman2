@@ -32,7 +32,7 @@ public final class MMScript
     /**
      * The NameSpace used by an individual game, which is used as the parent namespace
      * for all scripted objects. This namespace is populated by the game itself when it's
-     * loaded, should not be modified by scripts because it's not persisted.
+     * loaded and should not be modified by scripts because it's not persisted.
      */
     private NameSpace gameNameSpace;
 
