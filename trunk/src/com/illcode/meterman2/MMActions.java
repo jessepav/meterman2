@@ -12,7 +12,7 @@ public final class MMActions
     private int numSystemActions;
 
     MMActions() {
-        numActions = numSystemActions = 0;
+        clear();
     }
 
     /**
@@ -69,6 +69,8 @@ public final class MMActions
      * </blockquote>
      * where the template-text of {@code SystemAction.PUT} is {@code "Put %s"}. In the action-processing
      * code, {@code SystemAction.PUT.equals(putAction) == true}.
+     * <p/>
+     * The only way to mint an action with a new action number is by a call to {@link MMActions#registerAction}.
      */
     public final static class Action
     {

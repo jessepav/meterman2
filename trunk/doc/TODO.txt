@@ -28,6 +28,8 @@ Get rid of undo, so I don't worry about the performance of serializing game stat
 
 == UI ==
 
+TODO: Integrate MMActions.Action into the UI
+
 Wire up the MM1 SwingUI with the new infrastructure and GameManager classes.
 
 Change the font used in the interface, and distribute it with the program. If someone wants to internationalize the program, he can supply a different font and hand-edit the .properties file to load it.
