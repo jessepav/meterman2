@@ -1,16 +1,21 @@
 package com.illcode.meterman2.bundle;
 
+import com.illcode.meterman2.text.ScriptSource;
+import com.illcode.meterman2.text.StringSource;
+import com.illcode.meterman2.text.TemplateSource;
 import com.illcode.meterman2.text.TextSource;
 import org.apache.commons.lang3.StringUtils;
+import org.jdom2.Attribute;
 import org.jdom2.Document;
 import org.jdom2.Element;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -30,36 +35,129 @@ public final class XBundle
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
 
+    // Used to indicate a passage exists but hasn't yet been parsed.
+    private static final TextSource PLACEHOLDER_TEXT_SOURCE = new StringSource("[placeholder]");
+
+    // Returned if a passage is requested that doesn't exist.
+    private static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
+
+    // Returned if a passage has some sort of error.
+    private static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
+
     private char escapeChar = '@';
     private int paragraphStyle = PARAGRAPH_BLANK_LINE;
     private static final String INDENT = "    ";
 
+    /**
+     * Construct an XBundle by using an existing JDOM Document.
+     * @param doc JDOM Document having a {@code <passage>} element as its root.
+     */
     public XBundle(Document doc) {
         this.doc = doc;
-        elementMap = new HashMap<>(200);
-        passageMap = new HashMap<>(100);
-        populateMaps();
+        initMaps();
+    }
+
+    /**
+     * Construct an XBundle by reading and parsing an XML document at a given path.
+     * @param p path of the XML document
+     */
+    public XBundle(Path p) {
+        try {
+            SAXBuilder sax = new SAXBuilder();
+            this.doc = sax.build(p.toFile());
+            initMaps();
+        } catch (JDOMException|IOException ex) {
+            logger.log(Level.WARNING, "Exception constructing an XBundle from Path:", ex);
+        }
     }
 
     // Used only for testing
     private XBundle() {
     }
 
-    private void populateMaps() {
+    private void initMaps() {
+        elementMap = new HashMap<>(200);
+        passageMap = new HashMap<>(100);
+        if (!doc.hasRootElement()) {
+            logger.warning("XBundle document has no root element.");
+            return;
+        }
         Element root = doc.getRootElement();
         if (!root.getName().equals("xbundle")) {
             logger.warning("Invalid XBundle root element: " + root.getName());
             return;
         }
-
+        for (Element e : root.getChildren()) {
+            Attribute attr = e.getAttribute("id");
+            if (attr != null) {
+                String id = attr.getValue();
+                elementMap.put(id, e);
+                if (e.getName().equals("passage"))
+                    passageMap.put(id, PLACEHOLDER_TEXT_SOURCE);
+            }
+        }
     }
 
+    /**
+     * Return an appropriate TextSource implementation for a given passage element.
+     * @param e XML Element
+     * @return TextSource implementation
+     * @see ScriptSource
+     * @see StringSource
+     * @see TemplateSource
+     */
+    private TextSource elementTextSource(final Element e) {
+        // TODO: flesh out elementTextSource()
+        boolean isTemplate = isTemplateElement(e);
+        boolean isScript = isScriptElement(e);
+        if (isTemplate && isScript) {
+            logger.warning("XBundle passage " + e.getName() + " is trying to be a template *and* a script!");
+            return ERROR_TEXT_SOURCE;
+        }
+        if (isTemplate) {
+            return PLACEHOLDER_TEXT_SOURCE;
+        } else if (isScript) {
+            return PLACEHOLDER_TEXT_SOURCE;
+        } else { // a normal text passage
+            return new StringSource(formatText(e.getText()));
+        }
+    }
+
+    /** A template text source element must have both "template" and "id" attributes. */
+    private boolean isTemplateElement(final Element e) {
+        final Attribute templateAttr = e.getAttribute("template");
+        final Attribute idAttr = e.getAttribute("id");
+        // in the future we can check for the actual value of the template attribute, like "ftl"
+        return templateAttr != null && idAttr != null;
+    }
+
+    /** A script text source element must have a "script" attribute. */
+    private boolean isScriptElement(final Element e) {
+        final Attribute scriptAttr = e.getAttribute("script");
+        return scriptAttr != null;  // in the future we can check for the actual value, like "bsh"
+    }
+
+    /**
+     * Return the XML element with the given id attribute, or null if no such element exists.
+     */
     public Element getElement(String id) {
-        return null;
+        return elementMap.get(id);
     }
 
+    /**
+     * Return a TextSource of the passage with the given id attribute.
+     */
     public TextSource getPassage(String id) {
-        return null;
+        TextSource source = passageMap.get(id);
+        if (source == null) {
+            source = MISSING_TEXT_SOURCE;
+        } else if (source == PLACEHOLDER_TEXT_SOURCE) {
+            // We only construct the actual source the first time the passage is requested.
+            // The elementMap surely contains such an element because the id was in the passageMap.
+            source = elementTextSource(elementMap.get(id));
+            passageMap.put(id, source);  // and save it for next time
+        }
+        return source;
     }
 
     public char getEscapeChar() {
@@ -186,10 +284,12 @@ public final class XBundle
         return unescapeText(StringUtils.normalizeSpace(text));
     }
 
+    /*
     public static void main(String[] args) throws IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(args[0]));
         String text = new String(bytes, StandardCharsets.UTF_8);
         XBundle xb = new XBundle();
         System.out.print(xb.formatText(text));
     }
+    */
 }
