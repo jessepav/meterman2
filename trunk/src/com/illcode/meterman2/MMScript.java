@@ -5,15 +5,10 @@ import bsh.NameSpace;
 import bsh.This;
 
 /**
- * This class handles Meterman's interaction with a scripting engine, in our case
- * BeanShell. It:
- * <ul>
- *     <li>Manages the global {@link Interpreter}</li>
- *     <li>Parcels out {@link NameSpace}S as needed</li>
- *     <li>Instantiates new {@link This} scripted proxy objects</li>
- *     <li>{@link This#bind binds} those proxy objects back to the interpreter and parent
- *         namespace when they're deserialized</li>
- * </ul>
+ * This class handles Meterman's interaction with a scripting engine, in our case BeanShell.
+ * <p/>
+ * It is <em>not</em> thread-safe!
+ *
  */
 public final class MMScript
 {

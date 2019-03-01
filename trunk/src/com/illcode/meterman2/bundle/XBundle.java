@@ -107,17 +107,17 @@ public final class XBundle
      * @see TemplateSource
      */
     private TextSource elementTextSource(final Element e) {
-        // TODO: flesh out elementTextSource()
         boolean isTemplate = isTemplateElement(e);
         boolean isScript = isScriptElement(e);
         if (isTemplate && isScript) {
             logger.warning("XBundle passage " + e.getName() + " is trying to be a template *and* a script!");
             return ERROR_TEXT_SOURCE;
         }
+        // TODO: script and template sources
         if (isTemplate) {
-            return PLACEHOLDER_TEXT_SOURCE;
+            return new StringSource("[not yet implemented]");
         } else if (isScript) {
-            return PLACEHOLDER_TEXT_SOURCE;
+            return new StringSource("[not yet implemented]");
         } else { // a normal text passage
             return new StringSource(formatText(e.getText()));
         }
@@ -160,18 +160,32 @@ public final class XBundle
         return source;
     }
 
+    /** Get the escape character (by default '@') used to start escape sequences. */
     public char getEscapeChar() {
         return escapeChar;
     }
 
+    /** Set the escape character used to start escape sequences. */
     public void setEscapeChar(char escapeChar) {
         this.escapeChar = escapeChar;
     }
 
+    /**
+     * Get the paragraph style used by the <tt>@p</tt> escape sequence.
+     * @return paragraph style
+     * @see #PARAGRAPH_BLANK_LINE
+     * @see #PARAGRAPH_INDENTED
+     */
     public int getParagraphStyle() {
         return paragraphStyle;
     }
 
+    /**
+     * Set the paragraph style used by the <tt>@p</tt> escape sequence.
+     * @param paragraphStyle paragraph style
+     * @see #PARAGRAPH_BLANK_LINE
+     * @see #PARAGRAPH_INDENTED
+     */
     public void setParagraphStyle(int paragraphStyle) {
         this.paragraphStyle = paragraphStyle;
     }
