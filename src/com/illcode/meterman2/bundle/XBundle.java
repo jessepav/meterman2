@@ -45,8 +45,9 @@ public final class XBundle
     private static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
 
     private char escapeChar = '@';
+    private char spaceChar = '\u00AC';
     private int paragraphStyle = PARAGRAPH_BLANK_LINE;
-    private static final String INDENT = "    ";
+    private String indent = "    ";
 
     /**
      * Construct an XBundle by using an existing JDOM Document.
@@ -172,6 +173,26 @@ public final class XBundle
         this.escapeChar = escapeChar;
     }
 
+    /** Get the character used as a single-character escape sequence for a space. */
+    public char getSpaceChar() {
+        return spaceChar;
+    }
+
+    /** Set the character used as a single-character escape sequence for a space. */
+    public void setSpaceChar(char spaceChar) {
+        this.spaceChar = spaceChar;
+    }
+
+    /** Get the number of spaces that will be used to represent tabs and indents. */
+    public int getIndentLength() {
+        return indent.length();
+    }
+
+    /** Set the number of spaces that will be used to represent tabs and indents. */
+    public void setIndentLength(int len) {
+        indent = StringUtils.repeat(' ', len);
+    }
+
     /**
      * Get the paragraph style used by the <tt>@p</tt> escape sequence.
      * @return paragraph style
@@ -196,7 +217,8 @@ public final class XBundle
      * Expand embedded escape sequences in input text.
      * <p/>
      * Note that in the below table of escape sequences, we show the default escape character '@', but
-     * it may be changed by {@link #setEscapeChar(char)}.
+     * it may be changed by {@link #setEscapeChar(char)}; also, the single-character hard space escape
+     * is shown as its default, '¬' (U+00AC), but that too can be changed via a call to {@link #setSpaceChar(char)}.
      * <p/>
      * The escape sequences are:
      * <table border="1">
@@ -208,22 +230,21 @@ public final class XBundle
      *     </tr>
      *     <tr>
      *         <td>@p</td><td>Paragraph. Expands either to two newlines or to a newline
-     *                        and an indent, depending on the style of the text display.</td>
+     *                  and an indent, {@link #setParagraphStyle depending on the style} of the text display.</td>
      *     </tr>
      *     <tr>
-     *         <td>@t</td><td>"Tab" (actually just expands to 4 spaces)</td>
+     *         <td>@t</td><td>"Tab" (actually just expands to {@link #getIndentLength indentLength} spaces)</td>
      *     </tr>
      *     <tr>
-     *         <td>␣</td><td>(U+2423). A space. Even though the character isn't the easiest
-     *                        to type, it lets one align ASCII drawings or tables properly on the screen.
-     *                        Anyway, I hope game authors won't need to use hard spaces too often.</td>
+     *         <td>¬</td><td>(U+00AC by default). A space. Even though the default character isn't
+     *                the easiest to type, it lets one align ASCII drawings or tables properly on the
+     *                screen. Anyway, I hope game authors won't need to use hard spaces too often.</td>
      *     </tr>
      *     <tr>
      *         <td>@_</td><td>Also a space, easier to type</td>
      *     </tr>
      *     <tr>
-     *         <td>@␣</td><td>The Unicode Open Box character (U+2423), in case someone actually
-     *                         wants to use it</td>
+     *         <td>@¬</td><td>the space character itself (U+00AC by default)</td>
      *     </tr>
      *     <tr>
      *         <td>@@</td><td>The literal escape character (in this case '@').</td>
@@ -262,7 +283,7 @@ public final class XBundle
                 } else if (nextChar == 'p') {
                     switch (paragraphStyle) {
                     case PARAGRAPH_INDENTED:
-                        sb.append('\n').append(INDENT);
+                        sb.append('\n').append(indent);
                         break;
                     default:
                         sb.append("\n\n");
@@ -270,18 +291,18 @@ public final class XBundle
                     }
                     eatingWhitespace = true;
                 } else if (nextChar == 't') {
-                    sb.append(INDENT);
+                    sb.append(indent);
                 } else if (nextChar == '_' ) {
                     sb.append(' ');
-                } else if (nextChar == '\u2423') {  // the Unicode Open Box character
-                    sb.append('\u2423');
+                } else if (nextChar == spaceChar) {
+                    sb.append(spaceChar);
                 } else if (nextChar == escapeChar) {
                     sb.append(escapeChar);
                 } else {  // not a special escape sequence
                     sb.append(c).append(nextChar);
                 }
                 pos++;  // swallow the next character as well
-            } else if (c == '\u2423') {
+            } else if (c == spaceChar) {
                 sb.append(' ');
             } else {
                 sb.append(c);
