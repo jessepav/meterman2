@@ -1,6 +1,7 @@
 package com.illcode.meterman2;
 
 import bsh.*;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -145,24 +146,29 @@ public final class MMScript
             return bshMethod.getName();
         }
 
-        /** Invoke the method, passing a list of arguments. */
-        public Object invoke(Object... args) {
+        /**
+         * Invoke the method, passing a list of arguments.
+         * @param args arguments to the method
+         * @return a pair comprising the return value of the scripted method (as the "left" member of the pair),
+         *         and the string output emitted (as the "right" member of the pair)
+         */
+        public Pair<Object,String> invoke(Object... args) {
+            Object retval;
+            String output;
             try {
                 Object[] bshArgs = new Object[args.length];  // we need to wrap null values as Primitive.NULL
                 for (int i = 0; i < args.length; i++)
                     bshArgs[i] = args[i] == null ? Primitive.NULL : args[i];
-                return bshMethod.invoke(bshArgs, intr);
+                outputBuilder.setLength(0);
+                retval = bshMethod.invoke(bshArgs, intr);
+                output = outputBuilder.toString();
+                outputBuilder.setLength(0);
             } catch (EvalError err) {
                 logger.log(Level.WARNING, "MMScript error:", err);
-                return null;
+                retval = null;
+                output = null;
             }
-        }
-
-        public Object invokeAndGetOutput(StringBuilder out, Object... args) {
-            Object retVal = invoke(args);
-            out.append(outputBuilder);
-            outputBuilder.setLength(0);
-            return retVal;
+            return Pair.of(retval, output);
         }
     }
 }
