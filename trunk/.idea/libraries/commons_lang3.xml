@@ -5,6 +5,7 @@
     </CLASSES>
     <JAVADOC>
       <root url="file://$PROJECT_DIR$/../Common/expanded-javadoc/commons-lang3-3.4-javadoc" />
+      <root url="jar://$PROJECT_DIR$/../Common/docjars/commons-lang3-3.4-javadoc.jar!/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../Common/srcjars/commons-lang3-3.4-sources.jar!/" />

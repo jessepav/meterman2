@@ -1,4 +1,5 @@
-void out(String s) {
-    outputBuilder.append(s);
-}
+// bsh script to set up the system namespace
 
+void out(String text) {
+    outputBuilder.append(text);
+}

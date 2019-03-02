@@ -5,6 +5,7 @@
     </CLASSES>
     <JAVADOC>
       <root url="file://$PROJECT_DIR$/../Common/expanded-javadoc/jfd-loader-javadoc" />
+      <root url="jar://$PROJECT_DIR$/../Common/docjars/jfd-loader-javadoc.zip!/" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/../Common/srcjars/jfd-loader-src.zip!/" />
