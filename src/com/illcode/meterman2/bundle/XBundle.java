@@ -111,14 +111,13 @@ public final class XBundle
         boolean isTemplate = isTemplateElement(e);
         boolean isScript = isScriptElement(e);
         if (isTemplate && isScript) {
-            logger.warning("XBundle passage " + e.getName() + " is trying to be a template *and* a script!");
+            logger.warning("XBundle element " + e.toString() + " is trying to be a template *and* a script!");
             return ERROR_TEXT_SOURCE;
         }
-        // TODO: script sources
         if (isTemplate) {
             return new TemplateSource(e.getAttributeValue("id"), e.getText(), this);
         } else if (isScript) {
-            return new StringSource("[not yet implemented]");
+            return new ScriptSource(e.getAttributeValue("id"), e.getText(), this);
         } else { // a normal text passage
             return new StringSource(formatText(e.getText()));
         }

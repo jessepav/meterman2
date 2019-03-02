@@ -73,7 +73,7 @@ public final class MMScript
     }
 
     private void initSystemNameSpace() {
-        StringBuilder outputBuilder = new StringBuilder(1024);
+        outputBuilder = new StringBuilder(1024);
         try {
             intr.set("outputBuilder", outputBuilder);
             intr.eval(Utils.getStringResource("bsh/system-script.bsh"));
@@ -164,9 +164,9 @@ public final class MMScript
                 output = outputBuilder.toString();
                 outputBuilder.setLength(0);
             } catch (EvalError err) {
-                logger.log(Level.WARNING, "MMScript error:", err);
                 retval = null;
-                output = null;
+                output = "MMScript error: " + err.getMessage();
+                logger.warning(output);
             }
             return Pair.of(retval, output);
         }

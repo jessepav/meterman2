@@ -1,6 +1,7 @@
 .idea
 assets\meterman2
 assets-src\meterman2
+classloader-resources
 config
 doc
 forms
