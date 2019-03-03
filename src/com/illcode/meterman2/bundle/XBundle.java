@@ -213,6 +213,7 @@ public final class XBundle
         this.paragraphStyle = paragraphStyle;
     }
 
+    // @formatter:off
     /**
      * Expand embedded escape sequences in input text.
      * <p/>
@@ -258,6 +259,7 @@ public final class XBundle
      * @param text text to unescape
      * @return unescaped text
      */
+    // @formatter:on
     public String unescapeText(final String text) {
         final int len = text.length();
         if (len < 2)
