@@ -23,9 +23,8 @@ import static com.illcode.meterman2.MMLogging.logger;
  * Only one piece of music may be playing at a time, while multiple (up to the number of system sound channels)
  * sounds can be played simultaneously.
  */
-public class SoundManager
+public class MMSound
 {
-    private boolean initialized;
     private boolean musicEnabled, soundEnabled;
 
     private SoundSystem soundSystem;
@@ -40,12 +39,9 @@ public class SoundManager
     private String musicSource;
 
     /**
-     * Initialize the sound manager, starting any threads it may use.
+     * Create an instance of the sound manager, starting any threads it may use.
      */
-    public void init() {
-        if (initialized)
-            return;
-
+    MMSound() {
         Class<?> libraryType;
         String soundPref = Utils.getPref("sound-library");
         if (soundPref == null) {  // we do auto-selection
@@ -67,29 +63,22 @@ public class SoundManager
             SoundSystemConfig.setCodec("wav", CodecWav.class);
             SoundSystemConfig.setCodec("ogg", CodecJOrbis.class);
             soundSystem = new SoundSystem(libraryType);
-            logger.info("SoundManager using SoundSystem class " + libraryType.getName());
+            logger.info("MMSound using SoundSystem class " + libraryType.getName());
         } catch (SoundSystemException ex) {
-            logger.log(Level.WARNING, "SoundManager.init()", ex);
+            logger.log(Level.WARNING, "MMSound.init()", ex);
         }
 
         loadedSounds = new HashSet<>();
         loadedSources = new HashSet<>();
         musicSource = null;
-
-        initialized = true;
     }
 
     /**
      * Dispose of resources allocated during initialization, and stop any extra threads.
      */
-    public void dispose() {
-        if (!initialized)
-            return;
-
+    void dispose() {
         clearAudio();
         soundSystem.cleanup();
-
-        initialized = false;
     }
 
     /**
@@ -132,7 +121,7 @@ public class SoundManager
 
     /**
      * Loads music from a file
-     * @param name the name by which the music will be referred by this SoundManager. This name
+     * @param name the name by which the music will be referred by this MMSound. This name
      *      should have an extension (ex. ".ogg") indicating the type of audio data that will be loaded.
      * @param p the Path to load music from
      */
@@ -144,7 +133,7 @@ public class SoundManager
                 true, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
             loadedSources.add(name);
         } catch (MalformedURLException e) {
-            logger.warning("SoundManager: Malformed URL for Path " + p.toString());
+            logger.warning("MMSound: Malformed URL for Path " + p.toString());
         }
     }
 
@@ -185,7 +174,7 @@ public class SoundManager
     }
 
     /**
-     * Unloads Music previously loaded by this SoundManager
+     * Unloads Music previously loaded by this MMSound
      * @param name the name under which the audio was loaded
      */
     public void unloadMusic(String name) {
@@ -211,7 +200,7 @@ public class SoundManager
 
     /**
      * Loads a Sound from a file
-     * @param name the name by which the sound will be referred by this SoundManager. This name
+     * @param name the name by which the sound will be referred by this MMSound. This name
      *      should have an extension (ex. ".wav") indicating the type of audio data that will be loaded.
      * @param p the Path to load sound from
      */
@@ -225,7 +214,7 @@ public class SoundManager
                     false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
                 loadedSources.add(name);
             } catch (MalformedURLException e) {
-                logger.warning("SoundManager: Malformed URL for Path " + p.toString());
+                logger.warning("MMSound: Malformed URL for Path " + p.toString());
             }
         }
     }
@@ -241,7 +230,7 @@ public class SoundManager
     }
 
     /**
-     * Unloads a Sound previously loaded by this SoundManager
+     * Unloads a Sound previously loaded by this MMSound
      * @param name the name under which the sound was loaded
      */
     public void unloadSound(String name) {

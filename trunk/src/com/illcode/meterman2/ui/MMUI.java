@@ -43,10 +43,7 @@ public final class MMUI
 
     UIHandler handler;
 
-    public MMUI() {
-    }
-
-    public void init(UIHandler handler) {
+    public MMUI(UIHandler handler) {
         this.handler = handler;
         roomEntityIds = new ArrayList<>(16);
         inventoryEntityIds = new ArrayList<>(16);
