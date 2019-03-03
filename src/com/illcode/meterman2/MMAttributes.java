@@ -12,16 +12,30 @@ import java.util.List;
  */
 public class MMAttributes
 {
-    private BitSet attributeSet;
-
     private List<String> attributeNames;
 
     private int nextAttrNum;
     private int numSystemAttributes;
 
     public MMAttributes() {
-        attributeSet = new BitSet();
+        nextAttrNum = numSystemAttributes = 0;
         attributeNames = new ArrayList<>(32);
+    }
+
+    /**
+     * Register an attribute.
+     * @param name attribute name
+     * @return integer attribute number
+     */
+    public int registerAttribute(String name) {
+        attributeNames.add(name);
+        return nextAttrNum++;
+    }
+
+    /** Clear all registered attributes. */
+    public void clear() {
+        attributeNames.clear();
+        nextAttrNum = numSystemAttributes = 0;
     }
 
     /**
@@ -38,7 +52,66 @@ public class MMAttributes
      * {@link #markSystemAttributesDone()} was called.
      */
     void clearGameAttributes() {
-
+        while (nextAttrNum > numSystemAttributes)
+            attributeNames.remove(--nextAttrNum);
     }
 
+    /** Return the name for a given attribute number. */
+    public String nameForAttribute(int attrNum) {
+        if (attrNum < attributeNames.size())
+            return attributeNames.get(attrNum);
+        else
+            return "[invalid attribute number]";
+    }
+
+    /** Return the attribute number for a given name, or -1 if no such name exists. */
+    public int attributeForName(String name) {
+        return attributeNames.indexOf(name);
+    }
+
+    /**
+     * A set of attributes to be associated with a game object.
+     */
+    public static class AttributeSet
+    {
+        private BitSet bits;
+
+        /** Create an empty AttributeSet. */
+        public AttributeSet() {
+            bits = new BitSet();
+        }
+
+        /** Return true if this AttributeSet has a given attribute set. */
+        public boolean get(int attrNum) {
+            return bits.get(attrNum);
+        }
+
+        /** Set an attribute to true. */
+        public void set(int attrNum) {
+            bits.set(attrNum);
+        }
+
+        /** Set an attribute to the given value. */
+        public void set(int attrNum, boolean value) {
+            bits.set(attrNum, value);
+        }
+
+        /** Set multiple attributes to true.*/
+        public void setMultiple(int... attributes) {
+            for (int j : attributes)
+                bits.set(j);
+        }
+
+        /** Clear all attributes. */
+        public void clear() {
+            bits.clear();
+        }
+
+        /** Return a new AttributeSet that is a copy of the given set. */
+        public AttributeSet copyOf(AttributeSet set) {
+            AttributeSet newSet = new AttributeSet();
+            newSet.bits = (BitSet) set.bits.clone();
+            return newSet;
+        }
+    }
 }
