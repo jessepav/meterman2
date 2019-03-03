@@ -1,16 +1,13 @@
 package com.illcode.meterman2.ui;
 
-import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import static com.illcode.meterman2.MMLogging.logger;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -24,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MainFrame implements ActionListener, ListSelectionListener
 {
@@ -63,7 +62,7 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     DefaultListModel<String> roomListModel, inventoryListModel;
 
     private BufferedImage frameImage, entityImage;
-    private List<String> actions;
+    private List<Action> actions;
 
     private boolean suppressValueChanged;
 
@@ -303,25 +302,25 @@ public final class MainFrame implements ActionListener, ListSelectionListener
         moreActionCombo.addItem("More...");
     }
 
-    public void addAction(String actionLabel) {
-        if (actions.contains(actionLabel))
+    public void addAction(Action action) {
+        if (actions.contains(action))
             return;
-        actions.add(actionLabel);
-        int n = actions.size();
+        actions.add(action);
+        final int n = actions.size();
         if (n <= NUM_ACTION_BUTTONS) {
             JButton b = actionButtons[n - 1];
-            b.setText(actionLabel);
+            b.setText(action.getText());
             b.setVisible(true);
         } else {
             moreActionCombo.setVisible(true);
-            moreActionCombo.addItem(actionLabel);
+            moreActionCombo.addItem(action.getText());
         }
     }
 
-    public void removeAction(String actionLabel) {
-        if (actions.remove(actionLabel)) {
+    public void removeAction(Action action) {
+        if (actions.remove(action)) {
             clearActions();
-            for (String a : actions)
+            for (Action a : actions)
                 addAction(a);
         }
     }
@@ -337,11 +336,11 @@ public final class MainFrame implements ActionListener, ListSelectionListener
         } else if ((buttonIdx = ArrayUtils.indexOf(exitButtons, source)) != -1) {
             ui.handler.exitSelected(buttonIdx);
         } else if ((buttonIdx = ArrayUtils.indexOf(actionButtons, source)) != -1) {
-            ui.handler.entityActionSelected(actionButtons[buttonIdx].getText());
+            ui.handler.entityActionSelected(actions.get(buttonIdx));
         } else if (source == moreActionCombo) {
             int idx = moreActionCombo.getSelectedIndex();
             if (idx > 0)   // index 0 is "More..."
-                ui.handler.entityActionSelected(moreActionCombo.getItemAt(idx));
+                ui.handler.entityActionSelected(actions.get(idx - 1 + NUM_ACTION_BUTTONS));
         } else if (source == newMenuItem) {
             String gameName = Utils.getPref("single-game-name");
             if (gameName == null)
@@ -418,14 +417,14 @@ public final class MainFrame implements ActionListener, ListSelectionListener
             suppressValueChanged = true;
             inventoryList.clearSelection();
             suppressValueChanged = false;
-            String id = ui.roomEntityIds.get(roomList.getSelectedIndex());
-            ui.handler.entitySelected(id);
+            int idx = roomList.getSelectedIndex();
+            ui.handler.entitySelected(idx == -1 ? null : ui.roomEntityIds.get(idx));
         } else if (source == inventoryList) {
             suppressValueChanged = true;
             roomList.clearSelection();
             suppressValueChanged = false;
-            String id = ui.inventoryEntityIds.get(inventoryList.getSelectedIndex());
-            ui.handler.entitySelected(id);
+            int idx = inventoryList.getSelectedIndex();
+            ui.handler.entitySelected(idx == -1 ? null : ui.inventoryEntityIds.get(idx));
         }
     }
 
@@ -485,18 +484,18 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     {
         private JList<String> entityList;
         private DefaultListModel<String> entityListModel;
-        private List<String> actionsList;
+        private List<Action> actionsList;
         private String header, prompt;
 
         private SelectItemAction(JList<String> entityList, DefaultListModel<String> entityListModel,
-            String header, String prompt) {
+                                 String header, String prompt) {
             this.entityList = entityList;
             this.entityListModel = entityListModel;
             this.header = header;
             this.prompt = prompt;
         }
 
-        private SelectItemAction(List<String> actionsList, String header, String prompt) {
+        private SelectItemAction(List<Action> actionsList, String header, String prompt) {
             this.actionsList = actionsList;
             this.header = header;
             this.prompt = prompt;

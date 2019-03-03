@@ -52,7 +52,7 @@ public class MMHandler implements UIHandler
 
     }
 
-    public void entityActionSelected(String action) {
+    public void entityActionSelected(MMActions.Action action) {
 
     }
 
