@@ -24,11 +24,11 @@ public class MMAttributes
 
     /**
      * Register an attribute.
-     * @param name attribute name
+     * @param name attribute name, case insensitive.
      * @return integer attribute number
      */
     public int registerAttribute(String name) {
-        attributeNames.add(name);
+        attributeNames.add(name.toLowerCase());
         return nextAttrNum++;
     }
 
@@ -64,9 +64,9 @@ public class MMAttributes
             return "[invalid attribute number]";
     }
 
-    /** Return the attribute number for a given name, or -1 if no such name exists. */
+    /** Return the attribute number for a given name (case insensitive), or -1 if no such name exists. */
     public int attributeForName(String name) {
-        return attributeNames.indexOf(name);
+        return attributeNames.indexOf(name.toLowerCase());
     }
 
     /**

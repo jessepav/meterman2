@@ -21,14 +21,17 @@ public final class Meterman2
     /** The MMAssets instance handling the game assets. */
     public static MMAssets assets;
 
-    /** The MMUI displaying the current game */
+    /** The MMUI instance displaying the current game */
     public static MMUI ui;
 
-    /** The SoundManager handling the game's sound and music playback. */
-    public static SoundManager sound;
+    /** The MMSound instance handling the game's sound and music playback. */
+    public static MMSound sound;
 
     /** MMActions instance in which system and game actions are registered. */
     public static MMActions actions;
+
+    /** MMAttributes instance in which system and game attributes are registered. */
+    public static MMAttributes attributes;
 
     /** MMTemplate instance responsible for rendering template text sources. */
     public static MMTemplate template;
@@ -70,29 +73,30 @@ public final class Meterman2
         actions = new MMActions();
         SystemActions.init();
 
+        attributes = new MMAttributes();
+        SystemAttributes.init();
+
         template = new MMTemplate();
         script = new MMScript();
 
-        sound = new SoundManager();
-        sound.init();
+        sound = new MMSound();
         sound.setSoundEnabled(Utils.booleanPref("sound-enabled", true));
         sound.setMusicEnabled(Utils.booleanPref("music-enabled", true));
 
         uiHandler = new MMHandler();
-        ui = new MMUI();
-        ui.init(uiHandler);
+        ui = new MMUI(uiHandler);
         ui.show();
     }
 
     /** Called when the program is shutting down. */
     public static void shutdown() {
         logger.info("Meterman shutting down...");
-        //persistence.dispose();
+        //gm.dispose();
         ui.dispose();
+        //persistence.dispose();
         sound.dispose();
         script.dispose();
         template.dispose();
-        //gm.dispose();
         assets.dispose();
         savePrefs(prefsPath);
     }

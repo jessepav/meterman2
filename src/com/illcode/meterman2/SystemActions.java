@@ -2,7 +2,7 @@ package com.illcode.meterman2;
 
 import static com.illcode.meterman2.MMActions.Action;
 
-public class SystemActions
+public final class SystemActions
 {
     public static Action LOOK;
     public static Action WAIT;
