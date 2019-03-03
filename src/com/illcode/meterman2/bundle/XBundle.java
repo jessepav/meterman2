@@ -54,6 +54,7 @@ public final class XBundle
      * @param doc JDOM Document having a {@code <passage>} element as its root.
      */
     public XBundle(Document doc) {
+        this();
         this.doc = doc;
         initMaps();
     }
@@ -63,6 +64,7 @@ public final class XBundle
      * @param p path of the XML document
      */
     public XBundle(Path p) {
+        this();
         try {
             SAXBuilder sax = new SAXBuilder();
             this.doc = sax.build(p.toFile());
@@ -72,13 +74,12 @@ public final class XBundle
         }
     }
 
-    // Used only for testing
     private XBundle() {
+        elementMap = new HashMap<>(200);
+        passageMap = new HashMap<>(100);
     }
 
     private void initMaps() {
-        elementMap = new HashMap<>(200);
-        passageMap = new HashMap<>(100);
         if (!doc.hasRootElement()) {
             logger.warning("XBundle document has no root element.");
             return;
@@ -107,7 +108,7 @@ public final class XBundle
      * @see StringSource
      * @see TemplateSource
      */
-    private TextSource elementTextSource(final Element e) {
+    public TextSource elementTextSource(final Element e) {
         boolean isTemplate = isTemplateElement(e);
         boolean isScript = isScriptElement(e);
         if (isTemplate && isScript) {
@@ -312,9 +313,9 @@ public final class XBundle
     }
 
     /**
-     * Normalize and expand escape sequences in text.
-     * @param text text to process
-     * @return processed text
+     * Normalize and expand escape sequences in text, according to the settings of this XBundle.
+     * @param text text to format
+     * @return formatted text
      */
     public String formatText(final String text) {
         return unescapeText(StringUtils.normalizeSpace(text));
