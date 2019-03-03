@@ -47,12 +47,21 @@ public class SoundManager
             return;
 
         Class<?> libraryType;
-        if (SoundSystem.libraryCompatible(LibraryJOAL.class))
+        String soundPref = Utils.getPref("sound-library");
+        if (soundPref == null) {  // we do auto-selection
+            if (SoundSystem.libraryCompatible(LibraryJOAL.class))
+                libraryType = LibraryJOAL.class;
+            else if (SoundSystem.libraryCompatible(LibraryJavaSound.class))
+                libraryType = LibraryJavaSound.class;
+            else
+                libraryType = Library.class;
+        } else if (soundPref.equals("joal")) {
             libraryType = LibraryJOAL.class;
-        else if (SoundSystem.libraryCompatible(LibraryJavaSound.class))
+        } else if (soundPref.equals("javasound")) {
             libraryType = LibraryJavaSound.class;
-        else
+        } else {
             libraryType = Library.class;
+        }
 
         try {
             SoundSystemConfig.setCodec("wav", CodecWav.class);
