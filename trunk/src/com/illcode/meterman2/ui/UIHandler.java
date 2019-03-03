@@ -1,5 +1,6 @@
 package com.illcode.meterman2.ui;
 
+import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.model.Game;
 
 import java.io.InputStream;
@@ -49,15 +50,15 @@ public interface UIHandler
 
     /**
      * Called when the user selects an item from the room or inventory entity lists.
-     * @param id entity ID of selected item
+     * @param id entity ID of selected item, or null if the selection was cleared
      */
     void entitySelected(String id);
 
     /**
      * Called when an entity action is selected.
-     * @param action action name
+     * @param action action
      */
-    void entityActionSelected(String action);
+    void entityActionSelected(Action action);
 
     /**
      * Called when an exit button is selected.

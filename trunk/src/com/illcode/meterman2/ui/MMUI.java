@@ -2,9 +2,8 @@ package com.illcode.meterman2.ui;
 
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
+import com.illcode.meterman2.MMActions.Action;
 import org.apache.commons.lang3.text.WordUtils;
-
-import static com.illcode.meterman2.MMLogging.logger;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -20,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMUI
 {
@@ -440,20 +441,20 @@ public final class MMUI
     }
 
     /**
-     * Add an action to the action button list. If an action with the same label is already shown,
+     * Add an action to the action button list. If the action is already present,
      * this method will return without any effect.
-     * @param actionLabel action to add
+     * @param action action to add
      */
-    public void addAction(String actionLabel) {
-        mainFrame.addAction(actionLabel);
+    public void addAction(Action action) {
+        mainFrame.addAction(action);
     }
 
     /**
      * Removes an action from the action button list.
-     * @param actionLabel action to remove
+     * @param action action to remove
      */
-    public void removeAction(String actionLabel) {
-        mainFrame.removeAction(actionLabel);
+    public void removeAction(Action action) {
+        mainFrame.removeAction(action);
     }
 
     /**
