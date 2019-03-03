@@ -1,5 +1,7 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMAttributes.AttributeSet;
+
 /**
  * The "interface" through which the game system and UI interacts with entities.
  * <p/>
@@ -9,4 +11,15 @@ package com.illcode.meterman2.model;
  */
 public class Entity
 {
+    public AttributeSet getAttributes() {
+        return null;
+    }
+
+    public String getName() {
+        return null;
+    }
+
+    public String getIndefiniteArticle() {
+        return null;
+    }
 }
