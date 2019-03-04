@@ -12,6 +12,9 @@ public final class MMActions
     private int numSystemActions;
 
     MMActions() {
+    }
+
+    void dispose() {
         clear();
     }
 

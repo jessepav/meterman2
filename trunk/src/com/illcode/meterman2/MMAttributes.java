@@ -17,9 +17,12 @@ public class MMAttributes
     private int nextAttrNum;
     private int numSystemAttributes;
 
-    public MMAttributes() {
-        nextAttrNum = numSystemAttributes = 0;
+    MMAttributes() {
         attributeNames = new ArrayList<>(32);
+    }
+
+    void dispose() {
+        clear();
     }
 
     /**
