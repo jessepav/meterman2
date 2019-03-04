@@ -4,13 +4,11 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
-import de.javakaffee.kryoserializers.RegexSerializer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.regex.Pattern;
 
 /**
  * Handles serialization and deserialization of game state.
@@ -21,10 +19,13 @@ public final class KryoPersistence
 
     public KryoPersistence() {
         kryo = new Kryo();
+
         // My serializers
         kryo.register(BitSet.class, new BitSetSerializer());
+
         // Serializers from kryo-serializers
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
+
         // properly serialize multiple references and cyclic graphs
         kryo.setReferences(true);
     }
