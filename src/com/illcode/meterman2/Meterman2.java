@@ -1,5 +1,6 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.state.KryoPersistence;
 import com.illcode.meterman2.ui.MMUI;
 
 import java.io.FileReader;
@@ -39,6 +40,12 @@ public final class Meterman2
     /** MMScript instance that handles our scripting needs. */
     public static MMScript script;
 
+    /** Package-local KryoPersistence instance used for saving and loading game state. */
+    static KryoPersistence persistence;
+
+    /** GameManager instance running the current game. */
+    public static GameManager gm;
+
     private static MMHandler uiHandler;
 
     public static void main(String[] args) throws IOException {
@@ -69,20 +76,17 @@ public final class Meterman2
         assets = new MMAssets();
         assets.setAssetsPath(assetsPath);
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
-
         actions = new MMActions();
         SystemActions.init();
-
         attributes = new MMAttributes();
         SystemAttributes.init();
-
         template = new MMTemplate();
         script = new MMScript();
-
         sound = new MMSound();
         sound.setSoundEnabled(Utils.booleanPref("sound-enabled", true));
         sound.setMusicEnabled(Utils.booleanPref("music-enabled", true));
-
+        persistence = new KryoPersistence();
+        gm = new GameManager();
         uiHandler = new MMHandler();
         ui = new MMUI(uiHandler);
         ui.show();
@@ -91,12 +95,14 @@ public final class Meterman2
     /** Called when the program is shutting down. */
     public static void shutdown() {
         logger.info("Meterman shutting down...");
-        //gm.dispose();
         ui.dispose();
-        //persistence.dispose();
+        gm.dispose();
+        persistence.dispose();
         sound.dispose();
         script.dispose();
         template.dispose();
+        attributes.dispose();
+        actions.dispose();
         assets.dispose();
         savePrefs(prefsPath);
     }
