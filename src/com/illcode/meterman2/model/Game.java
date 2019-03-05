@@ -1,5 +1,7 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.event.GameEventHandler;
+
 import java.util.Map;
 
 /**
@@ -45,6 +47,15 @@ public interface Game
      * scripting namespace and template data model.
      */
     Map<String,Object> getGameStateObjects();
+
+    /**
+     * Returns the handler with a given ID. This method is used upon loading a game, so that the
+     * engine can query the game for listeners by id and add them again, rather than having to
+     * serialize the handler instances themselves.
+     * @param id handler id as returned by {@link GameEventHandler#getId()}.
+     * @return an instance of the corresponding handler
+     */
+    GameEventHandler getEventHandler(String id);
 
     /** Called when the user selects "About..." in the UI  */
     void about();
