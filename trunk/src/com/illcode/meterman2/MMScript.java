@@ -104,6 +104,19 @@ public final class MMScript
     }
 
     /**
+     * Evaluates a script in the context of the game namespace. Games can call this method
+     * to populate the parent namespace of all game scripts with utility methods, etc.
+     * @param source script source
+     */
+    public void evalGameScript(String source) {
+        try {
+            intr.eval(source, gameNameSpace);
+        } catch (EvalError err) {
+            logger.log(Level.WARNING, "MMScript error:", err);
+        }
+    }
+
+    /**
      * Evaluate a script and retrieve methods declared in it.
      * <p/>
      * NOTE: scripted methods should not use primitive types in their parameter lists; instead,
