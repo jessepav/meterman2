@@ -38,11 +38,11 @@ public final class XBundle
     // Used to indicate a passage exists but hasn't yet been parsed.
     private static final TextSource PLACEHOLDER_TEXT_SOURCE = new StringSource("[placeholder]");
 
-    // Returned if a passage is requested that doesn't exist.
-    private static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
+    /** Returned if a passage is requested that doesn't exist.*/
+    public static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
 
-    // Returned if a passage has some sort of error.
-    private static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
+    /** Returned if a passage has some sort of error. */
+    public static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
 
     private char escapeChar = '@';
     private char spaceChar = '\u00AC';
@@ -148,7 +148,8 @@ public final class XBundle
     }
 
     /**
-     * Return a TextSource of the passage with the given id attribute.
+     * Return a TextSource of the passage with the given id attribute. If no such
+     * passage exists, return {@link #MISSING_TEXT_SOURCE}.
      */
     public TextSource getPassage(String id) {
         TextSource source = passageMap.get(id);
