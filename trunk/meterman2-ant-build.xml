@@ -67,8 +67,20 @@
     <pathelement location="${basedir}/lib/commons-codec-1.11.jar"/>
   </path>
   
+  <path id="library.commons-collections4.classpath">
+    <pathelement location="${basedir}/lib/commons-collections4-4.2.jar"/>
+  </path>
+  
+  <path id="library.commons-io.classpath">
+    <pathelement location="${basedir}/lib/commons-io-2.6.jar"/>
+  </path>
+  
   <path id="library.commons-lang3.classpath">
     <pathelement location="${basedir}/lib/commons-lang3-3.4.jar"/>
+  </path>
+  
+  <path id="library.freemarker-2.3.28.classpath">
+    <pathelement location="${basedir}/lib/freemarker-2.3.28.jar"/>
   </path>
   
   <path id="library.jdom.classpath">
@@ -86,6 +98,9 @@
   </path>
   
   <path id="library.joal.classpath">
+    <pathelement location="${basedir}/lib/gluegen-rt-natives-windows-amd64.jar"/>
+    <pathelement location="${basedir}/lib/gluegen-rt-natives-windows-i586.jar"/>
+    <pathelement location="${basedir}/lib/gluegen-rt.jar"/>
     <pathelement location="${basedir}/lib/joal-natives-windows-amd64.jar"/>
     <pathelement location="${basedir}/lib/joal-natives-windows-i586.jar"/>
     <pathelement location="${basedir}/lib/joal.jar"/>
@@ -93,7 +108,7 @@
   
   <path id="library.kryo.classpath">
     <pathelement location="${basedir}/lib/kryo-4.0.2.jar"/>
-    <pathelement location="${basedir}/lib/kryo-serializers-0.42.jar"/>
+    <pathelement location="${basedir}/lib/kryo-serializers-0.43.jar"/>
     <pathelement location="${basedir}/lib/minlog-1.3.0.jar"/>
     <pathelement location="${basedir}/lib/objenesis-2.1.jar"/>
     <pathelement location="${basedir}/lib/reflectasm-1.10.1-shaded.jar"/>
@@ -104,6 +119,7 @@
     <pathelement location="${basedir}/lib/CodecJOrbis.jar"/>
     <pathelement location="${basedir}/lib/CodecWav.jar"/>
     <pathelement location="${basedir}/lib/LibraryJOAL.jar"/>
+    <pathelement location="${basedir}/lib/LibraryJavaSound.jar"/>
     <pathelement location="${basedir}/lib/SoundSystem.jar"/>
   </path>
   
@@ -135,6 +151,9 @@
     <path refid="library.kryo.classpath"/>
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
+    <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
+    <path refid="library.commons-io.classpath"/>
   </path>
   
   <path id="meterman2.runtime.production.module.classpath">
@@ -148,6 +167,9 @@
     <path refid="library.kryo.classpath"/>
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
+    <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
+    <path refid="library.commons-io.classpath"/>
   </path>
   
   <path id="meterman2.module.classpath">
@@ -161,6 +183,9 @@
     <path refid="library.kryo.classpath"/>
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
+    <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
+    <path refid="library.commons-io.classpath"/>
   </path>
   
   <path id="meterman2.runtime.module.classpath">
@@ -175,6 +200,9 @@
     <path refid="library.kryo.classpath"/>
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
+    <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
+    <path refid="library.commons-io.classpath"/>
   </path>
   
   
@@ -190,6 +218,7 @@
     <dirset dir="${module.meterman2.basedir}">
       <include name="src"/>
       <include name="forms"/>
+      <include name="classloader-resources"/>
     </dirset>
   </path>
   
@@ -211,8 +240,12 @@
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
+      <fileset dir="${module.meterman2.basedir}/classloader-resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
     </copy>
-    <copy todir="${meterman2.output.dir}/com/illcode/meterman2/swingui">
+    <copy todir="${meterman2.output.dir}/com/illcode/meterman2/ui">
       <fileset dir="${module.meterman2.basedir}/forms">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
@@ -227,13 +260,101 @@
     <delete dir="${meterman2.testoutput.dir}"/>
   </target>
   
+  
+  <!-- Module riverboat -->
+  
+  <dirname property="module.riverboat.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.riverboat" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="riverboat.output.dir" value="${module.riverboat.basedir}/build/production/riverboat"/>
+  <property name="riverboat.testoutput.dir" value="${module.riverboat.basedir}/build/test/riverboat"/>
+  
+  <path id="riverboat.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="riverboat.module.production.classpath">
+    <pathelement location="${meterman2.output.dir}"/>
+    <path refid="library.beanshell2.classpath"/>
+    <path refid="library.commons-lang3.classpath"/>
+    <path refid="library.jdom.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
+  </path>
+  
+  <path id="riverboat.runtime.production.module.classpath">
+    <pathelement location="${riverboat.output.dir}"/>
+    <path refid="meterman2.runtime.production.module.classpath"/>
+  </path>
+  
+  <path id="riverboat.module.classpath">
+    <pathelement location="${riverboat.output.dir}"/>
+    <pathelement location="${meterman2.testoutput.dir}"/>
+    <pathelement location="${meterman2.output.dir}"/>
+    <path refid="library.beanshell2.classpath"/>
+    <path refid="library.commons-lang3.classpath"/>
+    <path refid="library.jdom.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
+  </path>
+  
+  <path id="riverboat.runtime.module.classpath">
+    <pathelement location="${riverboat.testoutput.dir}"/>
+    <pathelement location="${riverboat.output.dir}"/>
+    <path refid="meterman2.runtime.module.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.riverboat">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.riverboat">
+    <patternset refid="excluded.from.module.riverboat"/>
+  </patternset>
+  
+  <path id="riverboat.module.sourcepath">
+    <dirset dir="${module.riverboat.basedir}/games/riverboat">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.riverboat" depends="compile.module.riverboat.production,compile.module.riverboat.tests" description="Compile module riverboat"/>
+  
+  <target name="compile.module.riverboat.production" depends="compile.module.meterman2" description="Compile module riverboat; production classes">
+    <mkdir dir="${riverboat.output.dir}"/>
+    <javac destdir="${riverboat.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.riverboat}"/>
+      <bootclasspath refid="riverboat.module.bootclasspath"/>
+      <classpath refid="riverboat.module.production.classpath"/>
+      <src refid="riverboat.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.riverboat"/>
+    </javac>
+    
+    <copy todir="${riverboat.output.dir}">
+      <fileset dir="${module.riverboat.basedir}/games/riverboat/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.riverboat.tests" depends="compile.module.riverboat.production" description="compile module riverboat; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.riverboat" description="cleanup module">
+    <delete dir="${riverboat.output.dir}"/>
+    <delete dir="${riverboat.testoutput.dir}"/>
+  </target>
+  
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.meterman2" description="cleanup all"/>
+  <target name="clean" depends="clean.module.meterman2, clean.module.riverboat" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.meterman2" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.meterman2, compile.module.riverboat" description="build all modules"/>
   
   <target name="all" depends="build.modules" description="build all"/>
 </project>
