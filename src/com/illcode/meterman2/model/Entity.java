@@ -1,8 +1,12 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMAttributes.AttributeSet;
+import static com.illcode.meterman2.model.EntityImplMethods.*;
 
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The "interface" through which the game system and UI interacts with entities.
@@ -13,7 +17,26 @@ import java.util.List;
  */
 public class Entity
 {
-    private EntityImpl impl;
+    protected String id;
+    protected EntityImpl impl;
+
+    private EntityImpl delegate;
+    private EnumSet<EntityImplMethods> delegateMethods;
+
+    protected Entity(String id, EntityImpl impl) {
+        this.id = id;
+        this.impl = impl;
+    }
+
+    /** Create an entity with the given ID and a basic implemention. */
+    public static Entity create(String id) {
+        return create(id, new BaseEntityImpl());
+    }
+
+    /** Create an entity with the given ID and implemention. */
+    public static Entity create(String id, EntityImpl impl) {
+        return new Entity(id, impl);
+    }
 
     /** Return the entity implementation instance used by this Entity. */
     public EntityImpl getImpl() {
@@ -25,25 +48,45 @@ public class Entity
         this.impl = impl;
     }
 
+    /**
+     * Set a delegate to which certain methods will be forwarded. This exists primarily to support
+     * scripted methods, but may find other uses, such as consolidating logic for multiple entities in one
+     * "manager" class.
+     * @param delegate the delegate implementation
+     * @param delegateMethods a set indicating which methods should be forwarded
+     */
+    public void setDelegate(EntityImpl delegate, EnumSet<EntityImplMethods> delegateMethods) {
+        this.delegate = delegate;
+        this.delegateMethods = delegateMethods;
+    }
+
+    /** Return the unique ID of this entity. */
+    public String getId() {
+        return id;
+    }
+
     /** Return this entity's attributes. */
     public AttributeSet getAttributes() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_ATTRIBUTES))
+            return delegate.getAttributes(this);
+        else
+            return impl.getAttributes(this);
     }
 
     /** Return the name of this entity */
     public String getName() {
-        return null;
-    }
-
-    /** Return the indefinite article to be used when referring to this entity.
-     *  A null return value causes the system to make its best guess. */
-    public String getIndefiniteArticle() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_NAME))
+            return delegate.getName(this);
+        else
+            return impl.getName(this);
     }
 
     /** Return the entity description. */
     public String getDescription() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+            return delegate.getDescription(this);
+        else
+            return impl.getDescription(this);
     }
 
     /**
@@ -52,7 +95,10 @@ public class Entity
      * the room description printed.
      */
     public void lookInRoom() {
-
+        if (delegate != null && delegateMethods.contains(LOOK_IN_ROOM))
+            delegate.lookInRoom(this);
+        else
+            impl.lookInRoom(this);
     }
 
     /**
@@ -64,7 +110,10 @@ public class Entity
      * </ol>
      */
     public void enterScope() {
-
+        if (delegate != null && delegateMethods.contains(ENTER_SCOPE))
+            delegate.enterScope(this);
+        else
+            impl.enterScope(this);
     }
 
     /**
@@ -80,17 +129,26 @@ public class Entity
      * still has a valid place in the world graph.
      */
     public void exitingScope() {
-
+        if (delegate != null && delegateMethods.contains(EXITING_SCOPE))
+            delegate.exitingScope(this);
+        else
+            impl.exitingScope(this);
     }
 
     /** Called when the entity is moved to the player inventory */
     public void taken() {
-
+        if (delegate != null && delegateMethods.contains(TAKEN))
+            delegate.taken(this);
+        else
+            impl.taken(this);
     }
 
     /** Called when the entity is removed from the player inventory */
     public void dropped() {
-
+        if (delegate != null && delegateMethods.contains(DROPPED))
+            delegate.dropped(this);
+        else
+            impl.dropped(this);
     }
 
     /**
@@ -99,7 +157,11 @@ public class Entity
      * @return the room, or null if not in a room or inventory
      */
     public Room getRoom() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_ROOM))
+            return delegate.getRoom(this);
+        else
+            return impl.getRoom(this);
+
     }
 
     /**
@@ -107,14 +169,21 @@ public class Entity
      * @param room
      */
     public void setRoom(Room room) {
-
+        if (delegate != null && delegateMethods.contains(SET_ROOM))
+            delegate.setRoom(this, room);
+        else
+            impl.setRoom(this, room);
     }
 
     /**
      * Returns a list of extra actions to be shown in the UI. Never returns null.
      */
     List<String> getActions() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_ACTIONS))
+            return delegate.getActions(this);
+        else
+            return impl.getActions(this);
+
     }
 
     /**
@@ -123,7 +192,35 @@ public class Entity
      * @return true if the entity processed the action itself, false to continue
      *              through the processing chain
      */
-    boolean processAction(String action) {
-        return false;
+    boolean processAction(MMActions.Action action) {
+        if (delegate != null && delegateMethods.contains(PROCESS_ACTIONS))
+            return delegate.processAction(this, action);
+        else
+            return impl.processAction(this, action);
+    }
+
+    /**
+     * Called when the game is being saved. The entity should store any mutable data that is not in one of
+     * the game-state objects into {@code stateMap}, using a key that begins with {@code "<entity ID>:"},
+     * for instance {@code "potatoFarmer3:toolType"}.
+     * @param stateMap map that will be serialized into the save file
+     */
+    public void saveState(Map<String,Object> stateMap) {
+        if (delegate != null && delegateMethods.contains(SAVE_STATE))
+            delegate.saveState(this, stateMap);
+        else
+            impl.saveState(this, stateMap);
+    }
+
+    /**
+     * Called when the game is being restored. Any entries that were put into it by <tt>saveState()</tt>
+     * will be available.
+     * @param stateMap map that was deserialized from the save file
+     */
+    public void restoreState(Map<String,Object> stateMap) {
+        if (delegate != null && delegateMethods.contains(RESTORE_STATE))
+            delegate.restoreState(this, stateMap);
+        else
+            impl.restoreState(this, stateMap);
     }
 }
