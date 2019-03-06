@@ -107,12 +107,14 @@ public final class MMScript
      * Evaluates a script in the context of the game namespace. Games can call this method
      * to populate the parent namespace of all game scripts with utility methods, etc.
      * @param source script source
+     * @return result of the evaluation of the last statement or expression in the evaluated string
      */
-    public void evalGameScript(String source) {
+    public Object evalGameScript(String source) {
         try {
-            intr.eval(source, gameNameSpace);
+            return intr.eval(source, gameNameSpace);
         } catch (EvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);
+            return null;
         }
     }
 

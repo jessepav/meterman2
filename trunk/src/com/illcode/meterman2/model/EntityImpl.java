@@ -34,12 +34,6 @@ public interface EntityImpl
     /** See {@link Entity#dropped()} */
     void dropped(Entity e);
 
-    /** See {@link Entity#getRoom()} */
-    Room getRoom(Entity e);
-
-    /** See {@link Entity#setRoom(Room)} */
-    void setRoom(Entity e, Room room);
-
     /** See {@link Entity#getActions()} */
     List<String> getActions(Entity e);
 
@@ -52,6 +46,6 @@ public interface EntityImpl
     enum Methods
     {
         GET_NAME, GET_DESCRIPTION, LOOK_IN_ROOM, ENTER_SCOPE, EXITING_SCOPE,
-        TAKEN, DROPPED, GET_ROOM, SET_ROOM, GET_ACTIONS, PROCESS_ACTIONS;
+        TAKEN, DROPPED, GET_ACTIONS, PROCESS_ACTIONS;
     }
 }

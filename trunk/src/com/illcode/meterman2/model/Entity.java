@@ -2,6 +2,8 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.AttributeSet;
+import org.jdom2.Element;
+
 import static com.illcode.meterman2.model.EntityImpl.Methods.*;
 
 import java.util.EnumSet;
@@ -171,33 +173,9 @@ public class Entity
     }
 
     /**
-     * Returns the room  where this entity is found. If the entity is held in player inventory,
-     * this returns the current player room.
-     * @return the room, or null if not in a room or inventory
-     */
-    public Room getRoom() {
-        if (delegate != null && delegateMethods.contains(GET_ROOM))
-            return delegate.getRoom(this);
-        else
-            return impl.getRoom(this);
-
-    }
-
-    /**
-     * Sets the room where this entity resides, or null if it doesn't reside anywhere.
-     * @param room
-     */
-    public void setRoom(Room room) {
-        if (delegate != null && delegateMethods.contains(SET_ROOM))
-            delegate.setRoom(this, room);
-        else
-            impl.setRoom(this, room);
-    }
-
-    /**
      * Returns a list of extra actions to be shown in the UI. Never returns null.
      */
-    List<String> getActions() {
+    public List<String> getActions() {
         if (delegate != null && delegateMethods.contains(GET_ACTIONS))
             return delegate.getActions(this);
         else
@@ -210,10 +188,15 @@ public class Entity
      * @return true if the entity processed the action itself, false to continue
      *              through the processing chain
      */
-    boolean processAction(MMActions.Action action) {
+    public boolean processAction(MMActions.Action action) {
         if (delegate != null && delegateMethods.contains(PROCESS_ACTIONS))
             return delegate.processAction(this, action);
         else
             return impl.processAction(this, action);
+    }
+
+    // TODO: loadFromXml()
+    public static Entity loadFromXml(Element el) {
+        return null;
     }
 }
