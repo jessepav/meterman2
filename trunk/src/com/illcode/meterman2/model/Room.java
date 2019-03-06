@@ -24,7 +24,7 @@ public class Room implements EntityContainer
     protected Room(String id, RoomImpl impl) {
         this.id = id;
         this.impl = impl;
-        attributes = new AttributeSet();
+        attributes = AttributeSet.create();
         containerSupport = new ContainerSupport(this);
     }
 

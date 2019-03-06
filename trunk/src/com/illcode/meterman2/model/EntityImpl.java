@@ -1,13 +1,12 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
-import com.illcode.meterman2.MMAttributes;
 
 import java.util.List;
-import java.util.Map;
 
 /**
- * Defines an implementation for entity operation.
+ * Defines an implementation for entity operation, used for both entity implementation instances
+ * and delegates.
  * <p/>
  * The methods parallel those of {@link Entity}, with the addition of a parameter indicating
  * the entity whose operations we should implement.
@@ -46,4 +45,13 @@ public interface EntityImpl
 
     /** See {@link Entity#processAction(MMActions.Action)} */
     boolean processAction(Entity e, MMActions.Action action);
+
+    /**
+     * Used to indicate which methods of an Entity will be delegated.
+     */
+    enum Methods
+    {
+        GET_NAME, GET_DESCRIPTION, LOOK_IN_ROOM, ENTER_SCOPE, EXITING_SCOPE,
+        TAKEN, DROPPED, GET_ROOM, SET_ROOM, GET_ACTIONS, PROCESS_ACTIONS;
+    }
 }
