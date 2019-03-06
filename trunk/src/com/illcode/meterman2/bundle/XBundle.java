@@ -31,6 +31,7 @@ public final class XBundle
     /** Constant indicating paragraphs should be indicated by an indent. */
     public static final int PARAGRAPH_INDENTED = 1;
 
+    private Path path;  // the from which we were loaded
     private Document doc;
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
@@ -50,21 +51,13 @@ public final class XBundle
     private String indent = "    ";
 
     /**
-     * Construct an XBundle by using an existing JDOM Document.
-     * @param doc JDOM Document having a {@code <passage>} element as its root.
-     */
-    public XBundle(Document doc) {
-        this();
-        this.doc = doc;
-        initMaps();
-    }
-
-    /**
      * Construct an XBundle by reading and parsing an XML document at a given path.
      * @param p path of the XML document
      */
     public XBundle(Path p) {
-        this();
+        this.path = p;
+        elementMap = new HashMap<>(200);
+        passageMap = new HashMap<>(100);
         try {
             SAXBuilder sax = new SAXBuilder();
             this.doc = sax.build(p.toFile());
@@ -72,11 +65,6 @@ public final class XBundle
         } catch (JDOMException|IOException ex) {
             logger.log(Level.WARNING, "Exception constructing an XBundle from Path:", ex);
         }
-    }
-
-    private XBundle() {
-        elementMap = new HashMap<>(200);
-        passageMap = new HashMap<>(100);
     }
 
     private void initMaps() {

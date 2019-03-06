@@ -7,20 +7,36 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The "interface" through which the game system and UI interacts with rooms.
+ * The base class through which the game system and UI interacts with rooms.
  * <p/>
- * Room is a class rather than an interface because it supports method delegation and attributes; all
- * other implementation is handled by an instance of {@link RoomImpl}. It is that interface, and its base
- * implementation {@link BaseRoomImpl}, that specialized rooms will usually extend.
+ * Room itself supports method delegation, attributes, and containment; all other implementation is handled
+ * by an instance of {@link RoomImpl}. It is that interface, and its base implementation {@link
+ * BaseRoomImpl}, that specialized rooms will usually extend.
  */
-public class Room
+public class Room implements EntityContainer
 {
     protected String id;
     protected RoomImpl impl;
 
+    private AttributeSet attributes;
+    private ContainerSupport containerSupport;
+
     /** Construct a room with the given ID. */
-    public Room(String id) {
+    protected Room(String id, RoomImpl impl) {
         this.id = id;
+        this.impl = impl;
+        attributes = new AttributeSet();
+        containerSupport = new ContainerSupport(this);
+    }
+
+    /** Create a room with the given ID and a basic implemention. */
+    public static Room create(String id) {
+        return create(id, new BaseRoomImpl());
+    }
+
+    /** Create a room with the given ID and implemention. */
+    public static Room create(String id, RoomImpl impl) {
+        return new Room(id, impl);
     }
 
     /** Return the room implementation instance used by this Room. */
@@ -28,20 +44,32 @@ public class Room
         return impl;
     }
 
-    /** Return the unique ID of this room. */
-    public String getId() {
-        return null;
-    }
-
     /** Set the room implementation instance used by this Room. */
     public void setImpl(RoomImpl impl) {
         this.impl = impl;
     }
 
-    /** Return this room's attributes. */
-    public AttributeSet getAttributes() {
-        return null;
+    /** Return the unique ID of this room. */
+    public String getId() {
+        return id;
     }
+
+    /** Return this room's attributes, a mutable set that the caller can query and manipulate. */
+    public AttributeSet getAttributes() {
+        return attributes;
+    }
+
+    //region -- implement EntityContainer
+    public final int getContainerType() { return CONTAINER_ROOM; }
+    public final String getContainerId() { return getId(); }
+    public final Room getRoomContainer() { return this; }
+    public final Entity getEntityContainer() { return null; }
+    public final Player getPlayerContainer() { return null; }
+    public final void addEntity(Entity e) { containerSupport.addEntity(e); }
+    public final void clearEntities() { containerSupport.clearEntities(); }
+    public final List<Entity> getEntities() { return containerSupport.getEntities(); }
+    public final void removeEntity(Entity e) { containerSupport.removeEntity(e); }
+    //endregion
 
     /** Returns the full name of the room. */
     public String getName() {
@@ -79,13 +107,6 @@ public class Room
      * @see #getExit(int)
      */
     public String getExitLabel(int direction) {
-        return null;
-    }
-
-    /**
-     * Returns a list of the entities found in this room.
-     */
-    public List<Entity> getRoomEntities() {
         return null;
     }
 

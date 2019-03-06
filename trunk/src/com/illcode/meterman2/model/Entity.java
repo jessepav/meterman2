@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The "interface" through which the game system and UI interacts with entities.
+ * The base class through which the game system and UI interacts with entities.
  * <p/>
- * Entity is a class rather than an interface because it supports method delegation and attributes; all
- * other implementation is handled by an instance of {@link EntityImpl}. It is that interface, and its base
- * implementation {@link BaseEntityImpl}, that specialized entities will usually extend.
+ * Entity itself supports method delegation, attributes, and containment; all other implementation is
+ * handled by an instance of {@link EntityImpl}. It is that interface, and its base implementation {@link
+ * BaseEntityImpl}, that specialized entities will usually extend.
  */
 public class Entity
 {
@@ -22,10 +22,13 @@ public class Entity
 
     private EntityImpl delegate;
     private EnumSet<EntityImplMethods> delegateMethods;
+    private AttributeSet attributes;
+    private EntityContainer container;
 
     protected Entity(String id, EntityImpl impl) {
         this.id = id;
         this.impl = impl;
+        attributes = new AttributeSet();
     }
 
     /** Create an entity with the given ID and a basic implemention. */
@@ -60,17 +63,34 @@ public class Entity
         this.delegateMethods = delegateMethods;
     }
 
+    /** Remove the delegate. */
+    public void clearDelegate() {
+        delegate = null;
+        delegateMethods = null;
+    }
+
     /** Return the unique ID of this entity. */
     public String getId() {
         return id;
     }
 
-    /** Return this entity's attributes. */
+    /** Return this entity's attributes, a mutable set that the caller can query and manipulate. */
     public AttributeSet getAttributes() {
-        if (delegate != null && delegateMethods.contains(GET_ATTRIBUTES))
-            return delegate.getAttributes(this);
-        else
-            return impl.getAttributes(this);
+        return attributes;
+    }
+
+    /** Return the container that holds this entity, or null if none. */
+    public EntityContainer getContainer() {
+        return container;
+    }
+
+    /**
+     * Set the container that holds this entity.
+     * @param container the entity container that holds this entity, or null to
+     *         indicate the entity is removed from the game world.
+     */
+    public void setContainer(EntityContainer container) {
+        this.container = container;
     }
 
     /** Return the name of this entity */
