@@ -3,6 +3,7 @@ package com.illcode.meterman2.state;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.illcode.meterman2.AttributeSet;
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 
 import java.io.InputStream;
@@ -22,6 +23,7 @@ public final class KryoPersistence
 
         // My serializers
         kryo.register(BitSet.class, new BitSetSerializer());
+        kryo.register(AttributeSet.class, new AttributeSetSerializer());
 
         // Serializers from kryo-serializers
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());

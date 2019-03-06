@@ -9,9 +9,14 @@ public class AttributeSet
 {
     private BitSet bits;
 
+    private AttributeSet() {
+    }
+
     /** Create an empty AttributeSet. */
-    public AttributeSet() {
-        bits = new BitSet();
+    public static AttributeSet create() {
+        AttributeSet as = new AttributeSet();
+        as.bits = new BitSet();
+        return as;
     }
 
     /** Return true if this AttributeSet has a given attribute set. */
@@ -40,10 +45,22 @@ public class AttributeSet
         bits.clear();
     }
 
-    /** Return a new AttributeSet that is a copy of the given set. */
-    public static AttributeSet copyOf(AttributeSet set) {
+    /** Return a new AttributeSet that is a copy of this set. */
+    public AttributeSet copy() {
         AttributeSet newSet = new AttributeSet();
-        newSet.bits = (BitSet) set.bits.clone();
+        newSet.bits = (BitSet) bits.clone();
         return newSet;
+    }
+
+    /** Return this attribute set as a byte array. */
+    public byte[] toByteArray() {
+        return bits.toByteArray();
+    }
+
+    /** Return a new attribute set from a byte array. */
+    public static AttributeSet fromByteArray(byte[] bytes) {
+        AttributeSet as = new AttributeSet();
+        as.bits = BitSet.valueOf(bytes);
+        return as;
     }
 }
