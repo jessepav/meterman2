@@ -3,32 +3,16 @@ Meterman2 To-do
 
 == Infrastructure ==
 
-Implement XBundle and BundleGroup.
-
-Write MMTemplate and MMScript
-
-Write TextUtils singleton class, with handling for configurable embedded escape sequences.
-
-Write ScriptSource and TemplateSource
-
 Write MMActions: system action names will be loaded from a bundle at launch time; game actions will be loaded when the game is initialized. MMActions will be chained, much as in a BundleGroup, so games can override the system action names.
 
 == GameManager and World Model ==
-
-Write new Entity and Room base classes.
-
-Change the delegation mechanism so that setDelegate() specifies a bitmask of the actual methods that should be delegated; the rest will be handled as if no delegate were set.
 
 Write scripted delegate classes.
 
 Get rid of all the faux-parser stuff. Instead, add confirmation messages for actions that would otherwise have none.
 
-Get rid of undo, so I don't worry about the performance of serializing game state.
-
 
 == UI ==
-
-Wire up the MM1 SwingUI with the new infrastructure and GameManager classes.
 
 Change the font used in the interface, and distribute it with the program. If someone wants to internationalize the program, he can supply a different font and hand-edit the .properties file to load it.
 

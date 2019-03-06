@@ -1,10 +1,9 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMAttributes.AttributeSet;
+import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * The base class through which the game system and UI interacts with rooms.
@@ -125,23 +124,5 @@ public class Room implements EntityContainer
      */
     public boolean exiting(Room toRoom) {
         return false;
-    }
-
-    /**
-     * Called when the game is being saved. The room should store any mutable data that is not in one of
-     * the game-state objects into {@code stateMap}, using a key that begins with {@code "<room ID>:"}.
-     * @param stateMap map that will be serialized into the save file
-     */
-    public void saveState(Map<String,Object> stateMap) {
-
-    }
-
-    /**
-     * Called when the game is being restored. Any entries that were put into it by <tt>saveState()</tt>
-     * will be available.
-     * @param stateMap map that was deserialized from the save file
-     */
-    public void restoreState(Map<String,Object> stateMap) {
-
     }
 }

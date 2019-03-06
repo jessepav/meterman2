@@ -46,10 +46,4 @@ public interface EntityImpl
 
     /** See {@link Entity#processAction(MMActions.Action)} */
     boolean processAction(Entity e, MMActions.Action action);
-
-    /** See {@link Entity#saveState(Map)} */
-    void saveState(Entity e, Map<String,Object> stateMap);
-
-    /** See {@link Entity#restoreState(Map)} */
-    void restoreState(Entity e, Map<String,Object> stateMap);
 }
