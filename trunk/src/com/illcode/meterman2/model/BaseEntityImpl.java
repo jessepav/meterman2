@@ -54,12 +54,4 @@ public class BaseEntityImpl implements EntityImpl
     public boolean processAction(Entity e, MMActions.Action action) {
         return false;
     }
-
-    public void saveState(Entity e, Map<String,Object> stateMap) {
-
-    }
-
-    public void restoreState(Entity e, Map<String,Object> stateMap) {
-
-    }
 }

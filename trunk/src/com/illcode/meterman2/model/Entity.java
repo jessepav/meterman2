@@ -1,12 +1,11 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
-import com.illcode.meterman2.MMAttributes.AttributeSet;
+import com.illcode.meterman2.AttributeSet;
 import static com.illcode.meterman2.model.EntityImplMethods.*;
 
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The base class through which the game system and UI interacts with entities.
@@ -217,30 +216,5 @@ public class Entity
             return delegate.processAction(this, action);
         else
             return impl.processAction(this, action);
-    }
-
-    /**
-     * Called when the game is being saved. The entity should store any mutable data that is not in one of
-     * the game-state objects into {@code stateMap}, using a key that begins with {@code "<entity ID>:"},
-     * for instance {@code "potatoFarmer3:toolType"}.
-     * @param stateMap map that will be serialized into the save file
-     */
-    public void saveState(Map<String,Object> stateMap) {
-        if (delegate != null && delegateMethods.contains(SAVE_STATE))
-            delegate.saveState(this, stateMap);
-        else
-            impl.saveState(this, stateMap);
-    }
-
-    /**
-     * Called when the game is being restored. Any entries that were put into it by <tt>saveState()</tt>
-     * will be available.
-     * @param stateMap map that was deserialized from the save file
-     */
-    public void restoreState(Map<String,Object> stateMap) {
-        if (delegate != null && delegateMethods.contains(RESTORE_STATE))
-            delegate.restoreState(this, stateMap);
-        else
-            impl.restoreState(this, stateMap);
     }
 }
