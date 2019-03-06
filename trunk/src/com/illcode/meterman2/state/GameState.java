@@ -25,23 +25,16 @@ public final class GameState
      */
     public Map<String,List<String>> gameHandlers;
 
-    /** A mapping from entity ID to room ID, for entities contained in rooms. */
-    public Map<String,String> entitiesInRooms;
+    /** A mapping from entity ID to container ID. */
+    public Map<String,String> entityLocations;
 
-    /** A mapping from entity ID to entity ID, for entities contained in other entities. */
-    public Map<String,String> entitiesInEntities;
-
-    /** A list of the entity IDs that are in the player inventory. */
-    public List<String> entitiesInInventory;
+    /** A mapping from container ID to the container type.
+     *  @see EntityContainer#getContainerType() */
+    public Map<String,Integer> containerTypes;
 
     /** The ID of the container where the player resides. */
-    public String playerContainerId;
+    public String playerLocation;
 
-    /** The type of container represented by {@code playerContainerId}.
-     *  @see EntityContainer#getContainerType() */
-    public int playerContainerType;
-
-    /** The IDs of the entities the player has equipped. Note that the entities in the player inventory
-     *  will have their location (the player) saved when their own container IDs are saved.*/
+    /** The IDs of the entities the player has equipped. */
     public Set<String> equippedEntityIds;
 }

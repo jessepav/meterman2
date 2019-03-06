@@ -60,7 +60,10 @@ public interface Game
      * Called at the start of a new game to retrieve a mapping of the game-state objects used by scripts and
      * templates. All state which can change through the course of a game should be kept in one of these
      * objects, rather than in random instance variables of entities, rooms, listeners, etc. because it is
-     * only these objects which will be persisted and loaded across game sessions.
+     * only these objects (and entity and room attributes) which will be persisted and loaded across game sessions.
+     * <p/>
+     * Game state objects should be POJOs that contain only standard Java types: primitives and their wrapper
+     * types, Strings, lists, maps, and sets. All fields and methods should be public and non-static.
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
      * namespace and template data model.
