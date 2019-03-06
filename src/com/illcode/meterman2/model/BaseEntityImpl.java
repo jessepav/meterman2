@@ -11,10 +11,6 @@ public class BaseEntityImpl implements EntityImpl
     protected BaseEntityImpl() {
     }
 
-    public MMAttributes.AttributeSet getAttributes(Entity e) {
-        return null;
-    }
-
     public String getName(Entity e) {
         return null;
     }

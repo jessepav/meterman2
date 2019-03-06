@@ -14,9 +14,6 @@ import java.util.Map;
  */
 public interface EntityImpl
 {
-    /** See {@link Entity#getAttributes()}*/
-    MMAttributes.AttributeSet getAttributes(Entity e);
-
     /** See {@link Entity#getName()}*/
     String getName(Entity e);
 
