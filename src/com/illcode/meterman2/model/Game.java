@@ -51,7 +51,7 @@ public interface Game
 
     /**
      * Called at the start of a new game, after {@code constructWorld()} and {@code setInitialEntityPlacements()},
-     * to retrieve the player character, who should already be placed in the starting room with his/her
+     * to retrieve the player character, who should already be located in the starting container with his/her
      * inventory in hand.
      */
     Player getPlayer();
