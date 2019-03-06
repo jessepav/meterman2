@@ -2,7 +2,7 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.AttributeSet;
-import static com.illcode.meterman2.model.EntityImplMethods.*;
+import static com.illcode.meterman2.model.EntityImpl.Methods.*;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -20,14 +20,14 @@ public class Entity
     protected EntityImpl impl;
 
     private EntityImpl delegate;
-    private EnumSet<EntityImplMethods> delegateMethods;
+    private EnumSet<EntityImpl.Methods> delegateMethods;
     private AttributeSet attributes;
     private EntityContainer container;
 
     protected Entity(String id, EntityImpl impl) {
         this.id = id;
         this.impl = impl;
-        attributes = new AttributeSet();
+        attributes = AttributeSet.create();
     }
 
     /** Create an entity with the given ID and a basic implemention. */
@@ -57,7 +57,7 @@ public class Entity
      * @param delegate the delegate implementation
      * @param delegateMethods a set indicating which methods should be forwarded
      */
-    public void setDelegate(EntityImpl delegate, EnumSet<EntityImplMethods> delegateMethods) {
+    public void setDelegate(EntityImpl delegate, EnumSet<EntityImpl.Methods> delegateMethods) {
         this.delegate = delegate;
         this.delegateMethods = delegateMethods;
     }
@@ -202,7 +202,6 @@ public class Entity
             return delegate.getActions(this);
         else
             return impl.getActions(this);
-
     }
 
     /**
