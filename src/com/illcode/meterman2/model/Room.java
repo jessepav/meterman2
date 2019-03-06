@@ -3,7 +3,10 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.ui.UIConstants;
 
+import java.util.EnumSet;
 import java.util.List;
+
+import static com.illcode.meterman2.model.RoomImpl.Methods.*;
 
 /**
  * The base class through which the game system and UI interacts with rooms.
@@ -17,6 +20,8 @@ public class Room implements EntityContainer
     protected String id;
     protected RoomImpl impl;
 
+    private RoomImpl delegate;
+    private EnumSet<RoomImpl.Methods> delegateMethods;
     private AttributeSet attributes;
     private ContainerSupport containerSupport;
 
@@ -48,6 +53,24 @@ public class Room implements EntityContainer
         this.impl = impl;
     }
 
+    /**
+     * Set a delegate to which certain methods will be forwarded. This exists primarily to support
+     * scripted methods, but may find other uses, such as consolidating logic for multiple rooms in one
+     * "manager" class.
+     * @param delegate the delegate implementation
+     * @param delegateMethods a set indicating which methods should be forwarded
+     */
+    public void setDelegate(RoomImpl delegate, EnumSet<RoomImpl.Methods> delegateMethods) {
+        this.delegate = delegate;
+        this.delegateMethods = delegateMethods;
+    }
+
+    /** Remove the delegate. */
+    public void clearDelegate() {
+        delegate = null;
+        delegateMethods = null;
+    }
+
     /** Return the unique ID of this room. */
     public String getId() {
         return id;
@@ -72,18 +95,27 @@ public class Room implements EntityContainer
 
     /** Returns the full name of the room. */
     public String getName() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_NAME))
+            return delegate.getName(this);
+        else
+            return impl.getName(this);
     }
 
     /** Returns a potentially shorter version of the name, to be used in Exit buttons.
      *  This method may return a different name depending on whether the room has been visited. */
     public String getExitName() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_EXIT_NAME))
+            return delegate.getExitName(this);
+        else
+            return impl.getExitName(this);
     }
 
     /** Returns the text to be displayed when the player enters the room or clicks "Look". */
     public String getDescription() {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+            return delegate.getDescription(this);
+        else
+            return impl.getDescription(this);
     }
 
     /**
@@ -95,7 +127,10 @@ public class Room implements EntityContainer
      * @see #getExitLabel(int)
      */
     public Room getExit(int direction) {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_EXIT))
+            return delegate.getExit(this, direction);
+        else
+            return impl.getExit(this, direction);
     }
 
     /**
@@ -106,7 +141,10 @@ public class Room implements EntityContainer
      * @see #getExit(int)
      */
     public String getExitLabel(int direction) {
-        return null;
+        if (delegate != null && delegateMethods.contains(GET_EXIT_LABEL))
+            return delegate.getExitLabel(this, direction);
+        else
+            return impl.getExitLabel(this, direction);
     }
 
     /**
@@ -114,6 +152,10 @@ public class Room implements EntityContainer
      * @param fromRoom the room (possibly null) from which the player entered
      */
     public void entered(Room fromRoom) {
+        if (delegate != null && delegateMethods.contains(ENTERED))
+            delegate.entered(this, fromRoom);
+        else
+            impl.entered(this, fromRoom);
     }
 
     /**
@@ -123,6 +165,9 @@ public class Room implements EntityContainer
      *          the exit may fail for other reasons)
      */
     public boolean exiting(Room toRoom) {
-        return false;
+        if (delegate != null && delegateMethods.contains(EXITING))
+            return delegate.exiting(this, toRoom);
+        else
+            return impl.exiting(this, toRoom);
     }
 }
