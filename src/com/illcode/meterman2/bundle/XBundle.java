@@ -13,7 +13,9 @@ import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -31,8 +33,10 @@ public final class XBundle
     /** Constant indicating paragraphs should be indicated by an indent. */
     public static final int PARAGRAPH_INDENTED = 1;
 
-    private Path path;  // the from which we were loaded
+    private String name;
+    private Path path;  // the path from which we were loaded
     private Document doc;
+    private Element root;
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
 
@@ -61,20 +65,25 @@ public final class XBundle
         try {
             SAXBuilder sax = new SAXBuilder();
             this.doc = sax.build(p.toFile());
-            initMaps();
+            initBundle();
         } catch (JDOMException|IOException ex) {
             logger.log(Level.WARNING, "Exception constructing an XBundle from Path:", ex);
         }
     }
 
-    private void initMaps() {
+    private void initBundle() {
         if (!doc.hasRootElement()) {
             logger.warning("XBundle document has no root element.");
             return;
         }
-        Element root = doc.getRootElement();
+        root = doc.getRootElement();
         if (!root.getName().equals("xbundle")) {
             logger.warning("Invalid XBundle root element: " + root.getName());
+            return;
+        }
+        name = root.getAttributeValue("name");
+        if (name == null) {
+            logger.warning("XBundle root element has no 'name' attribute.");
             return;
         }
         for (Element e : root.getChildren()) {
@@ -86,6 +95,11 @@ public final class XBundle
                     passageMap.put(id, PLACEHOLDER_TEXT_SOURCE);
             }
         }
+    }
+
+    /** Return the name of this bundle. */
+    public String getName() {
+        return name;
     }
 
     /**
@@ -113,7 +127,7 @@ public final class XBundle
     }
 
     /** A template text source element must have both "template" and "id" attributes. */
-    private boolean isTemplateElement(final Element e) {
+    private static boolean isTemplateElement(final Element e) {
         final Attribute templateAttr = e.getAttribute("template");
         final Attribute idAttr = e.getAttribute("id");
         // in the future we can check for the actual value of the template attribute, like "ftl"
@@ -121,7 +135,7 @@ public final class XBundle
     }
 
     /** A script text source element must have both "script" and "id" attributes. */
-    private boolean isScriptElement(final Element e) {
+    private static boolean isScriptElement(final Element e) {
         final Attribute scriptAttr = e.getAttribute("script");
         final Attribute idAttr = e.getAttribute("id");
         // in the future we can check for the actual value of the script attribute, like "bsh"
@@ -133,6 +147,18 @@ public final class XBundle
      */
     public Element getElement(String id) {
         return elementMap.get(id);
+    }
+
+    /**
+     * Returns a list of elements directly under the XBundle root with the given local name.
+     * @param cname local name of children
+     * @return matching child elements
+     */
+    public List<Element> getElements(String cname) {
+        if (root == null)
+            return Collections.emptyList();
+        else
+            return root.getChildren(cname);
     }
 
     /**

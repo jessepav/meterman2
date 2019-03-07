@@ -1,5 +1,7 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.bundle.BundleGroup;
+import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.state.KryoPersistence;
 import com.illcode.meterman2.ui.MMUI;
 
@@ -21,6 +23,9 @@ public final class Meterman2
 
     /** The MMAssets instance handling the game assets. */
     public static MMAssets assets;
+
+    /** The BundleGroup instance managing system and game bundles. */
+    public static BundleGroup bundles;
 
     /** The MMUI instance displaying the current game */
     public static MMUI ui;
@@ -76,17 +81,29 @@ public final class Meterman2
         assets = new MMAssets();
         assets.setAssetsPath(assetsPath);
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
+
+        bundles = new BundleGroup();
+        XBundle sysBundle = new XBundle(assets.pathForSystemAsset("system-bundle.xml"));
+        bundles.setSystemBundles(sysBundle);
+
         actions = new MMActions();
         SystemActions.init();
+
         attributes = new MMAttributes();
         SystemAttributes.init();
+
         template = new MMTemplate();
+
         script = new MMScript();
+
         sound = new MMSound();
         sound.setSoundEnabled(Utils.booleanPref("sound-enabled", true));
         sound.setMusicEnabled(Utils.booleanPref("music-enabled", true));
+
         persistence = new KryoPersistence();
+
         gm = new GameManager();
+
         uiHandler = new MMHandler();
         ui = new MMUI(uiHandler);
         ui.show();

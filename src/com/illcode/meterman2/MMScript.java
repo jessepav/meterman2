@@ -136,7 +136,7 @@ public final class MMScript
             BshMethod[] bshMethods = ns.getMethods();
             methods = new ArrayList<>(bshMethods.length);
             for (BshMethod m : bshMethods)
-                methods.add(new ScriptedMethod(m));
+                methods.add(new ScriptedMethod(m, ns));
         } catch (EvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);
             methods = Collections.emptyList();
@@ -151,14 +151,30 @@ public final class MMScript
     public class ScriptedMethod
     {
         private final BshMethod bshMethod;
+        private final NameSpace ns;
 
-        private ScriptedMethod(BshMethod bshMethod) {
+        private ScriptedMethod(BshMethod bshMethod, NameSpace ns) {
             this.bshMethod = bshMethod;
+            this.ns = ns;
         }
 
         /** Return the name of the method. */
         public String getName() {
             return bshMethod.getName();
+        }
+
+        /**
+         * Set a variable in the method's declaring namespace. The body of this method, and any other methods
+         * declared in the same script, may then refer to this variable during execution.
+         * @param name name of the variable
+         * @param value value of the variable
+         */
+        public void setVariable(String name, Object value) {
+            try {
+                ns.setTypedVariable(name, value.getClass(), value, null);
+            } catch (UtilEvalError err) {
+                logger.log(Level.WARNING, "MMScript error:", err);
+            }
         }
 
         /**

@@ -1,25 +1,23 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.text.TextSource;
 import com.illcode.meterman2.ui.UIConstants;
 
 public class BaseRoomImpl implements RoomImpl
 {
     protected String name;
     protected String exitName;
-    protected String description;
+    protected TextSource description;
     protected Room[] exits;
     protected String[] exitLabels;
 
     protected BaseRoomImpl() {
-        name = "[name]";
-        exitName = null;
-        description = "[description]";
         exits = new Room[UIConstants.NUM_EXIT_BUTTONS];
         exitLabels = new String[UIConstants.NUM_EXIT_BUTTONS];
     }
 
     public String getName(Room r) {
-        return name;
+        return name != null ? name : "[name]";
     }
 
     public void setName(String name) {
@@ -27,7 +25,7 @@ public class BaseRoomImpl implements RoomImpl
     }
 
     public String getExitName(Room r) {
-        return exitName != null ? exitName : name;
+        return exitName != null ? exitName : getName(r);
     }
 
     public void setExitName(String exitName) {
@@ -35,10 +33,10 @@ public class BaseRoomImpl implements RoomImpl
     }
 
     public String getDescription(Room r) {
-        return description;
+        return description != null ? description.getText() : "[description]";
     }
 
-    public void setDescription(String description) {
+    public void setDescription(TextSource description) {
         this.description = description;
     }
 

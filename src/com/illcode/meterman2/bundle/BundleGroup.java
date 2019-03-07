@@ -1,13 +1,14 @@
 package com.illcode.meterman2.bundle;
 
 import com.illcode.meterman2.text.TextSource;
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
-import java.util.LinkedList;
+import java.util.*;
 
 /**
  * A BundleGroup maintains a list of {@code XBundle}S and supports operations that
- * query each in order, as though the group were one big {@code XBundle}.
+ * query each in order for elements and passages with a specific ID.
  * <p/>
  * Note that these group query methods only work for top-level elements and passages,
  * i.e. those directly under the {@code <xbundle>} element in the XML source.
@@ -15,10 +16,12 @@ import java.util.LinkedList;
 public final class BundleGroup
 {
     private LinkedList<XBundle> bundles;
+    private List<XBundle> systemBundles;
 
     /** Construct an empty BundleGroup. */
     public BundleGroup() {
         bundles = new LinkedList<>();
+        systemBundles = Collections.emptyList();
     }
 
     /**
@@ -33,6 +36,48 @@ public final class BundleGroup
      */
     public void addLast(XBundle bundle) {
         bundles.addLast(bundle);
+    }
+
+    /**
+     * Remove a bundle from our list.
+     */
+    public void remove(XBundle bundle) {
+        bundles.remove(bundle);
+    }
+
+    /**
+     * Clear our bundle list.
+     */
+    public void clear() {
+        bundles.clear();
+    }
+
+    /** Return the bundle in our list with the given name, or null if not found. */
+    public XBundle getBundleWithName(String name) {
+        for (XBundle bundle : bundles) {
+            if (StringUtils.equals(bundle.getName(), name))
+                return bundle;
+        }
+        return null;
+    }
+
+    /**
+     * Set the "system bundles" of this group. When {@code clearGameBundles()} is called, our bundle
+     * list will be restored to the bundles passed to this method.
+     * @param bundles system bundles
+     */
+    public void setSystemBundles(XBundle... bundles) {
+        if (bundles == null)
+            systemBundles = Collections.emptyList();
+        else
+            systemBundles = Arrays.asList(bundles);
+    }
+
+    /**
+     * Restore our bundle list to the bundles passed to {@code setSystemBundles()}.
+     */
+    public void clearGameBundles() {
+        bundles = new LinkedList<>(systemBundles);
     }
 
     /**

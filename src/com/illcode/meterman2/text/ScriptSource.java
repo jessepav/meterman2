@@ -13,7 +13,8 @@ import java.util.List;
  * <p/>
  * A ScriptSource can optionally reference an {@link XBundle}, in which case the text
  * output will be formatted according to the settings of that XBundle by calling
- * {@link XBundle#formatText(String)}.
+ * {@link XBundle#formatText(String)}. Also, the XBundle will be put into the script's
+ * declaring namespace as a variable named "bundle".
  */
 public class ScriptSource implements TextSource
 {
@@ -51,6 +52,8 @@ public class ScriptSource implements TextSource
             if (methods.isEmpty())
                 return "Error in ScriptSource ID: " + id;
             method = methods.get(0);
+            if (bundle != null)
+                method.setVariable("bundle", bundle);
         }
         String output = method.invoke().getRight();
         if (bundle != null)
