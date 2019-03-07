@@ -1,12 +1,10 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMActions;
-import com.illcode.meterman2.MMAttributes;
+import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.text.TextSource;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class BaseEntityImpl implements EntityImpl
 {
@@ -52,11 +50,11 @@ public class BaseEntityImpl implements EntityImpl
         // empty
     }
 
-    public List<String> getActions(Entity e) {
+    public List<Action> getActions(Entity e) {
         return Collections.emptyList();
     }
 
-    public boolean processAction(Entity e, MMActions.Action action) {
+    public boolean processAction(Entity e, Action action) {
         return false;
     }
 }

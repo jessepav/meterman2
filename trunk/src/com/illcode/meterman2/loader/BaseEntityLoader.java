@@ -26,6 +26,7 @@ public class BaseEntityLoader implements EntityLoader
 
     public Entity loadFromXml(XBundle bundle, Element el, String id) {
         Entity e = Entity.create(id);
+        loadPropertiesFromXml(bundle, el, e);
         return e;
     }
 

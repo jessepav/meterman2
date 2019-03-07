@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.event.GameEventHandler;
 
 import java.util.Map;
@@ -17,7 +18,13 @@ public interface Game
      * Called when a game is started or loaded. A game should, in this method, load any resources (images,
      * sound, bundles) it wants immediately or game-globally available.
      * <p/>
-     * It should also register game-specific actions and add its {@code XBundle}S to the system group.
+     * It should also:
+     * <ul>
+     *     <li>register game-specific actions</li>
+     *     <li>add its {@code XBundle}(s) to the system group</li>
+     *     <li>call {@link MMScript#evalGameScript(java.lang.String)} to import packages and classes and
+     *     define any methods used by scripts.</li>
+     * </ul>
      */
     void init();
 

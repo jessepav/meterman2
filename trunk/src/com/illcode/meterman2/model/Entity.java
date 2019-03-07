@@ -1,7 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
-import com.illcode.meterman2.MMActions;
+import com.illcode.meterman2.MMActions.Action;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -174,7 +174,7 @@ public class Entity
     /**
      * Returns a list of extra actions to be shown in the UI. Never returns null.
      */
-    public List<String> getActions() {
+    public List<Action> getActions() {
         if (delegate != null && delegateMethods.contains(GET_ACTIONS))
             return delegate.getActions(this);
         else
@@ -187,7 +187,7 @@ public class Entity
      * @return true if the entity processed the action itself, false to continue
      *              through the processing chain
      */
-    public boolean processAction(MMActions.Action action) {
+    public boolean processAction(Action action) {
         if (delegate != null && delegateMethods.contains(PROCESS_ACTIONS))
             return delegate.processAction(this, action);
         else

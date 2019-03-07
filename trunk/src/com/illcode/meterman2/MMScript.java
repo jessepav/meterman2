@@ -45,9 +45,8 @@ public final class MMScript
         intr = new Interpreter();
         systemNameSpace = intr.getNameSpace();
         unimportUnneededDefaults(systemNameSpace);
-        importMMPackages(systemNameSpace);
-        gameNameSpace = new NameSpace(systemNameSpace, "gameNameSpace");
         initSystemNameSpace();
+        gameNameSpace = new NameSpace(systemNameSpace, "gameNameSpace");
     }
 
     /** Free any resources allocated by this MMScript instance. */
@@ -67,18 +66,25 @@ public final class MMScript
         ns.unimportCommands("/bsh/commands");
     }
 
-    private void importMMPackages(NameSpace ns) {
-        ns.importPackage("com.illcode.meterman2");
-        ns.importPackage("com.illcode.meterman2.model");
-    }
-
     private void initSystemNameSpace() {
+        systemNameSpace.importPackage("com.illcode.meterman2.model");
+        systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
+
         outputBuilder = new StringBuilder(1024);
         try {
-            intr.set("outputBuilder", outputBuilder);
-            intr.eval(Utils.getStringResource("bsh/system-script.bsh"));
-        } catch (EvalError ex) {
-            logger.log(Level.WARNING, "MMScript error:", ex);
+            systemNameSpace.setTypedVariable("outputBuilder", StringBuilder.class, outputBuilder, null);
+            intr.eval(Utils.getStringResource("scripts/system-script.bsh"));
+        } catch (UtilEvalError|EvalError err) {
+            logger.log(Level.WARNING, "MMScript error:", err);
+        }
+    }
+
+    /** Add a binding to the system namespace. */
+    void addSystemBinding(String name, Object value) {
+        try {
+            systemNameSpace.setTypedVariable(name, value.getClass(), value, null);
+        } catch (UtilEvalError err) {
+            logger.log(Level.WARNING, "MMScript error:", err);
         }
     }
 
@@ -86,7 +92,7 @@ public final class MMScript
      * Add a map of game-state bindings to our game namespace.
      * @param bindings name to game-state object mapping
      */
-    public void putBindings(Map<String,Object> bindings) {
+    public void putGameBindings(Map<String,Object> bindings) {
         try {
             for (Map.Entry<String,Object> entry : bindings.entrySet()) {
                 Object value = entry.getValue();

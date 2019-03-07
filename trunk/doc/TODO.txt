@@ -9,6 +9,8 @@ Write MMActions: system action names will be loaded from a bundle at launch time
 
 Write scripted delegate classes.
 
+Put the current game into the game-namespace as "game".
+
 Get rid of all the faux-parser stuff. Instead, add confirmation messages for actions that would otherwise have none.
 
 
