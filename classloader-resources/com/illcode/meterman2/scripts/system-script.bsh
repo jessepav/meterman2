@@ -18,3 +18,19 @@ void out(String text) {
 void outPassage(String id) {
     outputBuilder.append(bundles.getPassage(id).getText());
 }
+
+// The print() and println() methods call the equivalent GameManager methods.
+
+/**
+ * Print text to the main text area.
+ */
+void print(String text) {
+    gm.print(text);
+}
+
+/**
+ * Print text followed by a newline to the main text area.
+ */
+void println(String text) {
+    gm.println(text);
+}

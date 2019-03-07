@@ -291,23 +291,6 @@ public final class MMUI
     }
 
     /**
-     * Appends a newline to the main text area.
-     */
-    public void appendNewline() {
-        mainFrame.textArea.append("\n");
-    }
-
-    /**
-     * Appends text to the main text area, followed by a newline.
-     * @param text text to append
-     */
-    public void appendTextLn(String text) {
-        appendText(text);
-        appendNewline();
-    }
-
-
-    /**
      * Clears the list displaying Entities in the current room.
      */
     public void clearRoomEntities() {
