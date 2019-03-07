@@ -1,13 +1,12 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.AttributeSet;
-import org.jdom2.Element;
-
-import static com.illcode.meterman2.model.EntityImpl.Methods.*;
+import com.illcode.meterman2.MMActions;
 
 import java.util.EnumSet;
 import java.util.List;
+
+import static com.illcode.meterman2.model.EntityImpl.Methods.*;
 
 /**
  * The base class through which the game system and UI interacts with entities.
@@ -193,10 +192,5 @@ public class Entity
             return delegate.processAction(this, action);
         else
             return impl.processAction(this, action);
-    }
-
-    // TODO: loadFromXml()
-    public static Entity loadFromXml(Element el) {
-        return null;
     }
 }

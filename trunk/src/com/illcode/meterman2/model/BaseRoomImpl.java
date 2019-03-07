@@ -22,16 +22,32 @@ public class BaseRoomImpl implements RoomImpl
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getExitName(Room r) {
         return exitName != null ? exitName : name;
+    }
+
+    public void setExitName(String exitName) {
+        this.exitName = exitName;
     }
 
     public String getDescription(Room r) {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Room getExit(Room r, int direction) {
         return exits[direction];
+    }
+
+    public void setExit(int direction, Room destination) {
+        exits[direction] = destination;
     }
 
     public String getExitLabel(Room r, int direction) {
@@ -41,6 +57,10 @@ public class BaseRoomImpl implements RoomImpl
             return exits[direction].getExitName();
         else
             return null;
+    }
+
+    public void setExitLabel(int direction, String label) {
+        exitLabels[direction] = label;
     }
 
     public void entered(Room r, Room fromRoom) {
