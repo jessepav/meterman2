@@ -66,7 +66,7 @@ public interface Game
      * types, Strings, lists, maps, and sets. All fields and methods should be public and non-static.
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
-     * namespace and template data model.
+     * namespace and template data model. Keys with a leading underscore are reserved for use by the system.
      */
     Map<String,Object> getGameStateObjects();
 

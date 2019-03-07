@@ -21,8 +21,16 @@ public class BaseEntityImpl implements EntityImpl
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getDescription(Entity e) {
         return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void lookInRoom(Entity e) {
