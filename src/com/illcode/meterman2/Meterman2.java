@@ -106,12 +106,16 @@ public final class Meterman2
 
         uiHandler = new MMHandler();
         ui = new MMUI(uiHandler);
+
+        addScriptBindings();
+
         ui.show();
     }
 
     /** Called when the program is shutting down. */
     public static void shutdown() {
         logger.info("Meterman shutting down...");
+
         ui.dispose();
         gm.dispose();
         persistence.dispose();
@@ -120,10 +124,11 @@ public final class Meterman2
         template.dispose();
         attributes.dispose();
         actions.dispose();
+        bundles.dispose();
         assets.dispose();
+
         savePrefs(prefsPath);
     }
-
 
     private static boolean loadPrefs(Path path) {
         prefs = new Properties();
@@ -144,5 +149,14 @@ public final class Meterman2
         } catch (IOException ex) {
             logger.log(Level.WARNING, "savePrefs " + path.toString(), ex);
         }
+    }
+
+    private static void addScriptBindings() {
+        script.addSystemBinding("logger", logger);
+        script.addSystemBinding("ui", ui);
+        script.addSystemBinding("gm", gm);
+        script.addSystemBinding("sound", sound);
+        script.addSystemBinding("bundles", bundles);
+        script.addSystemBinding("assets", assets);
     }
 }

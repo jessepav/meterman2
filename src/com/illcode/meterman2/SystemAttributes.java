@@ -39,14 +39,19 @@ public class SystemAttributes
     public static int DARK;
 
     public static void init() {
+        // We register room attributes first because they're more likely to change during the game,
+        // and when we persist attributes, it is the highest set attribute number that determines
+        // the size of the bit-set.
+        VISITED = Meterman2.attributes.registerAttribute("visited");
+        DARK = Meterman2.attributes.registerAttribute("dark");
+
         CONCEALED = Meterman2.attributes.registerAttribute("concealed");
         TAKEABLE = Meterman2.attributes.registerAttribute("takeable");
         EQUIPPABLE = Meterman2.attributes.registerAttribute("equippable");
         LIGHTSOURCE = Meterman2.attributes.registerAttribute("lightsource");
         PROPER_NAME = Meterman2.attributes.registerAttribute("proper-name");
         MOVEABLE = Meterman2.attributes.registerAttribute("moveable");
-        VISITED = Meterman2.attributes.registerAttribute("visited");
-        DARK = Meterman2.attributes.registerAttribute("dark");
+
         Meterman2.attributes.markSystemAttributesDone();
     }
 }

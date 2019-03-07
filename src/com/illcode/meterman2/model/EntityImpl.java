@@ -1,6 +1,6 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMActions;
+import com.illcode.meterman2.MMActions.Action;
 
 import java.util.List;
 
@@ -35,10 +35,10 @@ public interface EntityImpl
     void dropped(Entity e);
 
     /** See {@link Entity#getActions()} */
-    List<String> getActions(Entity e);
+    List<Action> getActions(Entity e);
 
     /** See {@link Entity#processAction(MMActions.Action)} */
-    boolean processAction(Entity e, MMActions.Action action);
+    boolean processAction(Entity e, Action action);
 
     /**
      * Used to indicate which methods of an Entity will be delegated.

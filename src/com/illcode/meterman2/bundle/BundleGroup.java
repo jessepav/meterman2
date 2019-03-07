@@ -24,6 +24,11 @@ public final class BundleGroup
         systemBundles = Collections.emptyList();
     }
 
+    public void dispose() {
+        bundles = null;
+        systemBundles = null;
+    }
+
     /**
      * Add a bundle to the head of our bundle list.
      */
