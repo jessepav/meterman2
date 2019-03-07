@@ -4,28 +4,26 @@ import com.illcode.meterman2.ui.MMUI;
 
 import static com.illcode.meterman2.Meterman2.ui;
 
-public class GameManager
+public final class GameManager
 {
     void dispose() {
 
     }
 
-    // Games should call these methods instead of going directly to Meterman2.ui
-    // so that we can process the text, if the situation warrants.
     /**
-     * Appends text to the main text area.
-     * @param text text to append
+     * Print text to the main UI text area. Games should call this method instead of going directly
+     * to Meterman2.ui so that we can process or buffer the text, if the situation warrants.
+     * @param text text to print
      */
-    public void appendText(String text) {ui.appendText(text);}
+    public void print(String text) {
+        ui.appendText(text);
+    }
 
     /**
-     * Appends a newline to the main text area.
+     * Print text to the main UI text area, followed by a newline.
+     * @param text text to print
      */
-    public void appendNewline() {ui.appendNewline();}
-
-    /**
-     * Appends text to the main text area, followed by a newline.
-     * @param text text to append
-     */
-    public void appendTextLn(String text) {ui.appendTextLn(text);}
+    public void println(String text) {
+        print(text + "\n");
+    }
 }

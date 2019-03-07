@@ -7,10 +7,10 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import static com.illcode.meterman2.Meterman2.gm;
 
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
+import static com.illcode.meterman2.MMLogging.logger;
+
+import java.util.*;
+import java.util.logging.Level;
 
 public class ScriptedEntityImpl implements EntityImpl
 {
@@ -25,8 +25,8 @@ public class ScriptedEntityImpl implements EntityImpl
         scriptedEntityMethods = new EnumMap<>(EntityMethod.class);
 
         List<ScriptedMethod> scriptedMethods = Meterman2.script.evalScript(id, source);
-        for (ScriptedMethod sm : scriptedMethods) {
-            for (EntityMethod em : EntityMethod.values()) {
+        for (ScriptedMethod sm : scriptedMethods) {  // methods defined in the script
+            for (EntityMethod em : EntityMethod.values()) {  // our "method name" enum
                 if (sm.getName().equals(em.getMethodName())) {
                     scriptedEntityMethods.put(em, sm);
                     break;
@@ -45,7 +45,12 @@ public class ScriptedEntityImpl implements EntityImpl
     public String getName(Entity e) {
         ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.GET_NAME);
         if (m != null)
-            return (String) m.invoke(e).getLeft();
+            try {
+                return (String) m.invoke(e).getLeft();
+            } catch (Exception e1) {
+                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
+                return "[getName error]";
+            }
         else
             return e.getName();
     }
@@ -53,7 +58,12 @@ public class ScriptedEntityImpl implements EntityImpl
     public String getDescription(Entity e) {
         ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.GET_DESCRIPTION);
         if (m != null)
-            return (String) m.invoke(e).getLeft();
+            try {
+                return (String) m.invoke(e).getLeft();
+            } catch (Exception e1) {
+                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
+                return "[getDescription error]";
+            }
         else
             return e.getDescription();
     }
@@ -102,7 +112,12 @@ public class ScriptedEntityImpl implements EntityImpl
     public List<MMActions.Action> getActions(Entity e) {
         ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.GET_ACTIONS);
         if (m != null)
-            return (List<MMActions.Action>) m.invoke(e).getLeft();
+            try {
+                return (List<MMActions.Action>) m.invoke(e).getLeft();
+            } catch (Exception e1) {
+                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
+                return Collections.emptyList();
+            }
         else
             return e.getActions();
     }
@@ -110,7 +125,12 @@ public class ScriptedEntityImpl implements EntityImpl
     public boolean processAction(Entity e, MMActions.Action action) {
         ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.PROCESS_ACTION);
         if (m != null)
-            return ((Boolean) m.invoke(e).getLeft()).booleanValue();
+            try {
+                return ((Boolean) m.invoke(e).getLeft()).booleanValue();
+            } catch (Exception e1) {
+                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
+                return false;
+            }
         else
             return e.processAction(action);
     }
