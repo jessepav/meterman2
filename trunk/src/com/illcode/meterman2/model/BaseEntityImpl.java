@@ -2,6 +2,7 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMAttributes;
+import com.illcode.meterman2.text.TextSource;
 
 import java.util.Collections;
 import java.util.List;
@@ -10,15 +11,13 @@ import java.util.Map;
 public class BaseEntityImpl implements EntityImpl
 {
     protected String name;
-    protected String description;
+    protected TextSource description;
 
     protected BaseEntityImpl() {
-        name = "[name]";
-        description = "[description]";
     }
 
     public String getName(Entity e) {
-        return name;
+        return name != null ? name : "[name]";
     }
 
     public void setName(String name) {
@@ -26,10 +25,10 @@ public class BaseEntityImpl implements EntityImpl
     }
 
     public String getDescription(Entity e) {
-        return description;
+        return description != null ? description.getText() : "[description]";
     }
 
-    public void setDescription(String description) {
+    public void setDescription(TextSource description) {
         this.description = description;
     }
 
