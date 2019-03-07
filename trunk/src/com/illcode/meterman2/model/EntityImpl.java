@@ -43,9 +43,20 @@ public interface EntityImpl
     /**
      * Used to indicate which methods of an Entity will be delegated.
      */
-    enum Methods
+    enum EntityMethod
     {
-        GET_NAME, GET_DESCRIPTION, LOOK_IN_ROOM, ENTER_SCOPE, EXITING_SCOPE,
-        TAKEN, DROPPED, GET_ACTIONS, PROCESS_ACTIONS;
+        GET_NAME("getName"), GET_DESCRIPTION("getDescription"), LOOK_IN_ROOM("lookInRoom"),
+        ENTER_SCOPE("enterScope"), EXITING_SCOPE("exitingScope"), TAKEN("taken"), DROPPED("dropped"),
+        GET_ACTIONS("getActions"), PROCESS_ACTION("processAction");
+
+        private final String methodName;
+
+        EntityMethod(String methodName) {
+            this.methodName = methodName;
+        }
+
+        public String getMethodName() {
+            return methodName;
+        }
     }
 }

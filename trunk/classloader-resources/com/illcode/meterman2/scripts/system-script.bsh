@@ -1,5 +1,8 @@
 // bsh script to set up the system namespace
 
+// out() and outPassage() are used in ScriptSource scripts to emit text
+// that will be gathered and returned as the value of getText().
+
 /**
  * Output a simple text string.
  * @param text text to output

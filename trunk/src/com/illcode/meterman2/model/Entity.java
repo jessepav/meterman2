@@ -6,7 +6,8 @@ import com.illcode.meterman2.MMActions.Action;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.illcode.meterman2.model.EntityImpl.Methods.*;
+import com.illcode.meterman2.model.EntityImpl.EntityMethod;
+import static com.illcode.meterman2.model.EntityImpl.EntityMethod.*;
 
 /**
  * The base class through which the game system and UI interacts with entities.
@@ -21,7 +22,7 @@ public class Entity
     protected EntityImpl impl;
 
     private EntityImpl delegate;
-    private EnumSet<EntityImpl.Methods> delegateMethods;
+    private EnumSet<EntityMethod> delegateMethods;
     private AttributeSet attributes;
     private EntityContainer container;
 
@@ -58,7 +59,7 @@ public class Entity
      * @param delegate the delegate implementation
      * @param delegateMethods a set indicating which methods should be forwarded
      */
-    public void setDelegate(EntityImpl delegate, EnumSet<EntityImpl.Methods> delegateMethods) {
+    public void setDelegate(EntityImpl delegate, EnumSet<EntityMethod> delegateMethods) {
         this.delegate = delegate;
         this.delegateMethods = delegateMethods;
     }
@@ -188,7 +189,7 @@ public class Entity
      *              through the processing chain
      */
     public boolean processAction(Action action) {
-        if (delegate != null && delegateMethods.contains(PROCESS_ACTIONS))
+        if (delegate != null && delegateMethods.contains(PROCESS_ACTION))
             return delegate.processAction(this, action);
         else
             return impl.processAction(this, action);

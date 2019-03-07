@@ -291,7 +291,7 @@ public final class MMUI
     }
 
     /**
-     * Appens a newline to the main text area.
+     * Appends a newline to the main text area.
      */
     public void appendNewline() {
         mainFrame.textArea.append("\n");

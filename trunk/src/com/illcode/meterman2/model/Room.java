@@ -6,7 +6,8 @@ import com.illcode.meterman2.ui.UIConstants;
 import java.util.EnumSet;
 import java.util.List;
 
-import static com.illcode.meterman2.model.RoomImpl.Methods.*;
+import com.illcode.meterman2.model.RoomImpl.RoomMethod;
+import static com.illcode.meterman2.model.RoomImpl.RoomMethod.*;
 
 /**
  * The base class through which the game system and UI interacts with rooms.
@@ -21,7 +22,7 @@ public class Room implements EntityContainer
     protected RoomImpl impl;
 
     private RoomImpl delegate;
-    private EnumSet<RoomImpl.Methods> delegateMethods;
+    private EnumSet<RoomMethod> delegateMethods;
     private AttributeSet attributes;
     private ContainerSupport containerSupport;
 
@@ -60,7 +61,7 @@ public class Room implements EntityContainer
      * @param delegate the delegate implementation
      * @param delegateMethods a set indicating which methods should be forwarded
      */
-    public void setDelegate(RoomImpl delegate, EnumSet<RoomImpl.Methods> delegateMethods) {
+    public void setDelegate(RoomImpl delegate, EnumSet<RoomMethod> delegateMethods) {
         this.delegate = delegate;
         this.delegateMethods = delegateMethods;
     }

@@ -31,9 +31,20 @@ public interface RoomImpl
     /** See {@link Room#exiting(Room)} */
     boolean exiting(Room r, Room toRoom);
 
-    enum Methods
+    enum RoomMethod
     {
-        GET_NAME, GET_EXIT_NAME, GET_DESCRIPTION, GET_EXIT, GET_EXIT_LABEL,
-        ENTERED, EXITING;
+        GET_NAME("getName"), GET_EXIT_NAME("getExitName"), GET_DESCRIPTION("getDescription"),
+        GET_EXIT("getExit"), GET_EXIT_LABEL("getExitLabel"), ENTERED("entered"), EXITING("exiting");
+
+        private final String methodName;
+
+        RoomMethod(String methodName) {
+            this.methodName = methodName;
+        }
+
+        public String getMethodName() {
+            return methodName;
+        }
+
     }
 }
