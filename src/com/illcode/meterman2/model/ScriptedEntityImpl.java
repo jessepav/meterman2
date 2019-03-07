@@ -3,9 +3,6 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMScript.ScriptedMethod;
 import com.illcode.meterman2.Meterman2;
-import org.apache.commons.lang3.tuple.Pair;
-
-import static com.illcode.meterman2.Meterman2.gm;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -42,96 +39,65 @@ public class ScriptedEntityImpl implements EntityImpl
         return scriptedEntityMethods.keySet();
     }
 
+    // Note that if any of these methods are called, a ScriptedMethod should exist for that method,
+    // since only methods in scriptedEntityMethods.keySet() were reported to be available; thus if
+    // the map has no entry for a method, it is an error.
+
     public String getName(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.GET_NAME);
-        if (m != null)
-            try {
-                return (String) m.invoke(e).getLeft();
-            } catch (Exception e1) {
-                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
-                return "[getName error]";
-            }
-        else
-            return e.getName();
+        return getResultOrError(e, EntityMethod.GET_NAME, "[error]");
     }
 
     public String getDescription(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.GET_DESCRIPTION);
-        if (m != null)
-            try {
-                return (String) m.invoke(e).getLeft();
-            } catch (Exception e1) {
-                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
-                return "[getDescription error]";
-            }
-        else
-            return e.getDescription();
+        return getResultOrError(e, EntityMethod.GET_DESCRIPTION, "[error]");
     }
 
     public void lookInRoom(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.LOOK_IN_ROOM);
-        if (m != null)
-            m.invoke(e);
-        else
-            e.lookInRoom();
+        invokeMethod(e, EntityMethod.LOOK_IN_ROOM);
     }
 
     public void enterScope(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.ENTER_SCOPE);
-        if (m != null)
-            m.invoke(e);
-        else
-            e.enterScope();
+        invokeMethod(e, EntityMethod.ENTER_SCOPE);
     }
 
     public void exitingScope(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.EXITING_SCOPE);
-        if (m != null)
-            m.invoke(e);
-        else
-            e.exitingScope();
+        invokeMethod(e, EntityMethod.EXITING_SCOPE);
     }
 
     public void taken(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.TAKEN);
-        if (m != null)
-            m.invoke(e);
-        else
-            e.taken();
+        invokeMethod(e, EntityMethod.TAKEN);
     }
 
     public void dropped(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.DROPPED);
-        if (m != null)
-            m.invoke(e);
-        else
-            e.dropped();
+        invokeMethod(e, EntityMethod.DROPPED);
     }
 
-    @SuppressWarnings("unchecked")
     public List<MMActions.Action> getActions(Entity e) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.GET_ACTIONS);
-        if (m != null)
-            try {
-                return (List<MMActions.Action>) m.invoke(e).getLeft();
-            } catch (Exception e1) {
-                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
-                return Collections.emptyList();
-            }
-        else
-            return e.getActions();
+        return getResultOrError(e, EntityMethod.GET_ACTIONS, Collections.<MMActions.Action>emptyList());
     }
 
     public boolean processAction(Entity e, MMActions.Action action) {
-        ScriptedMethod m = scriptedEntityMethods.get(EntityMethod.PROCESS_ACTION);
+        Boolean result = getResultOrError(e, EntityMethod.PROCESS_ACTION, Boolean.FALSE);
+        return result.booleanValue();
+    }
+
+    private void invokeMethod(Entity e, EntityMethod method) {
+        ScriptedMethod m = scriptedEntityMethods.get(method);
         if (m != null)
+            m.invoke(e);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getResultOrError(Entity e, EntityMethod method, T errorVal) {
+        ScriptedMethod m = scriptedEntityMethods.get(method);
+        T result = null;
+        if (m != null) {
             try {
-                return ((Boolean) m.invoke(e).getLeft()).booleanValue();
-            } catch (Exception e1) {
-                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", e1);
-                return false;
+                result = (T) m.invoke(e).getLeft();
+            } catch (Exception ex) {
+                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", ex);
+                result = null;
             }
-        else
-            return e.processAction(action);
+        }
+        return result != null ? result : errorVal;
     }
 }
