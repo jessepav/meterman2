@@ -11,7 +11,7 @@ import java.util.List;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
-public class ScriptedEntityImpl implements EntityImpl
+public final class ScriptedEntityImpl implements EntityImpl
 {
     private final EnumMap<EntityMethod,ScriptedMethod> scriptedEntityMethods;
 
@@ -24,7 +24,6 @@ public class ScriptedEntityImpl implements EntityImpl
      */
     public ScriptedEntityImpl(String id, String source) {
         scriptedEntityMethods = new EnumMap<>(EntityMethod.class);
-
         List<ScriptedMethod> scriptedMethods = Meterman2.script.evalScript(id, source);
         for (ScriptedMethod sm : scriptedMethods) {  // methods defined in the script
             for (EntityMethod em : EntityMethod.values()) {  // our "method name" enum
@@ -55,58 +54,59 @@ public class ScriptedEntityImpl implements EntityImpl
     // the map has no entry for a method, it is an error.
 
     public String getName(Entity e) {
-        return getResultOrError(e, EntityMethod.GET_NAME, String.class, "[error]");
+        return invokeWithResultOrError(EntityMethod.GET_NAME, String.class, "[error]", e);
     }
 
     public String getDescription(Entity e) {
-        return getResultOrError(e, EntityMethod.GET_DESCRIPTION, String.class, "[error]");
+        return invokeWithResultOrError(EntityMethod.GET_DESCRIPTION, String.class, "[error]", e);
     }
 
     public void lookInRoom(Entity e) {
-        invokeMethod(e, EntityMethod.LOOK_IN_ROOM);
+        invokeMethod(EntityMethod.LOOK_IN_ROOM, e);
     }
 
     public void enterScope(Entity e) {
-        invokeMethod(e, EntityMethod.ENTER_SCOPE);
+        invokeMethod(EntityMethod.ENTER_SCOPE, e);
     }
 
     public void exitingScope(Entity e) {
-        invokeMethod(e, EntityMethod.EXITING_SCOPE);
+        invokeMethod(EntityMethod.EXITING_SCOPE, e);
     }
 
     public void taken(Entity e) {
-        invokeMethod(e, EntityMethod.TAKEN);
+        invokeMethod(EntityMethod.TAKEN, e);
     }
 
     public void dropped(Entity e) {
-        invokeMethod(e, EntityMethod.DROPPED);
+        invokeMethod(EntityMethod.DROPPED, e);
     }
 
     @SuppressWarnings("unchecked")
     public List<MMActions.Action> getActions(Entity e) {
-        return getResultOrError(e, EntityMethod.GET_ACTIONS, List.class, Collections.<MMActions.Action>emptyList());
+        return invokeWithResultOrError(EntityMethod.GET_ACTIONS, List.class,
+                                       Collections.<MMActions.Action>emptyList(), e);
     }
 
     public boolean processAction(Entity e, MMActions.Action action) {
-        Boolean result = getResultOrError(e, EntityMethod.PROCESS_ACTION, Boolean.class, Boolean.FALSE);
-        return result.booleanValue();
+        return invokeWithResultOrError(EntityMethod.PROCESS_ACTION, Boolean.class, Boolean.FALSE, e, action);
     }
 
     // Invoke a method with no return value.
-    private void invokeMethod(Entity e, EntityMethod method) {
+    private void invokeMethod(EntityMethod method, Object... args) {
         ScriptedMethod m = scriptedEntityMethods.get(method);
         if (m != null)
-            m.invoke(e);
+            m.invoke(args);
     }
 
     // Invoke a method that should return a non-null value.
     @SuppressWarnings("unchecked")
-    private <T> T getResultOrError(Entity e, EntityMethod method, Class<? extends T> clazz, T errorVal) {
+    private <T> T invokeWithResultOrError(EntityMethod method, Class<? extends T> resultClass,
+                                          T errorVal, Object... args) {
         ScriptedMethod m = scriptedEntityMethods.get(method);
         T result = null;
         if (m != null) {
             try {
-                result = clazz.cast(m.invoke());
+                result = resultClass.cast(m.invoke(args));
             } catch (ClassCastException ex) {
                 logger.warning("ScriptedEntityImpl ClassCastException in " + method.getMethodName());
                 result = null;
