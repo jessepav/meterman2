@@ -83,7 +83,7 @@ public final class Meterman2
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
         bundles = new BundleGroup();
-        XBundle sysBundle = new XBundle(assets.pathForSystemAsset("system-bundle.xml"));
+        XBundle sysBundle = XBundle.loadFromPath(assets.pathForSystemAsset("system-bundle.xml"));
         bundles.setSystemBundles(sysBundle);
 
         actions = new MMActions();
