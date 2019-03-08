@@ -33,6 +33,15 @@ public final class XBundle
     /** Constant indicating paragraphs should be indicated by an indent. */
     public static final int PARAGRAPH_INDENTED = 1;
 
+    /** Returned if a passage is requested that doesn't exist.*/
+    public static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
+
+    /** Returned if a passage has some sort of error. */
+    public static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
+
+    // Used to indicate a passage exists but hasn't yet been parsed.
+    private static final TextSource PLACEHOLDER_TEXT_SOURCE = new StringSource("[placeholder]");
+
     private String name;
     private Path path;  // the path from which we were loaded
     private Document doc;
@@ -40,34 +49,36 @@ public final class XBundle
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
 
-    // Used to indicate a passage exists but hasn't yet been parsed.
-    private static final TextSource PLACEHOLDER_TEXT_SOURCE = new StringSource("[placeholder]");
-
-    /** Returned if a passage is requested that doesn't exist.*/
-    public static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
-
-    /** Returned if a passage has some sort of error. */
-    public static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
-
     private char escapeChar = '@';
     private char spaceChar = '\u00AC';
     private int paragraphStyle = PARAGRAPH_BLANK_LINE;
     private String indent = "    ";
 
-    /**
-     * Construct an XBundle by reading and parsing an XML document at a given path.
-     * @param p path of the XML document
-     */
-    public XBundle(Path p) {
-        this.path = p;
+    private XBundle() {
         elementMap = new HashMap<>(200);
         passageMap = new HashMap<>(100);
+    }
+
+    /**
+     * Load a new XBundle by reading and parsing an XML document at a given path.
+     * @param p path of the XML document
+     */
+    public static XBundle loadFromPath(Path p) {
+        XBundle b = new XBundle();
+        b.path = p;
+        b.reload();
+        return b;
+    }
+
+    public void reload() {
+        if (path == null)
+            return;
         try {
             SAXBuilder sax = new SAXBuilder();
-            this.doc = sax.build(p.toFile());
+            doc = sax.build(path.toFile());
             initBundle();
         } catch (JDOMException|IOException ex) {
-            logger.log(Level.WARNING, "Exception constructing an XBundle from Path:", ex);
+            logger.log(Level.WARNING, "Exception loading an XBundle from " + path.getFileName().toString(), ex);
         }
     }
 
@@ -86,6 +97,8 @@ public final class XBundle
             logger.warning("XBundle root element has no 'name' attribute.");
             return;
         }
+        elementMap.clear();
+        passageMap.clear();
         for (Element e : root.getChildren()) {
             Attribute attr = e.getAttribute("id");
             if (attr != null) {
@@ -100,6 +113,42 @@ public final class XBundle
     /** Return the name of this bundle. */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Return the XML element with the given id attribute, or null if no such element exists.
+     */
+    public Element getElement(String id) {
+        return elementMap.get(id);
+    }
+
+    /**
+     * Returns a list of elements directly under the XBundle root with the given local name.
+     * @param cname local name of children
+     * @return matching child elements
+     */
+    public List<Element> getElements(String cname) {
+        if (root == null)
+            return Collections.emptyList();
+        else
+            return root.getChildren(cname);
+    }
+
+    /**
+     * Return a TextSource of the passage with the given id attribute. If no such
+     * passage exists, return {@link #MISSING_TEXT_SOURCE}.
+     */
+    public TextSource getPassage(String id) {
+        TextSource source = passageMap.get(id);
+        if (source == null) {
+            source = MISSING_TEXT_SOURCE;
+        } else if (source == PLACEHOLDER_TEXT_SOURCE) {
+            // We only construct the actual source the first time the passage is requested.
+            // The elementMap surely contains such an element because the id was in the passageMap.
+            source = elementTextSource(elementMap.get(id));
+            passageMap.put(id, source);  // and save it for next time
+        }
+        return source;
     }
 
     /**
@@ -140,42 +189,6 @@ public final class XBundle
         final Attribute idAttr = e.getAttribute("id");
         // in the future we can check for the actual value of the script attribute, like "bsh"
         return scriptAttr != null && idAttr != null;
-    }
-
-    /**
-     * Return the XML element with the given id attribute, or null if no such element exists.
-     */
-    public Element getElement(String id) {
-        return elementMap.get(id);
-    }
-
-    /**
-     * Returns a list of elements directly under the XBundle root with the given local name.
-     * @param cname local name of children
-     * @return matching child elements
-     */
-    public List<Element> getElements(String cname) {
-        if (root == null)
-            return Collections.emptyList();
-        else
-            return root.getChildren(cname);
-    }
-
-    /**
-     * Return a TextSource of the passage with the given id attribute. If no such
-     * passage exists, return {@link #MISSING_TEXT_SOURCE}.
-     */
-    public TextSource getPassage(String id) {
-        TextSource source = passageMap.get(id);
-        if (source == null) {
-            source = MISSING_TEXT_SOURCE;
-        } else if (source == PLACEHOLDER_TEXT_SOURCE) {
-            // We only construct the actual source the first time the passage is requested.
-            // The elementMap surely contains such an element because the id was in the passageMap.
-            source = elementTextSource(elementMap.get(id));
-            passageMap.put(id, source);  // and save it for next time
-        }
-        return source;
     }
 
     /** Get the escape character (by default '@') used to start escape sequences. */
