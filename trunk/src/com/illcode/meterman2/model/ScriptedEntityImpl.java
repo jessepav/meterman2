@@ -4,14 +4,18 @@ import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMScript.ScriptedMethod;
 import com.illcode.meterman2.Meterman2;
 
-import static com.illcode.meterman2.MMLogging.logger;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.List;
 
-import java.util.*;
-import java.util.logging.Level;
+import static com.illcode.meterman2.MMLogging.logger;
 
 public class ScriptedEntityImpl implements EntityImpl
 {
-    private EnumMap<EntityMethod,ScriptedMethod> scriptedEntityMethods;
+    private final EnumMap<EntityMethod,ScriptedMethod> scriptedEntityMethods;
+
+    private EnumSet<EntityMethod> methodSet;  // cache for getScriptedEntityMethods()
 
     /**
      * Construct a scripted entity implementation whose methods are defined in a script.
@@ -35,8 +39,15 @@ public class ScriptedEntityImpl implements EntityImpl
     /**
      * Return a set of the methods defined in the script.
      */
-    public Set<EntityMethod> getScriptedEntityMethods() {
-        return scriptedEntityMethods.keySet();
+    public EnumSet<EntityMethod> getScriptedEntityMethods() {
+        if (methodSet == null) {
+            // EnumSet.copyOf() requires that the passed collection have at least one element.
+            if (scriptedEntityMethods.isEmpty())
+                methodSet = EnumSet.noneOf(EntityMethod.class);
+            else
+                methodSet = EnumSet.copyOf(scriptedEntityMethods.keySet());
+        }
+        return methodSet;
     }
 
     // Note that if any of these methods are called, a ScriptedMethod should exist for that method,
@@ -44,11 +55,11 @@ public class ScriptedEntityImpl implements EntityImpl
     // the map has no entry for a method, it is an error.
 
     public String getName(Entity e) {
-        return getResultOrError(e, EntityMethod.GET_NAME, "[error]");
+        return getResultOrError(e, EntityMethod.GET_NAME, String.class, "[error]");
     }
 
     public String getDescription(Entity e) {
-        return getResultOrError(e, EntityMethod.GET_DESCRIPTION, "[error]");
+        return getResultOrError(e, EntityMethod.GET_DESCRIPTION, String.class, "[error]");
     }
 
     public void lookInRoom(Entity e) {
@@ -71,30 +82,33 @@ public class ScriptedEntityImpl implements EntityImpl
         invokeMethod(e, EntityMethod.DROPPED);
     }
 
+    @SuppressWarnings("unchecked")
     public List<MMActions.Action> getActions(Entity e) {
-        return getResultOrError(e, EntityMethod.GET_ACTIONS, Collections.<MMActions.Action>emptyList());
+        return getResultOrError(e, EntityMethod.GET_ACTIONS, List.class, Collections.<MMActions.Action>emptyList());
     }
 
     public boolean processAction(Entity e, MMActions.Action action) {
-        Boolean result = getResultOrError(e, EntityMethod.PROCESS_ACTION, Boolean.FALSE);
+        Boolean result = getResultOrError(e, EntityMethod.PROCESS_ACTION, Boolean.class, Boolean.FALSE);
         return result.booleanValue();
     }
 
+    // Invoke a method with no return value.
     private void invokeMethod(Entity e, EntityMethod method) {
         ScriptedMethod m = scriptedEntityMethods.get(method);
         if (m != null)
             m.invoke(e);
     }
 
+    // Invoke a method that should return a non-null value.
     @SuppressWarnings("unchecked")
-    private <T> T getResultOrError(Entity e, EntityMethod method, T errorVal) {
+    private <T> T getResultOrError(Entity e, EntityMethod method, Class<? extends T> clazz, T errorVal) {
         ScriptedMethod m = scriptedEntityMethods.get(method);
         T result = null;
         if (m != null) {
             try {
-                result = (T) m.invoke(e).getLeft();
-            } catch (Exception ex) {
-                logger.log(Level.WARNING, "ScriptedEntityImpl exception:", ex);
+                result = clazz.cast(m.invoke());
+            } catch (ClassCastException ex) {
+                logger.warning("ScriptedEntityImpl ClassCastException in " + method.getMethodName());
                 result = null;
             }
         }

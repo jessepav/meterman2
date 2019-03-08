@@ -1,7 +1,5 @@
 package com.illcode.meterman2.text;
 
-import bsh.NameSpace;
-import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.MMScript.ScriptedMethod;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.bundle.XBundle;
@@ -55,7 +53,7 @@ public class ScriptSource implements TextSource
             if (bundle != null)
                 method.setVariable("bundle", bundle);
         }
-        String output = method.invoke().getRight();
+        String output = method.invokeGetOutput();
         if (bundle != null)
             output = bundle.formatText(output);
         return output;

@@ -1,6 +1,7 @@
 package com.illcode.meterman2;
 
 import bsh.*;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public final class MMScript
 
     private void initSystemNameSpace() {
         systemNameSpace.importPackage("com.illcode.meterman2.model");
+        systemNameSpace.importClass("com.illcode.meterman2.MMActions");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
 
         outputBuilder = new StringBuilder(1024);
@@ -184,28 +186,51 @@ public final class MMScript
         }
 
         /**
-         * Invoke the method, passing a list of arguments.
+         * Invoke the method, passing a list of arguments, and return the emitted text.
+         * To emit text, the script may call the {@code out(String text)} and {@code outPassage(String id)}
+         * methods defined in the system namespace.
          * @param args arguments to the method
-         * @return a pair comprising the return value of the scripted method (as the "left" member of the pair),
-         *         and the string output emitted (as the "right" member of the pair)
+         * @return the string output emitted
          */
-        public Pair<Object,String> invoke(Object... args) {
-            Object retval;
+        public String invokeGetOutput(Object... args) {
             String output;
             try {
-                Object[] bshArgs = new Object[args.length];  // we need to wrap null values as Primitive.NULL
-                for (int i = 0; i < args.length; i++)
-                    bshArgs[i] = args[i] == null ? Primitive.NULL : args[i];
                 outputBuilder.setLength(0);
-                retval = bshMethod.invoke(bshArgs, intr);
+                bshMethod.invoke(getBshArgs(args), intr);
                 output = outputBuilder.toString();
                 outputBuilder.setLength(0);
             } catch (EvalError err) {
-                retval = null;
                 output = "MMScript error: " + err.getMessage();
                 logger.warning(output);
             }
-            return Pair.of(retval, output);
+            return output;
+        }
+
+        /**
+         * Invoke the method, passing a list of arguments.
+         * @param args arguments to the method
+         * @return the return value of the method
+         */
+        public Object invoke(Object... args) {
+            Object result;
+            try {
+                result = bshMethod.invoke(getBshArgs(args), intr);
+            } catch (EvalError err) {
+                logger.log(Level.WARNING, "MMScript error:", err);
+                result = null;
+            }
+            return result;
+        }
+
+        private Object[] getBshArgs(Object[] args) {
+            // optimize the case where no new array creation is required
+            if (ArrayUtils.indexOf(args, null) == -1)
+                return args;
+
+            Object[] bshArgs = new Object[args.length];  // we need to wrap null values as Primitive.NULL
+            for (int i = 0; i < args.length; i++)
+                bshArgs[i] = args[i] == null ? Primitive.NULL : args[i];
+            return bshArgs;
         }
     }
 }

@@ -94,7 +94,7 @@ public class Entity
         this.container = container;
     }
 
-    /** Return the name of this entity */
+    /** Return the name of this entity (never null). */
     public String getName() {
         if (delegate != null && delegateMethods.contains(GET_NAME))
             return delegate.getName(this);
@@ -102,7 +102,7 @@ public class Entity
             return impl.getName(this);
     }
 
-    /** Return the entity description. */
+    /** Return the entity description (never null). */
     public String getDescription() {
         if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
             return delegate.getDescription(this);
