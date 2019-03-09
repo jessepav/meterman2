@@ -31,7 +31,6 @@
     <orderEntry type="library" name="PaulsCodeSoundSystem" level="project" />
     <orderEntry type="library" name="JOAL" level="project" />
     <orderEntry type="library" name="freemarker-2.3.28" level="project" />
-    <orderEntry type="library" exported="" name="commons-collections4" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
   </component>
 </module>
