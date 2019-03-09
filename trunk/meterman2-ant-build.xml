@@ -35,6 +35,7 @@
     <exclude name="**/.bundle/**"/>
     <exclude name="**/*.rbc/**"/>
   </patternset>
+  <patternset id="compiler.excluded"/>
   <patternset id="library.patterns">
     <include name="*.zip"/>
     <include name="*.apk"/>
@@ -65,10 +66,6 @@
   
   <path id="library.commons-codec.classpath">
     <pathelement location="${basedir}/lib/commons-codec-1.11.jar"/>
-  </path>
-  
-  <path id="library.commons-collections4.classpath">
-    <pathelement location="${basedir}/lib/commons-collections4-4.2.jar"/>
   </path>
   
   <path id="library.commons-io.classpath">
@@ -152,7 +149,6 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
-    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -168,7 +164,6 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
-    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -184,7 +179,6 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
-    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -201,7 +195,6 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
-    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -211,6 +204,7 @@
   </patternset>
   
   <patternset id="excluded.from.compilation.meterman2">
+    <patternset refid="compiler.excluded"/>
     <patternset refid="excluded.from.module.meterman2"/>
   </patternset>
   
@@ -239,16 +233,19 @@
       <fileset dir="${module.meterman2.basedir}/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
+        <patternset refid="excluded.from.compilation.meterman2"/>
       </fileset>
       <fileset dir="${module.meterman2.basedir}/classloader-resources">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
+        <patternset refid="excluded.from.compilation.meterman2"/>
       </fileset>
     </copy>
     <copy todir="${meterman2.output.dir}/com/illcode/meterman2/ui">
       <fileset dir="${module.meterman2.basedir}/forms">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
+        <patternset refid="excluded.from.compilation.meterman2"/>
       </fileset>
     </copy>
   </target>
@@ -281,7 +278,6 @@
     <path refid="library.beanshell2.classpath"/>
     <path refid="library.commons-lang3.classpath"/>
     <path refid="library.jdom.classpath"/>
-    <path refid="library.commons-collections4.classpath"/>
   </path>
   
   <path id="riverboat.runtime.production.module.classpath">
@@ -296,7 +292,6 @@
     <path refid="library.beanshell2.classpath"/>
     <path refid="library.commons-lang3.classpath"/>
     <path refid="library.jdom.classpath"/>
-    <path refid="library.commons-collections4.classpath"/>
   </path>
   
   <path id="riverboat.runtime.module.classpath">
@@ -311,6 +306,7 @@
   </patternset>
   
   <patternset id="excluded.from.compilation.riverboat">
+    <patternset refid="compiler.excluded"/>
     <patternset refid="excluded.from.module.riverboat"/>
   </patternset>
   
@@ -337,6 +333,7 @@
       <fileset dir="${module.riverboat.basedir}/games/riverboat/src">
         <patternset refid="compiler.resources"/>
         <type type="file"/>
+        <patternset refid="excluded.from.compilation.riverboat"/>
       </fileset>
     </copy>
   </target>
