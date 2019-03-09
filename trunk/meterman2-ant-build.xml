@@ -68,6 +68,10 @@
     <pathelement location="${basedir}/lib/commons-codec-1.11.jar"/>
   </path>
   
+  <path id="library.commons-collections4.classpath">
+    <pathelement location="${basedir}/lib/commons-collections4-4.2.jar"/>
+  </path>
+  
   <path id="library.commons-io.classpath">
     <pathelement location="${basedir}/lib/commons-io-2.6.jar"/>
   </path>
@@ -149,6 +153,7 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -164,6 +169,7 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -179,6 +185,7 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
@@ -195,6 +202,7 @@
     <path refid="library.paulscodesoundsystem.classpath"/>
     <path refid="library.joal.classpath"/>
     <path refid="library.freemarker-2.3.28.classpath"/>
+    <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
   </path>
   
