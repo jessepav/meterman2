@@ -3,6 +3,8 @@ package com.illcode.meterman2.ui;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.MMActions.Action;
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.text.WordUtils;
 
 import javax.swing.JTextArea;
@@ -34,7 +36,8 @@ public final class MMUI
 
     List<String> roomEntityIds, inventoryEntityIds;
 
-    private Map<String,BufferedImage> imageMap;
+    private Map<String,Path> imageMap;
+    private LRUImageCacheMap loadedImages;
     private BufferedImage defaultFrameImage;
     private String currentFrameImage, currentEntityImage;
 
@@ -47,7 +50,8 @@ public final class MMUI
         this.handler = handler;
         roomEntityIds = new ArrayList<>(16);
         inventoryEntityIds = new ArrayList<>(16);
-        imageMap = new HashMap<>();
+        imageMap = new HashMap<>(64);
+        loadedImages = new LRUImageCacheMap(Utils.intPref("image-cache-size", 32));
     }
 
     /**
@@ -102,7 +106,7 @@ public final class MMUI
     public void dispose() {
         Runnable doRun = new Runnable() {
             public void run() {
-                unloadAllImages();
+                clearImages();
                 defaultFrameImage.flush();
                 defaultFrameImage = null;
                 waitDialog.dispose();
@@ -123,7 +127,7 @@ public final class MMUI
                 logger.log(Level.WARNING, "MMUI.dispose()", e);
             }
         }
-        imageMap = null;
+        loadedImages = null;
         inventoryEntityIds = null;
         roomEntityIds = null;
         this.handler = null;
@@ -155,24 +159,48 @@ public final class MMUI
     }
 
     /**
-     * Load an image into the UI. JPEG and PNG (with bitmask transparency) are supported.
-     * @param name name by which the image will be referred to in the {@code setXXXImage()} methods.
-     * @param p path of the image file.
+     * Add an image mapping. You must call {@link #loadImage(String)} before this image
+     * can be displayed.
+     * @param name name by which the image will be referenced
+     * @param path path to the image file. JPEG and PNG (with bitmask transparency) are supported.
      */
-    public void loadImage(String name, Path p) {
-        if (!imageMap.containsKey(name)) {
-            BufferedImage img = GuiUtils.loadBitmaskImage(p);
-            if (img != null)
-                imageMap.put(name, img);
-        }
+    public void addImageMapping(String name, Path path) {
+        imageMap.put(name, path);
     }
 
     /**
-     * Unload an image from the UI.
+     * Remove an image mapping. If the image is loaded, it will be unloaded.
+     * @param name name under which the image was added.
+     */
+    public void removeImageMapping(String name) {
+        unloadImage(name);
+        imageMap.remove(name);
+    }
+
+    /**
+     * Load an image, if it's not already loaded.
+     * @param name image name, as given in {@link #addImageMapping(String, Path)}
+     * @return image thus loaded, or null if it could not be loaded
+     */
+    public BufferedImage loadImage(String name) {
+        BufferedImage img = loadedImages.get(name);
+        if (img == null) {
+            Path p = imageMap.get(name);
+            if (p == null)
+                return null;
+            img = GuiUtils.loadBitmaskImage(p);
+            if (img != null)
+                loadedImages.put(name, img);
+        }
+        return img;
+    }
+
+    /**
+     * Unload an image.
      * @param name name of image
      */
     public void unloadImage(String name) {
-        BufferedImage img = imageMap.get(name);
+        BufferedImage img = loadedImages.remove(name);
         if (img != null) {
             if (currentFrameImage.equals(name)) {
                 currentFrameImage = UIConstants.NO_IMAGE;
@@ -183,18 +211,21 @@ public final class MMUI
                 mainFrame.setEntityImage(null);
             }
             img.flush();
-            imageMap.remove(name);
         }
     }
 
-    /** Unload all images from the UI. */
-    public void unloadAllImages() {
+    /** Unload all images and remove all mappings. */
+    public void clearImages() {
         mainFrame.setFrameImage(null);
         currentFrameImage = UIConstants.NO_IMAGE;
         mainFrame.setEntityImage(null);
         currentEntityImage = UIConstants.NO_IMAGE;
-        for (BufferedImage img : imageMap.values())
-            img.flush();
+        MapIterator<String,BufferedImage> iter = loadedImages.mapIterator();
+        while (iter.hasNext()) {
+            iter.next();
+            iter.getValue().flush();
+        }
+        loadedImages.clear();
         imageMap.clear();
     }
 
@@ -203,7 +234,7 @@ public final class MMUI
      * Sets the image displayed in the main UI frame. The recommended size for
      * frame images is 150x400 pixels, or an integer fraction of that, in which
      * case the image will be scaled up.
-     * @param imageName name of the image, as chosen in {@link #loadImage(String, Path)}
+     * @param imageName name of the image
      */
     public void setFrameImage(String imageName) {
         if (currentFrameImage.equals(imageName))
@@ -215,7 +246,7 @@ public final class MMUI
         else if (imageName == UIConstants.NO_IMAGE)
             img = null;
         else
-            img = imageMap.get(imageName);
+            img = loadImage(imageName);
         mainFrame.setFrameImage(img);
     }
 
@@ -232,7 +263,7 @@ public final class MMUI
      * Sets the entity image that will be drawn inset in the frame image. The recommended size for entity
      * images is 140x140 pixels, or an integer fraction of that, in which case the image will be scaled up;
      * the image itself should have a border to visually separate it from the frame image.
-     * @param imageName name of the image, as chosen in {@link #loadImage(String, Path)}
+     * @param imageName name of the image
      */
     public void setEntityImage(String imageName) {
         if (currentEntityImage.equals(imageName))
@@ -242,7 +273,7 @@ public final class MMUI
         if (imageName == UIConstants.NO_IMAGE)
             img = null;
         else
-            img = imageMap.get(imageName);
+            img = loadImage(imageName);
         mainFrame.setEntityImage(img);
     }
 
@@ -496,13 +527,13 @@ public final class MMUI
     /**
      * Shows a dialog displaying an image.
      * @param header header surmounted above the image
-     * @param imageName name of the image, as chosen in {@link #loadImage(String, Path)}
+     * @param imageName name of the image
      * @param scale the factor (>= 1) by which the image will be scaled before being shown
      * @param text text passage shown below the image
      * @param buttonLabel label of the button used to dismiss dialog
      */
     public void showImageDialog(String header, String imageName, int scale, String text, String buttonLabel) {
-        BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : imageMap.get(imageName);
+        BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : loadImage(imageName);
         if (image != null && scale > 1)
             image = GuiUtils.getScaledImage(image, scale);
         imageDialog.show(header, image, wrapDialogText(text), buttonLabel);
@@ -529,4 +560,22 @@ public final class MMUI
         return WordUtils.wrap(text, dialogTextColumns, "\n", true);
     }
 
+    private class LRUImageCacheMap extends LRUMap<String,BufferedImage>
+    {
+        LRUImageCacheMap(int maxSize) {
+            super(maxSize, true);
+        }
+
+        protected boolean removeLRU(LinkEntry<String,BufferedImage> entry) {
+            final String name = entry.getKey();
+            final BufferedImage image = entry.getValue();
+            // Don't evict a currently-used image.
+            if (!name.equals(currentFrameImage) && !name.equals(currentEntityImage)) {
+                image.flush();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
 }
