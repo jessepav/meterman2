@@ -89,7 +89,7 @@ public final class MMSound
     }
 
     /**
-     * Add an audio source mapping. You must call {@link #loadSource(String)} before this source can be played.
+     * Add an audio source mapping.
      * <p/>
      * Adding more than one mapping with the same source name after audio has been loaded may leak resources, so
      * avoid doing it.
