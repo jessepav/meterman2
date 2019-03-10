@@ -1,5 +1,6 @@
 package com.illcode.meterman2.state;
 
+import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Game;
 
@@ -25,16 +26,32 @@ public final class GameState
      */
     public Map<String,List<String>> gameHandlers;
 
-    /** A mapping from entity ID to container ID. */
-    public Map<String,String> entityLocations;
+    /** State of all entities. */
+    public Map<String,EntityState> entityState;
 
-    /** A mapping from container ID to the container type.
-     *  @see EntityContainer#getContainerType() */
-    public Map<String,Integer> containerTypes;
+    /** Map from room ID to the room's attributes. */
+    public Map<String,AttributeSet> roomAttributes;
+
+    /** The number of system attributes that were registered when this game was saved.
+     *  If the number of system attributes is different at the time it is loaded, we
+     *  need to shift around the attribute numbers in our restored attribute sets to compensate. */
+    public int numSystemAttributes;
 
     /** The ID of the container where the player resides. */
     public String playerLocation;
 
     /** The IDs of the entities the player has equipped. */
     public Set<String> equippedEntityIds;
+
+    public static final class EntityState
+    {
+        /** The container where the entity is located, or null. */
+        String containerId;
+
+        /** @see EntityContainer#getContainerType() */
+        int containerType;
+
+        /** Entity attributes. */
+        AttributeSet attributes;
+    }
 }
