@@ -50,6 +50,11 @@ public class MMAttributes
         numSystemAttributes = nextAttrNum;
     }
 
+    /** Get the number of system attributes registered. */
+    public int getNumSystemAttributes() {
+        return numSystemAttributes;
+    }
+
     /**
      * Reset the attribute registration system to its state at the point when
      * {@link #markSystemAttributesDone()} was called.
