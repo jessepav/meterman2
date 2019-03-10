@@ -34,7 +34,7 @@ public class AttributeSet
         bits.set(attrNum, value);
     }
 
-    /** Set multiple attributes to true.*/
+    /** Set multiple attributes to true. */
     public void setMultiple(int... attributes) {
         for (int j : attributes)
             bits.set(j);
@@ -52,12 +52,21 @@ public class AttributeSet
         return newSet;
     }
 
+    /**
+     * Get a view of this attribute set as a BitSet. Changes to this attribute set will be
+     * reflected in the bit-set, and vice versa.
+     * @return BitSet view of this attribute set.
+     */
+    public BitSet asBitSet() {
+        return bits;
+    }
+
     /** Return this attribute set as a byte array. */
     public byte[] toByteArray() {
         return bits.toByteArray();
     }
 
-    // The shiftLeft() and shiftRight() methods were last present in revision r91,
+    // The shiftLeft() and shiftRight() methods were last present in SVN revision 91,
     // if for some reason you need them again.
 
     /** Return a new attribute set from a byte array. */

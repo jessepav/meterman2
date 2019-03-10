@@ -2,6 +2,7 @@ package com.illcode.meterman2;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,11 +51,6 @@ public class MMAttributes
         numSystemAttributes = nextAttrNum;
     }
 
-    /** Get the number of system attributes registered. */
-    public int getNumSystemAttributes() {
-        return numSystemAttributes;
-    }
-
     /**
      * Reset the attribute registration system to its state at the point when
      * {@link #markSystemAttributesDone()} was called.
@@ -75,5 +71,10 @@ public class MMAttributes
     /** Return the attribute number for a given name (case insensitive), or -1 if no such name exists. */
     public int attributeForName(String name) {
         return attributeNames.indexOf(name.toLowerCase());
+    }
+
+    /** Return a list of all registered attribute names. */
+    public List<String> getAttributeNames() {
+        return Collections.unmodifiableList(attributeNames);
     }
 }
