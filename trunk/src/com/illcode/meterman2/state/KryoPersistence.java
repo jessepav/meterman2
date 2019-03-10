@@ -4,11 +4,9 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.illcode.meterman2.AttributeSet;
-import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.BitSet;
 
 /**
@@ -24,9 +22,6 @@ public final class KryoPersistence
         // My serializers
         kryo.register(BitSet.class, new BitSetSerializer());
         kryo.register(AttributeSet.class, new AttributeSetSerializer());
-
-        // Serializers from kryo-serializers
-        kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
 
         // properly serialize multiple references and cyclic graphs
         kryo.setReferences(true);

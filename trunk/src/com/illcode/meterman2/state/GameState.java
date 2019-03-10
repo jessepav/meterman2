@@ -3,7 +3,9 @@ package com.illcode.meterman2.state;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Game;
+import com.illcode.meterman2.ui.UIConstants;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,12 +13,15 @@ import java.util.Set;
 /**
  * Contains all the state objects, listener lists, entity placements, etc. needed
  * to save and restore a game's state.
+ * <p/>
+ * We use concrete class types here rather than interfaces so that serialization and deserialization
+ * are predictable.
  */
 public final class GameState
 {
     /** The game state objects as returned by {@link Game#getGameStateObjects()} when the game
      *  was first started. */
-    public Map<String,Object> gameStateObjects;
+    public HashMap<String,Object> gameStateObjects;
 
     /**
      * Used to persist the registered event listeners in the GameManager.
@@ -24,24 +29,23 @@ public final class GameState
      * Each handler list (ex. turnListeners) is stored in an appropriately named key ("turnListeners"),
      * with the value being a list of the IDs of the registered handlers of that type.
      */
-    public Map<String,List<String>> gameHandlers;
+    public HashMap<String,List<String>> gameHandlers;
 
     /** State of all entities. */
-    public Map<String,EntityState> entityState;
+    public HashMap<String,EntityState> entityState;
 
     /** Map from room ID to the room's attributes. */
-    public Map<String,AttributeSet> roomAttributes;
+    public HashMap<String,AttributeSet> roomAttributes;
 
-    /** The number of system attributes that were registered when this game was saved.
-     *  If the number of system attributes is different at the time it is loaded, we
-     *  need to shift around the attribute numbers in our restored attribute sets to compensate. */
-    public int numSystemAttributes;
+    /** The names of all the attributes (and implicitly in their indices, their attribute
+     *  numbers) registered at the time this game was saved. */
+    public String[] attributeNames;
 
     /** The ID of the container where the player resides. */
     public String playerLocation;
 
     /** The IDs of the entities the player has equipped. */
-    public Set<String> equippedEntityIds;
+    public String[] equippedEntityIds;
 
     public static final class EntityState
     {
@@ -53,5 +57,17 @@ public final class GameState
 
         /** Entity attributes. */
         AttributeSet attributes;
+    }
+
+    public static final class RoomState
+    {
+        /** Room attributes. */
+        AttributeSet attributes;
+
+        /** IDs of the rooms (or null) for each of the {@link UIConstants#NUM_EXIT_BUTTONS} positions. */
+        String[] exitRoomIds;
+
+        /** Exit labels (or null) for each of the {@link UIConstants#NUM_EXIT_BUTTONS} positions. */
+        String[] exitLabels;
     }
 }
