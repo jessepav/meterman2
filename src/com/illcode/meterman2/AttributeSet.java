@@ -57,40 +57,8 @@ public class AttributeSet
         return bits.toByteArray();
     }
 
-    /**
-     * Shift the bits representing this attribute set to the left; that is, bits will be moved
-     * to higher indices and the bits from <em>fromIdx</em> (inclusive) to <em>fromIdx + n</em> (exclusive)
-     * will be cleared.
-     * @param fromIdx only bits from {@code fromIdx} (inclusive) to the bit-length of this set will be shifted.
-     * @param n number of bits to shift
-     */
-    public void shiftLeft(int fromIdx, int n) {
-        int len = bits.length();
-        if (n == 0 || fromIdx >= len)
-            return;
-        for (int i = len - 1; i >= fromIdx; i--)
-            bits.set(i + n, bits.get(i));
-        bits.clear(fromIdx, fromIdx + n);
-    }
-
-    /**
-     * Shift the bits representing this attribute set to the right; that is, bits will be moved
-     * to lower indices and previous bit-length of this set will be reduced by <em>n</em>.
-     * @param fromIdx only bits from {@code fromIdx} (inclusive) to the bit-length of this set will be shifted.
-     * @param n number of bits to shift
-     */
-    public void shiftRight(int fromIdx, int n) {
-        int len = bits.length();
-        if (n == 0 || fromIdx >= len)
-            return;
-        if (n >= len - fromIdx) {   // all bits shifted away
-            bits.clear(fromIdx, len);
-            return;
-        }
-        for (int i = fromIdx + n; i < len; i++)
-            bits.set(i - n, bits.get(i));
-        bits.clear(len - n, len);
-    }
+    // The shiftLeft() and shiftRight() methods were last present in revision r91,
+    // if for some reason you need them again.
 
     /** Return a new attribute set from a byte array. */
     public static AttributeSet fromByteArray(byte[] bytes) {
