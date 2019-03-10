@@ -1,5 +1,7 @@
 package com.illcode.meterman2;
 
+import org.apache.commons.collections4.MapIterator;
+import org.apache.commons.collections4.map.LRUMap;
 import paulscode.sound.Library;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -13,9 +15,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
@@ -35,12 +35,11 @@ public final class MMSound
 
     private SoundSystem soundSystem;
 
-    /** Map from source name to its associated record. */
+    /** Map from source name to its associated record for all registered sources. */
     private Map<String,SoundRecord> sourceMap;
 
-    // In the future we may change this to an LRU cache data structure.
-    /** Source names of all the sources currently loaded. */
-    private Set<String> loadedSources;
+    /** Map frop source name to record for loaded sources. */
+    private LRUCacheMap loadedSources;
 
     /** Source name of the music currently playing (null if no music is playing). */
     private String musicSource;
@@ -76,7 +75,7 @@ public final class MMSound
         }
 
         sourceMap = new HashMap<>(32);
-        loadedSources = new HashSet<>();
+        loadedSources = new LRUCacheMap(Utils.intPref("sound-cache-size", 32));
         musicSource = null;
     }
 
@@ -90,6 +89,9 @@ public final class MMSound
 
     /**
      * Add an audio source mapping. You must call {@link #loadSource(String)} before this source can be played.
+     * <p/>
+     * Adding more than one mapping with the same source name after audio has been loaded may leak resources, so
+     * avoid doing it.
      * @param name source name by which this audio will be referenced
      * @param path path to the audio file
      * @param isMusic true if the audio is music, that is, if it will be streamed rather than preloaded.
@@ -109,12 +111,13 @@ public final class MMSound
 
     /**
      * Load a source into our system, allocating resources.
-     * If the source is already loaded, this method does nothing.
+     * If the source is already loaded, this method just updates the source position in our LRU cache.
      * @param name source name, as given in {@link #addSourceMaping(String, Path, boolean)}.
      */
     public void loadSource(String name) {
-        if (!loadedSources.contains(name)) {
-            SoundRecord rec = sourceMap.get(name);
+        SoundRecord rec = loadedSources.get(name);  // moves name to the MRU position in the cache
+        if (rec == null) {
+            rec = sourceMap.get(name);
             if (rec == null)
                 return;
             final URL url = rec.getUrl();
@@ -126,7 +129,7 @@ public final class MMSound
                 soundSystem.newSource(false, name, url, filename,
                     false, 0, 0, 0, SoundSystemConfig.ATTENUATION_NONE, 0);
             }
-            loadedSources.add(name);
+            loadedSources.put(name, rec);
         }
     }
 
@@ -135,10 +138,11 @@ public final class MMSound
      * @param name source name
      */
     public void unloadSource(String name) {
-        if (loadedSources.remove(name)) {
+        SoundRecord rec = loadedSources.remove(name);
+        if (rec != null) {
             if (musicSource != null && musicSource.equals(name))
                 stopMusic();
-            removeLoadedSource(name);
+            removeLoadedSourceImpl(name, rec);
         }
     }
 
@@ -147,18 +151,18 @@ public final class MMSound
      */
     public void clearAudio() {
         stopMusic();
-        for (String name : loadedSources)
-            removeLoadedSource(name);
+        MapIterator<String,SoundRecord> iter = loadedSources.mapIterator();
+        while (iter.hasNext())
+            removeLoadedSourceImpl(iter.next(), iter.getValue());
         loadedSources.clear();
         sourceMap.clear();
     }
 
-    // For internal use - does not remove 'name' from 'loadedSources'.
-    private void removeLoadedSource(String name) {
+    // Removes the source from the SoundSystem -- does not modify loadedSources
+    private void removeLoadedSourceImpl(String name, SoundRecord rec) {
         soundSystem.removeSource(name);
-        SoundRecord record = sourceMap.get(name);
-        if (!record.isMusic)
-            soundSystem.unloadSound(record.getFilename());
+        if (!rec.isMusic)
+            soundSystem.unloadSound(rec.getFilename());
     }
 
     /**
@@ -220,7 +224,7 @@ public final class MMSound
 
     /** Resumes playing the current music piece.. */
     public void resumeMusic() {
-        if (musicEnabled && musicSource != null)
+        if (musicSource != null)
             soundSystem.play(musicSource);
     }
 
@@ -249,7 +253,7 @@ public final class MMSound
         }
     }
 
-    // Used as entries in the {@code sourceMap}.
+    // Used as entries in sourceMap and loadedSources.
     static final class SoundRecord
     {
         final Path path;
@@ -272,6 +276,25 @@ public final class MMSound
             } catch (MalformedURLException e) {
                 logger.warning("MMSound: Malformed URL for Path: " + path.toString());
                 return null;
+            }
+        }
+    }
+
+    private class LRUCacheMap extends LRUMap<String,SoundRecord>
+    {
+        public LRUCacheMap(int maxSize) {
+            super(maxSize, true);
+        }
+
+        protected boolean removeLRU(LinkEntry<String,SoundRecord> entry) {
+            final String name = entry.getKey();
+            final SoundRecord rec = entry.getValue();
+            if (musicSource != null && musicSource.equals(name)) {
+                // Don't evict current music; rather, go on to the next source in the cache.
+                return false;
+            } else {
+                removeLoadedSourceImpl(name, rec);
+                return true;
             }
         }
     }
