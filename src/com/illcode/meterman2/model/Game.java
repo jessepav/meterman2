@@ -15,12 +15,10 @@ public interface Game
     String getName();
 
     /**
-     * Called when a game is started or loaded. A game should, in this method, load any resources (images,
-     * sound, bundles) it wants immediately or game-globally available.
-     * <p/>
-     * It should also:
+     * Called when a game is started or loaded. A game should, in this method:
      * <ul>
-     *     <li>register game-specific actions</li>
+     *     <li>add image and sound mappings</li>
+     *     <li>register game-specific actions and attributes</li>
      *     <li>add its {@code XBundle}(s) to the system group</li>
      *     <li>call {@link MMScript#evalGameScript(java.lang.String)} to import packages and classes and
      *     define any methods used by scripts.</li>
