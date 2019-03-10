@@ -26,7 +26,7 @@ import static com.illcode.meterman2.MMLogging.logger;
  * Only one piece of music may be playing at a time, while multiple (up to the number of system sound channels)
  * sounds can be played simultaneously.
  * <p/>
- * Clients will need to add source mappings by calling {@link #addSourceMaping(String, Path, boolean)} before audio
+ * Clients will need to add source mappings by calling {@link #addSourceMapping(String, Path, boolean)} before audio
  * can be played.
  */
 public final class MMSound
@@ -39,7 +39,7 @@ public final class MMSound
     private Map<String,SoundRecord> sourceMap;
 
     /** Map frop source name to record for loaded sources. */
-    private LRUCacheMap loadedSources;
+    private LRUAudioCacheMap loadedSources;
 
     /** Source name of the music currently playing (null if no music is playing). */
     private String musicSource;
@@ -75,7 +75,7 @@ public final class MMSound
         }
 
         sourceMap = new HashMap<>(32);
-        loadedSources = new LRUCacheMap(Utils.intPref("sound-cache-size", 32));
+        loadedSources = new LRUAudioCacheMap(Utils.intPref("sound-cache-size", 32));
         musicSource = null;
     }
 
@@ -96,12 +96,12 @@ public final class MMSound
      * @param path path to the audio file
      * @param isMusic true if the audio is music, that is, if it will be streamed rather than preloaded.
      */
-    public void addSourceMaping(String name, Path path, boolean isMusic) {
+    public void addSourceMapping(String name, Path path, boolean isMusic) {
         sourceMap.put(name, new SoundRecord(path, isMusic));
     }
 
     /**
-     * Remove an audio source mapping. If the source was loaded, it will be unloaded.
+     * Remove an audio source mapping. If the source is loaded, it will be unloaded.
      * @param name source name under which the audio was added.
      */
     public void removeSourceMapping(String name) {
@@ -112,7 +112,7 @@ public final class MMSound
     /**
      * Load a source into our system, allocating resources.
      * If the source is already loaded, this method just updates the source position in our LRU cache.
-     * @param name source name, as given in {@link #addSourceMaping(String, Path, boolean)}.
+     * @param name source name, as given in {@link #addSourceMapping(String, Path, boolean)}.
      */
     public void loadSource(String name) {
         SoundRecord rec = loadedSources.get(name);  // moves name to the MRU position in the cache
@@ -280,9 +280,9 @@ public final class MMSound
         }
     }
 
-    private class LRUCacheMap extends LRUMap<String,SoundRecord>
+    private class LRUAudioCacheMap extends LRUMap<String,SoundRecord>
     {
-        public LRUCacheMap(int maxSize) {
+        LRUAudioCacheMap(int maxSize) {
             super(maxSize, true);
         }
 
