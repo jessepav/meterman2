@@ -50,8 +50,9 @@ public final class MMUI
         this.handler = handler;
         roomEntityIds = new ArrayList<>(16);
         inventoryEntityIds = new ArrayList<>(16);
-        imageMap = new HashMap<>(64);
-        loadedImages = new LRUImageCacheMap(Utils.intPref("image-cache-size", 32));
+        final int cacheSize = Utils.intPref("image-cache-size", 32);
+        imageMap = new HashMap<>(cacheSize * 2);
+        loadedImages = new LRUImageCacheMap(cacheSize);
     }
 
     /**

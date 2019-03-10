@@ -74,8 +74,9 @@ public final class MMSound
             logger.log(Level.WARNING, "MMSound.init()", ex);
         }
 
-        sourceMap = new HashMap<>(32);
-        loadedSources = new LRUAudioCacheMap(Utils.intPref("sound-cache-size", 32));
+        final int cacheSize = Utils.intPref("sound-cache-size", 16);
+        sourceMap = new HashMap<>(cacheSize * 2);
+        loadedSources = new LRUAudioCacheMap(cacheSize);
         musicSource = null;
     }
 
