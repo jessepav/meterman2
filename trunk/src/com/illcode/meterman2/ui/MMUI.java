@@ -160,8 +160,7 @@ public final class MMUI
     }
 
     /**
-     * Add an image mapping. You must call {@link #loadImage(String)} before this image
-     * can be displayed.
+     * Add an image mapping.
      * @param name name by which the image will be referenced
      * @param path path to the image file. JPEG and PNG (with bitmask transparency) are supported.
      */
