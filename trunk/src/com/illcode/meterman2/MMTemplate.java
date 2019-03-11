@@ -135,6 +135,23 @@ public class MMTemplate
     }
 
     /**
+     * Put a binding into our template data model.
+     * @param name key name
+     * @param value value
+     */
+    public void putBinding(String name, Object value) {
+        rootHash.put(name, value);
+    }
+
+    /**
+     * Remove a binding from our template data model.
+     * @param name key name to remove
+     */
+    public void removeBinding(String name) {
+        rootHash.remove(name);
+    }
+
+    /**
      * Add a map of game-state bindings to our template data model.
      * @param bindings name to game-state object mapping
      */

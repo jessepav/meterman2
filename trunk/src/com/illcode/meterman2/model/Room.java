@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.EnumSet;
@@ -19,6 +20,11 @@ import static com.illcode.meterman2.model.RoomImpl.RoomMethod.*;
 public class Room implements EntityContainer
 {
     protected String id;
+    protected String name;
+    protected String exitName;
+    protected Room[] exits;
+    protected String[] exitLabels;
+
     protected RoomImpl impl;
 
     private RoomImpl delegate;
@@ -29,6 +35,8 @@ public class Room implements EntityContainer
     /** Construct a room with the given ID. */
     protected Room(String id, RoomImpl impl) {
         this.id = id;
+        exits = new Room[UIConstants.NUM_EXIT_BUTTONS];
+        exitLabels = new String[UIConstants.NUM_EXIT_BUTTONS];
         this.impl = impl;
         attributes = AttributeSet.create();
         containerSupport = new ContainerSupport(this);
@@ -94,29 +102,24 @@ public class Room implements EntityContainer
     public final void removeEntity(Entity e) { containerSupport.removeEntity(e); }
     //endregion
 
-    /** Returns the full name of the room. */
+    /** Returns the name of the room. */
     public String getName() {
-        if (delegate != null && delegateMethods.contains(GET_NAME))
-            return delegate.getName(this);
-        else
-            return impl.getName(this);
+        return name != null ? name : "[name]";
     }
 
-    /** Returns a potentially shorter version of the name, to be used in Exit buttons.
-     *  This method may return a different name depending on whether the room has been visited. */
+    /** Set the name of the room. */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /** Returns a potentially shorter version of the name, to be used in Exit buttons. */
     public String getExitName() {
-        if (delegate != null && delegateMethods.contains(GET_EXIT_NAME))
-            return delegate.getExitName(this);
-        else
-            return impl.getExitName(this);
+        return exitName != null ? exitName : getName();
     }
 
-    /** Returns the text to be displayed when the player enters the room or clicks "Look". */
-    public String getDescription() {
-        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
-            return delegate.getDescription(this);
-        else
-            return impl.getDescription(this);
+    /** Set the version of the name to be used in Exit buttons. */
+    public void setExitName(String exitName) {
+        this.exitName = exitName;
     }
 
     /**
@@ -128,10 +131,17 @@ public class Room implements EntityContainer
      * @see #getExitLabel(int)
      */
     public Room getExit(int direction) {
-        if (delegate != null && delegateMethods.contains(GET_EXIT))
-            return delegate.getExit(this, direction);
-        else
-            return impl.getExit(this, direction);
+        return exits[direction];
+    }
+
+    /**
+     * Set the room associated with a given exit direction.
+     * @param direction one of the button constants in {@link UIConstants}, ex {@link UIConstants#NW_BUTTON}
+     * @param destination the room that is found when exiting this room in the given direction, or null if no
+     *         exit is possible in that direction.
+     */
+    public void setExit(int direction, Room destination) {
+        exits[direction] = destination;
     }
 
     /**
@@ -139,13 +149,38 @@ public class Room implements EntityContainer
      * @param direction one of the button constants in {@link UIConstants}
      * @return the text that should be shown on the respective UI button, or null if the button should
      *         be hidden
-     * @see #getExit(int)
      */
     public String getExitLabel(int direction) {
-        if (delegate != null && delegateMethods.contains(GET_EXIT_LABEL))
-            return delegate.getExitLabel(this, direction);
+        if (exitLabels[direction] != null)
+            return exitLabels[direction];
+        else if (exits[direction] != null)
+            return exits[direction].getExitName();
         else
-            return impl.getExitLabel(this, direction);
+            return null;
+    }
+
+    /**
+     * Set the text that should be shown on the UI button for a given direction.
+     * @param direction one of the button constants in {@link UIConstants}
+     * @param label the text that should be shown on the respective UI button, or null if the button should
+     *         be hidden
+     */
+    public void setExitLabel(int direction, String label) {
+        exitLabels[direction] = label;
+    }
+
+
+    /** Returns the text to be displayed when the player enters the room or clicks "Look". */
+    public String getDescription() {
+        try {
+            Meterman2.template.putBinding("room", this);
+            if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+                return delegate.getDescription(this);
+            else
+                return impl.getDescription(this);
+        } finally {
+            Meterman2.template.removeBinding("room");
+        }
     }
 
     /**

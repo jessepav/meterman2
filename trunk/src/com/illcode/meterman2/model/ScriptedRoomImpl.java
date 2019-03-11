@@ -46,25 +46,9 @@ public final class ScriptedRoomImpl implements RoomImpl
         }
         return methodSet;
     }
-    
-    public String getName(Room r) {
-        return invokeWithResultOrError(RoomMethod.GET_NAME, String.class, "[error]", r);
-    }
-
-    public String getExitName(Room r) {
-        return invokeWithResultOrError(RoomMethod.GET_EXIT_NAME, String.class, "[error]", r);
-    }
 
     public String getDescription(Room r) {
         return invokeWithResultOrError(RoomMethod.GET_DESCRIPTION, String.class, "[error]", r);
-    }
-
-    public Room getExit(Room r, int direction) {
-        return invokeWithResultOrError(RoomMethod.GET_EXIT, Room.class, null, r, direction);
-    }
-
-    public String getExitLabel(Room r, int direction) {
-        return invokeWithResultOrError(RoomMethod.GET_EXIT_LABEL, String.class, "[error]", r, direction);
     }
 
     public void entered(Room r, Room fromRoom) {
