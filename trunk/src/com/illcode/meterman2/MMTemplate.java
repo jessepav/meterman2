@@ -24,12 +24,13 @@ public class MMTemplate
     private Configuration cfg;
     private StringTemplateLoader strLoader;
 
-    private Set<String> loadedTemplates;
-
     /* We do not maintain a "system namespace" for templates in the way that we do for scripts:
        the rootHash contains references only to the game state objects specific to the loaded
        game. It is cleared when a game is closed and populated when one is started. */
     private Map<String,Object> rootHash;
+
+    private boolean systemTemplateMode;
+    private Set<String> systemTemplates, gameTemplates;
 
     public MMTemplate() {
         cfg = new Configuration(Configuration.VERSION_2_3_28);
@@ -48,16 +49,20 @@ public class MMTemplate
         cfg.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         cfg.setCacheStorage(new MruCacheStorage(0, 50));
 
-        loadedTemplates = new HashSet<>(40);
+        systemTemplates = new HashSet<>(20);
+        gameTemplates = new HashSet<>(40);
         rootHash = new HashMap<>();
+        systemTemplateMode = true;
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
     public void dispose() {
         clearTemplateCache();
-        removeAllTemplates();
+        clearGameTemplates();
+        clearSystemTemplates();
         clearBindings();
-        loadedTemplates = null;
+        systemTemplates = null;
+        gameTemplates = null;
         strLoader = null;
         cfg = null;
     }
@@ -69,7 +74,10 @@ public class MMTemplate
      */
     public void putTemplate(String name, String templateSource) {
         strLoader.putTemplate(name, templateSource);
-        loadedTemplates.add(name);
+        if (systemTemplateMode)
+            systemTemplates.add(name);
+        else
+            gameTemplates.add(name);
     }
 
     /**
@@ -77,15 +85,35 @@ public class MMTemplate
      * @param name the name (aka ID) under which it was previously put.
      */
     public void removeTemplate(String name) {
-        if (loadedTemplates.remove(name))
+        if (gameTemplates.remove(name) || systemTemplates.remove(name))
             strLoader.removeTemplate(name);
     }
 
-    /** Remove all templates from our loader. */
-    public void removeAllTemplates() {
-        for (String name : loadedTemplates)
+    /** Removes all system templates from our loader. */
+    void clearSystemTemplates() {
+        for (String name : systemTemplates)
             strLoader.removeTemplate(name);
-        loadedTemplates.clear();
+        systemTemplates.clear();
+    }
+
+    /** Removes all game templates from our loader. */
+    public void clearGameTemplates() {
+        for (String name : gameTemplates)
+            strLoader.removeTemplate(name);
+        gameTemplates.clear();
+    }
+
+    /**
+     * Set whether we're in system template mode.
+     * <p/>
+     * Our template loading system can be in two different modes: system template mode, and game template
+     * mode. We keep track of which templates were added to our loader via {@link #putTemplate(String, String)}
+     * for each mode, so that only game templates or only system templates can be removed via
+     * {@link #clearGameTemplates()} or {@link #clearSystemTemplates()} respectively.
+     * @param systemTemplateMode true to set system template mode, false for game template mode
+     */
+    public void setSystemTemplateMode(boolean systemTemplateMode) {
+        this.systemTemplateMode = systemTemplateMode;
     }
 
     /** Clear the template cache. */
@@ -101,8 +129,8 @@ public class MMTemplate
     public void removeTemplateFromCache(String name) {
         try {
             cfg.removeTemplateFromCache(name);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ex) {
+            logger.log(Level.WARNING, "MMTemplate cfg.removeTemplateFromCache", ex);
         }
     }
 
