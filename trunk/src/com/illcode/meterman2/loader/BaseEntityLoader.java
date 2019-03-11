@@ -30,15 +30,6 @@ public class BaseEntityLoader implements EntityLoader
         return e;
     }
 
-    /**
-     * Load values for the various entity properties from an XML element.
-     * Subclasses of BaseEntityLoader can chain up to this method to load standard entity
-     * properties before loading subclass-specific properties. The implementation of hot-reloading
-     * will likely end up using this method as well.
-     * @param bundle XBundle that contains the element
-     * @param el the XML element containing the entity defintion
-     * @param e the entity whose properties will be set from values in the XML element.
-     */
     public void loadPropertiesFromXml(XBundle bundle, Element el, Entity e) {
         // TODO: BaseEntityLoader.loadPropertiesFromXml()
     }
