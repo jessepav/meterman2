@@ -2,32 +2,33 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.MMActions.Action;
+import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.model.EntityImpl.EntityMethod;
 
 import java.util.EnumSet;
 import java.util.List;
 
-import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.model.EntityImpl.EntityMethod;
 import static com.illcode.meterman2.model.EntityImpl.EntityMethod.*;
 
 /**
  * The base class through which the game system and UI interacts with entities.
  * <p/>
- * Entity itself supports method delegation, attributes, and containment; all other implementation is
- * handled by an instance of {@link EntityImpl}. It is that interface, and its base implementation {@link
+ * Entity itself handles its name, method delegation, attributes, and containment; all other implementation
+ * is handled by an instance of {@link EntityImpl}. It is that interface, and its base implementation {@link
  * BaseEntityImpl}, that specialized entities will usually extend.
  */
 public class Entity
 {
+    // These comprise the standard properties of an entity, and will be persisted.
     protected String id;
     protected String name;
-
-    protected EntityImpl impl;
-
-    private EntityImpl delegate;
-    private EnumSet<EntityMethod> delegateMethods;
     private AttributeSet attributes;
     private EntityContainer container;
+
+    // These are behavioral, and are not persisted.
+    protected EntityImpl impl;
+    private EntityImpl delegate;
+    private EnumSet<EntityMethod> delegateMethods;
 
     protected Entity(String id, EntityImpl impl) {
         this.id = id;

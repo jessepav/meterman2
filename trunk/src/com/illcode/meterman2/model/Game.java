@@ -7,6 +7,40 @@ import java.util.Map;
 
 /**
  * An instance of a particular game.
+ * <p/>
+ * The methods of the implementation are called in different patterns depending if we are starting a new
+ * game or loading a saved game.
+ * <p/>
+ * For new games, we call methods in this order:
+ * <ol>
+ *     <li>init()</li>
+ *     <li>getGameStateObjects()</li>
+ *     <li>constructWorld()</li>
+ *     <li>getEntityIdMap()</li>
+ *     <li>getRoomIdMap()</li>
+ *     <li>setInitialWorldState()</li>
+ *     <li>getPlayer()</li>
+ *     <li>registerInitialGameHandlers()</li>
+ * </ol>
+ * For loaded games, we call methods in this order:
+ * <ol>
+ *     <li>init()</li>
+ *     <li>setGameStateObjects()</li>
+ *     <li>constructWorld()</li>
+ *     <li>getEntityIdMap()</li>
+ *     <li>getRoomIdMap()</li>
+ *     <li>getEventHandler()</li>
+ * </ol>
+ * <blockquote>
+ *   setGameStateObjects() is called before constructWorld() so that game objects can hold valid references
+ *   to the game state objects when they're constructed.
+ *   <p/>
+ *   Note that the entity and room ID maps should have the same key-set when the game was saved and when
+ *   constructWorld() returns. If the game creates new entities or rooms during play, it should record
+ *   that fact in one of the game state objects, so that constructWorld() can instantiate the appropriate
+ *   objects when it's called upon load.
+ * </blockquote>
+ * The other methods do not participate in the process of starting or loading a game.
  */
 public interface Game
 {
@@ -33,42 +67,16 @@ public interface Game
     void dispose();
 
     /**
-     * Instantiate all rooms and entities, and link the rooms together. This method
-     * does not place entities into rooms (and other entities): that's the job of
-     * {@link #setInitialEntityPlacements()}. Called both for new and loaded games.
-     */
-    void constructWorld();
-
-    /**
-     * Place entities into rooms and other containers (including the player inventory) at
-     * the start of a new game. This method is not called when a game is loaded, but rather
-     * the entities are put where they were when the game was saved.
-     */
-    void setInitialEntityPlacements();
-
-    /**
-     * Called at the start of a new game to register any initial game handlers. It is not
-     * called when a game is loaded, but rather whichever handlers were registered at the
-     * time the game was saved are retrieved via {@link #getEventHandler(String)} and
-     * added to the appropriate notification lists.
-     */
-    void registerInitialGameHandlers();
-
-    /**
-     * Called at the start of a new game, after {@code constructWorld()} and {@code setInitialEntityPlacements()},
-     * to retrieve the player character, who should already be located in the starting container with his/her
-     * inventory in hand.
-     */
-    Player getPlayer();
-
-    /**
      * Called at the start of a new game to retrieve a mapping of the game-state objects used by scripts and
      * templates. All state which can change through the course of a game should be kept in one of these
      * objects, rather than in random instance variables of entities, rooms, listeners, etc. because it is
-     * only these objects (and entity and room attributes) which will be persisted and loaded across game sessions.
+     * only these objects (and the standard properties of entities and rooms) which will be persisted and
+     * loaded across game sessions.
      * <p/>
      * Game state objects should be POJOs that contain only standard Java types: primitives and their wrapper
-     * types, Strings, lists, maps, and sets. All fields and methods should be public and non-static.
+     * types, Strings, lists, maps, and sets. All fields and methods should be public and non-static. For
+     * collections, one should use concrete classes rather than interfaces, to ensure that the actual type
+     * of the data structure is serializeable by standard serializers.
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
      * namespace and template data model. Keys with a leading underscore are reserved for use by the system.
@@ -85,6 +93,14 @@ public interface Game
     void setGameStateObjects(Map<String,Object> gameStateMap);
 
     /**
+     * Instantiate all rooms and entities. This method does not link rooms or place entities into
+     * containers: that's the job of {@link #setInitialWorldState()}. Called both for new and loaded
+     * games. It is only after calling this method that {@link #getEntityIdMap()} and {@link #getRoomIdMap()}
+     * will return valid values.
+     */
+    void constructWorld();
+
+    /**
      * Return a mapping from entity IDs to the actual Entity instances for all entities in the game.
      * This map's contents may change throughout the course of the game.
      */
@@ -95,6 +111,28 @@ public interface Game
      * This map's contents may change throughout the course of the game.
      */
     Map<String,Room> getRoomIdMap();
+
+    /**
+     * Place entities into rooms and other containers (including the player inventory) at
+     * the start of a new game. This method is not called when a game is loaded, but rather
+     * the entities are put where they were when the game was saved.
+     */
+    void setInitialWorldState();
+
+    /**
+     * Called at the start of a new game, after {@code constructWorld()} and {@code setInitialEntityPlacements()},
+     * to retrieve the player character, who should already be located in the starting container with his/her
+     * inventory in hand.
+     */
+    Player getPlayer();
+
+    /**
+     * Called at the start of a new game to register any initial game handlers. It is not
+     * called when a game is loaded, but rather whichever handlers were registered at the
+     * time the game was saved are retrieved via {@link #getEventHandler(String)} and
+     * added to the appropriate notification lists.
+     */
+    void registerInitialGameHandlers();
 
     /**
      * Returns the handler with a given ID. This method is used upon loading a game, so that the

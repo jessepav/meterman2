@@ -2,34 +2,35 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.model.RoomImpl.RoomMethod;
 import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.EnumSet;
 import java.util.List;
 
-import com.illcode.meterman2.model.RoomImpl.RoomMethod;
 import static com.illcode.meterman2.model.RoomImpl.RoomMethod.*;
 
 /**
  * The base class through which the game system and UI interacts with rooms.
  * <p/>
- * Room itself supports method delegation, attributes, and containment; all other implementation is handled
- * by an instance of {@link RoomImpl}. It is that interface, and its base implementation {@link
- * BaseRoomImpl}, that specialized rooms will usually extend.
+ * Room itself handles its names, exits, method delegation, attributes, and containment; all other
+ * implementation is handled by an instance of {@link RoomImpl}. It is that interface, and its base
+ * implementation {@link BaseRoomImpl}, that specialized rooms will usually extend.
  */
 public class Room implements EntityContainer
 {
+    // These comprise the standard properties of a room, and will be persisted.
     protected String id;
     protected String name;
     protected String exitName;
     protected Room[] exits;
     protected String[] exitLabels;
+    private AttributeSet attributes;
 
+    // These are behavioral, and are not persisted.
     protected RoomImpl impl;
-
     private RoomImpl delegate;
     private EnumSet<RoomMethod> delegateMethods;
-    private AttributeSet attributes;
     private ContainerSupport containerSupport;
 
     /** Construct a room with the given ID. */
