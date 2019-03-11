@@ -6,9 +6,6 @@ import com.illcode.meterman2.model.Game;
 import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Contains all the state objects, listener lists, entity placements, etc. needed
@@ -27,47 +24,68 @@ public final class GameState
      * Used to persist the registered event listeners in the GameManager.
      * <p/>
      * Each handler list (ex. turnListeners) is stored in an appropriately named key ("turnListeners"),
-     * with the value being a list of the IDs of the registered handlers of that type.
+     * with the value being an array of the IDs of the registered handlers of that type.
      */
-    public HashMap<String,List<String>> gameHandlers;
+    public HashMap<String,String[]> gameHandlers;
 
-    /** State of all entities. */
+    /** Map from entity ID to its state. */
     public HashMap<String,EntityState> entityState;
 
-    /** Map from room ID to the room's attributes. */
-    public HashMap<String,AttributeSet> roomAttributes;
+    /** Map from room ID to its state. */
+    public HashMap<String,RoomState> roomState;
 
-    /** The names of all the attributes (and implicitly in their indices, their attribute
-     *  numbers) registered at the time this game was saved. */
+    /**
+     * The names of all the attributes (and implicitly in their indices, their attribute numbers) registered
+     * at the time this game was saved. We can use this information to patch up the attribute numbers if the
+     * attribute registration state is different when we're loaded from when we were saved.
+     */
     public String[] attributeNames;
 
-    /** The ID of the container where the player resides. */
-    public String playerLocation;
+    public PlayerState playerState;
 
-    /** The IDs of the entities the player has equipped. */
-    public String[] equippedEntityIds;
-
+    /** Container class for the standard properties of entities. */
     public static final class EntityState
     {
+        public String name;
+
         /** The container where the entity is located, or null. */
-        String containerId;
+        public String containerId;
 
         /** @see EntityContainer#getContainerType() */
-        int containerType;
+        public int containerType;
 
         /** Entity attributes. */
-        AttributeSet attributes;
+        public AttributeSet attributes;
     }
 
+    /** Container class for the standard properties of rooms. */
     public static final class RoomState
     {
+        public String name;
+        public String exitName;
+
         /** Room attributes. */
-        AttributeSet attributes;
+        public AttributeSet attributes;
 
         /** IDs of the rooms (or null) for each of the {@link UIConstants#NUM_EXIT_BUTTONS} positions. */
-        String[] exitRoomIds;
+        public String[] exitRoomIds;
 
         /** Exit labels (or null) for each of the {@link UIConstants#NUM_EXIT_BUTTONS} positions. */
-        String[] exitLabels;
+        public String[] exitLabels;
+    }
+
+    /**
+     * Container class for the standard properties of the player.
+     * <p/>
+     * Note that the entities in the player inventory will have their {@code containerId} equal to {@code
+     * Player.PLAYER_ID}, so we don't need to keep track of them here.
+     */
+    public static final class PlayerState
+    {
+        /** The ID of the container where the player resides. */
+        public String containerId;
+
+        /** The IDs of the entities the player has equipped. */
+        public String[] equippedEntityIds;
     }
 }
