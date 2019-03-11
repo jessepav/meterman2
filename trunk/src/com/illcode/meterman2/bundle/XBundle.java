@@ -152,43 +152,68 @@ public final class XBundle
     }
 
     /**
-     * Return an appropriate TextSource implementation for a given passage element.
+     * Return an appropriate {@link TextSource} implementation for a given element. If an element
+     * tries to be both a template and a script (by including both attributes), it will
+     * be treated as a template.
      * @param e XML Element
-     * @return TextSource implementation
-     * @see ScriptSource
-     * @see StringSource
-     * @see TemplateSource
+     * @return an appropriate TextSource implementation, or {@link #ERROR_TEXT_SOURCE}.
+     * @see #getElementIdAttribute(Element)
      */
     public TextSource elementTextSource(final Element e) {
-        boolean isTemplate = isTemplateElement(e);
-        boolean isScript = isScriptElement(e);
-        if (isTemplate && isScript) {
-            logger.warning("XBundle element " + e.toString() + " is trying to be a template *and* a script!");
-            return ERROR_TEXT_SOURCE;
-        }
-        if (isTemplate) {
-            return new TemplateSource(e.getAttributeValue("id"), e.getText(), this);
-        } else if (isScript) {
-            return new ScriptSource(e.getAttributeValue("id"), e.getText(), this);
+        if (isTemplateElement(e)) {
+            final String id = getElementIdAttribute(e);
+            if (id == null) return ERROR_TEXT_SOURCE;
+            return new TemplateSource(id, e.getText(), this);
+        } else if (isScriptElement(e)) {
+            final String id = getElementIdAttribute(e);
+            if (id == null) return ERROR_TEXT_SOURCE;
+            return new ScriptSource(id, e.getText(), this);
         } else { // a normal text passage
             return new StringSource(formatText(e.getText()));
         }
     }
 
-    /** A template text source element must have both "template" and "id" attributes. */
+    /** A template text source element must have a "template" attribute. */
     private static boolean isTemplateElement(final Element e) {
         final Attribute templateAttr = e.getAttribute("template");
-        final Attribute idAttr = e.getAttribute("id");
         // in the future we can check for the actual value of the template attribute, like "ftl"
-        return templateAttr != null && idAttr != null;
+        return templateAttr != null;
     }
 
-    /** A script text source element must have both "script" and "id" attributes. */
+    /** A script text source element must have a "script" attribute. */
     private static boolean isScriptElement(final Element e) {
         final Attribute scriptAttr = e.getAttribute("script");
-        final Attribute idAttr = e.getAttribute("id");
         // in the future we can check for the actual value of the script attribute, like "bsh"
-        return scriptAttr != null && idAttr != null;
+        return scriptAttr != null;
+    }
+
+    /**
+     * Search from the given element up through its parents for the first element that has
+     * an 'id' attribute. If the given element does not itself have an 'id' attribute, then
+     * the return value will be a synthesized ID of the form:
+     * <blockquote>
+     *     {@code <parent id value>:<given element name>}
+     * </blockquote>
+     * For instance, if we start the search at a <em>description</em> element that does not
+     * have an 'id' attribute, but its parent, an <em>entity</em> element, has an id of "farmer",
+     * the returned ID will be "farmer:description".
+     * @param e element at which to start our search
+     * @return the actual ID of <em>e</em>, a synthesized ID element as described above, or null
+     *          if no element up through the root has an 'id' attribute.
+     */
+    public static String getElementIdAttribute(Element e) {
+        String id = e.getAttributeValue("id");
+        if (id != null)
+            return id;
+        // Otherwise, we have to search and synthesize
+        Element parent = e.getParentElement();
+        while (parent != null) {
+            id = parent.getAttributeValue("id");
+            if (id != null)
+                return id + ":" + e.getName();
+            parent = parent.getParentElement();
+        }
+        return null;
     }
 
     /** Get the escape character (by default '@') used to start escape sequences. */
