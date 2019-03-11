@@ -53,10 +53,6 @@ public final class ScriptedEntityImpl implements EntityImpl
     // since only methods in scriptedEntityMethods.keySet() were reported to be available; thus if
     // the map has no entry for a method, it is an error.
 
-    public String getName(Entity e) {
-        return invokeWithResultOrError(EntityMethod.GET_NAME, String.class, "[error]", e);
-    }
-
     public String getDescription(Entity e) {
         return invokeWithResultOrError(EntityMethod.GET_DESCRIPTION, String.class, "[error]", e);
     }

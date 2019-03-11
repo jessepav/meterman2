@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
 
 import java.util.List;
@@ -13,9 +14,6 @@ import java.util.List;
  */
 public interface EntityImpl
 {
-    /** See {@link Entity#getName()}*/
-    String getName(Entity e);
-
     /** See {@link Entity#getDescription()} */
     String getDescription(Entity e);
 
@@ -37,7 +35,7 @@ public interface EntityImpl
     /** See {@link Entity#getActions()} */
     List<Action> getActions(Entity e);
 
-    /** See {@link Entity#processAction(MMActions.Action)} */
+    /** See {@link Entity#processAction(Action)} */
     boolean processAction(Entity e, Action action);
 
     /**
@@ -45,7 +43,7 @@ public interface EntityImpl
      */
     enum EntityMethod
     {
-        GET_NAME("getName"), GET_DESCRIPTION("getDescription"), LOOK_IN_ROOM("lookInRoom"),
+        GET_DESCRIPTION("getDescription"), LOOK_IN_ROOM("lookInRoom"),
         ENTER_SCOPE("enterScope"), EXITING_SCOPE("exitingScope"), TAKEN("taken"), DROPPED("dropped"),
         GET_ACTIONS("getActions"), PROCESS_ACTION("processAction");
 

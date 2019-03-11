@@ -2,7 +2,6 @@ package com.illcode.meterman2;
 
 import bsh.*;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,6 +68,7 @@ public final class MMScript
 
     private void initSystemNameSpace() {
         systemNameSpace.importPackage("com.illcode.meterman2.model");
+        systemNameSpace.importPackage("com.illcode.meterman2.loader");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
 
@@ -81,17 +81,28 @@ public final class MMScript
         }
     }
 
-    /** Add a binding to the system namespace. */
-    void addSystemBinding(String name, Object value) {
+    /** Put a binding into the system namespace. */
+    void putSystemBinding(String name, Object value) {
+        putBinding(name, value, systemNameSpace);
+    }
+
+    /** Put a binding into the game namespace. */
+    public void putGameBinding(String name, Object value) {
+        putBinding(name, value, gameNameSpace);
+    }
+
+    // Put a variable binding into a given namespace.
+    private void putBinding(String name, Object value, NameSpace ns) {
         try {
-            systemNameSpace.setTypedVariable(name, value.getClass(), value, null);
+            ns.unsetVariable(name);
+            ns.setTypedVariable(name, value.getClass(), value, null);
         } catch (UtilEvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);
         }
     }
 
     /**
-     * Add a map of game-state bindings to our game namespace.
+     * Put a map of game-state bindings into our game namespace.
      * @param bindings name to game-state object mapping
      */
     public void putGameBindings(Map<String,Object> bindings) {
@@ -99,6 +110,7 @@ public final class MMScript
             for (Map.Entry<String,Object> entry : bindings.entrySet()) {
                 Object value = entry.getValue();
                 String name = entry.getKey();
+                gameNameSpace.unsetVariable(name);
                 gameNameSpace.setTypedVariable(name, value.getClass(), value, null);
             }
         } catch (UtilEvalError err) {
@@ -107,7 +119,7 @@ public final class MMScript
     }
 
     /** Clear all game-state bindings from our game namespace. */
-    public void clearBindings() {
+    public void clearGameBindings() {
         gameNameSpace.clear();
     }
 
@@ -127,10 +139,8 @@ public final class MMScript
     }
 
     /**
-     * Evaluate a script and retrieve methods declared in it.
-     * <p/>
-     * NOTE: scripted methods should not use primitive types in their parameter lists; instead,
-     * use the wrapper classes (Integer, etc.).
+     * Evaluate a script and retrieve methods declared in it. The script is evaluated in a new
+     * namespace that is a child of the game namespace.
      * @param id script ID (aka name)
      * @param source script source
      * @return a list of ScriptedMethod instances that can be used to query and

@@ -152,11 +152,11 @@ public final class Meterman2
     }
 
     private static void addScriptBindings() {
-        script.addSystemBinding("logger", logger);
-        script.addSystemBinding("ui", ui);
-        script.addSystemBinding("gm", gm);
-        script.addSystemBinding("sound", sound);
-        script.addSystemBinding("bundles", bundles);
-        script.addSystemBinding("assets", assets);
+        script.putSystemBinding("logger", logger);
+        script.putSystemBinding("ui", ui);
+        script.putSystemBinding("gm", gm);
+        script.putSystemBinding("sound", sound);
+        script.putSystemBinding("bundles", bundles);
+        script.putSystemBinding("assets", assets);
     }
 }

@@ -8,18 +8,9 @@ import java.util.List;
 
 public class BaseEntityImpl implements EntityImpl
 {
-    protected String name;
     protected TextSource description;
 
     protected BaseEntityImpl() {
-    }
-
-    public String getName(Entity e) {
-        return name != null ? name : "[name]";
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getDescription(Entity e) {

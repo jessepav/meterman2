@@ -6,6 +6,7 @@ import com.illcode.meterman2.MMActions.Action;
 import java.util.EnumSet;
 import java.util.List;
 
+import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.model.EntityImpl.EntityMethod;
 import static com.illcode.meterman2.model.EntityImpl.EntityMethod.*;
 
@@ -19,6 +20,8 @@ import static com.illcode.meterman2.model.EntityImpl.EntityMethod.*;
 public class Entity
 {
     protected String id;
+    protected String name;
+
     protected EntityImpl impl;
 
     private EntityImpl delegate;
@@ -96,18 +99,24 @@ public class Entity
 
     /** Return the name of this entity (never null). */
     public String getName() {
-        if (delegate != null && delegateMethods.contains(GET_NAME))
-            return delegate.getName(this);
-        else
-            return impl.getName(this);
+        return name != null ? name : "[name]";
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     /** Return the entity description (never null). */
     public String getDescription() {
-        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
-            return delegate.getDescription(this);
-        else
-            return impl.getDescription(this);
+        try {
+            Meterman2.template.putBinding("entity", this);
+            if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+                return delegate.getDescription(this);
+            else
+                return impl.getDescription(this);
+        } finally {
+            Meterman2.template.removeBinding("entity");
+        }
     }
 
     /**
