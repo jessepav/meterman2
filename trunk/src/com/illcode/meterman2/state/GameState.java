@@ -47,6 +47,7 @@ public final class GameState
     public static final class EntityState
     {
         public String name;
+        public String indefiniteArticle;
 
         /** The container where the entity is located, or null. */
         public String containerId;

@@ -22,6 +22,7 @@ public class Entity
     // These comprise the standard properties of an entity, and will be persisted.
     protected String id;
     protected String name;
+    protected String indefiniteArticle;
     private AttributeSet attributes;
     private EntityContainer container;
 
@@ -103,8 +104,19 @@ public class Entity
         return name != null ? name : "[name]";
     }
 
+    /** Set the name of this entity. */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /** Return the indefinite article used when referring to this entity (may be null). */
+    public String getIndefiniteArticle() {
+        return indefiniteArticle;
+    }
+
+    /** Set the indefinite article used when referring to this entity. */
+    public void setIndefiniteArticle(String indefiniteArticle) {
+        this.indefiniteArticle = indefiniteArticle;
     }
 
     /** Return the entity description (never null). */

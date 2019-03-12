@@ -8,6 +8,9 @@ import java.nio.file.Path;
 import java.util.Properties;
 import java.util.Random;
 
+/**
+ * General utility methods that do not depend on the game model.
+ */
 public final class Utils
 {
     private static Random random;
@@ -36,7 +39,7 @@ public final class Utils
             try {
                 i = Integer.parseInt(s);
             } catch (NumberFormatException ex) {
-                i = errorVal;
+                // empty
             }
         }
         return i;
@@ -54,7 +57,7 @@ public final class Utils
             try {
                 f = Float.parseFloat(s);
             } catch (NumberFormatException ex) {
-                f = errorVal;
+                // empty
             }
         }
         return f;
@@ -67,15 +70,15 @@ public final class Utils
      * @return double value of {@code s} if parseable, or {@code errorVal} otherwise
      */
     public static double parseDouble(String s, double errorVal) {
-        double f = errorVal;
+        double d = errorVal;
         if (s != null && s.length() > 0) {
             try {
-                f = Double.parseDouble(s);
+                d = Double.parseDouble(s);
             } catch (NumberFormatException ex) {
-                f = errorVal;
+                // empty
             }
         }
-        return f;
+        return d;
     }
 
     /**

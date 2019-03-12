@@ -3,6 +3,7 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMScript.ScriptedMethod;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.text.TextSource;
 
 import java.util.Collections;
 import java.util.EnumMap;
@@ -55,6 +56,10 @@ public final class ScriptedEntityImpl implements EntityImpl
 
     public String getDescription(Entity e) {
         return invokeWithResultOrError(EntityMethod.GET_DESCRIPTION, String.class, "[error]", e);
+    }
+
+    public void setDescription(TextSource description) {
+        // we ignore attempts to set the description.
     }
 
     public void lookInRoom(Entity e) {

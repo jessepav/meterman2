@@ -160,6 +160,9 @@ public final class XBundle
      * @see #getElementIdAttribute(Element)
      */
     public TextSource elementTextSource(final Element e) {
+        if (e == null)
+            return ERROR_TEXT_SOURCE;
+
         if (isTemplateElement(e)) {
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
