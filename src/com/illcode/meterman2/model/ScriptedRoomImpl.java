@@ -2,6 +2,7 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMScript.ScriptedMethod;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.text.TextSource;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
@@ -49,6 +50,10 @@ public final class ScriptedRoomImpl implements RoomImpl
 
     public String getDescription(Room r) {
         return invokeWithResultOrError(RoomMethod.GET_DESCRIPTION, String.class, "[error]", r);
+    }
+
+    public void setDescription(TextSource description) {
+        // ignore attempts to set the description
     }
 
     public void entered(Room r, Room fromRoom) {
