@@ -2,6 +2,7 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
+import com.illcode.meterman2.text.TextSource;
 
 import java.util.List;
 
@@ -16,6 +17,10 @@ public interface EntityImpl
 {
     /** See {@link Entity#getDescription()} */
     String getDescription(Entity e);
+
+    /** Sets the description. Some implementations, for instance scripted implementations,
+     *  may ignore calls to this method. */
+    void setDescription(TextSource description);
 
     /** See {@link Entity#lookInRoom()} */
     void lookInRoom(Entity e);
