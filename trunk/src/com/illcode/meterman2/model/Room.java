@@ -23,9 +23,9 @@ public class Room implements EntityContainer
     protected String id;
     protected String name;
     protected String exitName;
+    private AttributeSet attributes;
     protected Room[] exits;
     protected String[] exitLabels;
-    private AttributeSet attributes;
 
     // These are behavioral, and are not persisted.
     protected RoomImpl impl;
@@ -87,7 +87,7 @@ public class Room implements EntityContainer
     }
 
     /** Return this room's attributes, a mutable set that the caller can query and manipulate. */
-    public AttributeSet getAttributes() {
+    public final AttributeSet getAttributes() {
         return attributes;
     }
 
@@ -105,7 +105,7 @@ public class Room implements EntityContainer
 
     /** Returns the name of the room. */
     public String getName() {
-        return name != null ? name : "[name]";
+        return name != null ? name : "[" + getId() + "]";
     }
 
     /** Set the name of the room. */

@@ -81,7 +81,7 @@ public class Entity
     }
 
     /** Return this entity's attributes, a mutable set that the caller can query and manipulate. */
-    public AttributeSet getAttributes() {
+    public final AttributeSet getAttributes() {
         return attributes;
     }
 
@@ -101,7 +101,7 @@ public class Entity
 
     /** Return the name of this entity (never null). */
     public String getName() {
-        return name != null ? name : "[name]";
+        return name != null ? name : "[" + getId() + "]";
     }
 
     /** Set the name of this entity. */

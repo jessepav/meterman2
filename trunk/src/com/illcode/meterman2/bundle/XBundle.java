@@ -100,9 +100,8 @@ public final class XBundle
         elementMap.clear();
         passageMap.clear();
         for (Element e : root.getChildren()) {
-            Attribute attr = e.getAttribute("id");
-            if (attr != null) {
-                String id = attr.getValue();
+            String id = e.getAttributeValue("id");
+            if (id != null && !id.isEmpty()) {
                 elementMap.put(id, e);
                 if (e.getName().equals("passage"))
                     passageMap.put(id, PLACEHOLDER_TEXT_SOURCE);
@@ -144,7 +143,6 @@ public final class XBundle
             source = MISSING_TEXT_SOURCE;
         } else if (source == PLACEHOLDER_TEXT_SOURCE) {
             // We only construct the actual source the first time the passage is requested.
-            // The elementMap surely contains such an element because the id was in the passageMap.
             source = elementTextSource(elementMap.get(id));
             passageMap.put(id, source);  // and save it for next time
         }
@@ -155,6 +153,9 @@ public final class XBundle
      * Return an appropriate {@link TextSource} implementation for a given element. If an element
      * tries to be both a template and a script (by including both attributes), it will
      * be treated as a template.
+     * <p/>
+     * If the element has a <em>passageId</em> attribute, then the TextSource of the referenced passage
+     * will be returned in its place.
      * @param e XML Element
      * @return an appropriate TextSource implementation, or {@link #ERROR_TEXT_SOURCE}.
      * @see #getElementIdAttribute(Element)
@@ -162,6 +163,10 @@ public final class XBundle
     public TextSource elementTextSource(final Element e) {
         if (e == null)
             return ERROR_TEXT_SOURCE;
+
+        final String passageId = e.getAttributeValue("passageId");
+        if (passageId != null)
+            return getPassage(passageId);
 
         if (isTemplateElement(e)) {
             final String id = getElementIdAttribute(e);

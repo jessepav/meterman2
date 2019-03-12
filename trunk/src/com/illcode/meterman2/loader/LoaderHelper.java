@@ -1,5 +1,7 @@
 package com.illcode.meterman2.loader;
 
+import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
@@ -103,5 +105,19 @@ public class LoaderHelper
         for (Element gc : grandchildren)
             values.add(gc.getValue());
         return values;
+    }
+
+    /**
+     * Load game attributes from an XML attribute or child element.
+     * @param name name of XML attribute or child element
+     * @param attributes attribute set
+     */
+    public void loadAttributes(String name, AttributeSet attributes) {
+        final List<String> attributeNames = getListValue(name);
+        for (String attrName : attributeNames) {
+            int attrNum = Meterman2.attributes.attributeForName(attrName);
+            if (attrNum != -1)
+                attributes.set(attrNum);
+        }
     }
 }

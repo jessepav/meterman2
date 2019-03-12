@@ -1,5 +1,7 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.text.TextSource;
+
 /**
  * Defines an implementation for room operation, used for both room implementation instances
  * and delegates.
@@ -12,6 +14,10 @@ public interface RoomImpl
 {
     /** See {@link Room#getDescription()} */
     String getDescription(Room r);
+
+    /** Sets the description. Some implementations, for instance scripted implementations,
+     *  may ignore calls to this method. */
+    void setDescription(TextSource description);
 
     /** See {@link Room#entered(Room)} */
     void entered(Room r, Room fromRoom);
