@@ -44,7 +44,6 @@ public final class XBundle
 
     private String name;
     private Path path;  // the path from which we were loaded
-    private Document doc;
     private Element root;
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
@@ -98,7 +97,6 @@ public final class XBundle
     }
 
     private void initBundle(Document doc) {
-        this.doc = doc;
         if (!doc.hasRootElement()) {
             logger.warning("XBundle document has no root element.");
             return;
