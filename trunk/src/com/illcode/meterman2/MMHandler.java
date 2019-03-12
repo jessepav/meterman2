@@ -22,10 +22,7 @@ public class MMHandler implements UIHandler
     }
 
     public List<String> getGameNames() {
-        List<String> gameNames = new LinkedList<>();
-        gameNames.add("Archotron's Lazerbeam");
-        gameNames.add("Giant Old Sandwich Game");
-        return gameNames;
+        return Meterman2.gamesList.getGameNames();
     }
 
     public void newGame(String gameName) {

@@ -23,7 +23,7 @@ public final class MMAssets
         closeGameZipFs();
     }
 
-    public void closeSystemZipFs() {
+    private void closeSystemZipFs() {
         if (systemZipFs != null) {
             try {
                 systemZipFs.close();
@@ -34,7 +34,7 @@ public final class MMAssets
         }
     }
 
-    public void closeGameZipFs() {
+    private void closeGameZipFs() {
         if (gameZipFs != null) {
             try {
                 gameZipFs.close();
@@ -49,13 +49,13 @@ public final class MMAssets
      * Sets the base assets path against which the system and game assets paths will be resolved.
      * @param assetsPath
      */
-    public void setAssetsPath(Path assetsPath) {
+    void setAssetsPath(Path assetsPath) {
         this.assetsPath = assetsPath;
     }
 
     /** Sets the system assets path. This can be a directory or a ZIP file.
      * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
-    public void setSystemAssetsPath(String path) {
+    void setSystemAssetsPath(String path) {
         closeSystemZipFs();
         if (path != null) {
             systemAssetsPath = assetsPath.resolve(path);
@@ -75,7 +75,7 @@ public final class MMAssets
 
     /** Sets the game assets path. This can be a directory or a ZIP file.
      * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
-    public void setGameAssetsPath(String path) {
+    void setGameAssetsPath(String path) {
         closeGameZipFs();
         if (path != null) {
             gameAssetsPath = assetsPath.resolve(path);
