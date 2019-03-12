@@ -51,6 +51,9 @@ public final class Meterman2
     /** GameManager instance running the current game. */
     public static GameManager gm;
 
+    /** GamesList instance responsible for discovery of games at startup time. */
+    public static GamesList gamesList;
+
     private static MMHandler uiHandler;
 
     public static void main(String[] args) throws IOException {
@@ -102,6 +105,8 @@ public final class Meterman2
 
         persistence = new KryoPersistence();
 
+        gamesList = new GamesList();
+
         gm = new GameManager();
 
         uiHandler = new MMHandler();
@@ -118,6 +123,7 @@ public final class Meterman2
 
         ui.dispose();
         gm.dispose();
+        gamesList.dispose();
         persistence.dispose();
         sound.dispose();
         script.dispose();
