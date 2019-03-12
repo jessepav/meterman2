@@ -54,35 +54,51 @@ public final class XBundle
     private int paragraphStyle = PARAGRAPH_BLANK_LINE;
     private String indent = "    ";
 
-    private XBundle() {
+    private static SAXBuilder saxBuilder;
+
+    private static SAXBuilder getSAXBuilder() {
+        if (saxBuilder == null)
+            saxBuilder = new SAXBuilder();
+        return saxBuilder;
+    }
+
+    private XBundle(Path path) {
+        this.path = path;
         elementMap = new HashMap<>(200);
         passageMap = new HashMap<>(100);
     }
 
     /**
      * Load a new XBundle by reading and parsing an XML document at a given path.
-     * @param p path of the XML document
+     * <p/>
+     * This method along with {@link #reloadBundle(XBundle)} are not thread-safe (they share a common
+     * XML parser), and invocations of either must be properly synchronized.
+     * @param p path of the XML document, must not be null
      */
     public static XBundle loadFromPath(Path p) {
-        XBundle b = new XBundle();
-        b.path = p;
-        b.reload();
+        XBundle b = new XBundle(p);
+        reloadBundle(b);
         return b;
     }
 
-    public void reload() {
-        if (path == null)
-            return;
+    /**
+     * Reload a bundle from its original path.
+     * <p/>
+     * This method along with {@link #loadFromPath(Path)} are not thread-safe (they share a common
+     * XML parser), and invocations of either must be properly synchronized.
+     * @param b bundle
+     */
+    public static void reloadBundle(XBundle b) {
         try {
-            SAXBuilder sax = new SAXBuilder();
-            doc = sax.build(path.toFile());
-            initBundle();
+            Document doc = getSAXBuilder().build(b.path.toFile());
+            b.initBundle(doc);
         } catch (JDOMException|IOException ex) {
-            logger.log(Level.WARNING, "Exception loading an XBundle from " + path.getFileName().toString(), ex);
+            logger.log(Level.WARNING, "Exception loading an XBundle from " + b.path.getFileName().toString(), ex);
         }
     }
 
-    private void initBundle() {
+    private void initBundle(Document doc) {
+        this.doc = doc;
         if (!doc.hasRootElement()) {
             logger.warning("XBundle document has no root element.");
             return;
