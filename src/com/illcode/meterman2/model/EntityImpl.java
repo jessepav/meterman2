@@ -1,6 +1,5 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.text.TextSource;
 
@@ -43,6 +42,12 @@ public interface EntityImpl
     /** See {@link Entity#processAction(Action)} */
     boolean processAction(Entity e, Action action);
 
+    /** See {@link Entity#getState()} */
+    Object getState(Entity e);
+
+    /** See {@link Entity#restoreState(Object)} */
+    void restoreState(Entity e, Object state);
+
     /**
      * Used to indicate which methods of an Entity will be delegated.
      */
@@ -50,7 +55,8 @@ public interface EntityImpl
     {
         GET_DESCRIPTION("getDescription"), LOOK_IN_ROOM("lookInRoom"),
         ENTER_SCOPE("enterScope"), EXITING_SCOPE("exitingScope"), TAKEN("taken"), DROPPED("dropped"),
-        GET_ACTIONS("getActions"), PROCESS_ACTION("processAction");
+        GET_ACTIONS("getActions"), PROCESS_ACTION("processAction"),
+        GET_STATE("getState"), RESTORE_STATE("restoreState");
 
         private final String methodName;
 

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xbundle name="system-bundle">
+  <passage id="wait-message">
+    Time passes...
+  </passage>
+  <passage id="action-not-handled-message">
+    Nothing much happens.
+  </passage>
 </xbundle>

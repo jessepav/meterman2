@@ -56,15 +56,15 @@ public final class ContainerSupport implements EntityContainer
             return Player.PLAYER_ID;
     }
 
-    public Room getRoomContainer() {
+    public Room getContainerAsRoom() {
         return room;
     }
 
-    public Entity getEntityContainer() {
+    public Entity getContainerAsEntity() {
         return entity;
     }
 
-    public Player getPlayerContainer() {
+    public Player getContainerAsPlayer() {
         return player;
     }
 

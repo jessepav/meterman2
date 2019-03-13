@@ -28,6 +28,12 @@ public class SystemAttributes
     /** The entity is not quite small enough to be carried, but can be pushed or pulled along the floor. */
     public static int MOVEABLE;
 
+    /** The entity (ex. door, container) is closed. */
+    public static int CLOSED;
+
+    /** The entity (ex. door, container) is locked. */
+    public static int LOCKED;
+
     //
     // Room attributes
     //
@@ -45,6 +51,8 @@ public class SystemAttributes
         LIGHTSOURCE = Meterman2.attributes.registerAttribute("lightsource");
         PROPER_NAME = Meterman2.attributes.registerAttribute("proper-name");
         MOVEABLE = Meterman2.attributes.registerAttribute("moveable");
+        CLOSED = Meterman2.attributes.registerAttribute("closed");
+        LOCKED = Meterman2.attributes.registerAttribute("locked");
 
         VISITED = Meterman2.attributes.registerAttribute("visited");
         DARK = Meterman2.attributes.registerAttribute("dark");

@@ -32,13 +32,13 @@ public interface EntityContainer
     String getContainerId();
 
     /** If this container is a Room, return it; or null otherwise. */
-    Room getRoomContainer();
+    Room getContainerAsRoom();
 
     /** If this container is an Entity, return it; or null otherwise. */
-    Entity getEntityContainer();
+    Entity getContainerAsEntity();
 
     /** If this container is a Player, return it; or null otherwise. */
-    Player getPlayerContainer();
+    Player getContainerAsPlayer();
 
     /** Return a list of the entities in this container. */
     List<Entity> getEntities();

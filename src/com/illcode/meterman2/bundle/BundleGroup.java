@@ -67,15 +67,20 @@ public final class BundleGroup
     }
 
     /**
-     * Set the "system bundles" of this group. When {@code clearGameBundles()} is called, our bundle
-     * list will be restored to the bundles passed to this method.
+     * Set the "system bundles" of this group, and remove any other bundles currently added.
+     * When {@code clearGameBundles()} is called, our bundle list will be restored to the
+     * bundles passed to this method.
      * @param bundles system bundles
      */
     public void setSystemBundles(XBundle... bundles) {
-        if (bundles == null)
+        if (bundles == null || bundles.length == 0) {
             systemBundles = Collections.emptyList();
-        else
+        } else {
             systemBundles = Arrays.asList(bundles);
+            for (XBundle b : systemBundles)
+                b.setSystemBundle(true);
+        }
+        clearGameBundles();
     }
 
     /**

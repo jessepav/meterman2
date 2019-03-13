@@ -18,4 +18,8 @@ public class StringSource implements TextSource
     public String getText() {
         return str;
     }
+
+    public String toString() {
+        return getText();
+    }
 }

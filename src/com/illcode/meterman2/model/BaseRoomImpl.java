@@ -25,4 +25,12 @@ public class BaseRoomImpl implements RoomImpl
     public boolean exiting(Room r, Room toRoom) {
         return false;
     }
+
+    public Object getState(Room r) {
+        return null;
+    }
+
+    public void restoreState(Room r, Object state) {
+        // empty
+    }
 }

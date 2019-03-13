@@ -25,9 +25,16 @@ public interface RoomImpl
     /** See {@link Room#exiting(Room)} */
     boolean exiting(Room r, Room toRoom);
 
+    /** See {@link Room#getState()} */
+    Object getState(Room r);
+
+    /** See {@link Room#restoreState(Object)} */
+    void restoreState(Room r, Object state);
+
     enum RoomMethod
     {
-        GET_DESCRIPTION("getDescription"), ENTERED("entered"), EXITING("exiting");
+        GET_DESCRIPTION("getDescription"), ENTERED("entered"), EXITING("exiting"),
+        GET_STATE("getState"), RESTORE_STATE("restoreState");
 
         private final String methodName;
 

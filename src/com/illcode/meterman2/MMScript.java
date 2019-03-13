@@ -124,14 +124,28 @@ public final class MMScript
     }
 
     /**
+     * Evaluates a script in the context of the system namespace.
+     * @param source script source
+     * @return result of the evaluation of the last statement or expression in the source
+     */
+    public Object evalSystemScript(String source) {
+        return evalScript(source, systemNameSpace);
+    }
+
+    /**
      * Evaluates a script in the context of the game namespace. Games can call this method
      * to populate the parent namespace of all game scripts with utility methods, etc.
      * @param source script source
-     * @return result of the evaluation of the last statement or expression in the evaluated string
+     * @return result of the evaluation of the last statement or expression in the source
      */
     public Object evalGameScript(String source) {
+        return evalScript(source, gameNameSpace);
+    }
+
+    // Evaluate a script in a given namespace.
+    private Object evalScript(String source, NameSpace ns) {
         try {
-            return intr.eval(source, gameNameSpace);
+            return intr.eval(source, ns);
         } catch (EvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);
             return null;
@@ -146,7 +160,7 @@ public final class MMScript
      * @return a list of ScriptedMethod instances that can be used to query and
      *         invoke the methods declared in the script.
      */
-    public List<ScriptedMethod> evalScript(String id, String source) {
+    public List<ScriptedMethod> getScriptedMethods(String id, String source) {
         NameSpace ns = new NameSpace(gameNameSpace, id);
         List<ScriptedMethod> methods = null;
         try {

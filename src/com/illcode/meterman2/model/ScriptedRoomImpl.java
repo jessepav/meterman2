@@ -23,7 +23,7 @@ public final class ScriptedRoomImpl implements RoomImpl
      */
     public ScriptedRoomImpl(String id, String source) {
         scriptedRoomMethods = new EnumMap<>(RoomMethod.class);
-        List<ScriptedMethod> scriptedMethods = Meterman2.script.evalScript(id, source);
+        List<ScriptedMethod> scriptedMethods = Meterman2.script.getScriptedMethods(id, source);
         for (ScriptedMethod sm : scriptedMethods) {  // methods defined in the script
             for (RoomMethod rm : RoomMethod.values()) {  // our "method name" enum
                 if (sm.getName().equals(rm.getMethodName())) {
@@ -62,6 +62,14 @@ public final class ScriptedRoomImpl implements RoomImpl
 
     public boolean exiting(Room r, Room toRoom) {
         return invokeWithResultOrError(RoomMethod.EXITING, Boolean.class, Boolean.FALSE, r, toRoom);
+    }
+
+    public Object getState(Room r) {
+        return invokeWithResultOrError(RoomMethod.GET_STATE, Object.class, null, r);
+    }
+
+    public void restoreState(Room r, Object state) {
+        invokeMethod(RoomMethod.RESTORE_STATE, r, state);
     }
 
     // Invoke a method with no return value.

@@ -44,6 +44,7 @@ public final class XBundle
 
     private String name;
     private Path path;  // the path from which we were loaded
+    private boolean systemBundle;
     private Element root;
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
@@ -126,6 +127,16 @@ public final class XBundle
     /** Return the name of this bundle. */
     public String getName() {
         return name;
+    }
+
+    /** Returns true if this is a system bundle. The default is false. */
+    public boolean isSystemBundle() {
+        return systemBundle;
+    }
+
+    /** Set whether this is a system bundle. This affects how templates are stored. */
+    public void setSystemBundle(boolean systemBundle) {
+        this.systemBundle = systemBundle;
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.GameManager;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.model.EntityImpl.EntityMethod;
@@ -134,7 +135,7 @@ public class Entity
 
     /**
      * Called on each entity in a room when a look command is issued. While the implementation is free to do
-     * anything, generally it will call {@code GameManager.queueLookText()} to add text to
+     * anything, generally it will call {@link GameManager#queueLookText(String, boolean)} to add text to
      * the room description printed.
      */
     public void lookInRoom() {
@@ -215,5 +216,29 @@ public class Entity
             return delegate.processAction(this, action);
         else
             return impl.processAction(this, action);
+    }
+
+    /**
+     * Called when a game is saved to get a state object that will be persisted in the saved game file.
+     * The object's class should be one of the standard POJO types descripted in {@link Game#getGameStateMap()}
+     * @return state object, or null to indicate no state needs to be saved
+     */
+    public Object getState() {
+        if (delegate != null && delegateMethods.contains(GET_STATE))
+            return delegate.getState(this);
+        else
+            return impl.getState(this);
+    }
+
+    /**
+     * Called when a game is loaded if this entity returned non-null state from getState()
+     * when the game was saved.
+     * @param state non-null state object previously returned by getState()
+     */
+    public void restoreState(Object state) {
+        if (delegate != null && delegateMethods.contains(RESTORE_STATE))
+            delegate.restoreState(this, state);
+        else
+            impl.restoreState(this, state);
     }
 }

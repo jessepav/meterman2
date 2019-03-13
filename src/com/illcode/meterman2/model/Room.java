@@ -94,9 +94,9 @@ public class Room implements EntityContainer
     //region -- implement EntityContainer
     public final int getContainerType() { return CONTAINER_ROOM; }
     public final String getContainerId() { return getId(); }
-    public final Room getRoomContainer() { return this; }
-    public final Entity getEntityContainer() { return null; }
-    public final Player getPlayerContainer() { return null; }
+    public final Room getContainerAsRoom() { return this; }
+    public final Entity getContainerAsEntity() { return null; }
+    public final Player getContainerAsPlayer() { return null; }
     public final void addEntity(Entity e) { containerSupport.addEntity(e); }
     public final void clearEntities() { containerSupport.clearEntities(); }
     public final List<Entity> getEntities() { return containerSupport.getEntities(); }
@@ -206,5 +206,29 @@ public class Room implements EntityContainer
             return delegate.exiting(this, toRoom);
         else
             return impl.exiting(this, toRoom);
+    }
+
+    /**
+     * Called when a game is saved to get a state object that will be persisted in the saved game file.
+     * The object's class should be one of the standard POJO types descripted in {@link Game#getGameStateMap()}
+     * @return state object, or null to indicate no state needs to be saved
+     */
+    public Object getState() {
+        if (delegate != null && delegateMethods.contains(GET_STATE))
+            return delegate.getState(this);
+        else
+            return impl.getState(this);
+    }
+
+    /**
+     * Called when a game is loaded if this room returned non-null state from getState()
+     * when the game was saved.
+     * @param state non-null state object previously returned by getState()
+     */
+    public void restoreState(Object state) {
+        if (delegate != null && delegateMethods.contains(RESTORE_STATE))
+            delegate.restoreState(this, state);
+        else
+            impl.restoreState(this, state);
     }
 }
