@@ -48,4 +48,12 @@ public class BaseEntityImpl implements EntityImpl
     public boolean processAction(Entity e, Action action) {
         return false;
     }
+
+    public Object getState(Entity e) {
+        return null;
+    }
+
+    public void restoreState(Entity e, Object state) {
+        // empty
+    }
 }

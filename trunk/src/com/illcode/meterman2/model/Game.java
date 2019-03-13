@@ -14,25 +14,28 @@ import java.util.Map;
  * For new games, we call methods in this order:
  * <ol>
  *     <li>init()</li>
- *     <li>getGameStateObjects()</li>
+ *     <li>getGameStateMap()</li>
  *     <li>constructWorld()</li>
  *     <li>getEntityIdMap()</li>
  *     <li>getRoomIdMap()</li>
  *     <li>setInitialWorldState()</li>
  *     <li>getPlayer()</li>
+ *     <li>getStartingRoom()</li>
  *     <li>registerInitialGameHandlers()</li>
+ *     <li>start()</li>
  * </ol>
  * For loaded games, we call methods in this order:
  * <ol>
  *     <li>init()</li>
- *     <li>setGameStateObjects()</li>
+ *     <li>setGameStateMap()</li>
  *     <li>constructWorld()</li>
  *     <li>getEntityIdMap()</li>
  *     <li>getRoomIdMap()</li>
  *     <li>getEventHandler()</li>
+ *     <li>start()</li>
  * </ol>
  * <blockquote>
- *   setGameStateObjects() is called before constructWorld() so that game objects can hold valid references
+ *   setGameStateMap() is called before constructWorld() so that game objects can hold valid references
  *   to the game state objects when they're constructed.
  *   <p/>
  *   Note that the entity and room ID maps should have the same key-set when the game was saved and when
@@ -68,10 +71,8 @@ public interface Game
 
     /**
      * Called at the start of a new game to retrieve a mapping of the game-state objects used by scripts and
-     * templates. All state which can change through the course of a game should be kept in one of these
-     * objects, rather than in random instance variables of entities, rooms, listeners, etc. because it is
-     * only these objects (and the standard properties of entities and rooms) which will be persisted and
-     * loaded across game sessions.
+     * templates. All global state should be kept in one of these objects so that it is persisted across game
+     * sessions and available to scripts and templates.
      * <p/>
      * Game state objects should be POJOs that contain only standard Java types: primitives and their wrapper
      * types, Strings, lists, maps, and sets. All fields and methods should be public and non-static. For
@@ -81,16 +82,16 @@ public interface Game
      * The map keys will be used as the names under which these objects will be inserted in the scripting
      * namespace and template data model. Keys with a leading underscore are reserved for use by the system.
      */
-    Map<String,Object> getGameStateObjects();
+    Map<String,Object> getGameStateMap();
 
     /**
      * Called when a game is loaded, so that the game can retain references to game-state objects as they
      * were at the point when the game was saved.
      * @param gameStateMap map whose keys and values (state-objects) were initially returned by
-     *      {@link #getGameStateObjects()}, though the data in the state-objects may have been changed
+     *      {@link #getGameStateMap()}, though the data in the state-objects may have been changed
      *      during the course of play.
      */
-    void setGameStateObjects(Map<String,Object> gameStateMap);
+    void setGameStateMap(Map<String,Object> gameStateMap);
 
     /**
      * Instantiate all rooms and entities. This method does not link rooms or place entities into
@@ -126,6 +127,9 @@ public interface Game
      */
     Player getPlayer();
 
+    /** Called at the start of a new game to get the starting room. */
+    Room getStartingRoom();
+
     /**
      * Called at the start of a new game to register any initial game handlers. It is not
      * called when a game is loaded, but rather whichever handlers were registered at the
@@ -142,6 +146,12 @@ public interface Game
      * @return an instance of the corresponding handler
      */
     GameEventHandler getEventHandler(String id);
+
+    /**
+     * Called when a game is started, just before the initial "Look" is performed.
+     * @param newGame true if this is a new game, false if we're resuming a saved game.
+     */
+    void start(boolean newGame);
 
     /** Called when the user selects "About..." in the UI  */
     void about();

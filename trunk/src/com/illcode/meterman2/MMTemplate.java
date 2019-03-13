@@ -29,7 +29,6 @@ public class MMTemplate
        game. It is cleared when a game is closed and populated when one is started. */
     private Map<String,Object> rootHash;
 
-    private boolean systemTemplateMode;
     private Set<String> systemTemplates, gameTemplates;
 
     public MMTemplate() {
@@ -52,7 +51,6 @@ public class MMTemplate
         systemTemplates = new HashSet<>(20);
         gameTemplates = new HashSet<>(40);
         rootHash = new HashMap<>();
-        systemTemplateMode = true;
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -71,10 +69,11 @@ public class MMTemplate
      * Add a template to our loader, making it available for rendering.
      * @param name the name (aka ID) by which the template will be known.
      * @param templateSource the text source of the template
+     * @param systemTemplate true if this is a system (as opposed to game) template.
      */
-    public void putTemplate(String name, String templateSource) {
+    public void putTemplate(String name, String templateSource, boolean systemTemplate) {
         strLoader.putTemplate(name, templateSource);
-        if (systemTemplateMode)
+        if (systemTemplate)
             systemTemplates.add(name);
         else
             gameTemplates.add(name);
@@ -101,19 +100,6 @@ public class MMTemplate
         for (String name : gameTemplates)
             strLoader.removeTemplate(name);
         gameTemplates.clear();
-    }
-
-    /**
-     * Set whether we're in system template mode.
-     * <p/>
-     * Our template loading system can be in two different modes: system template mode, and game template
-     * mode. We keep track of which templates were added to our loader via {@link #putTemplate(String, String)}
-     * for each mode, so that only game templates or only system templates can be removed via
-     * {@link #clearGameTemplates()} or {@link #clearSystemTemplates()} respectively.
-     * @param systemTemplateMode true to set system template mode, false for game template mode
-     */
-    public void setSystemTemplateMode(boolean systemTemplateMode) {
-        this.systemTemplateMode = systemTemplateMode;
     }
 
     /** Clear the template cache. */

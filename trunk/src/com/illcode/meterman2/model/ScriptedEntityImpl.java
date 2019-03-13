@@ -25,7 +25,7 @@ public final class ScriptedEntityImpl implements EntityImpl
      */
     public ScriptedEntityImpl(String id, String source) {
         scriptedEntityMethods = new EnumMap<>(EntityMethod.class);
-        List<ScriptedMethod> scriptedMethods = Meterman2.script.evalScript(id, source);
+        List<ScriptedMethod> scriptedMethods = Meterman2.script.getScriptedMethods(id, source);
         for (ScriptedMethod sm : scriptedMethods) {  // methods defined in the script
             for (EntityMethod em : EntityMethod.values()) {  // our "method name" enum
                 if (sm.getName().equals(em.getMethodName())) {
@@ -90,6 +90,14 @@ public final class ScriptedEntityImpl implements EntityImpl
 
     public boolean processAction(Entity e, MMActions.Action action) {
         return invokeWithResultOrError(EntityMethod.PROCESS_ACTION, Boolean.class, Boolean.FALSE, e, action);
+    }
+
+    public Object getState(Entity e) {
+        return invokeWithResultOrError(EntityMethod.GET_STATE, Object.class, null, e);
+    }
+
+    public void restoreState(Entity e, Object state) {
+        invokeMethod(EntityMethod.RESTORE_STATE, e, state);
     }
 
     // Invoke a method with no return value.

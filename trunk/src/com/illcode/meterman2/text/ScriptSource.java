@@ -9,8 +9,7 @@ import java.util.List;
 /**
  * A {@code TextSource} whose output is determined by running a script.
  * <p/>
- * A ScriptSource can optionally reference an {@link XBundle}, in which case the text
- * output will be formatted according to the settings of that XBundle by calling
+ * The text output will be formatted according to the settings of the script's XBundle by calling
  * {@link XBundle#formatText(String)}. Also, the XBundle will be put into the script's
  * declaring namespace as a variable named "bundle".
  */
@@ -18,25 +17,12 @@ public class ScriptSource implements TextSource
 {
     private final String id;
     private final String source;
+    private final XBundle bundle;
     private ScriptedMethod method;
-    private XBundle bundle;
-
-    public ScriptSource(String id, String source) {
-        this.id = id;
-        this.source = source;
-    }
 
     public ScriptSource(String id, String source, XBundle bundle) {
-        this(id, source);
-        this.bundle = bundle;
-    }
-
-    /**
-     * Set the XBundle referenced by this ScriptSource.
-     * @param bundle bundle used to format the template output; if null, no additional
-     *               formatting will be performed.
-     */
-    public void setBundle(XBundle bundle) {
+        this.id = id;
+        this.source = source;
         this.bundle = bundle;
     }
 
@@ -46,16 +32,18 @@ public class ScriptSource implements TextSource
             sb.append("void getScriptedText() {\n");
             sb.append(source);
             sb.append("\n}");
-            List<ScriptedMethod> methods = Meterman2.script.evalScript(id, sb.toString());
+            List<ScriptedMethod> methods = Meterman2.script.getScriptedMethods(id, sb.toString());
             if (methods.isEmpty())
                 return "Error in ScriptSource ID: " + id;
             method = methods.get(0);
-            if (bundle != null)
-                method.setVariable("bundle", bundle);
+            method.setVariable("bundle", bundle);
         }
         String output = method.invokeGetOutput();
-        if (bundle != null)
-            output = bundle.formatText(output);
+        output = bundle.formatText(output);
         return output;
+    }
+
+    public String toString() {
+        return getText();
     }
 }

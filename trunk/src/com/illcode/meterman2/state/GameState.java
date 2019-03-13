@@ -1,8 +1,10 @@
 package com.illcode.meterman2.state;
 
 import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Game;
+import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.HashMap;
@@ -16,9 +18,12 @@ import java.util.HashMap;
  */
 public final class GameState
 {
-    /** The game state objects as returned by {@link Game#getGameStateObjects()} when the game
+    /** The name of the game, as found in its definition file. */
+    public String gameName;
+
+    /** The game state map as returned by {@link Game#getGameStateMap()} when the game
      *  was first started. */
-    public HashMap<String,Object> gameStateObjects;
+    public HashMap<String,Object> gameStateMap;
 
     /**
      * Used to persist the registered event listeners in the GameManager.
@@ -41,7 +46,14 @@ public final class GameState
      */
     public String[] attributeNames;
 
+    /** State of the player. */
     public PlayerState playerState;
+
+    /** The ID of the room where the action left off. */
+    public String currentRoomId;
+
+    /** The number of turns that have passed so far. */
+    public int numTurns;
 
     /** Container class for the standard properties of entities. */
     public static final class EntityState
@@ -57,6 +69,9 @@ public final class GameState
 
         /** Entity attributes. */
         public AttributeSet attributes;
+
+        /** The object returned by {@link Entity#getState()} */
+        public Object stateObj;
     }
 
     /** Container class for the standard properties of rooms. */
@@ -73,6 +88,9 @@ public final class GameState
 
         /** Exit labels (or null) for each of the {@link UIConstants#NUM_EXIT_BUTTONS} positions. */
         public String[] exitLabels;
+
+        /** The object returned by {@link Room#getState()} */
+        public Object stateObj;
     }
 
     /**
@@ -83,9 +101,6 @@ public final class GameState
      */
     public static final class PlayerState
     {
-        /** The ID of the container where the player resides. */
-        public String containerId;
-
         /** The IDs of the entities the player has equipped. */
         public String[] equippedEntityIds;
     }

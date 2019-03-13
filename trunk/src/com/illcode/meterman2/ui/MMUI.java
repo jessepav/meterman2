@@ -82,9 +82,7 @@ public final class MMUI
                 selectItemDialog = new SelectItemDialog(mainFrame.frame);
                 waitDialog = new WaitDialog(mainFrame.frame);
 
-                setStatusLabel(UIConstants.LEFT_LABEL, "");
-                setStatusLabel(UIConstants.CENTER_LABEL, "");
-                setStatusLabel(UIConstants.RIGHT_LABEL, "");
+                clearStatusLabels();
 
                 setRoomName("");
 
@@ -487,6 +485,13 @@ public final class MMUI
             break;
         }
     }
+
+    public void clearStatusLabels() {
+        setStatusLabel(UIConstants.LEFT_LABEL, "");
+        setStatusLabel(UIConstants.CENTER_LABEL, "");
+        setStatusLabel(UIConstants.RIGHT_LABEL, "");
+    }
+
 
     /**
      * Displays a modal dialog showing a passage of text.
