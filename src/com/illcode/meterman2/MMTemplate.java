@@ -123,10 +123,13 @@ public class MMTemplate
     /**
      * Put a binding into our template data model.
      * @param name key name
-     * @param value value
+     * @param value value; if null, the binding will be removed.
      */
     public void putBinding(String name, Object value) {
-        rootHash.put(name, value);
+        if (value == null)
+            rootHash.remove(name);
+        else
+            rootHash.put(name, value);
     }
 
     /**

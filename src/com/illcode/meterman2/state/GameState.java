@@ -25,6 +25,15 @@ public final class GameState
      *  was first started. */
     public HashMap<String,Object> gameStateMap;
 
+    /** Map from entity ID to its state. */
+    public HashMap<String,EntityState> entityState;
+
+    /** Map from room ID to its state. */
+    public HashMap<String,RoomState> roomState;
+
+    /** State of the player. */
+    public PlayerState playerState;
+
     /**
      * Used to persist the registered event listeners in the GameManager.
      * <p/>
@@ -32,22 +41,6 @@ public final class GameState
      * with the value being an array of the IDs of the registered handlers of that type.
      */
     public HashMap<String,String[]> gameHandlers;
-
-    /** Map from entity ID to its state. */
-    public HashMap<String,EntityState> entityState;
-
-    /** Map from room ID to its state. */
-    public HashMap<String,RoomState> roomState;
-
-    /**
-     * The names of all the attributes (and implicitly in their indices, their attribute numbers) registered
-     * at the time this game was saved. We can use this information to patch up the attribute numbers if the
-     * attribute registration state is different when we're loaded from when we were saved.
-     */
-    public String[] attributeNames;
-
-    /** State of the player. */
-    public PlayerState playerState;
 
     /** The ID of the room where the action left off. */
     public String currentRoomId;
