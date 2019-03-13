@@ -2,7 +2,7 @@
 SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
 
 cd %~dp0..
-cloc --force-lang=java,bsh assets assets src
+cloc --force-lang=java,bsh assets src
 
 :END
 ENDLOCAL

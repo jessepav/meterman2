@@ -3,8 +3,6 @@ Meterman2 To-do
 
 == Infrastructure ==
 
-Move the addition of "entity" and "room" from the getDescription() methods of Entity and Room into the GameManager methods where an entity is selected or a room is entered, respectively.
-
 == GameManager and World Model ==
 
 Put the current game into the scripting game namespace as "game".
@@ -26,6 +24,8 @@ Add a new dialog for the startup game list with descriptions.
 ==========================================
 
 MMActions: system action names will be loaded from a bundle at launch time; game actions will be loaded when the game is initialized. MMActions will be chained, much as in a BundleGroup, so games can override the system action names.
+
+Patch up attribute numbers when a game is loaded, in case the number or order of system attributes changed between when the game was saved and loaded. See the p.14 of the Jade Notebook for details.
 
 # ----------------------------------------------- #
   :autoIndent=simple:maxLineLen=84:mode=text:

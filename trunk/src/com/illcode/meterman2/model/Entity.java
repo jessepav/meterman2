@@ -122,15 +122,10 @@ public class Entity
 
     /** Return the entity description (never null). */
     public String getDescription() {
-        try {
-            Meterman2.template.putBinding("entity", this);
-            if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
-                return delegate.getDescription(this);
-            else
-                return impl.getDescription(this);
-        } finally {
-            Meterman2.template.removeBinding("entity");
-        }
+        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+            return delegate.getDescription(this);
+        else
+            return impl.getDescription(this);
     }
 
     /**

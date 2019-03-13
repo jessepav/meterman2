@@ -80,7 +80,8 @@ public interface Game
      * of the data structure is serializeable by standard serializers.
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
-     * namespace and template data model. Keys with a leading underscore are reserved for use by the system.
+     * namespace and template data model. Keys with a leading underscore are reserved for use by the system,
+     * as well as "entity" and "room", for the selected entity and current room, respectively.
      */
     Map<String,Object> getGameStateMap();
 

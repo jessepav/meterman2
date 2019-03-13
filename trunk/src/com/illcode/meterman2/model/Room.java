@@ -173,15 +173,10 @@ public class Room implements EntityContainer
 
     /** Returns the text to be displayed when the player enters the room or clicks "Look". */
     public String getDescription() {
-        try {
-            Meterman2.template.putBinding("room", this);
-            if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
-                return delegate.getDescription(this);
-            else
-                return impl.getDescription(this);
-        } finally {
-            Meterman2.template.removeBinding("room");
-        }
+        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+            return delegate.getDescription(this);
+        else
+            return impl.getDescription(this);
     }
 
     /**

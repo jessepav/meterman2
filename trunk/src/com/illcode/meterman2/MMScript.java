@@ -95,7 +95,8 @@ public final class MMScript
     private void putBinding(String name, Object value, NameSpace ns) {
         try {
             ns.unsetVariable(name);
-            ns.setTypedVariable(name, value.getClass(), value, null);
+            if (value != null)
+                ns.setTypedVariable(name, value.getClass(), value, null);
         } catch (UtilEvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);
         }
@@ -111,7 +112,8 @@ public final class MMScript
                 Object value = entry.getValue();
                 String name = entry.getKey();
                 gameNameSpace.unsetVariable(name);
-                gameNameSpace.setTypedVariable(name, value.getClass(), value, null);
+                if (value != null)
+                    gameNameSpace.setTypedVariable(name, value.getClass(), value, null);
             }
         } catch (UtilEvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);

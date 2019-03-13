@@ -52,6 +52,11 @@ public class AttributeSet
         return newSet;
     }
 
+    /** Set the value of this attribute set to that of a given set. */
+    public void setTo(AttributeSet attrSet) {
+        bits = (BitSet) attrSet.bits.clone();
+    }
+
     /**
      * Get a view of this attribute set as a BitSet. Changes to this attribute set will be
      * reflected in the bit-set, and vice versa.
