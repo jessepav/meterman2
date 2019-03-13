@@ -3,6 +3,8 @@ Meterman2 To-do
 
 == Infrastructure ==
 
+Move the addition of "entity" and "room" from the getDescription() methods of Entity and Room into the GameManager methods where an entity is selected or a room is entered, respectively.
+
 == GameManager and World Model ==
 
 Put the current game into the scripting game namespace as "game".
