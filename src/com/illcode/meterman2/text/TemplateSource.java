@@ -10,7 +10,7 @@ import com.illcode.meterman2.bundle.XBundle;
  * {@link XBundle#formatText(String)}.
  */
 
-public class TemplateSource implements TextSource
+public final class TemplateSource implements TextSource
 {
     private final String name;
     private final XBundle bundle;
@@ -36,9 +36,25 @@ public class TemplateSource implements TextSource
     }
 
     public String getText() {
-        String output = Meterman2.template.renderTemplate(name);
-        output = bundle.formatText(output);
-        return output;
+        return getText((String[]) null);
+    }
+
+    /**
+     * @param bindings an array of even length, conceptually grouped into pairs of variable name and value.<br/>
+     *                 i.e. {@code [name1, value1, name2, value2, etc.]}
+     */
+    public String getText(String... bindings) {
+        int numVars = 0;
+        if (bindings != null) {
+            numVars = bindings.length / 2;
+            for (int i = 0; i < numVars; i++)
+                Meterman2.template.putBinding(bindings[i*2], bindings[i*2+1]);
+        }
+        final String output = Meterman2.template.renderTemplate(name);
+        if (bindings != null)
+            for (int i = 0; i < numVars; i++)
+                Meterman2.template.removeBinding(bindings[i*2]);
+        return bundle.formatText(output);
     }
 
     public String toString() {

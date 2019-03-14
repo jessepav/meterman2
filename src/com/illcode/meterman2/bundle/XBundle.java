@@ -1,9 +1,6 @@
 package com.illcode.meterman2.bundle;
 
-import com.illcode.meterman2.text.ScriptSource;
-import com.illcode.meterman2.text.StringSource;
-import com.illcode.meterman2.text.TemplateSource;
-import com.illcode.meterman2.text.TextSource;
+import com.illcode.meterman2.text.*;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Attribute;
 import org.jdom2.Document;
@@ -201,6 +198,8 @@ public final class XBundle
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
             return new ScriptSource(id, e.getText(), this);
+        } else if (isFormatStringElement(e)) {
+            return new FormatStringSource(e.getText(), this);
         } else { // a normal text passage
             return new StringSource(formatText(e.getText()));
         }
@@ -218,6 +217,12 @@ public final class XBundle
         final Attribute scriptAttr = e.getAttribute("script");
         // in the future we can check for the actual value of the script attribute, like "bsh"
         return scriptAttr != null;
+    }
+
+    private static boolean isFormatStringElement(final Element e) {
+        final Attribute formatAttr = e.getAttribute("format");
+        // in the future we can check for the actual value of the format attribute, like "printf"
+        return formatAttr != null;
     }
 
     /**

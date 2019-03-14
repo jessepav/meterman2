@@ -5,6 +5,14 @@ package com.illcode.meterman2.text;
  */
 public interface TextSource
 {
-    /** Return the text represented by this TextSource */
+    /** Return the text represented by this source. */
     String getText();
+
+    /**
+     * Get the text represented by this source, with variable bindings.
+     * @param bindings an array of variable bindings. How these are interpreted depends on
+     *                 the particular implementation.
+     * @return the text represented by this source
+     */
+    String getText(String... bindings);
 }
