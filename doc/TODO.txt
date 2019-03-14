@@ -3,11 +3,7 @@ Meterman2 To-do
 
 == Infrastructure ==
 
-Keep track of a system hash in MMTemplate that will be restored to the root hash when we clear the game bindings.
-
 == GameManager and World Model ==
-
-Put the current game into the scripting game namespace as "game".
 
 Get rid of all the faux-parser stuff. Instead, add confirmation messages for actions that would otherwise have none.
 
@@ -18,12 +14,12 @@ Change the font used in the interface, and distribute it with the program. If so
 
 Add a new dialog for conversations, instead of re-using the list dialog.
 
-Add a new dialog for the startup game list with descriptions.
-
 
 ==========================================
             Maybe
 ==========================================
+
+Put the current game into the scripting game namespace as "game".
 
 MMActions: system action names will be loaded from a bundle at launch time; game actions will be loaded when the game is initialized. MMActions will be chained, much as in a BundleGroup, so games can override the system action names.
 
