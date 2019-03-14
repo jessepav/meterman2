@@ -1,8 +1,7 @@
 package com.illcode.meterman2.model;
 
-import sun.plugin2.gluegen.runtime.CPU;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Supports a common implementation of EntityContainer methods.

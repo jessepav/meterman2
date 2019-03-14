@@ -483,7 +483,7 @@ public final class GameManager
 
     private void putBinding(String name, Object value) {
         Meterman2.template.putBinding(name, value);
-        Meterman2.script.putGameBinding(name, value);
+        Meterman2.script.putBinding(name, value);
     }
 
     private void putBindings(Map<String,Object> bindings) {

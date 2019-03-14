@@ -1,5 +1,7 @@
 package com.illcode.meterman2.bshscripts;
 
+import com.illcode.meterman2.model.*;
+
 import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.gm;
 
@@ -45,4 +47,38 @@ class SystemScript
         gm.println(text);
     }
 
+    /**
+     * Return the name of the entity prefixed by the definite article ("the"), taking into
+     * account proper names.
+     * @param e entity
+     * @param capitalize whether to capitalize the definite article
+     */
+    String defName(Entity e, boolean capitalize) {
+        return GameUtils.defName(e, capitalize);
+    }
+
+    /**
+     * Return the name of the entity prefixed by the definite article ("the") in lowercase,
+     * taking into account proper names.
+     * @param e entity
+     */
+    String defName(Entity e) {
+        return GameUtils.defName(e);
+    }
+
+    /**
+     * Return the name of the entity prefixed by the indefinite article ("a/an/other"), taking into account
+     * proper names. If {@code e.getIndefiniteArticle()} returns null, we use "an" for names that begin with
+     * a vowel, and "a" otherwise.
+     * @param e entity
+     * @param capitalize whether to capitalize the indefinite article
+     */
+    String indefName(Entity e, boolean capitalize) {
+        return GameUtils.indefName(e, capitalize);
+    }
+
+    /** Return the name of the entity prefixed by the indefinite article ("a/an/other") in lowercase. */
+    String indefName(Entity e) {
+        return GameUtils.indefName(e);
+    }
 }

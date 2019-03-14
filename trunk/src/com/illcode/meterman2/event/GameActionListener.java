@@ -1,5 +1,6 @@
 package com.illcode.meterman2.event;
 
+import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.model.Entity;
 
@@ -11,7 +12,7 @@ public interface GameActionListener extends GameEventHandler
     /**
      * Called when an action is sent to the selected entity. It may be called twice per action, once before
      * the action has actually been processed, and once after, if not interrupted by another
-     * GameActionListener or {@link Entity#processAction(Action)}.
+     * GameActionListener or {@link Entity#processAction(MMActions.Action)}.
      * @param action action
      * @param e selected entity
      * @param beforeAction true if the method is being called before the action has reached the entity;

@@ -34,3 +34,40 @@ void print(String text) {
 void println(String text) {
     gm.println(text);
 }
+
+// Bring the GameUtils defName() and indefName() methods into the namespace for easy use.
+
+/**
+ * Return the name of the entity prefixed by the definite article ("the"), taking into
+ * account proper names.
+ * @param e entity
+ * @param capitalize whether to capitalize the definite article
+ */
+String defName(Entity e, boolean capitalize) {
+    return GameUtils.defName(e, capitalize);
+}
+
+/**
+ * Return the name of the entity prefixed by the definite article ("the") in lowercase,
+ * taking into account proper names.
+ * @param e entity
+ */
+String defName(Entity e) {
+    return GameUtils.defName(e);
+}
+
+/**
+ * Return the name of the entity prefixed by the indefinite article ("a/an/other"), taking into account
+ * proper names. If {@code e.getIndefiniteArticle()} returns null, we use "an" for names that begin with
+ * a vowel, and "a" otherwise.
+ * @param e entity
+ * @param capitalize whether to capitalize the indefinite article
+ */
+String indefName(Entity e, boolean capitalize) {
+    return GameUtils.indefName(e, capitalize);
+}
+
+/** Return the name of the entity prefixed by the indefinite article ("a/an/other") in lowercase. */
+String indefName(Entity e) {
+    return GameUtils.indefName(e);
+}

@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.text.TextSource;
 
@@ -39,7 +40,7 @@ public interface EntityImpl
     /** See {@link Entity#getActions()} */
     List<Action> getActions(Entity e);
 
-    /** See {@link Entity#processAction(Action)} */
+    /** See {@link Entity#processAction(MMActions.Action)} */
     boolean processAction(Entity e, Action action);
 
     /** See {@link Entity#getState()} */
