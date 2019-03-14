@@ -10,7 +10,8 @@ public class BaseEntityImpl implements EntityImpl
 {
     protected TextSource description;
 
-    protected BaseEntityImpl() {
+    public BaseEntityImpl() {
+        // empty
     }
 
     public String getDescription(Entity e) {
