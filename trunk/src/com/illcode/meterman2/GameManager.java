@@ -252,9 +252,27 @@ public final class GameManager
      * @param toRoom the room to which the player should move.
      */
     public void movePlayer(Room toRoom) {
-        // TODO: movePlayer()
-
-        // Remember to putBinding("room", currentRoom);
+        if (toRoom == null || toRoom == currentRoom)
+            return;
+        // Here we go...
+        Room fromRoom = currentRoom;
+        if (handlerManager.firePlayerMovement(fromRoom, toRoom, true))
+            return; // we were blocked by a listener
+        if (fromRoom.exiting(toRoom))
+            return;  // blocked by the room itself
+        for (Entity e : fromRoom.getEntities())
+            e.exitingScope();
+        currentRoom = toRoom;  // we've moved!
+        putBinding("room", currentRoom);
+        toRoom.entered(fromRoom);
+        for (Entity e : toRoom.getEntities())
+            e.enterScope();
+        handlerManager.firePlayerMovement(fromRoom, toRoom, false);
+        ui.clearEntitySelection();  // this in turn will call entitySelected(null) if needed
+        if (alwaysLook || !hasAttr(toRoom, SystemAttributes.VISITED))
+            performLook();
+        setAttr(toRoom, SystemAttributes.VISITED);
+        refreshRoomUI();
     }
 
     /**
@@ -263,9 +281,36 @@ public final class GameManager
      * @param container destination container
      */
     public void moveEntity(Entity e, EntityContainer container) {
-        // TODO: moveEntity()
         // this will also handle the functionality of takeEntity() in the old GameManager,
         // since now the Player is just another container.
+
+        final EntityContainer fromContainer = e.getContainer();
+        if (fromContainer == container)
+            return;
+        if (fromContainer == player) {
+            player.unequipEntity(e);
+            e.dropped();
+            refreshInventoryUI();
+        }
+        final Room fromRoom = GameUtils.getRoom(e);  // keep track of rooms for scope
+        final Room toRoom = GameUtils.getRoom(container);
+        if (fromRoom != toRoom && fromRoom == currentRoom)
+            e.exitingScope();
+        // Now move the entity.
+        if (fromContainer != null)
+            fromContainer.removeEntity(e);
+        e.setContainer(container);
+        if (container != null)
+            container.addEntity(e);
+        // done moving!
+        if (fromRoom != toRoom && toRoom == currentRoom)
+            e.enterScope();
+        if (fromRoom == currentRoom || toRoom == currentRoom)
+            refreshRoomUI();
+        if (e == selectedEntity)
+            entitySelected(null);
+        if (container == player)
+            e.taken();
     }
 
     /** Returns true if the given entity is in the player inventory. */
@@ -449,7 +494,7 @@ public final class GameManager
     public void entityChanged(Entity e) {
         if (e == null)
             return;
-        if (e.getContainer() == getCurrentRoom()) {
+        if (e.getContainer() == currentRoom) {
             ui.updateRoomEntity(e.getId(), e.getName());
         } else if (isInInventory(e)) {
             String listname;
