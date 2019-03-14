@@ -83,16 +83,16 @@ public final class MMScript
 
     /** Put a binding into the system namespace. */
     void putSystemBinding(String name, Object value) {
-        putBinding(name, value, systemNameSpace);
+        putBindingImpl(name, value, systemNameSpace);
     }
 
     /** Put a binding into the game namespace. */
-    public void putGameBinding(String name, Object value) {
-        putBinding(name, value, gameNameSpace);
+    public void putBinding(String name, Object value) {
+        putBindingImpl(name, value, gameNameSpace);
     }
 
     // Put a variable binding into a given namespace.
-    private void putBinding(String name, Object value, NameSpace ns) {
+    private void putBindingImpl(String name, Object value, NameSpace ns) {
         try {
             ns.unsetVariable(name);
             if (value != null)
