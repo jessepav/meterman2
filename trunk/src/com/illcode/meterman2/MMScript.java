@@ -81,18 +81,36 @@ public final class MMScript
         }
     }
 
-    /** Put a binding into the system namespace. */
+    /**
+     * Put a variable binding into the system namespace.
+     * @param name name of the variable
+     * @param value value; if null, the binding will be removed.
+     */
     void putSystemBinding(String name, Object value) {
         putBindingImpl(name, value, systemNameSpace);
     }
 
-    /** Put a binding into the game namespace. */
+    /** Remove a variable binding from the system namespace. */
+    void removeSystemBinding(String name) {
+        putBindingImpl(name, null, systemNameSpace);
+    }
+
+    /**
+     * Put a variable binding into the game namespace.
+     * @param name name of the variable
+     * @param value value; if null, the binding will be removed.
+     */
     public void putBinding(String name, Object value) {
         putBindingImpl(name, value, gameNameSpace);
     }
 
+    /** Remove a variable binding from the game namespace. */
+    void removeBinding(String name) {
+        putBindingImpl(name, null, gameNameSpace);
+    }
+
     // Put a variable binding into a given namespace.
-    private void putBindingImpl(String name, Object value, NameSpace ns) {
+    private static void putBindingImpl(String name, Object value, NameSpace ns) {
         try {
             ns.unsetVariable(name);
             if (value != null)
@@ -198,17 +216,18 @@ public final class MMScript
         }
 
         /**
-         * Set a variable in the method's declaring namespace. The body of this method, and any other methods
-         * declared in the same script, may then refer to this variable during execution.
+         * Put a variable binding into the method's declaring namespace. The body of this method, and any
+         * other methods declared in the same script, may then refer to this variable during execution.
          * @param name name of the variable
-         * @param value value of the variable
+         * @param value value; if null, the binding will be removed.
          */
-        public void setVariable(String name, Object value) {
-            try {
-                ns.setTypedVariable(name, value.getClass(), value, null);
-            } catch (UtilEvalError err) {
-                logger.log(Level.WARNING, "MMScript error:", err);
-            }
+        public void putBinding(String name, Object value) {
+            putBindingImpl(name, value, ns);
+        }
+
+        /** Remove a variable binding from the method's declaring namespace. */
+        public void removeBinding(String name) {
+            putBindingImpl(name, null, ns);
         }
 
         /**

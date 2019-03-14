@@ -36,7 +36,7 @@ public class ScriptSource implements TextSource
             if (methods.isEmpty())
                 return "Error in ScriptSource ID: " + id;
             method = methods.get(0);
-            method.setVariable("bundle", bundle);
+            method.putBinding("bundle", bundle);
         }
         String output = method.invokeGetOutput();
         output = bundle.formatText(output);
