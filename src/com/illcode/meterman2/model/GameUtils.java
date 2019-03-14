@@ -34,8 +34,15 @@ public final class GameUtils
      * @param e entity
      * @return the containing room, or null if the entity is not in a room.
      */
-    public static Room getEntityRoom(Entity e) {
-        EntityContainer container = e.getContainer();
+    public static Room getRoom(Entity e) {
+        return getRoom(e.getContainer());
+    }
+
+    /**
+     * Get the room in which container resides, following up the chain of containment if necessary.
+     * @return the containing room, or null if the container is not in a room.
+     */
+    public static Room getRoom(EntityContainer container) {
         while (container != null) {
             switch (container.getContainerType()) {
             case EntityContainer.CONTAINER_ROOM:

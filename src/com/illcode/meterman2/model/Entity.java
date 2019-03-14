@@ -147,7 +147,8 @@ public class Entity
      * <ol>
      *     <li>The player moves into the room where this entity resides</li>
      *     <li>The entity is added to the current room</li>
-     *     <li>The entity is added to the player inventory from somewhere outside the current room</li>
+     *     <li>The entity is added to a container in the current room,
+     *         from somewhere outside the current room</li>
      * </ol>
      */
     public void enterScope() {
@@ -161,10 +162,7 @@ public class Entity
      * Called when the entity is exiting scope. This can occur when:
      * <ol>
      *     <li>The player is exiting the room where the entity resides</li>
-     *     <li>The entity is being moved from the current room to somewhere other than
-     *         the player's inventory</li>
-     *     <li>The entity is being moved from the player's inventory to somewhere other than
-     *         the current room</li>
+     *     <li>The entity is being moved from somewhere in the current room to somewhere outside it</li>
      * </ol>
      * Note that this method is called before any of the above actions take place, so it
      * still has a valid place in the world graph.
