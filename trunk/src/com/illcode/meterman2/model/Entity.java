@@ -4,7 +4,9 @@ import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.GameManager;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.model.EntityImpl.EntityMethod;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -236,4 +238,61 @@ public class Entity
         else
             impl.restoreState(this, state);
     }
+
+    /**
+     * Return the name of the entity prefixed by the definite article ("the"), taking into
+     * account proper names.
+     * @param capitalize whether to capitalize the definite article
+     */
+    public String defName(boolean capitalize) {
+        String name = getName();
+        if (name.isEmpty())
+            return "";
+        if (getAttributes().get(SystemAttributes.PROPER_NAME))
+            return name;
+        String defArt = capitalize ? "The " : "the ";
+        return defArt + name;
+    }
+
+    /**
+     * Return the name of the entity prefixed by the definite article ("the") in lowercase,
+     * taking into account proper names.
+     */
+    public String defName() {
+        return defName(false);
+    }
+
+    /**
+     * Return the name of the entity prefixed by the indefinite article ("a/an/other"), taking into account
+     * proper names. If {@code e.getIndefiniteArticle()} returns null, we use "an" for names that begin with
+     * a vowel, and "a" otherwise.
+     * @param capitalize whether to capitalize the indefinite article
+     */
+    public String indefName(boolean capitalize) {
+        String name = getName();
+        if (name.isEmpty())
+            return "";
+        if (getAttributes().get(SystemAttributes.PROPER_NAME))
+            return name;
+        String indefArt = getIndefiniteArticle();
+        if (indefArt == null) {
+            char c = Character.toLowerCase(name.charAt(0));
+            if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')
+                indefArt = "an";
+            else
+                indefArt = "a";
+        }
+        if (capitalize)
+            indefArt = WordUtils.capitalize(indefArt);
+        return indefArt + " " + name;
+    }
+
+    /**
+     * Return the name of the entity prefixed by the indefinite article ("a/an/other") in lowercase.
+     * @param e entity
+     */
+    public String indefName() {
+        return indefName(false);
+    }
+
 }
