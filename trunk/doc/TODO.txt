@@ -3,9 +3,7 @@ Meterman2 To-do
 
 == Infrastructure ==
 
-TODO: TextSource work
-   - Add a mechanism for passing variable bindings to TextSource-S.
-   - Add a StringFormatSource TextSource, that uses String.format().
+Keep track of a system hash in MMTemplate that will be restored to the root hash when we clear the game bindings.
 
 == GameManager and World Model ==
 

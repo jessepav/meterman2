@@ -239,15 +239,15 @@ public final class MMScript
          */
         public String invokeGetOutput(Object... args) {
             String output;
+            outputBuilder.setLength(0);
             try {
-                outputBuilder.setLength(0);
                 bshMethod.invoke(getBshArgs(args), intr);
                 output = outputBuilder.toString();
-                outputBuilder.setLength(0);
             } catch (EvalError err) {
                 output = "MMScript error: " + err.getMessage();
                 logger.warning(output);
             }
+            outputBuilder.setLength(0);
             return output;
         }
 
@@ -264,6 +264,7 @@ public final class MMScript
                 logger.log(Level.WARNING, "MMScript error:", err);
                 result = null;
             }
+            outputBuilder.setLength(0);  // in case the script output something anyway
             return result;
         }
 

@@ -10,10 +10,9 @@ import java.util.List;
  * A {@code TextSource} whose output is determined by running a script.
  * <p/>
  * The text output will be formatted according to the settings of the script's XBundle by calling
- * {@link XBundle#formatText(String)}. Also, the XBundle will be put into the script's
- * declaring namespace as a variable named "bundle".
+ * {@link XBundle#formatText(String)}.
  */
-public class ScriptSource implements TextSource
+public final class ScriptSource implements TextSource
 {
     private final String id;
     private final String source;
@@ -27,6 +26,14 @@ public class ScriptSource implements TextSource
     }
 
     public String getText() {
+        return getText((String[])null);
+    }
+
+    /**
+     * @param bindings an array of even length, conceptually grouped into pairs of variable name and value.<br/>
+     *                 i.e. {@code [name1, value1, name2, value2, etc.]}
+     */
+    public String getText(String... bindings) {
         if (method == null) {  // this is the first time we're invoked
             StringBuilder sb = new StringBuilder(source.length() + 100);
             sb.append("void getScriptedText() {\n");
@@ -36,11 +43,18 @@ public class ScriptSource implements TextSource
             if (methods.isEmpty())
                 return "Error in ScriptSource ID: " + id;
             method = methods.get(0);
-            method.putBinding("bundle", bundle);
         }
-        String output = method.invokeGetOutput();
-        output = bundle.formatText(output);
-        return output;
+        int numVars = 0;
+        if (bindings != null) {
+            numVars = bindings.length / 2;
+            for (int i = 0; i < numVars; i++)
+                method.putBinding(bindings[i*2], bindings[i*2+1]);
+        }
+        final String output = method.invokeGetOutput();
+        if (bindings != null)
+            for (int i = 0; i < numVars; i++)
+                method.removeBinding(bindings[i*2]);
+        return bundle.formatText(output);
     }
 
     public String toString() {

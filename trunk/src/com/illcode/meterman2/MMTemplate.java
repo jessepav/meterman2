@@ -24,10 +24,8 @@ public class MMTemplate
     private Configuration cfg;
     private StringTemplateLoader strLoader;
 
-    /* We do not maintain a "system namespace" for templates in the way that we do for scripts:
-       the rootHash contains references only to the game state objects specific to the loaded
-       game. It is cleared when a game is closed and populated when one is started. */
     private Map<String,Object> rootHash;
+    private Map<String,Object> systemHash;
 
     private Set<String> systemTemplates, gameTemplates;
 
@@ -51,6 +49,7 @@ public class MMTemplate
         systemTemplates = new HashSet<>(20);
         gameTemplates = new HashSet<>(40);
         rootHash = new HashMap<>();
+        systemHash = new HashMap<>();
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -148,9 +147,28 @@ public class MMTemplate
         rootHash.putAll(bindings);
     }
 
-    /** Clear all game-state bindings from our template data model. */
-    public void clearBindings() {
+    /** Put a binding into our system hash. It is only these bindings that will remain
+     *  when {@link #clearBindings()} is called. */
+    void putSystemBinding(String name, Object value) {
+        if (value == null)
+            systemHash.remove(name);
+        else {
+            systemHash.put(name, value);
+            if (!rootHash.containsKey(name))
+                rootHash.put(name, value);
+        }
+    }
+
+    /** Remove a binding from our system hash. */
+    void removeSystemBinding(String name) {
+        systemHash.remove(name);
+    }
+
+    /** Clear all game-state bindings from our template data model, resetting it
+     * to the contents of the system hash. */
+    void clearBindings() {
         rootHash.clear();
+        rootHash.putAll(systemHash);
     }
 
     /**
