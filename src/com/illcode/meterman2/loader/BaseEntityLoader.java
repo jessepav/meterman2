@@ -2,6 +2,7 @@ package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.GameObjectIdResolver;
 import com.illcode.meterman2.model.ScriptedEntityImpl;
 import org.jdom2.Element;
 
@@ -25,13 +26,13 @@ public class BaseEntityLoader implements EntityLoader
         return instance;
     }
 
-    public Entity loadFromXml(XBundle bundle, Element el, String id) {
+    public Entity createEntity(XBundle bundle, Element el, String id) {
         Entity e = Entity.create(id);
-        loadPropertiesFromXml(bundle, el, e);
         return e;
     }
 
-    public void loadPropertiesFromXml(XBundle bundle, Element el, Entity e) {
+    public void loadEntityProperties(XBundle bundle, Element el, Entity e, GameObjectIdResolver resolver)
+    {
         LoaderHelper helper = LoaderHelper.wrap(el);
 
         // Text properties
