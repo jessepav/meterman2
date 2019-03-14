@@ -2,9 +2,13 @@ package com.illcode.meterman2.bundle;
 
 import com.illcode.meterman2.text.TextSource;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A BundleGroup maintains a list of {@code XBundle}S and supports operations that
@@ -96,13 +100,12 @@ public final class BundleGroup
      * @return element with the given id, or null if not found in any of our bundles.
      */
     public Element getElement(String id) {
-        Element e = null;
         for (XBundle b : bundles) {
-            e = b.getElement(id);
+            final Element e = b.getElement(id);
             if (e != null)
-                break;
+                return e;
         }
-        return e;
+        return null;
     }
 
     /**
@@ -119,5 +122,20 @@ public final class BundleGroup
                 break;
         }
         return ts;
+    }
+
+    /**
+     * Search our bundle list from head to tail for an element.
+     * @param id id of the element
+     * @return pair of the element with the given id and the bundle where it was found,
+     *         or null if not found in any of our bundles.
+     */
+    public Pair<Element,XBundle> getElementAndBundle(String id) {
+        for (XBundle b : bundles) {
+            final Element e = b.getElement(id);
+            if (e != null)
+                return Pair.of(e, b);
+        }
+        return null;
     }
 }

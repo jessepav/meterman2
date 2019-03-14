@@ -1,13 +1,10 @@
 package com.illcode.meterman2.loader;
 
-import com.illcode.meterman2.AttributeSet;
-import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.bundle.XBundle;
+import com.illcode.meterman2.model.GameObjectIdResolver;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.model.ScriptedRoomImpl;
 import org.jdom2.Element;
-
-import java.util.List;
 
 public class BaseRoomLoader implements RoomLoader
 {
@@ -26,13 +23,12 @@ public class BaseRoomLoader implements RoomLoader
         return instance;
     }
 
-    public Room loadFromXml(XBundle bundle, Element el, String id) {
-        Room r = Room.create(id);
-        loadPropertiesFromXml(bundle, el, r);
-        return r;
+    public Room createRoom(XBundle bundle, Element el, String id) {
+        return Room.create(id);
     }
 
-    public void loadPropertiesFromXml(XBundle bundle, Element el, Room r) {
+    public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver)
+    {
         LoaderHelper helper = LoaderHelper.wrap(el);
 
         // Text properties

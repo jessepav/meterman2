@@ -1,6 +1,7 @@
 package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.bundle.XBundle;
+import com.illcode.meterman2.model.GameObjectIdResolver;
 import com.illcode.meterman2.model.Room;
 import org.jdom2.Element;
 
@@ -14,7 +15,7 @@ public interface RoomLoader
      * @param id ID for the new room
      * @return a new room
      */
-    Room loadFromXml(XBundle bundle, Element el, String id);
+    Room createRoom(XBundle bundle, Element el, String id);
 
     /**
      * Load values for the various room properties from an XML element.
@@ -24,6 +25,8 @@ public interface RoomLoader
      * @param bundle XBundle that contains the element
      * @param el the XML element containing the room defintion
      * @param r the room whose properties will be set from values in the XML element.
+     * @param resolver used to resolve references in the room, for instance if it refers to
+*                 a door, or its connections to other rooms.
      */
-    void loadPropertiesFromXml(XBundle bundle, Element el, Room r);
+    void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver);
 }
