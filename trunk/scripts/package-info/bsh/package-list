@@ -1,9 +1,3 @@
 bsh
 bsh.classpath
-bsh.collection
-bsh.commands
-bsh.engine
-bsh.org.objectweb.asm
-bsh.reflect
-bsh.servlet
 bsh.util
