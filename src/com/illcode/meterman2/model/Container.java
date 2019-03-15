@@ -17,9 +17,9 @@ public class Container extends Entity implements EntityContainer
         containerSupport = new ContainerSupport(this);
     }
 
-    /** Create a container with the given ID and a basic implemention. */
+    /** Create a container with the given ID and a container implemention. */
     public static Container create(String id) {
-        return create(id, new BaseEntityImpl());
+        return create(id, new ContainerImpl());
     }
 
     /** Create a container with the given ID and implemention. */
