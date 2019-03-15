@@ -20,6 +20,9 @@ import static com.illcode.meterman2.SystemAttributes.VISITED;
 
 public final class GameManager
 {
+    public static final String ACTION_NOT_HANDLED_PASSAGE_ID = "action-not-handled-message";
+    public static final String WAIT_PASSAGE_ID = "wait-message";
+
     private Game game;  // The game we're currently playing
     private Player player;
     private Map<String,Object> gameStateMap;
@@ -444,7 +447,7 @@ public final class GameManager
 
     /** Called by when the user clicks "Wait" */
     public void waitCommand() {
-        println(bundles.getPassage("wait-message"));
+        println(bundles.getPassage(WAIT_PASSAGE_ID));
         nextTurn();
     }
 
@@ -477,7 +480,7 @@ public final class GameManager
                 break actionChain;
         }
         if (handlerManager.firePostAction(action, selectedEntity, actionHandled) == false && !actionHandled)
-            println(bundles.getPassage("action-not-handled-message"));
+            println(bundles.getPassage(ACTION_NOT_HANDLED_PASSAGE_ID));
         nextTurn();
     }
 
@@ -490,7 +493,6 @@ public final class GameManager
             selectedEntity = null;
         else
             selectedEntity = entityIdMap.get(id);
-        putBinding("entity", selectedEntity);
         refreshEntityUI();
         if (selectedEntity != null)
             handlerManager.fireEntitySelected(selectedEntity);

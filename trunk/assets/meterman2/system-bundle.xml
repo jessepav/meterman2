@@ -7,4 +7,12 @@
   <passage id="action-not-handled-message">
     Nothing much happens.
   </passage>
+
+  <!-- For door messages, the system passes in the defName of the door as a parameter. -->
+  <passage id="door-nokey-message" format="printf">
+    You do not have the key for %s.
+  </passage>
+  <passage id="door-locked-message">
+    It is locked.
+  </passage>
 </xbundle>

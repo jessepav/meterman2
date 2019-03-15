@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- For for information, see the source for these classes:
+      XBundle, WorldLoader, BaseEntityLoader, BaseRoomLoader -->
+
+<xbundle name="reference-bundle">
+  <passage id="simple-passage">
+    Untemplated text.
+  </passage>
+  <passage id="templated-passage" template="ftl">
+    [#if stateobj.variable]
+    Hello Jacque!@p
+    [/#if]
+    A passage templated using FreeMarker Template Language (FTL).
+  </passage>
+  <passage id="scripted-passage" script="bsh">
+    out("BeanShell code. Use embedded escape sequences rather than escape characters.@n");
+    // For example @n rather than \n.
+  </passage>
+
+  <entity id="basic-entity-variant-1">
+    <name>Old Tractor</name>
+    <indefiniteArticle>an</indefiniteArticle>
+    <description template="ftl">
+      An old tractor with ${stateobj.numTires} tires.
+    </description>
+    <attributes>
+      <attr>moveable</attr>
+      <attr>lightsource</attr>
+    </attributes>
+  </entity>
+
+  <entity id="basic-entity-variant-2" name="New Tractor" indefiniteArticle="a"
+          attributes="moveable, lightsource">
+    <description passageId="equipment-description" />
+    <script>
+      <![CDATA[
+        void enterScope(Entity e) {
+            gm.println(e.getName() + " rumbles at your approach.");
+        }
+      ]]>
+    </script>
+  </entity>
+  <passage id="equipment-description" template="ftl">
+    The ${entity.name} is a nice piece of equipment.
+  </passage>
+
+  <entity id="door-entity" type="door" name="Iron Door">
+
+  </entity>
+</xbundle>
