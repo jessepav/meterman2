@@ -44,9 +44,8 @@ public class BaseEntityLoader implements EntityLoader
             e = Container.create(id);
             break;
         case "door":
-            DoorImpl doorImpl = new DoorImpl();
-            e = Entity.create(id, doorImpl);
-            doorImpl.setEntity(e);
+            e = Entity.create(id, new DoorImpl());
+            break;
         default:
             e = Entity.create(id);
             break;
