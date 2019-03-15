@@ -124,8 +124,9 @@ public final class GameManager
             if (entityState.containerId != null) {
                 switch (entityState.containerType) {
                 case EntityContainer.CONTAINER_ENTITY:
-                    // This must have been an entity that supports containment to have been saved as such.
-                    container = (EntityContainer) entityIdMap.get(entityState.containerId);
+                    Entity e = entityIdMap.get(entityState.containerId);
+                    if (e instanceof EntityContainer)  // just in case
+                        container = (EntityContainer) e;
                     break;
                 case EntityContainer.CONTAINER_ROOM:
                     container = roomIdMap.get(entityState.containerId);
@@ -282,39 +283,44 @@ public final class GameManager
     /**
      * Move an entity to a given container (which may include the player).
      * @param e entity to move
-     * @param container destination container
+     * @param toContainer destination container
      */
-    public void moveEntity(Entity e, EntityContainer container) {
-        // this will also handle the functionality of takeEntity() in the old GameManager,
-        // since now the Player is just another container.
-
+    public void moveEntity(Entity e, EntityContainer toContainer) {
         final EntityContainer fromContainer = e.getContainer();
-        if (fromContainer == container)
+        if (fromContainer == toContainer)
             return;
-        if (fromContainer == player) {
-            player.unequipEntity(e);
-            e.dropped();
-            refreshInventoryUI();
+        boolean uiRefreshNeeded = false;
+        if (GameUtils.isParentContainer(player, fromContainer)) {
+            if (!GameUtils.isParentContainer(player, toContainer)) {
+                player.unequipEntity(e);
+                e.dropped();
+            }
+            uiRefreshNeeded = true;
         }
         final Room fromRoom = GameUtils.getRoom(e);  // keep track of rooms for scope
-        final Room toRoom = GameUtils.getRoom(container);
+        final Room toRoom = GameUtils.getRoom(toContainer);
         if (fromRoom != toRoom && fromRoom == currentRoom)
             e.exitingScope();
         // Now move the entity.
         if (fromContainer != null)
             fromContainer.removeEntity(e);
-        e.setContainer(container);
-        if (container != null)
-            container.addEntity(e);
+        e.setContainer(toContainer);
+        if (toContainer != null)
+            toContainer.addEntity(e);
         // done moving!
         if (fromRoom != toRoom && toRoom == currentRoom)
             e.enterScope();
-        if (fromRoom == currentRoom || toRoom == currentRoom)
+        if (fromContainer == currentRoom || toContainer == currentRoom)
             refreshRoomUI();
         if (e == selectedEntity)
             entitySelected(null);
-        if (container == player)
-            e.taken();
+        if (GameUtils.isParentContainer(player, toContainer)) {
+            if (!GameUtils.isParentContainer(player, fromContainer))
+                e.taken();
+            uiRefreshNeeded = true;
+        }
+        if (uiRefreshNeeded)
+            refreshInventoryUI();
     }
 
     /** Returns true if the given entity is in the player inventory. */
@@ -631,14 +637,15 @@ public final class GameManager
         player.getEquippedEntities().toArray(state.playerState.equippedEntityIds);
         // TODO: review saving the game handlers
         state.gameHandlers = new HashMap<>(10, 0.75f);
-        for (Map.Entry<String, List<? extends GameEventHandler>> entry :
-                                handlerManager.getEventHandlerMap().entrySet()) {
+        for (Map.Entry<String, List<? extends GameEventHandler>>
+                entry : handlerManager.getEventHandlerMap().entrySet()) {
             String listName = entry.getKey();
-            List<? extends GameEventHandler> handlers = entry.getValue();
-            String[] handlerIds = new String[handlers.size()];
+            List<? extends GameEventHandler> handlerList = entry.getValue();
+            String[] handlerIds = new String[handlerList.size()];
             int idx = 0;
-            for (GameEventHandler handler : handlers)
+            for (GameEventHandler handler : handlerList)
                 handlerIds[idx++] = handler.getId();
+            state.gameHandlers.put(listName, handlerIds);
         }
         state.currentRoomId = currentRoom.getId();
         state.numTurns = numTurns;

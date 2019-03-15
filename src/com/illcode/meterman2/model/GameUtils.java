@@ -1,8 +1,6 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.SystemAttributes;
-import org.apache.commons.lang3.text.WordUtils;
 
 /**
  * Utility methods that apply to the game world or interface.
@@ -57,5 +55,35 @@ public final class GameUtils
             }
         }
         return null;
+    }
+
+    /**
+     * Checks if a given container is a parent container of a given entity.
+     * @param target the container to test for parenthood
+     * @param e entity
+     * @return true if <em>target</em> is a parent container of <em>e</em>
+     */
+    public static boolean isParentContainer(EntityContainer target, Entity e) {
+        return isParentContainer(target, e.getContainer());
+    }
+
+    /**
+     * Checks if a given container is a parent of another container.
+     * @param target the container to test for parenthood
+     * @param c container
+     * @return true if <em>target</em> is a parent container of <em>c</em>
+     */
+    public static boolean isParentContainer(EntityContainer target, EntityContainer c) {
+        while (c != null) {
+            if (c == target)
+                return true;
+            else if (c == Meterman2.gm.getPlayer())  // only the room above the player remains
+                return target == Meterman2.gm.getCurrentRoom();
+            else if (c.getContainerType() == EntityContainer.CONTAINER_ENTITY)
+                c = c.getContainerAsEntity().getContainer();
+            else
+                break;
+        }
+        return false;
     }
 }
