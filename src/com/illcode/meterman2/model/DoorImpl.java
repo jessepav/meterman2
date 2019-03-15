@@ -3,10 +3,7 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemActions;
-import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.text.TextSource;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +24,7 @@ public class DoorImpl extends BaseEntityImpl
 
     protected Room room1, room2;
     protected int pos1, pos2;
+    protected String closedExitLabel;
     protected TextSource lockedMessage;
     protected TextSource nokeyMessage;
     protected Entity key;
@@ -63,8 +61,8 @@ public class DoorImpl extends BaseEntityImpl
     }
 
     /**
-     * Sets the positions (ex. {@link UIConstants#NW_BUTTON}) in the first and second room to be connected when the
-     * door is unlocked.
+     * Sets the positions (ex. {@link UIConstants#NW_BUTTON}) in the first and
+     * second room to be connected when the door is unlocked.
      * @param pos1 exit position in first room
      * @param pos2 exit position in second room
      */
@@ -73,21 +71,29 @@ public class DoorImpl extends BaseEntityImpl
         this.pos2 = pos2;
     }
 
-    private String getLockedMessage() {
-        return lockedMessage != null
-            ? lockedMessage.getText()
-            : bundles.getPassage(LOCKED_MESSAGE_PASSAGE_ID).getText();
+    /**
+     * Sets the label that will be shown on the room exits when the door is closed.
+     * @param label exit label
+     */
+    public void setClosedExitLabel(String label) {
+        this.closedExitLabel = label;
     }
 
-    /** Sets the messages shown, in addition to the description, when the door is locked. */
+    private String getLockedMessage(Entity e) {
+        return lockedMessage != null
+            ? lockedMessage.getText(e.defName())
+            : bundles.getPassage(LOCKED_MESSAGE_PASSAGE_ID).getText(e.defName());
+    }
+
+    /** Sets the message to be appended to the description when the door is locked. */
     public void setLockedMessage(TextSource lockedMessage) {
         this.lockedMessage = lockedMessage;
     }
 
-    private String getNokeyMessage() {
+    private String getNokeyMessage(Entity e) {
         return nokeyMessage != null
-            ? nokeyMessage.getText()
-            : bundles.getPassage(NOKEY_MESSAGE_PASSAGE_ID).getText();
+            ? nokeyMessage.getText(e.defName())
+            : bundles.getPassage(NOKEY_MESSAGE_PASSAGE_ID).getText(e.defName());
     }
 
     /** Sets the message shown when the player attempts to lock or unlock the door without holding the key. */
@@ -116,7 +122,7 @@ public class DoorImpl extends BaseEntityImpl
     public String getDescription(Entity e) {
         String description = super.getDescription(e);
         if (hasAttr(e, LOCKED))
-            return description + " " + getLockedMessage();
+            return description + " " + getLockedMessage(e);
         else
             return description;
     }
@@ -148,23 +154,26 @@ public class DoorImpl extends BaseEntityImpl
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
             // note that in these cases we already know that key != null
             if (!Meterman2.gm.isInInventory(key)) {
-                Meterman2.gm.println(getNokeyMessage());
+                Meterman2.gm.println(getNokeyMessage(e));
             } else {
                 setAttr(e, LOCKED, !hasAttr(e, LOCKED));
                 Meterman2.gm.entityChanged(e);
             }
             return true;
         } else if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE)) {
-            setAttr(e, CLOSED, !hasAttr(e, CLOSED));
-            // TODO: Door.processAction()
             if (hasAttr(e, CLOSED)) {
-
+                room1.setExit(pos1, null);
+                room1.setExitLabel(pos1, closedExitLabel);
+                room2.setExit(pos2, null);
+                room2.setExitLabel(pos2, closedExitLabel);
             } else {
-
+                room1.setExit(pos1, room2);
+                room2.setExit(pos2, room1);
             }
             Meterman2.gm.entityChanged(e);
             Meterman2.gm.roomChanged(room1);
             Meterman2.gm.roomChanged(room2);
+            return true;
         }
 
         return false;

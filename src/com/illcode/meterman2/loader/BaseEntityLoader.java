@@ -99,6 +99,15 @@ public class BaseEntityLoader implements EntityLoader
     protected void loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
                                       LoaderHelper helper) {
 
+        // TODO: loadDoorProperties()
+        /*
+        protected Room room1, room2;
+        protected int pos1, pos2;
+        protected String closedExitLabel;
+        protected TextSource lockedMessage;
+        protected TextSource nokeyMessage;
+        protected Entity key;
+         */
     }
 
 }

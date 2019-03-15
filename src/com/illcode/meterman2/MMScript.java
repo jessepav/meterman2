@@ -105,7 +105,7 @@ public final class MMScript
     }
 
     /** Remove a variable binding from the game namespace. */
-    void removeBinding(String name) {
+    public void removeBinding(String name) {
         putBindingImpl(name, null, gameNameSpace);
     }
 
