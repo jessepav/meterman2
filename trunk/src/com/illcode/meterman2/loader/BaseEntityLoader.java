@@ -14,7 +14,7 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
  * EntityImpl classes are:
  * <dl>
  *     <dt>"container"</dt>
- *     <dd>{@link Container}</dd>
+ *     <dd>{@link Container} + {@link ContainerImpl}</dd>
  *     <dt>"door"</dt>
  *     <dd>{@link DoorImpl}</dd>
  * </dl>
@@ -44,7 +44,9 @@ public class BaseEntityLoader implements EntityLoader
             e = Container.create(id);
             break;
         case "door":
-            e = Entity.create(id, new DoorImpl());
+            DoorImpl doorImpl = new DoorImpl();
+            e = Entity.create(id, doorImpl);
+            doorImpl.setEntity(e);
         default:
             e = Entity.create(id);
             break;

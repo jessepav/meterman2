@@ -5,6 +5,7 @@ import com.illcode.meterman2.Meterman2;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * Utility methods that apply to the game world or interface.
@@ -16,19 +17,29 @@ public final class GameUtils
         return e.getAttributes().get(attrNum);
     }
 
-    /** Convenience method to test if a room has an attribute. */
-    public static boolean hasAttr(Room r, int attrNum) {
-        return r.getAttributes().get(attrNum);
-    }
-
     /** Convenience method to set an entity attribute. */
     public static void setAttr(Entity e, int attrNum) {
         e.getAttributes().set(attrNum);
     }
 
+    /** Convenience method to set an entity attribute. */
+    public static void setAttr(Entity e, int attrNum, boolean value) {
+        e.getAttributes().set(attrNum, value);
+    }
+
+    /** Convenience method to test if a room has an attribute. */
+    public static boolean hasAttr(Room r, int attrNum) {
+        return r.getAttributes().get(attrNum);
+    }
+
     /** Convenience method to set a room attribute. */
     public static void setAttr(Room r, int attrNum) {
         r.getAttributes().set(attrNum);
+    }
+
+    /** Convenience method to set a room attribute. */
+    public static void setAttr(Room r, int attrNum, boolean value) {
+        r.getAttributes().set(attrNum, value);
     }
 
     /**
@@ -96,16 +107,18 @@ public final class GameUtils
      * a container, its contents recursively.
      */
     public static List<Entity> getEntitiesRecursive(EntityContainer container) {
-        List<Entity> l = new ArrayList<>();
-        getEntitiesRecursiveHelper(container, l);
-        return l;
-    }
-
-    private static void getEntitiesRecursiveHelper(EntityContainer c, List<Entity> l) {
-        for (Entity e : c.getEntities()) {
-            l.add(e);
-            if (e instanceof EntityContainer)
-                getEntitiesRecursiveHelper((EntityContainer) e, l);
+        // I'm going to write this iteratively instead of recursively, just because.
+        List<Entity> entities = new ArrayList<>();
+        Queue<EntityContainer> pendingContainers = new LinkedList<>();
+        pendingContainers.add(container);
+        while (!pendingContainers.isEmpty()) {
+            EntityContainer c = pendingContainers.remove();
+            for (Entity e : c.getEntities()) {
+                entities.add(e);
+                if (e instanceof EntityContainer)
+                    pendingContainers.add((EntityContainer) e);
+            }
         }
+        return entities;
     }
 }
