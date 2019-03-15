@@ -9,10 +9,7 @@ import com.illcode.meterman2.MMActions.Action;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static com.illcode.meterman2.model.GameUtils.hasAttr;
 import static com.illcode.meterman2.model.GameUtils.setAttr;
@@ -69,7 +66,7 @@ public final class GameManager
      * Start a new game, and perform an initial "Look" command.
      * @param game game to start
      */
-    public void newGame(Game game) {
+    void newGame(Game game) {
         closeGame();
         this.game = game;
         String gameName = game.getName();
@@ -102,7 +99,7 @@ public final class GameManager
         setAttr(getCurrentRoom(), VISITED);
     }
 
-    public void loadGame(GameState gameState) {
+    void loadGame(GameState gameState) {
         closeGame();
         game = Meterman2.gamesList.createGame(gameState.gameName);
         String gameName = game.getName();
@@ -120,22 +117,27 @@ public final class GameManager
         for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
             String entityId = entry.getKey();
             Entity entity = entry.getValue();
-            GameState.EntityState entityState = gameState.entityState.get(entityId);
-
+            GameState.EntityState entityState = gameState.entityStateMap.get(entityId);
             entity.setName(entityState.name);
             entity.setIndefiniteArticle(entityState.indefiniteArticle);
-            switch (entityState.containerType) {
-            case EntityContainer.CONTAINER_ENTITY:
-                // This must have been an entity that supports containment to have been saved as such.
-                entity.setContainer((EntityContainer) entityIdMap.get(entityState.containerId));
-                break;
-            case EntityContainer.CONTAINER_ROOM:
-                entity.setContainer(roomIdMap.get(entityState.containerId));
-                break;
-            case EntityContainer.CONTAINER_PLAYER:
-                entity.setContainer(player);
-                break;
+            EntityContainer container = null;
+            if (entityState.containerId != null) {
+                switch (entityState.containerType) {
+                case EntityContainer.CONTAINER_ENTITY:
+                    // This must have been an entity that supports containment to have been saved as such.
+                    container = (EntityContainer) entityIdMap.get(entityState.containerId);
+                    break;
+                case EntityContainer.CONTAINER_ROOM:
+                    container = roomIdMap.get(entityState.containerId);
+                    break;
+                case EntityContainer.CONTAINER_PLAYER:
+                    container = player;
+                    break;
+                }
             }
+            entity.setContainer(container);
+            if (container != null)
+                container.addEntity(entity);
             entity.getAttributes().setTo(entityState.attributes);
             if (entityState.stateObj != null)
                 entity.restoreState(entityState.stateObj);
@@ -145,13 +147,15 @@ public final class GameManager
         for (Map.Entry<String,Room> entry : roomIdMap.entrySet()) {
             String roomId = entry.getKey();
             Room room = entry.getValue();
-            GameState.RoomState roomState = gameState.roomState.get(roomId);
+            GameState.RoomState roomState = gameState.roomStateMap.get(roomId);
 
             room.setName(roomState.name);
             room.setExitName(roomState.exitName);
             room.getAttributes().setTo(roomState.attributes);
             for (int i = 0; i < UIConstants.NUM_EXIT_BUTTONS; i++) {
-                room.setExit(i, roomIdMap.get(roomState.exitRoomIds[i]));
+                final String id = roomState.exitRoomIds[i];
+                if (id != null)
+                    room.setExit(i, roomIdMap.get(id));
                 room.setExitLabel(i, roomState.exitLabels[i]);
             }
             if (roomState.stateObj != null)
@@ -575,18 +579,69 @@ public final class GameManager
         }
     }
 
-    /** Called by the UI when it's time to load a saved game. */
-    public void loadGameState(InputStream in) {
+    /** Called by the when it's time to load a saved game. */
+    void loadGameState(InputStream in) {
         ui.showWaitDialog("Loading game...");
         loadGame(Meterman2.persistence.loadGameState(in));
         ui.appendText("\n------- Game Loaded -------\n\n");
     }
 
     /** Called by the UI when it's time to save a game. */
-    public void saveGameState(OutputStream out) {
+    void saveGameState(OutputStream out) {
         ui.showWaitDialog("Saving game...");
         GameState state = new GameState();
-        // TODO: saveGameState()
+        state.gameName = game.getName();
+        state.gameStateMap = new HashMap<>(gameStateMap);
+        state.entityStateMap = new HashMap<>((int) (entityIdMap.size() * 1.4f), 0.75f);
+        for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
+            String id = entry.getKey();
+            Entity entity = entry.getValue();
+            GameState.EntityState entityState = new GameState.EntityState();
+            entityState.name = entity.getName();
+            entityState.indefiniteArticle = entity.getIndefiniteArticle();
+            final EntityContainer container = entity.getContainer();
+            if (container != null) {
+                entityState.containerId = container.getContainerId();
+                entityState.containerType = container.getContainerType();
+            }
+            entityState.attributes = entity.getAttributes();
+            entityState.stateObj = entity.getState();
+            state.entityStateMap.put(id, entityState);
+        }
+        state.roomStateMap = new HashMap<>((int) (roomIdMap.size() * 1.4f), 0.75f);
+        for (Map.Entry<String,Room> entry : roomIdMap.entrySet()) {
+            String id = entry.getKey();
+            Room room = entry.getValue();
+            GameState.RoomState roomState = new GameState.RoomState();
+            roomState.name = room.getName();
+            roomState.exitName = room.getExitName();
+            roomState.exitRoomIds = new String[UIConstants.NUM_EXIT_BUTTONS];
+            roomState.exitLabels = new String[UIConstants.NUM_EXIT_BUTTONS];
+            for (int position = 0; position < UIConstants.NUM_EXIT_BUTTONS; position++) {
+                final Room exit = room.getExit(position);
+                if (exit != null)
+                    roomState.exitRoomIds[position] = exit.getId();
+                roomState.exitLabels[position] = room.getExitLabel(position);
+            }
+            roomState.stateObj = room.getState();
+            state.roomStateMap.put(id, roomState);
+        }
+        state.playerState = new GameState.PlayerState();
+        state.playerState.equippedEntityIds = new String[player.getEquippedEntities().size()];
+        player.getEquippedEntities().toArray(state.playerState.equippedEntityIds);
+        // TODO: review saving the game handlers
+        state.gameHandlers = new HashMap<>(10, 0.75f);
+        for (Map.Entry<String, List<? extends GameEventHandler>> entry :
+                                handlerManager.getEventHandlerMap().entrySet()) {
+            String listName = entry.getKey();
+            List<? extends GameEventHandler> handlers = entry.getValue();
+            String[] handlerIds = new String[handlers.size()];
+            int idx = 0;
+            for (GameEventHandler handler : handlers)
+                handlerIds[idx++] = handler.getId();
+        }
+        state.currentRoomId = currentRoom.getId();
+        state.numTurns = numTurns;
         Meterman2.persistence.saveGameState(state, out);
         ui.hideWaitDialog();
         ui.appendText("\n------- Game Saved -------\n\n");
