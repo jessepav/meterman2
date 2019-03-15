@@ -26,10 +26,10 @@ public final class GameState
     public HashMap<String,Object> gameStateMap;
 
     /** Map from entity ID to its state. */
-    public HashMap<String,EntityState> entityState;
+    public HashMap<String,EntityState> entityStateMap;
 
     /** Map from room ID to its state. */
-    public HashMap<String,RoomState> roomState;
+    public HashMap<String,RoomState> roomStateMap;
 
     /** State of the player. */
     public PlayerState playerState;
@@ -57,7 +57,8 @@ public final class GameState
         /** The container where the entity is located, or null. */
         public String containerId;
 
-        /** @see EntityContainer#getContainerType() */
+        /** If containerId != null, then this is the container type.
+         * @see EntityContainer#getContainerType() */
         public int containerType;
 
         /** Entity attributes. */
