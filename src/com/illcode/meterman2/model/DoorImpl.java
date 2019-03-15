@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
+import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.text.TextSource;
@@ -13,6 +14,7 @@ import java.util.List;
 import static com.illcode.meterman2.model.GameUtils.hasAttr;
 import static com.illcode.meterman2.model.GameUtils.setAttr;
 import static com.illcode.meterman2.Meterman2.bundles;
+import static com.illcode.meterman2.SystemAttributes.*;
 
 /**
  * Implementation of door entities, is a special usage entity that can connect and disconnect two rooms,
@@ -22,8 +24,6 @@ public class DoorImpl extends BaseEntityImpl
 {
     public static final String LOCKED_MESSAGE_PASSAGE_ID = "door-locked-message";
     public static final String NOKEY_MESSAGE_PASSAGE_ID = "door-nokey-message";
-
-    protected Entity entity;
 
     protected Room room1, room2;
     protected int pos1, pos2;
@@ -40,12 +40,6 @@ public class DoorImpl extends BaseEntityImpl
     public DoorImpl() {
         super();
         actions = new ArrayList<>(4);
-    }
-
-
-    /** Let the DoorImpl know which entity we're implementing. */
-    public void setEntity(Entity entity) {
-        this.entity = entity;
     }
 
     /** Set the two rooms connected by this door. */
@@ -116,39 +110,12 @@ public class DoorImpl extends BaseEntityImpl
      */
     public void setKey(Entity key) {
         this.key = key;
-        if (key == null)
-            setLocked(false);
-
-    }
-
-    /** Returns true if the door is locked. */
-    public boolean isLocked() {
-        return hasAttr(entity, SystemAttributes.LOCKED);
-    }
-
-    /** Set whether the door is locked. */
-    public void setLocked(boolean locked) {
-        setAttr(entity, SystemAttributes.LOCKED, locked);
-        if (locked)
-            setClosed(true);  // a locked door is necessarily closed
-    }
-
-    /** Returns true if the door is closed. */
-    public boolean isClosed() {
-        return hasAttr(entity, SystemAttributes.CLOSED);
-    }
-
-    /** Set whether the door is open. */
-    public void setClosed(boolean closed) {
-        setAttr(entity, SystemAttributes.CLOSED, closed);
-        if (!closed)
-            setLocked(false);  // you cannot have an open, locked door
     }
 
     @Override
     public String getDescription(Entity e) {
         String description = super.getDescription(e);
-        if (isLocked())
+        if (hasAttr(e, LOCKED))
             return description + " " + getLockedMessage();
         else
             return description;
@@ -158,11 +125,11 @@ public class DoorImpl extends BaseEntityImpl
     public List<MMActions.Action> getActions(Entity e) {
         actions.clear();
         if (key == null)
-            setLocked(false);
-        if (isLocked()) {
+            setAttr(e, LOCKED, false);
+        if (hasAttr(e, LOCKED)) {
             actions.add(SystemActions.UNLOCK);
         } else { // okay, we're unlocked
-            if (isClosed()) { // closed but unlocked
+            if (hasAttr(e, CLOSED)) { // closed but unlocked
                 actions.add(SystemActions.OPEN);
                 if (key != null)
                     actions.add(SystemActions.LOCK);
@@ -175,7 +142,31 @@ public class DoorImpl extends BaseEntityImpl
 
     @Override
     public boolean processAction(Entity e, MMActions.Action action) {
-        // TODO: Door.processAction()
-        return super.processAction(e, action);
+        Room currentRoom = Meterman2.gm.getCurrentRoom();
+        if (currentRoom != room1 && currentRoom != room2)
+            return false;
+        if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
+            // note that in these cases we already know that key != null
+            if (!Meterman2.gm.isInInventory(key)) {
+                Meterman2.gm.println(getNokeyMessage());
+            } else {
+                setAttr(e, LOCKED, !hasAttr(e, LOCKED));
+                Meterman2.gm.entityChanged(e);
+            }
+            return true;
+        } else if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE)) {
+            setAttr(e, CLOSED, !hasAttr(e, CLOSED));
+            // TODO: Door.processAction()
+            if (hasAttr(e, CLOSED)) {
+
+            } else {
+
+            }
+            Meterman2.gm.entityChanged(e);
+            Meterman2.gm.roomChanged(room1);
+            Meterman2.gm.roomChanged(room2);
+        }
+
+        return false;
     }
 }
