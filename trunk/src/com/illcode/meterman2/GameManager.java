@@ -265,12 +265,12 @@ public final class GameManager
             return; // we were blocked by a listener
         if (fromRoom.exiting(toRoom))
             return;  // blocked by the room itself
-        for (Entity e : fromRoom.getEntities())
+        for (Entity e : GameUtils.getEntitiesRecursive(fromRoom))
             e.exitingScope();
         currentRoom = toRoom;  // we've moved!
         putBinding("room", currentRoom);
         toRoom.entered(fromRoom);
-        for (Entity e : toRoom.getEntities())
+        for (Entity e : GameUtils.getEntitiesRecursive(toRoom))
             e.enterScope();
         handlerManager.firePlayerMovement(fromRoom, toRoom, false);
         ui.clearEntitySelection();  // this in turn will call entitySelected(null) if needed
@@ -297,7 +297,7 @@ public final class GameManager
             }
             uiRefreshNeeded = true;
         }
-        final Room fromRoom = GameUtils.getRoom(e);  // keep track of rooms for scope
+        final Room fromRoom = GameUtils.getRoom(fromContainer);  // keep track of rooms for scope
         final Room toRoom = GameUtils.getRoom(toContainer);
         if (fromRoom != toRoom && fromRoom == currentRoom)
             e.exitingScope();
@@ -635,7 +635,6 @@ public final class GameManager
         state.playerState = new GameState.PlayerState();
         state.playerState.equippedEntityIds = new String[player.getEquippedEntities().size()];
         player.getEquippedEntities().toArray(state.playerState.equippedEntityIds);
-        // TODO: review saving the game handlers
         state.gameHandlers = new HashMap<>(10, 0.75f);
         for (Map.Entry<String, List<? extends GameEventHandler>>
                 entry : handlerManager.getEventHandlerMap().entrySet()) {

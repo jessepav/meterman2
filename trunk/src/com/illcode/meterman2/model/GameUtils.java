@@ -2,6 +2,10 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.Meterman2;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Utility methods that apply to the game world or interface.
  */
@@ -85,5 +89,23 @@ public final class GameUtils
                 break;
         }
         return false;
+    }
+
+    /**
+     * Return a list of all the entities in a given container, and if any of those entities is itself
+     * a container, its contents recursively.
+     */
+    public static List<Entity> getEntitiesRecursive(EntityContainer container) {
+        List<Entity> l = new ArrayList<>();
+        getEntitiesRecursiveHelper(container, l);
+        return l;
+    }
+
+    private static void getEntitiesRecursiveHelper(EntityContainer c, List<Entity> l) {
+        for (Entity e : c.getEntities()) {
+            l.add(e);
+            if (e instanceof EntityContainer)
+                getEntitiesRecursiveHelper((EntityContainer) e, l);
+        }
     }
 }
