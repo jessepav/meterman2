@@ -14,5 +14,12 @@ public interface TextSource
      *                 the particular implementation.
      * @return the text represented by this source
      */
-    String getText(String... bindings);
+    String getTextWithBindings(String... bindings);
+
+    /**
+     * Get the text represented by this source, with arguments made available in an implementation-specific way.
+     * @param args arguments
+     * @return the text represented by this source
+     */
+    String getTextWithArgs(Object... args);
 }

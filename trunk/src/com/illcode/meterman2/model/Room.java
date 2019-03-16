@@ -112,50 +112,50 @@ public class Room implements EntityContainer
     }
 
     /**
-     * Return the room associated with a given exit direction. This method is used in the world model
+     * Return the room associated with a given exit position. This method is used in the world model
      * to get the actual room to which an exit leads.
-     * @param direction one of the button constants in {@link UIConstants}, ex {@link UIConstants#NW_BUTTON}
-     * @return the room that is found when exiting this room in the given direction, or null if no
-     *         exit is possible in that direction.
+     * @param position one of the button constants in {@link UIConstants}, ex {@link UIConstants#NW_BUTTON}
+     * @return the room that is found when exiting this room in the given position, or null if no
+     *         exit is possible in that position.
      * @see #getExitLabel(int)
      */
-    public Room getExit(int direction) {
-        return exits[direction];
+    public Room getExit(int position) {
+        return exits[position];
     }
 
     /**
-     * Set the room associated with a given exit direction.
-     * @param direction one of the button constants in {@link UIConstants}, ex {@link UIConstants#NW_BUTTON}
-     * @param destination the room that is found when exiting this room in the given direction, or null if no
-     *         exit is possible in that direction.
+     * Set the room associated with a given exit position.
+     * @param position one of the button constants in {@link UIConstants}, ex {@link UIConstants#NW_BUTTON}
+     * @param destination the room that is found when exiting this room in the given position, or null if no
+     *         exit is possible in that position.
      */
-    public void setExit(int direction, Room destination) {
-        exits[direction] = destination;
+    public void setExit(int position, Room destination) {
+        exits[position] = destination;
     }
 
     /**
-     * Return the text that should be shown on the UI button for a given direction.
-     * @param direction one of the button constants in {@link UIConstants}
+     * Return the text that should be shown on the UI button for a given position.
+     * @param position one of the button constants in {@link UIConstants}
      * @return the text that should be shown on the respective UI button, or null if the button should
      *         be hidden
      */
-    public String getExitLabel(int direction) {
-        if (exitLabels[direction] != null)
-            return exitLabels[direction];
-        else if (exits[direction] != null)
-            return exits[direction].getExitName();
+    public String getExitLabel(int position) {
+        if (exitLabels[position] != null)
+            return exitLabels[position];
+        else if (exits[position] != null)
+            return exits[position].getExitName();
         else
             return null;
     }
 
     /**
-     * Set the text that should be shown on the UI button for a given direction.
-     * @param direction one of the button constants in {@link UIConstants}
-     * @param label the text that should be shown on the respective UI button, or null if the button should
-     *         be hidden
+     * Set the text that should be shown on the UI button for a given position.
+     * @param position one of the button constants in {@link UIConstants}
+     * @param label the text that should be shown on the respective UI button, or null if the exit name
+     * of the room in the given position should be used, if any.
      */
-    public void setExitLabel(int direction, String label) {
-        exitLabels[direction] = label;
+    public void setExitLabel(int position, String label) {
+        exitLabels[position] = label;
     }
 
 

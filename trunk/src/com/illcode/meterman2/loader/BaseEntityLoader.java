@@ -67,7 +67,7 @@ public class BaseEntityLoader implements EntityLoader
             if (e.getImpl() instanceof DoorImpl) {
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
                 loadDoorProperties(bundle, el, doorImpl, resolver, helper);
-                doorImpl.updateRoomConnections(e);
+                doorImpl.updateRoomConnections(e);  // (dis)connect rooms
             }
             break;
         }

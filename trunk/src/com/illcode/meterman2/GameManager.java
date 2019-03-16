@@ -241,6 +241,21 @@ public final class GameManager
         return numTurns;
     }
 
+    /** Return the entity with the given id, or null if not found. */
+    public Entity getEntity(String id) {
+        return entityIdMap.get(id);
+    }
+
+    /** Return the room with the given id, or null if not found. */
+    public Room getRoom(String id) {
+        return roomIdMap.get(id);
+    }
+
+    /** Return the game state object with the given name, or null if not found. */
+    public Object getGameStateObject(String name) {
+        return gameStateMap.get(name);
+    }
+
     /** Set whether we should always "Look" when entering a room, even if it's been visited before. */
     public void setAlwaysLook(boolean alwaysLook) {
         this.alwaysLook = alwaysLook;

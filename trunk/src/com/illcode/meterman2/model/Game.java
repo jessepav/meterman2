@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.GameManager;
 import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.event.GameEventHandler;
 
@@ -13,6 +14,7 @@ import java.util.Map;
  * <p/>
  * For new games, we call methods in this order:
  * <ol>
+ *     <li>getName()</li>
  *     <li>init()</li>
  *     <li>getGameStateMap()</li>
  *     <li>constructWorld()</li>
@@ -26,6 +28,7 @@ import java.util.Map;
  * </ol>
  * For loaded games, we call methods in this order:
  * <ol>
+ *     <li>getName()</li>
  *     <li>init()</li>
  *     <li>setGameStateMap()</li>
  *     <li>constructWorld()</li>
@@ -44,6 +47,8 @@ import java.util.Map;
  *   objects when it's called upon load.
  * </blockquote>
  * The other methods do not participate in the process of starting or loading a game.
+ * <hr/>
+ * An instance of this class is constructed via reflection, as though the no-arg constructor were invoked.
  */
 public interface Game
 {
@@ -81,7 +86,8 @@ public interface Game
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
      * namespace and template data model. Keys with a leading underscore are reserved for use by the system,
-     * as well as "entity" and "room", for the selected entity and current room, respectively.
+     * as well as "entity" and "room", for the selected entity and current room, respectively; and "args",
+     * for text sources with argument lists.
      */
     Map<String,Object> getGameStateMap();
 
