@@ -3,7 +3,7 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.SystemActions;
-import com.illcode.meterman2.text.TextSource;
+import com.illcode.meterman2.SystemMessages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +18,9 @@ import static com.illcode.meterman2.Meterman2.gm;
  */
 public class DoorImpl extends BaseEntityImpl
 {
-    public static final String LOCKED_MESSAGE_PASSAGE_ID = "door-locked-message";
-    public static final String NOKEY_MESSAGE_PASSAGE_ID = "door-nokey-message";
-
     protected Room room1, room2;
     protected int pos1, pos2;
     protected String closedExitLabel;
-    protected TextSource lockedMessage;
-    protected TextSource noKeyMessage;
     protected Entity key;
 
     protected List<MMActions.Action> actions;
@@ -78,28 +73,6 @@ public class DoorImpl extends BaseEntityImpl
         this.closedExitLabel = label;
     }
 
-    private String getLockedMessage(Entity e) {
-        return lockedMessage != null
-            ? lockedMessage.getText(e.defName())
-            : bundles.getPassage(LOCKED_MESSAGE_PASSAGE_ID).getText(e.defName());
-    }
-
-    /** Sets the message to be appended to the description when the door is locked. */
-    public void setLockedMessage(TextSource lockedMessage) {
-        this.lockedMessage = lockedMessage;
-    }
-
-    private String getNoKeyMessage(Entity e) {
-        return noKeyMessage != null
-            ? noKeyMessage.getText(e.defName())
-            : bundles.getPassage(NOKEY_MESSAGE_PASSAGE_ID).getText(e.defName());
-    }
-
-    /** Sets the message shown when the player attempts to lock or unlock the door without holding the key. */
-    public void setNoKeyMessage(TextSource noKeyMessage) {
-        this.noKeyMessage = noKeyMessage;
-    }
-
     /**
      * Get the key needed to lock and unlock this door.
      * @return the key entity, or null if no key is required
@@ -121,7 +94,8 @@ public class DoorImpl extends BaseEntityImpl
     public String getDescription(Entity e) {
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
-            return description + " " + getLockedMessage(e);
+            return description + " " +
+                bundles.getPassage(SystemMessages.DOOR_LOCKED).getText(e.getDefName());
         else
             return description;
     }
@@ -130,8 +104,6 @@ public class DoorImpl extends BaseEntityImpl
     public List<MMActions.Action> getActions(Entity e) {
         AttributeSet attr = e.getAttributes();
         actions.clear();
-        if (key == null)
-            attr.clear(LOCKED);
         if (attr.get(LOCKED)) {
             actions.add(SystemActions.UNLOCK);
         } else { // okay, we're unlocked
@@ -153,9 +125,8 @@ public class DoorImpl extends BaseEntityImpl
             return false;
         AttributeSet attr = e.getAttributes();
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
-            // note that in these cases we already know that key != null
-            if (!gm.isInInventory(key)) {
-                gm.println(getNoKeyMessage(e));
+            if (key != null && !gm.isInInventory(key)) {
+                gm.println(bundles.getPassage(SystemMessages.DOOR_NOKEY).getText(e.getDefName()));
             } else {
                 attr.toggle(LOCKED);
                 gm.entityChanged(e);
@@ -177,7 +148,6 @@ public class DoorImpl extends BaseEntityImpl
             gm.roomChanged(room2);
             return true;
         }
-
         return false;
     }
 }

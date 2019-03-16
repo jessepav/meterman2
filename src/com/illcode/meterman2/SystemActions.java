@@ -6,6 +6,7 @@ public final class SystemActions
 {
     public static Action LOOK;
     public static Action WAIT;
+    public static Action EXAMINE;
     public static Action OPEN;
     public static Action CLOSE;
     public static Action LOCK;
@@ -17,6 +18,7 @@ public final class SystemActions
     public static void init() {
         LOOK = Meterman2.actions.registerAction("Look");
         WAIT = Meterman2.actions.registerAction("Wait");
+        EXAMINE = Meterman2.actions.registerAction("Examine");
         OPEN = Meterman2.actions.registerAction("Open");
         CLOSE = Meterman2.actions.registerAction("Close");
         LOCK = Meterman2.actions.registerAction("Lock");

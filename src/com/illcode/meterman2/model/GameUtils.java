@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.SystemAttributes;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -120,5 +121,52 @@ public final class GameUtils
             }
         }
         return entities;
+    }
+
+    /**
+     * Returns the subset of a given list of entities that have a specific attribute value.
+     * @param entities list of entities to filter
+     * @param attrNum attribute to filter by
+     * @param value the value of the attribute
+     * @return a new list of entities that have {@code attribute = value}
+     */
+    public static List<Entity> filterByAttribute(List<Entity> entities, int attrNum, boolean value) {
+        List<Entity> filteredList = new LinkedList<>();
+        filterByAttribute(entities, attrNum, value, filteredList);
+        return filteredList;
+    }
+
+    /**
+     * Adds the subset of a given list of entities that have a specific attribute value to a target list.
+     * @param entities list of entities to filter
+     * @param attrNum attribute number to filter by
+     * @param value the value of the attribute
+     * @param target the list to which filtered entities will be added
+     */
+    public static void filterByAttribute(List<Entity> entities, int attrNum, boolean value, List<Entity> target) {
+        for (Entity e : entities)
+            if (e.getAttributes().get(attrNum) == value)
+                target.add(e);
+    }
+
+    /**
+     * Returns a list of all the {@link SystemAttributes#TAKEABLE} entities in the current room and the player
+     * inventory. This is useful in situations, for instance, where some object has a slot that the
+     * player can put something into. The object has an action "Put in Slot" that, when activated, will
+     * prompt the player to choose what to put it -- and presumably only things that are <tt>TAKEABLE</tt> can
+     * be lifted and put in.
+     */
+    public static List<Entity> getCurrentTakeableEntities() {
+        List<Entity> takeables = new LinkedList<>();
+        getCurrentTakeableEntities(takeables);
+        return takeables;
+    }
+
+    /**
+     * Like {@link #getCurrentTakeableEntities()}, but uses a list given as a parameter to avoid allocation.
+     */
+    public static void getCurrentTakeableEntities(List<Entity> takeables) {
+        filterByAttribute(Meterman2.gm.getCurrentRoom().getEntities(), SystemAttributes.TAKEABLE, true, takeables);
+        filterByAttribute(Meterman2.gm.getPlayer().getEntities(), SystemAttributes.TAKEABLE, true, takeables);
     }
 }

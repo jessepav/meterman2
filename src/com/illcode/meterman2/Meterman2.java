@@ -121,8 +121,8 @@ public final class Meterman2
     public static void shutdown() {
         logger.info("Meterman shutting down...");
 
+        gm.dispose();  // the ui must still be alive when we dispose the GameManager
         ui.dispose();
-        gm.dispose();
         gamesList.dispose();
         persistence.dispose();
         sound.dispose();

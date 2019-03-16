@@ -20,9 +20,6 @@ import static com.illcode.meterman2.SystemAttributes.VISITED;
 
 public final class GameManager
 {
-    public static final String ACTION_NOT_HANDLED_PASSAGE_ID = "action-not-handled-message";
-    public static final String WAIT_PASSAGE_ID = "wait-message";
-
     private Game game;  // The game we're currently playing
     private Player player;
     private Map<String,Object> gameStateMap;
@@ -377,12 +374,11 @@ public final class GameManager
 
 
     private void refreshRoomUI() {
-        Room r = getCurrentRoom();
-        ui.setRoomName(r.getName());
+        ui.setRoomName(currentRoom.getName());
         for (int pos = 0; pos < UIConstants.NUM_EXIT_BUTTONS; pos++)
-            ui.setExitLabel(pos, r.getExitLabel(pos));
+            ui.setExitLabel(pos, currentRoom.getExitLabel(pos));
         ui.clearRoomEntities();
-        for (Entity e : r.getEntities())
+        for (Entity e : currentRoom.getEntities())
             if (!e.getAttributes().get(SystemAttributes.CONCEALED))
                 ui.addRoomEntity(e.getId(), e.getName());
     }
@@ -447,7 +443,7 @@ public final class GameManager
 
     /** Called by when the user clicks "Wait" */
     public void waitCommand() {
-        println(bundles.getPassage(WAIT_PASSAGE_ID));
+        println(bundles.getPassage(SystemMessages.WAIT));
         nextTurn();
     }
 
@@ -461,9 +457,14 @@ public final class GameManager
     /** Called when the user clicks an exit button */
     public void exitSelected(int buttonPosition) {
         Room toRoom = currentRoom.getExit(buttonPosition);
-        if (toRoom != null)
+        if (toRoom != null) {
             movePlayer(toRoom);
-        nextTurn();
+            nextTurn();
+        } else {
+            // This can occur if there is an exit label on a room, but not an exit,
+            // for instance if a closed door is in the way.
+            println(bundles.getPassage(SystemMessages.EXIT_BLOCKED));
+        }
     }
 
     /** Called by when the user clicks an action button (or selects an action
@@ -480,7 +481,7 @@ public final class GameManager
                 break actionChain;
         }
         if (handlerManager.firePostAction(action, selectedEntity, actionHandled) == false && !actionHandled)
-            println(bundles.getPassage(ACTION_NOT_HANDLED_PASSAGE_ID));
+            println(bundles.getPassage(SystemMessages.ACTION_NOT_HANDLED));
         nextTurn();
     }
 

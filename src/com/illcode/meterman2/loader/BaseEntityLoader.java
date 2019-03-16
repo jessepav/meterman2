@@ -60,8 +60,8 @@ public class BaseEntityLoader implements EntityLoader
         loadBasicProperties(bundle, el, e, resolver, helper);  // always load basic properties
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
         case "container":
-            if (e instanceof Container)
-                loadContainerProperties(bundle, el, (Container) e, resolver, helper);
+            if (e.getImpl() instanceof ContainerImpl)
+                loadContainerProperties(bundle, el, (ContainerImpl) e.getImpl(), resolver, helper);
             break;
         case "door":
             if (e.getImpl() instanceof DoorImpl)
@@ -91,11 +91,11 @@ public class BaseEntityLoader implements EntityLoader
         }
     }
 
-    protected void loadContainerProperties(XBundle bundle, Element el, Container c, GameObjectIdResolver resolver,
+    protected void loadContainerProperties(XBundle bundle, Element el, ContainerImpl containerImpl, GameObjectIdResolver resolver,
                                            LoaderHelper helper) {
-        c.setInPrep(helper.getValue("inPrep"));
-        c.setOutPrep(helper.getValue("outPrep"));
-        c.setKey(resolver.getEntity(helper.getValue("key")));
+        containerImpl.setInPrep(helper.getValue("inPrep"));
+        containerImpl.setOutPrep(helper.getValue("outPrep"));
+        containerImpl.setKey(resolver.getEntity(helper.getValue("key")));
     }
 
     protected void loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
@@ -119,12 +119,6 @@ public class BaseEntityLoader implements EntityLoader
             doorImpl.setPositions(positions[0], positions[1]);
         }
         doorImpl.setClosedExitLabel(helper.getValue("closedExitLabel"));
-        final Element lockedMessageEl = el.getChild("lockedMessage");
-        if (lockedMessageEl != null)
-            doorImpl.setLockedMessage(bundle.elementTextSource(lockedMessageEl));
-        final Element noKeyMessageEl = el.getChild("noKeyMessage");
-        if (noKeyMessageEl != null)
-            doorImpl.setNoKeyMessage(bundle.elementTextSource(noKeyMessageEl));
         doorImpl.setKey(resolver.getEntity(helper.getValue("key")));
     }
 

@@ -27,6 +27,12 @@ public final class TemplateSource implements TextSource
         Meterman2.template.putTemplate(name, source, bundle.isSystemBundle());
     }
 
+    /** Release resources used by this TemplateSource. Attempting to render the template after
+     *  this call will fail. */
+    public void dispose() {
+        Meterman2.template.removeTemplate(name);
+    }
+
     public String getName() {
         return name;
     }

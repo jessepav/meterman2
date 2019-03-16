@@ -122,7 +122,12 @@ public class Entity
         this.indefiniteArticle = indefiniteArticle;
     }
 
-    /** Return the entity description (never null). */
+    /**
+     * Return the entity description (never null).
+     * <p/>
+     * {@code TextSource}S involved in the generation of the description will have "entity" bound
+     * to this entity in the script and template namespaces.
+     */
     public String getDescription() {
         try {
             Meterman2.script.putBinding("entity", this);
@@ -208,16 +213,30 @@ public class Entity
     }
 
     /**
-     * The player invoked an action on this entity from the UI
+     * The player invoked an action on this entity from the UI.
+     * <p/>
+     * If there is an entity delegate registered for this method, and that delegate returns
+     * false, then we continue on to our normal implementation. This allows delegates to handle
+     * only specific actions, while leaving the rest to the normal implementation.
+     * <p/>
+     * {@code TextSource}S invoked during action processing will have "entity" bound
+     * to this entity in the script and template namespaces.
      * @param action action name
      * @return true if the entity processed the action itself, false to continue
      *              through the processing chain
      */
     public boolean processAction(Action action) {
-        if (delegate != null && delegateMethods.contains(PROCESS_ACTION))
-            return delegate.processAction(this, action);
-        else
+        try {
+            Meterman2.script.putBinding("entity", this);
+            Meterman2.template.putBinding("entity", this);
+            if (delegate != null && delegateMethods.contains(PROCESS_ACTION))
+                if(delegate.processAction(this, action))
+                    return true;
             return impl.processAction(this, action);
+        } finally {
+            Meterman2.script.removeBinding("entity");
+            Meterman2.template.removeBinding("entity");
+        }
     }
 
     /**
@@ -249,7 +268,7 @@ public class Entity
      * account proper names.
      * @param capitalize whether to capitalize the definite article
      */
-    public String defName(boolean capitalize) {
+    public String getDefName(boolean capitalize) {
         String name = getName();
         if (name.isEmpty())
             return "";
@@ -263,8 +282,8 @@ public class Entity
      * Return the name of the entity prefixed by the definite article ("the") in lowercase,
      * taking into account proper names.
      */
-    public String defName() {
-        return defName(false);
+    public String getDefName() {
+        return getDefName(false);
     }
 
     /**
@@ -273,7 +292,7 @@ public class Entity
      * a vowel, and "a" otherwise.
      * @param capitalize whether to capitalize the indefinite article
      */
-    public String indefName(boolean capitalize) {
+    public String getIndefName(boolean capitalize) {
         String name = getName();
         if (name.isEmpty())
             return "";
@@ -296,8 +315,8 @@ public class Entity
      * Return the name of the entity prefixed by the indefinite article ("a/an/other") in lowercase.
      * @param e entity
      */
-    public String indefName() {
-        return indefName(false);
+    public String getIndefName() {
+        return getIndefName(false);
     }
 
 }
