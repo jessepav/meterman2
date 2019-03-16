@@ -60,6 +60,9 @@ public final class UIConstants
      * position
      */
     public static int buttonTextToPosition(String text) {
-        return ArrayUtils.indexOf(BUTTON_NAMES, text);
+        if (text == null)
+            return -1;
+        else
+            return ArrayUtils.indexOf(BUTTON_NAMES, text);
     }
 }

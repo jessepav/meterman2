@@ -2,6 +2,7 @@ package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.*;
+import com.illcode.meterman2.ui.UIConstants;
 import org.jdom2.Element;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
@@ -94,20 +95,37 @@ public class BaseEntityLoader implements EntityLoader
                                            LoaderHelper helper) {
         c.setInPrep(helper.getValue("inPrep"));
         c.setOutPrep(helper.getValue("outPrep"));
+        c.setKey(resolver.getEntity(helper.getValue("key")));
     }
 
     protected void loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
                                       LoaderHelper helper) {
-
-        // TODO: loadDoorProperties()
-        /*
-        protected Room room1, room2;
-        protected int pos1, pos2;
-        protected String closedExitLabel;
-        protected TextSource lockedMessage;
-        protected TextSource nokeyMessage;
-        protected Entity key;
-         */
+        readRooms: {
+            final Element roomsEl = el.getChild("rooms");
+            if (roomsEl == null)
+                break readRooms;
+            final Room[] rooms = new Room[2];
+            final int[] positions = new int[2];
+            for (int i = 0; i < 2; i++) {
+                final Element roomEl = roomsEl.getChild("room" + (i+1));
+                if (roomEl == null)
+                    break readRooms;
+                rooms[i] = resolver.getRoom(roomEl.getAttributeValue("id"));
+                positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
+                if (rooms[i] == null || positions[i] == -1)
+                    break readRooms;
+            }
+            doorImpl.setRooms(rooms[0], rooms[1]);
+            doorImpl.setPositions(positions[0], positions[1]);
+        }
+        doorImpl.setClosedExitLabel(helper.getValue("closedExitLabel"));
+        final Element lockedMessageEl = el.getChild("lockedMessage");
+        if (lockedMessageEl != null)
+            doorImpl.setLockedMessage(bundle.elementTextSource(lockedMessageEl));
+        final Element noKeyMessageEl = el.getChild("noKeyMessage");
+        if (noKeyMessageEl != null)
+            doorImpl.setNoKeyMessage(bundle.elementTextSource(noKeyMessageEl));
+        doorImpl.setKey(resolver.getEntity(helper.getValue("key")));
     }
 
 }

@@ -1,17 +1,16 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.MMActions;
-import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.text.TextSource;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.illcode.meterman2.model.GameUtils.hasAttr;
-import static com.illcode.meterman2.model.GameUtils.setAttr;
 import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.SystemAttributes.*;
+import static com.illcode.meterman2.Meterman2.gm;
 
 /**
  * Implementation of door entities, is a special usage entity that can connect and disconnect two rooms,
@@ -26,7 +25,7 @@ public class DoorImpl extends BaseEntityImpl
     protected int pos1, pos2;
     protected String closedExitLabel;
     protected TextSource lockedMessage;
-    protected TextSource nokeyMessage;
+    protected TextSource noKeyMessage;
     protected Entity key;
 
     protected List<MMActions.Action> actions;
@@ -90,15 +89,15 @@ public class DoorImpl extends BaseEntityImpl
         this.lockedMessage = lockedMessage;
     }
 
-    private String getNokeyMessage(Entity e) {
-        return nokeyMessage != null
-            ? nokeyMessage.getText(e.defName())
+    private String getNoKeyMessage(Entity e) {
+        return noKeyMessage != null
+            ? noKeyMessage.getText(e.defName())
             : bundles.getPassage(NOKEY_MESSAGE_PASSAGE_ID).getText(e.defName());
     }
 
     /** Sets the message shown when the player attempts to lock or unlock the door without holding the key. */
-    public void setNokeyMessage(TextSource nokeyMessage) {
-        this.nokeyMessage = nokeyMessage;
+    public void setNoKeyMessage(TextSource noKeyMessage) {
+        this.noKeyMessage = noKeyMessage;
     }
 
     /**
@@ -121,7 +120,7 @@ public class DoorImpl extends BaseEntityImpl
     @Override
     public String getDescription(Entity e) {
         String description = super.getDescription(e);
-        if (hasAttr(e, LOCKED))
+        if (e.getAttributes().get(LOCKED))
             return description + " " + getLockedMessage(e);
         else
             return description;
@@ -129,13 +128,14 @@ public class DoorImpl extends BaseEntityImpl
 
     @Override
     public List<MMActions.Action> getActions(Entity e) {
+        AttributeSet attr = e.getAttributes();
         actions.clear();
         if (key == null)
-            setAttr(e, LOCKED, false);
-        if (hasAttr(e, LOCKED)) {
+            attr.clear(LOCKED);
+        if (attr.get(LOCKED)) {
             actions.add(SystemActions.UNLOCK);
         } else { // okay, we're unlocked
-            if (hasAttr(e, CLOSED)) { // closed but unlocked
+            if (attr.get(CLOSED)) { // closed but unlocked
                 actions.add(SystemActions.OPEN);
                 if (key != null)
                     actions.add(SystemActions.LOCK);
@@ -148,20 +148,22 @@ public class DoorImpl extends BaseEntityImpl
 
     @Override
     public boolean processAction(Entity e, MMActions.Action action) {
-        Room currentRoom = Meterman2.gm.getCurrentRoom();
+        Room currentRoom = gm.getCurrentRoom();
         if (currentRoom != room1 && currentRoom != room2)
             return false;
+        AttributeSet attr = e.getAttributes();
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
             // note that in these cases we already know that key != null
-            if (!Meterman2.gm.isInInventory(key)) {
-                Meterman2.gm.println(getNokeyMessage(e));
+            if (!gm.isInInventory(key)) {
+                gm.println(getNoKeyMessage(e));
             } else {
-                setAttr(e, LOCKED, !hasAttr(e, LOCKED));
-                Meterman2.gm.entityChanged(e);
+                attr.toggle(LOCKED);
+                gm.entityChanged(e);
             }
             return true;
         } else if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE)) {
-            if (hasAttr(e, CLOSED)) {
+            attr.toggle(CLOSED);
+            if (attr.get(CLOSED)) {
                 room1.setExit(pos1, null);
                 room1.setExitLabel(pos1, closedExitLabel);
                 room2.setExit(pos2, null);
@@ -170,9 +172,9 @@ public class DoorImpl extends BaseEntityImpl
                 room1.setExit(pos1, room2);
                 room2.setExit(pos2, room1);
             }
-            Meterman2.gm.entityChanged(e);
-            Meterman2.gm.roomChanged(room1);
-            Meterman2.gm.roomChanged(room2);
+            gm.entityChanged(e);
+            gm.roomChanged(room1);
+            gm.roomChanged(room2);
             return true;
         }
 

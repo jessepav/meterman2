@@ -5,7 +5,7 @@ import java.util.BitSet;
 /**
  * A set of attributes to be associated with a game object.
  */
-public class AttributeSet
+public final class AttributeSet
 {
     private BitSet bits;
 
@@ -38,6 +38,16 @@ public class AttributeSet
     public void setMultiple(int... attributes) {
         for (int j : attributes)
             bits.set(j);
+    }
+
+    /** Clear an attribute (i.e. set its value to false). */
+    public void clear(int attrNum) {
+        bits.clear(attrNum);
+    }
+
+    /** Toggle the value of a given attribute. */
+    public void toggle(int attrNum) {
+        bits.flip(attrNum);
     }
 
     /** Clear all attributes. */

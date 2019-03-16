@@ -8,7 +8,8 @@
     Nothing much happens.
   </passage>
 
-  <!-- For door messages, the system passes in the defName of the door as a parameter. -->
+  <!-- For door messages, the system passes in the defName of the door as a parameter.
+       If you override these passages, use format="printf" or plain text. -->
   <passage id="door-nokey-message" format="printf">
     You do not have the key for %s.
   </passage>

@@ -97,9 +97,9 @@ public final class GameManager
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         game.start(true);
-        getCurrentRoom().entered(null);
+        currentRoom.entered(null);
         lookCommand();
-        setAttr(getCurrentRoom(), VISITED);
+        setAttr(currentRoom, VISITED);
     }
 
     void loadGame(GameState gameState) {
@@ -418,9 +418,9 @@ public final class GameManager
      * Actually performs the look command, but does not output buffered text.
      */
     private void performLook() {
-        outputBuilder.append(getCurrentRoom().getDescription());
+        outputBuilder.append(currentRoom.getDescription());
         outputBuilder.append("\n");
-        for (Entity e : getCurrentRoom().getEntities())
+        for (Entity e : currentRoom.getEntities())
             e.lookInRoom();
         if (commonTextBuilder.length() != 0) {
             outputBuilder.append('\n').append(commonTextBuilder).append('\n');
@@ -460,7 +460,7 @@ public final class GameManager
 
     /** Called when the user clicks an exit button */
     public void exitSelected(int buttonPosition) {
-        Room toRoom = getCurrentRoom().getExit(buttonPosition);
+        Room toRoom = currentRoom.getExit(buttonPosition);
         if (toRoom != null)
             movePlayer(toRoom);
         nextTurn();
@@ -526,7 +526,6 @@ public final class GameManager
      * @param r room that has changed
      */
     public void roomChanged(Room r) {
-        Room currentRoom = getCurrentRoom();
         if (r == currentRoom) {
             refreshRoomUI();
         } else {
