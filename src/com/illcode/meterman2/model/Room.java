@@ -91,18 +91,6 @@ public class Room implements EntityContainer
         return attributes;
     }
 
-    //region -- implement EntityContainer
-    public final int getContainerType() { return CONTAINER_ROOM; }
-    public final String getContainerId() { return getId(); }
-    public final Room getContainerAsRoom() { return this; }
-    public final Entity getContainerAsEntity() { return null; }
-    public final Player getContainerAsPlayer() { return null; }
-    public final void addEntity(Entity e) { containerSupport.addEntity(e); }
-    public final void clearEntities() { containerSupport.clearEntities(); }
-    public final List<Entity> getEntities() { return containerSupport.getEntities(); }
-    public final void removeEntity(Entity e) { containerSupport.removeEntity(e); }
-    //endregion
-
     /** Returns the name of the room. */
     public String getName() {
         return name != null ? name : "[" + getId() + "]";
@@ -226,4 +214,16 @@ public class Room implements EntityContainer
         else
             impl.restoreState(this, state);
     }
+
+    //region -- implement EntityContainer
+    public final int getContainerType() { return CONTAINER_ROOM; }
+    public final String getContainerId() { return getId(); }
+    public final Room getContainerAsRoom() { return this; }
+    public final Entity getContainerAsEntity() { return null; }
+    public final Player getContainerAsPlayer() { return null; }
+    public final void addEntity(Entity e) { containerSupport.addEntity(e); }
+    public final void clearEntities() { containerSupport.clearEntities(); }
+    public final List<Entity> getEntities() { return containerSupport.getEntities(); }
+    public final void removeEntity(Entity e) { containerSupport.removeEntity(e); }
+    //endregion
 }

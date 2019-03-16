@@ -49,14 +49,15 @@
     The ${entity.name} is a nice piece of equipment.
   </passage>
 
-  <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key">
+  <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key"
+          attributes="closed">
     <description>
       A doughty iron door.
     </description>
     <rooms>
       <!-- The door connects the N exit of cave-entrance with the SW exit of grassy-field. -->
-      <room1 id="cave-entrance" pos="N" />
-      <room2 id="grassy-field" pos="SW" />
+      <room1 roomId="cave-entrance" pos="N" label="Dark Cave" />
+      <room2 roomId="grassy-field" pos="SW" />
     </rooms>
   </entity>
 
@@ -65,4 +66,15 @@
     <description>A doughty iron chest.</description>
     <key>brass-key</key>
   </entity>
+
+  <room id="grassy-field" name="Grassy Field" exitName="Field">
+    <description>
+      A grassy field stretches out to the base of the cliffs.
+    </description>
+    <exits>
+      <!-- These should not include exits connected by doors, as the door will handle those. -->
+      <exit roomId="cliffs" pos="N" label="Vague Cliffs" />
+      <exit roomId="small-hut" pos="X2" />
+    </exits>
+  </room>
 </xbundle>
