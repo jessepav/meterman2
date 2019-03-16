@@ -20,6 +20,7 @@ public class DoorImpl extends BaseEntityImpl
 {
     protected Room room1, room2;
     protected int pos1, pos2;
+    protected String exitLabel1, exitLabel2;
     protected String closedExitLabel;
     protected Entity key;
 
@@ -66,8 +67,18 @@ public class DoorImpl extends BaseEntityImpl
     }
 
     /**
+     * Sets the exit labels to be used for the two rooms when the door is open.
+     * @param exitLabel1 exit label for room #1, or null
+     * @param exitLabel2 exit label for room #2, or null
+     */
+    public void setExitLabels(String exitLabel1, String exitLabel2) {
+        this.exitLabel1 = exitLabel1;
+        this.exitLabel2 = exitLabel2;
+    }
+
+    /**
      * Sets the label that will be shown on the room exits when the door is closed.
-     * @param label exit label
+     * @param label exit label, or null
      */
     public void setClosedExitLabel(String label) {
         this.closedExitLabel = label;
@@ -134,20 +145,29 @@ public class DoorImpl extends BaseEntityImpl
             return true;
         } else if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE)) {
             attr.toggle(CLOSED);
-            if (attr.get(CLOSED)) {
-                room1.setExit(pos1, null);
-                room1.setExitLabel(pos1, closedExitLabel);
-                room2.setExit(pos2, null);
-                room2.setExitLabel(pos2, closedExitLabel);
-            } else {
-                room1.setExit(pos1, room2);
-                room2.setExit(pos2, room1);
-            }
+            updateRoomConnections(e);
             gm.entityChanged(e);
             gm.roomChanged(room1);
             gm.roomChanged(room2);
             return true;
         }
         return false;
+    }
+
+    /**
+     * Connects or disconnects the door's two rooms depending on if it's open or closed.
+     */
+    public void updateRoomConnections(Entity e) {
+        if (e.getAttributes().get(CLOSED)) {
+            room1.setExit(pos1, null);
+            room1.setExitLabel(pos1, closedExitLabel);
+            room2.setExit(pos2, null);
+            room2.setExitLabel(pos2, closedExitLabel);
+        } else {
+            room1.setExit(pos1, room2);
+            room1.setExitLabel(pos1, exitLabel1);
+            room2.setExit(pos2, room1);
+            room2.setExitLabel(pos2, exitLabel2);
+        }
     }
 }

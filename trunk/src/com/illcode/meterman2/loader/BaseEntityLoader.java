@@ -64,8 +64,11 @@ public class BaseEntityLoader implements EntityLoader
                 loadContainerProperties(bundle, el, (ContainerImpl) e.getImpl(), resolver, helper);
             break;
         case "door":
-            if (e.getImpl() instanceof DoorImpl)
-                loadDoorProperties(bundle, el, (DoorImpl) e.getImpl(), resolver, helper);
+            if (e.getImpl() instanceof DoorImpl) {
+                final DoorImpl doorImpl = (DoorImpl) e.getImpl();
+                loadDoorProperties(bundle, el, doorImpl, resolver, helper);
+                doorImpl.updateRoomConnections(e);
+            }
             break;
         }
 
@@ -106,17 +109,20 @@ public class BaseEntityLoader implements EntityLoader
                 break readRooms;
             final Room[] rooms = new Room[2];
             final int[] positions = new int[2];
+            final String[] exitLabels = new String[2];
             for (int i = 0; i < 2; i++) {
                 final Element roomEl = roomsEl.getChild("room" + (i+1));
                 if (roomEl == null)
                     break readRooms;
-                rooms[i] = resolver.getRoom(roomEl.getAttributeValue("id"));
+                rooms[i] = resolver.getRoom(roomEl.getAttributeValue("roomId"));
                 positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
+                exitLabels[i] = roomEl.getAttributeValue("label");
                 if (rooms[i] == null || positions[i] == -1)
                     break readRooms;
             }
             doorImpl.setRooms(rooms[0], rooms[1]);
             doorImpl.setPositions(positions[0], positions[1]);
+            doorImpl.setExitLabels(exitLabels[0], exitLabels[1]);
         }
         doorImpl.setClosedExitLabel(helper.getValue("closedExitLabel"));
         doorImpl.setKey(resolver.getEntity(helper.getValue("key")));

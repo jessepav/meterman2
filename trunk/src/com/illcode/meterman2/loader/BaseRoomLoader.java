@@ -47,5 +47,7 @@ public class BaseRoomLoader implements RoomLoader
             ScriptedRoomImpl scriptedImpl = new ScriptedRoomImpl(r.getId(), script.getTextTrim());
             r.setDelegate(scriptedImpl, scriptedImpl.getScriptedRoomMethods());
         }
+
+        // TODO: room connections
     }
 }
