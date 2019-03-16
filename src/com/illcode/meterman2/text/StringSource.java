@@ -22,8 +22,15 @@ public final class StringSource implements TextSource
     /**
      * @param bindings ignored
      */
-    public String getText(String... bindings) {
+    public String getTextWithBindings(String... bindings) {
         return getText();
+    }
+
+    /**
+     * @param args ignored
+     */
+    public String getTextWithArgs(Object... args) {
+        return null;
     }
 
     public String toString() {

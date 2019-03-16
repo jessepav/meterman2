@@ -60,7 +60,7 @@ public final class WorldLoader implements GameObjectIdResolver
                 return;
             }
         }
-        entityIdMap.put(id, LoadInfo.of(loader.createEntity(bundle, el, id), loader, el, bundle));
+        entityIdMap.put(id, new LoadInfo<>(loader.createEntity(bundle, el, id), loader, el, bundle));
     }
 
     /**
@@ -90,7 +90,7 @@ public final class WorldLoader implements GameObjectIdResolver
                 return;
             }
         }
-        roomIdMap.put(id, LoadInfo.of(loader.createRoom(bundle, el, id), loader, el, bundle));
+        roomIdMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
     }
 
     /**
@@ -125,20 +125,16 @@ public final class WorldLoader implements GameObjectIdResolver
 
     private static final class LoadInfo<T,S>
     {
-        T gameObject;
-        S loader;
-        Element element;
-        XBundle bundle;
+        final T gameObject;
+        final S loader;
+        final Element element;
+        final XBundle bundle;
 
-        private LoadInfo(T gameObject, S loader, Element element, XBundle bundle) {
+        LoadInfo(T gameObject, S loader, Element element, XBundle bundle) {
             this.gameObject = gameObject;
             this.loader = loader;
             this.element = element;
             this.bundle = bundle;
-        }
-
-        static <T,S> LoadInfo<T,S> of(T gameObject, S loader, Element element, XBundle bundle) {
-            return new LoadInfo<>(gameObject, loader, element, bundle);
         }
     }
 }

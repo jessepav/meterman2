@@ -41,10 +41,17 @@ public final class FormatStringSource implements TextSource
     }
 
     /**
-     * @param bindings used as arguments to the format string.
+     * Bindings are not supported by format-strings, so just return the format string itself.
      */
-    public String getText(String... bindings) {
-        if (bindings == null)
+    public String getTextWithBindings(String... bindings) {
+        return format;
+    }
+
+    /**
+     * @param args used as arguments to the format string.
+     */
+    public String getTextWithArgs(Object... args) {
+        if (args == null)
             return format;
 
         if (formatter == null) {
@@ -52,7 +59,7 @@ public final class FormatStringSource implements TextSource
             formatter = new Formatter(strBuilder);
         }
         try {
-            formatter.format(format, (Object[])bindings);
+            formatter.format(format, args);
             return bundle.formatText(strBuilder.toString());
         } catch (IllegalFormatException ex) {
             logger.warning("Illegal format in FormatStringSource: " + ex.getMessage());

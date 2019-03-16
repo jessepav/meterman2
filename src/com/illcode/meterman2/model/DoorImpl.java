@@ -106,7 +106,7 @@ public class DoorImpl extends BaseEntityImpl
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
             return description + " " +
-                bundles.getPassage(SystemMessages.DOOR_LOCKED).getText(e.getDefName());
+                bundles.getPassage(SystemMessages.DOOR_LOCKED).getTextWithArgs(e.getDefName());
         else
             return description;
     }
@@ -137,7 +137,7 @@ public class DoorImpl extends BaseEntityImpl
         AttributeSet attr = e.getAttributes();
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
             if (key != null && !gm.isInInventory(key)) {
-                gm.println(bundles.getPassage(SystemMessages.DOOR_NOKEY).getText(e.getDefName()));
+                gm.println(bundles.getPassage(SystemMessages.DOOR_NOKEY).getTextWithArgs(e.getDefName()));
             } else {
                 attr.toggle(LOCKED);
                 gm.entityChanged(e);

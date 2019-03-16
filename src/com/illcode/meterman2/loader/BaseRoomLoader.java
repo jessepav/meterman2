@@ -4,7 +4,10 @@ import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.GameObjectIdResolver;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.model.ScriptedRoomImpl;
+import com.illcode.meterman2.ui.UIConstants;
 import org.jdom2.Element;
+
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 public class BaseRoomLoader implements RoomLoader
 {
@@ -24,13 +27,25 @@ public class BaseRoomLoader implements RoomLoader
     }
 
     public Room createRoom(XBundle bundle, Element el, String id) {
-        return Room.create(id);
+        Room r;
+        switch (defaultString(el.getAttributeValue("type"))) {
+        default:
+            r = Room.create(id);
+            break;
+        }
+        return r;
     }
 
     public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver)
     {
         LoaderHelper helper = LoaderHelper.wrap(el);
+        loadBasicProperties(bundle, el, r, resolver, helper);  // always load basic properties
+        switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
+        }
+    }
 
+    private void loadBasicProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver,
+                                     LoaderHelper helper) {
         // Text properties
         r.setName(helper.getValue("name"));
         r.setExitName(helper.getValue("exitName"));
@@ -48,6 +63,18 @@ public class BaseRoomLoader implements RoomLoader
             r.setDelegate(scriptedImpl, scriptedImpl.getScriptedRoomMethods());
         }
 
-        // TODO: room connections
+        // connections
+        final Element exits = el.getChild("exits");
+        if (exits != null) {
+            for (Element exit : exits.getChildren("exit")) {
+                final Room room = resolver.getRoom(exit.getAttributeValue("roomId"));
+                final int pos = UIConstants.buttonTextToPosition(exit.getAttributeValue("pos"));
+                final String exitLabel = exit.getAttributeValue("label");
+                if (room != null && pos != -1) {
+                    r.setExit(pos, room);
+                    r.setExitLabel(pos, exitLabel);
+                }
+            }
+        }
     }
 }

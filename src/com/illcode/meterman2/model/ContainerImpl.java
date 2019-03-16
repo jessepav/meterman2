@@ -67,7 +67,7 @@ public class ContainerImpl extends BaseEntityImpl
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
             return description + " " +
-                bundles.getPassage(SystemMessages.CONTAINER_LOCKED).getText(e.getDefName());
+                bundles.getPassage(SystemMessages.CONTAINER_LOCKED).getTextWithArgs(e.getDefName());
         else
             return description;
     }
@@ -102,7 +102,7 @@ public class ContainerImpl extends BaseEntityImpl
         Container c = (Container) e;
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
             if (getKey() != null && !gm.isInInventory(getKey())) {
-                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NOKEY).getText(e.getDefName()));
+                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NOKEY).getTextWithArgs(e.getDefName()));
             } else {
                 e.getAttributes().toggle(LOCKED);
                 gm.entityChanged(e);
@@ -111,7 +111,7 @@ public class ContainerImpl extends BaseEntityImpl
         } else if (action.equals(SystemActions.CONTAINER_EXAMINE)) {
             List<Entity> contents = c.getEntities();
             if (contents.isEmpty()) {
-                gm.println(bundles.getPassage(SystemMessages.CONTAINER_EMPTY).getText(getInPrep(), c.getDefName()));
+                gm.println(bundles.getPassage(SystemMessages.CONTAINER_EMPTY).getTextWithArgs(getInPrep(), c.getDefName()));
             } else {
                 Entity item = ui.showListDialog(
                     c.getName(), bundles.getPassage(SystemMessages.CONTAINER_EXAMINE).getText(), contents, true);
@@ -125,15 +125,15 @@ public class ContainerImpl extends BaseEntityImpl
             if (GameUtils.hasAttr(c, TAKEABLE))
                 takeables.remove(c);
             if (takeables.isEmpty()) {
-                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NO_CONTENTS_PUT).getText(getInPrep(), c.getDefName()));
+                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NO_CONTENTS_PUT).getTextWithArgs(getInPrep(), c.getDefName()));
             } else {
                 Entity item = ui.showListDialog(c.getName(),
-                    bundles.getPassage(SystemMessages.CONTAINER_PUT_PROMPT).getText(getInPrep(), c.getDefName()),
+                    bundles.getPassage(SystemMessages.CONTAINER_PUT_PROMPT).getTextWithArgs(getInPrep(), c.getDefName()),
                     takeables, true);
                 if (item != null) {
                     gm.moveEntity(item, c);
                     gm.println(bundles.getPassage(SystemMessages.CONTAINER_PUT).
-                        getText(item.getDefName(), getInPrep(), c.getDefName()));
+                        getTextWithArgs(item.getDefName(), getInPrep(), c.getDefName()));
                 }
             }
             return true;
@@ -141,15 +141,15 @@ public class ContainerImpl extends BaseEntityImpl
             List<Entity> takeables = new ArrayList<>();
             GameUtils.filterByAttribute(c.getEntities(), SystemAttributes.TAKEABLE, true, takeables);
             if (takeables.isEmpty()) {
-                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NO_CONTENTS_TAKE).getText(getInPrep(), c.getDefName()));
+                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NO_CONTENTS_TAKE).getTextWithArgs(getInPrep(), c.getDefName()));
             } else {
                 Entity item = ui.showListDialog(c.getName(),
-                    bundles.getPassage(SystemMessages.CONTAINER_TAKE_PROMPT).getText(getOutPrep(), c.getDefName()),
+                    bundles.getPassage(SystemMessages.CONTAINER_TAKE_PROMPT).getTextWithArgs(getOutPrep(), c.getDefName()),
                     takeables, true);
                 if (item != null) {
                     gm.moveEntity(item, gm.getPlayer());
                     gm.println(bundles.getPassage(SystemMessages.CONTAINER_TAKE).
-                        getText(item.getDefName(), getOutPrep(), c.getDefName()));
+                        getTextWithArgs(item.getDefName(), getOutPrep(), c.getDefName()));
                 }
             }
             return true;

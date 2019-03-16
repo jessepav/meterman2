@@ -5,11 +5,15 @@ import com.illcode.meterman2.model.GameObjectIdResolver;
 import com.illcode.meterman2.model.Room;
 import org.jdom2.Element;
 
+/**
+ * An object that can instantiate and load rooms based on an XML definition.
+ */
 public interface RoomLoader
 {
     /**
      * Called by the game system to construct and return a Room (or subclass) with
-     * properties defined in an XBundle element.
+     * based on an XML definition. It does not load properties into the room --
+     * that is performed by {@link #loadRoomProperties}.
      * @param bundle XBundle that contains the element
      * @param el the XML element containing the room defintion
      * @param id ID for the new room
