@@ -44,6 +44,7 @@
       ]]>
     </script>
   </entity>
+
   <passage id="equipment-description" template="ftl">
     The ${entity.name} is a nice piece of equipment.
   </passage>
@@ -54,10 +55,16 @@
     </description>
     <rooms>
       <!-- The door connects the N exit of cave-entrance with the SW exit of grassy-field. -->
-      <room1 pos="N">cave-entrance</room1>
-      <room2 pos="SW">grassy-field</room2>
+      <room1 id="cave-entrance" pos="N" />
+      <room2 id="grassy-field" pos="SW" />
     </rooms>
     <lockedMessage>The iron door is locked and won't budge.</lockedMessage>
-    <nokeyMessage>None of the keys in your possession can open it.</nokeyMessage>
+    <noKeyMessage>None of the keys in your possession can open it.</noKeyMessage>
+  </entity>
+
+  <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
+          attributes="closed, locked">
+    <description>A doughty iron chest.</description>
+    <key>brass-key</key>
   </entity>
 </xbundle>

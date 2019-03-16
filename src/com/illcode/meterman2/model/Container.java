@@ -9,6 +9,7 @@ public class Container extends Entity implements EntityContainer
 {
     protected String inPrep;
     protected String outPrep;
+    protected Entity key;
 
     private ContainerSupport containerSupport;
 
@@ -51,6 +52,16 @@ public class Container extends Entity implements EntityContainer
     /** Set the preposition used when taking an object out of the container. */
     public void setOutPrep(String outPrep) {
         this.outPrep = outPrep;
+    }
+
+    /** Get the key used to lock/unlock this container. Null means no key is needed. */
+    public Entity getKey() {
+        return key;
+    }
+
+    /** Set the key used to lock/unlock this container. Null means no key is needed. */
+    public void setKey(Entity key) {
+        this.key = key;
     }
 
     //region -- implement EntityContainer
