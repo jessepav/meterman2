@@ -100,10 +100,9 @@ public class LoaderHelper
         final Element child = el.getChild(name);
         if (child == null)
             return Collections.emptyList();
-        final List<Element> grandchildren = child.getChildren();
-        final List<String> values = new ArrayList<>(grandchildren.size());
-        for (Element gc : grandchildren)
-            values.add(gc.getValue());
+        final List<String> values = new ArrayList<>();
+        for (Element grandchild : child.getChildren())
+            values.add(grandchild.getValue());
         return values;
     }
 
