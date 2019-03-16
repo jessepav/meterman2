@@ -6,13 +6,13 @@ import java.util.Formatter;
 import java.util.IllegalFormatException;
 
 import static com.illcode.meterman2.MMLogging.logger;
+
 /**
- * A text source whose output is obtained by rendering a printf-style format string,
- * useful as a simple template.
+ * A text source whose output is obtained by rendering a printf-style format string. It does not have access
+ * to the script or template namespaces, and thus is used mostly for simple system messages.
  * <p/>
- * This class uses a single instance of a Formatter, and thus is not thread-safe. You must
- * synchronize on the class object (or equivalent class-wide lock) if accessed from multiple
- * threads.
+ * This class uses a single instance of a Formatter, and thus is not thread-safe. You must synchronize on
+ * the class object (or equivalent class-wide lock) if accessed from multiple threads.
  */
 public final class FormatStringSource implements TextSource
 {

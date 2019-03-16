@@ -10,10 +10,6 @@ import java.util.List;
  */
 public class Container extends Entity implements EntityContainer
 {
-    protected String inPrep;
-    protected String outPrep;
-    protected Entity key;
-
     private ContainerSupport containerSupport;
 
     protected Container(String id, EntityImpl impl) {
@@ -29,42 +25,6 @@ public class Container extends Entity implements EntityContainer
     /** Create a container with the given ID and implemention. */
     public static Container create(String id, EntityImpl impl) {
         return new Container(id, impl);
-    }
-
-    /**
-     * Return the preposition used when putting an object into the container
-     * (ex. "in" for a box, and "on" for a shelf).
-     */
-    public String getInPrep() {
-        return inPrep != null ? inPrep : "in";
-    }
-
-    /** Set the preposition used when putting an object into the container. */
-    public void setInPrep(String inPrep) {
-        this.inPrep = inPrep;
-    }
-
-    /**
-     * Return the preposition used when taking an object out of the container
-     * (ex. "from" for a box, and "off" for a shelf).
-     */
-    public String getOutPrep() {
-        return outPrep != null ? outPrep : "from";
-    }
-
-    /** Set the preposition used when taking an object out of the container. */
-    public void setOutPrep(String outPrep) {
-        this.outPrep = outPrep;
-    }
-
-    /** Get the key used to lock/unlock this container. Null means no key is needed. */
-    public Entity getKey() {
-        return key;
-    }
-
-    /** Set the key used to lock/unlock this container. Null means no key is needed. */
-    public void setKey(Entity key) {
-        this.key = key;
     }
 
     //region -- implement EntityContainer

@@ -205,24 +205,22 @@ public final class XBundle
         }
     }
 
-    /** A template text source element must have a "template" attribute. */
+    /** A template text source element has a format="ftl" attribute. */
     private static boolean isTemplateElement(final Element e) {
-        final Attribute templateAttr = e.getAttribute("template");
-        // in the future we can check for the actual value of the template attribute, like "ftl"
-        return templateAttr != null;
+        final String format = e.getAttributeValue("format");
+        return StringUtils.equals(format, "ftl");
     }
 
-    /** A script text source element must have a "script" attribute. */
+    /** A script text source element has a script="bsh" attribute. */
     private static boolean isScriptElement(final Element e) {
-        final Attribute scriptAttr = e.getAttribute("script");
-        // in the future we can check for the actual value of the script attribute, like "bsh"
-        return scriptAttr != null;
+        final String format = e.getAttributeValue("script");
+        return StringUtils.equals(format, "bsh");
     }
 
+    /** A format-string text source element has a format="printf" attribute. */
     private static boolean isFormatStringElement(final Element e) {
-        final Attribute formatAttr = e.getAttribute("format");
-        // in the future we can check for the actual value of the format attribute, like "printf"
-        return formatAttr != null;
+        final String format = e.getAttributeValue("format");
+        return StringUtils.equals(format, "printf");
     }
 
     /**

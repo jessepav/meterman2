@@ -37,6 +37,7 @@ public final class MainFrame implements ActionListener, ListSelectionListener
     private static final KeyStroke SELECT_ACTION_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.SHIFT_MASK);
     private static final KeyStroke LOOK_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.SHIFT_MASK);
     private static final KeyStroke WAIT_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.SHIFT_MASK);
+    private static final KeyStroke EXAMINE_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.SHIFT_MASK);
 
     private MMUI ui;
 
@@ -186,6 +187,14 @@ public final class MainFrame implements ActionListener, ListSelectionListener
         actionMap.put("lookButton", new ButtonAction(lookButton));
         inputMap.put(WAIT_KEYSTROKE, "waitButton");
         actionMap.put("waitButton", new ButtonAction(waitButton));
+        inputMap.put(EXAMINE_KEYSTROKE, "examineAction");
+        actionMap.put("examineAction", new AbstractAction()
+        {
+            public void actionPerformed(ActionEvent e) {
+                if (actions.contains(SystemActions.EXAMINE))
+                    ui.handler.entityActionSelected(SystemActions.EXAMINE);
+            }
+        });
 
         inputMap.put(SELECT_ROOM_ENTITY_KEYSTROKE, "selectRoomEntity");
         actionMap.put("selectRoomEntity",
@@ -204,20 +213,16 @@ public final class MainFrame implements ActionListener, ListSelectionListener
         {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    debugTriggered();
+                    if (ui.handler.isGameActive()) {
+                        String command = ui.showPromptDialog("Debug Command",
+                            "What is your debug command, oh Implementer?", "Command", "");
+                        ui.handler.debugCommand(command);
+                    }
                 } catch (Exception ex) {
                     logger.log(Level.FINE, "debugTriggered()", ex);
                 }
             }
         });
-    }
-
-    private void debugTriggered() {
-        if (ui.handler.isGameActive()) {
-            String command = ui.showPromptDialog("Debug Command",
-                "What is your debug command, oh Implementer?", "Command", "");
-            ui.handler.debugCommand(command);
-        }
     }
 
     void setVisible(boolean visible) {

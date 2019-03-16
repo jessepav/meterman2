@@ -7,13 +7,45 @@
   <passage id="action-not-handled-message">
     Nothing much happens.
   </passage>
+  <passage id="exit-blocked-message">
+    The exit in that direction is blocked.
+  </passage>
 
-  <!-- For door messages, the system passes in the defName of the door as a parameter.
-       If you override these passages, use format="printf" or plain text. -->
-  <passage id="door-nokey-message" format="printf">
+  <passage id="door-nokey-message" format="printf"> <!-- args: defName -->
     You do not have the key for %s.
   </passage>
-  <passage id="door-locked-message">
+  <passage id="door-locked-message"> <!-- args: defName -->
     It is locked.
+  </passage>
+
+  <passage id="container-locked-message"> <!-- args: defName -->
+    It is locked.
+  </passage>
+  <passage id="container-nokey-message" format="printf"> <!-- args: defName -->
+    You do not have the key for %s.
+  </passage>
+  <passage id="container-empty-message" format="printf"> <!-- args: inPrep, defName -->
+    There is nothing interesting %s %s.
+  </passage>
+  <passage id="container-examine-message">
+    What do you want to examine?
+  </passage>
+  <passage id="container-no-contents-put-message" format="printf"> <!-- args: inPrep, defName -->
+    There is nothing that you can put %s %s.
+  </passage>
+  <passage id="container-put-prompt-message" format="printf"> <!-- args: inPrep, defName -->
+    What do you want to put %s %s?
+  </passage>
+  <passage id="container-put-message" format="printf"> <!-- args: item.defName, inPrep, defName -->
+    You put %s %s %s.
+  </passage>
+  <passage id="container-no-contents-take-message" format="printf"> <!-- args: inPrep, defName -->
+    There is nothing %s %s that you can take.
+  </passage>
+  <passage id="container-take-prompt-message" format="printf"> <!-- args: outPrep, defName -->
+    What do you want to take %s %s?
+  </passage>
+  <passage id="container-take-message" format="printf"> <!-- args: item.defName, outPrep, defName -->
+    You take %s %s %s.
   </passage>
 </xbundle>

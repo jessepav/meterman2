@@ -7,7 +7,7 @@
   <passage id="simple-passage">
     Untemplated text.
   </passage>
-  <passage id="templated-passage" template="ftl">
+  <passage id="templated-passage" format="ftl">
     [#if stateobj.variable == 2]
     Hello Jacque!@p
     [/#if]
@@ -24,7 +24,7 @@
   <entity id="basic-entity-variant-1">
     <name>Old Tractor</name>
     <indefiniteArticle>an</indefiniteArticle>
-    <description template="ftl">
+    <description format="ftl">
       An old tractor with ${stateobj.numTires} tires.
     </description>
     <attributes>
@@ -45,7 +45,7 @@
     </script>
   </entity>
 
-  <passage id="equipment-description" template="ftl">
+  <passage id="equipment-description" format="ftl">
     The ${entity.name} is a nice piece of equipment.
   </passage>
 
@@ -58,8 +58,6 @@
       <room1 id="cave-entrance" pos="N" />
       <room2 id="grassy-field" pos="SW" />
     </rooms>
-    <lockedMessage>The iron door is locked and won't budge.</lockedMessage>
-    <noKeyMessage>None of the keys in your possession can open it.</noKeyMessage>
   </entity>
 
   <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
