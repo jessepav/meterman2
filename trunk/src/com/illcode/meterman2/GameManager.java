@@ -119,25 +119,7 @@ public final class GameManager
             GameState.EntityState entityState = gameState.entityStateMap.get(entityId);
             entity.setName(entityState.name);
             entity.setIndefiniteArticle(entityState.indefiniteArticle);
-            EntityContainer container = null;
-            if (entityState.containerId != null) {
-                switch (entityState.containerType) {
-                case EntityContainer.CONTAINER_ENTITY:
-                    Entity e = entityIdMap.get(entityState.containerId);
-                    if (e instanceof EntityContainer)  // just in case
-                        container = (EntityContainer) e;
-                    break;
-                case EntityContainer.CONTAINER_ROOM:
-                    container = roomIdMap.get(entityState.containerId);
-                    break;
-                case EntityContainer.CONTAINER_PLAYER:
-                    container = player;
-                    break;
-                }
-            }
-            entity.setContainer(container);
-            if (container != null)
-                container.addEntity(entity);
+            // TOOD: containment
             entity.getAttributes().setTo(entityState.attributes);
             entity.restoreState(entityState.stateObj);
         }
@@ -157,6 +139,7 @@ public final class GameManager
                     room.setExit(i, roomIdMap.get(id));
                 room.setExitLabel(i, roomState.exitLabels[i]);
             }
+            // TOOD: containment
             room.restoreState(roomState.stateObj);
         }
 
@@ -619,11 +602,7 @@ public final class GameManager
             GameState.EntityState entityState = new GameState.EntityState();
             entityState.name = entity.getName();
             entityState.indefiniteArticle = entity.getIndefiniteArticle();
-            final EntityContainer container = entity.getContainer();
-            if (container != null) {
-                entityState.containerId = container.getContainerId();
-                entityState.containerType = container.getContainerType();
-            }
+            // TOOD: containment
             entityState.attributes = entity.getAttributes();
             entityState.stateObj = entity.getState();
             state.entityStateMap.put(id, entityState);

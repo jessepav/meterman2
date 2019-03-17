@@ -106,17 +106,19 @@ public class BaseEntityLoader implements EntityLoader
         }
 
         // Containment.
-        String location = helper.getValue("location");
+        final String location = helper.getValue("location");
         if (location != null) {
-            // It could be (most likely) a room
             Room r = resolver.getRoom(location);
             if (r != null) {
                 e.setContainer(r);
                 r.addEntity(e);
-            } else { // or an entity
-                Entity locEntity = resolver.getEntity(location);
-                if (locEntity instanceof EntityContainer) {
-                    EntityContainer c = (EntityContainer) locEntity;
+            }
+        } else {
+            final String container = helper.getValue("container");
+            if (container != null) {
+                Entity e2 = resolver.getEntity(container);
+                if (e2 instanceof EntityContainer) {
+                    EntityContainer c = (EntityContainer) e2;
                     e.setContainer(c);
                     c.addEntity(e);
                 }

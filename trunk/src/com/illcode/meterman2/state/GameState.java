@@ -54,13 +54,6 @@ public final class GameState
         public String name;
         public String indefiniteArticle;
 
-        /** The container where the entity is located, or null. */
-        public String containerId;
-
-        /** If containerId != null, then this is the container type.
-         * @see EntityContainer#getContainerType() */
-        public int containerType;
-
         /** Entity attributes. */
         public AttributeSet attributes;
 
