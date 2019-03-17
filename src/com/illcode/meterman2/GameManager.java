@@ -79,7 +79,6 @@ public final class GameManager
         game.constructWorld();
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
-        game.setInitialWorldState();
         numTurns = 0;
         player = game.getPlayer();
         currentRoom = game.getStartingRoom();

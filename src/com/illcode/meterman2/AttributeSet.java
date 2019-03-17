@@ -34,12 +34,6 @@ public final class AttributeSet
         bits.set(attrNum, value);
     }
 
-    /** Set multiple attributes to true. */
-    public void setMultiple(int... attributes) {
-        for (int j : attributes)
-            bits.set(j);
-    }
-
     /** Clear an attribute (i.e. set its value to false). */
     public void clear(int attrNum) {
         bits.clear(attrNum);

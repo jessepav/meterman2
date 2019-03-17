@@ -5,6 +5,7 @@ import com.illcode.meterman2.bundle.BundleGroup;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.GameObjectIdResolver;
+import com.illcode.meterman2.model.Player;
 import com.illcode.meterman2.model.Room;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
@@ -22,6 +23,7 @@ public final class WorldLoader implements GameObjectIdResolver
     private BundleGroup group;
     private Map<String,LoadInfo<Entity,EntityLoader>> entityIdMap;
     private Map<String,LoadInfo<Room,RoomLoader>> roomIdMap;
+    private Player player;
 
     /**
      * Create a new world loader.
@@ -33,16 +35,30 @@ public final class WorldLoader implements GameObjectIdResolver
         roomIdMap = new HashMap<>(40);
     }
 
+    public void loadAllGameObjects() {
+        // Create entities and rooms, populating the entityIdMap and roomIdMap
+        for (Pair<Element,XBundle> pair : group.getElementsAndBundles("entity"))
+            createEntity(pair.getLeft(), pair.getRight());
+        for (Pair<Element,XBundle> pair : group.getElementsAndBundles("room"))
+            createRoom(pair.getLeft(), pair.getRight());
+
+        // and load their properties.
+        for (LoadInfo<Entity,EntityLoader> eli : entityIdMap.values())
+            eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this);
+        for (LoadInfo<Room,RoomLoader> rli : roomIdMap.values())
+            rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
+
+        // Load the player.
+        player = loadPlayer();
+    }
+
     /**
-     * Create an entity from a bundle element with a given ID and add it to the entityIdMap.
-     * @param id element (and thus entity) ID
+     * Create an entity from an XML definition and add it to the entityIdMap.
+     * @param el element
+     * @param bundle bundle where the element was found
      */
-    private void createEntity(String id) {
-        Pair<Element,XBundle> pair = group.getElementAndBundle(id);
-        if (pair == null)
-            return;
-        Element el = pair.getLeft();
-        XBundle bundle = pair.getRight();
+    private void createEntity(Element el, XBundle bundle) {
+        String id = el.getAttributeValue("id");
         LoaderHelper helper = LoaderHelper.wrap(el);
         String snippet = helper.getValue("loader");
         EntityLoader loader;
@@ -64,15 +80,12 @@ public final class WorldLoader implements GameObjectIdResolver
     }
 
     /**
-     * Create a room from a bundle element with a given ID and add it to the roomIdMap.
-     * @param id element (and thus room) ID
+     * Create a room from an XML definition and add it to the roomIdMap.
+     * @param el element
+     * @param bundle bundle where the element was found
      */
-    private void createRoom(String id) {
-        Pair<Element,XBundle> pair = group.getElementAndBundle(id);
-        if (pair == null)
-            return;
-        Element el = pair.getLeft();
-        XBundle bundle = pair.getRight();
+    private void createRoom(Element el, XBundle bundle) {
+        String id = el.getAttributeValue("id");
         LoaderHelper helper = LoaderHelper.wrap(el);
         String snippet = helper.getValue("loader");
         RoomLoader loader;
@@ -93,24 +106,24 @@ public final class WorldLoader implements GameObjectIdResolver
         roomIdMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
     }
 
-    /**
-     * Loads the properties of an entity using the same loader that created it.
-     * This should be called only after all entities and rooms have been created.
-     * @param id entity ID.
-     */
-    private void loadEntityProperties(String id) {
-        LoadInfo<Entity,EntityLoader> eli = entityIdMap.get(id);
-        eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this);
+    // TODO: finish up WorldLoader
+    private Player loadPlayer() {
+        Player p = new Player();
+        return p;
     }
 
-    /**
-     * Loads the properties of an entity using the same loader that created it.
-     * This should be called only after all entities and rooms have been created.
-     * @param id entity ID.
-     */
-    private void loadRoomProperties(String id) {
-        LoadInfo<Room,RoomLoader> rli = roomIdMap.get(id);
-        rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
+    // Methods to retrieve the world.
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Map<String,Entity> getEntityIdMap() {
+        return null;
+    }
+
+    public Map<String,Room> getRoomIdMap() {
+        return null;
     }
 
     //region -- Implement GameObjectIdResolver --
