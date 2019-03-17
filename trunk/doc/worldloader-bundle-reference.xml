@@ -33,6 +33,9 @@
     </attributes>
   </entity>
 
+  <!-- You specify the initial placement of an entity by including either a 'location' attribute
+       or child element to place it in a room, or a 'container' attribute or child element to
+       place it in another entity (which must be a container). -->
   <entity id="basic-entity-variant-2" name="New Tractor" indefiniteArticle="a"
           attributes="moveable, lightsource" location="grassy-field">
     <description passageId="equipment-description" />
@@ -49,7 +52,7 @@
     The ${entity.name} is a nice piece of equipment.
   </passage>
 
-  <!-- Doors do not specify a room; rather, they appear in both of the rooms they connect. -->
+  <!-- Doors do not specify a location; rather, they appear in both of the rooms they connect. -->
   <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key"
           attributes="closed">
     <description>
