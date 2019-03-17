@@ -21,8 +21,8 @@ import static com.illcode.meterman2.MMLogging.logger;
 public final class WorldLoader implements GameObjectIdResolver
 {
     private BundleGroup group;
-    private Map<String,LoadInfo<Entity,EntityLoader>> entityIdMap;
-    private Map<String,LoadInfo<Room,RoomLoader>> roomIdMap;
+    private Map<String,LoadInfo<Entity,EntityLoader>> entityLoadInfoMap;
+    private Map<String,LoadInfo<Room,RoomLoader>> roomLoadInfoMap;
     private Player player;
 
     /**
@@ -31,8 +31,8 @@ public final class WorldLoader implements GameObjectIdResolver
      */
     public WorldLoader(BundleGroup group) {
         this.group = group;
-        entityIdMap = new HashMap<>(100);
-        roomIdMap = new HashMap<>(40);
+        entityLoadInfoMap = new HashMap<>(100);
+        roomLoadInfoMap = new HashMap<>(40);
     }
 
     public void loadAllGameObjects() {
@@ -43,9 +43,9 @@ public final class WorldLoader implements GameObjectIdResolver
             createRoom(pair.getLeft(), pair.getRight());
 
         // and load their properties.
-        for (LoadInfo<Entity,EntityLoader> eli : entityIdMap.values())
+        for (LoadInfo<Entity,EntityLoader> eli : entityLoadInfoMap.values())
             eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this);
-        for (LoadInfo<Room,RoomLoader> rli : roomIdMap.values())
+        for (LoadInfo<Room,RoomLoader> rli : roomLoadInfoMap.values())
             rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
 
         // Load the player.
@@ -76,7 +76,7 @@ public final class WorldLoader implements GameObjectIdResolver
                 return;
             }
         }
-        entityIdMap.put(id, new LoadInfo<>(loader.createEntity(bundle, el, id), loader, el, bundle));
+        entityLoadInfoMap.put(id, new LoadInfo<>(loader.createEntity(bundle, el, id), loader, el, bundle));
     }
 
     /**
@@ -103,7 +103,7 @@ public final class WorldLoader implements GameObjectIdResolver
                 return;
             }
         }
-        roomIdMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
+        roomLoadInfoMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
     }
 
     // TODO: finish up WorldLoader
@@ -128,11 +128,11 @@ public final class WorldLoader implements GameObjectIdResolver
 
     //region -- Implement GameObjectIdResolver --
     public Entity getEntity(String id) {
-        return entityIdMap.get(id).gameObject;
+        return entityLoadInfoMap.get(id).gameObject;
     }
 
     public Room getRoom(String id) {
-        return roomIdMap.get(id).gameObject;
+        return roomLoadInfoMap.get(id).gameObject;
     }
     //endregion
 
