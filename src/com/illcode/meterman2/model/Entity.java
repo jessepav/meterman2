@@ -252,7 +252,8 @@ public class Entity
     }
 
     /**
-     * Called when a game is loaded to restore entity state.
+     * Called when a game is loaded to restore entity state. It is always called as the
+     * final step of the process of patching up the entity's state.
      * @param state state object (possibly null) previously returned by getState().
      */
     public void restoreState(Object state) {

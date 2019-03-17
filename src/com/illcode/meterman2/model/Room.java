@@ -204,7 +204,8 @@ public class Room implements EntityContainer
     }
 
     /**
-     * Called when a game is loaded to restore room state.
+     * Called when a game is loaded to restore room state. It is always called as the
+     * final step of the process of patching up the room's state.
      * @param state state object (possibly null) previously returned by getState().
      */
     public void restoreState(Object state) {

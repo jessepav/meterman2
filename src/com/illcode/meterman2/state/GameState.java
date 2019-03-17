@@ -57,6 +57,9 @@ public final class GameState
         /** Entity attributes. */
         public AttributeSet attributes;
 
+        /** If non-null, then holds the entity IDs of the contents this entity. */
+        public String[] contentIds;
+
         /** The object returned by {@link Entity#getState()} */
         public Object stateObj;
     }
@@ -76,18 +79,21 @@ public final class GameState
         /** Exit labels (or null) for each of the {@link UIConstants#NUM_EXIT_BUTTONS} positions. */
         public String[] exitLabels;
 
+        /** If non-null, then holds the entity IDs of the contents of this room. */
+        public String[] contentIds;
+
         /** The object returned by {@link Room#getState()} */
         public Object stateObj;
     }
 
     /**
      * Container class for the standard properties of the player.
-     * <p/>
-     * Note that the entities in the player inventory will have their {@code containerId} equal to {@code
-     * Player.PLAYER_ID}, so we don't need to keep track of them here.
      */
     public static final class PlayerState
     {
+        /** The IDs of the entities the player has in inventory. */
+        public String[] inventoryEntityIds;
+
         /** The IDs of the entities the player has equipped. */
         public String[] equippedEntityIds;
     }

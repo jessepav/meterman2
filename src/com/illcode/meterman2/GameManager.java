@@ -119,8 +119,9 @@ public final class GameManager
             GameState.EntityState entityState = gameState.entityStateMap.get(entityId);
             entity.setName(entityState.name);
             entity.setIndefiniteArticle(entityState.indefiniteArticle);
-            // TOOD: containment
             entity.getAttributes().setTo(entityState.attributes);
+            if (entity instanceof EntityContainer)
+                populateContainer((EntityContainer) entity, entityState.contentIds);
             entity.restoreState(entityState.stateObj);
         }
 
@@ -139,7 +140,7 @@ public final class GameManager
                     room.setExit(i, roomIdMap.get(id));
                 room.setExitLabel(i, roomState.exitLabels[i]);
             }
-            // TOOD: containment
+            populateContainer(room, roomState.contentIds);
             room.restoreState(roomState.stateObj);
         }
 
@@ -173,6 +174,19 @@ public final class GameManager
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         game.start(false);
+    }
+
+    private void populateContainer(EntityContainer c, String[] contentIds) {
+        c.clearEntities();
+        if (contentIds != null) {
+            for (String id : contentIds) {
+                final Entity e = entityIdMap.get(id);
+                if (e != null) {
+                    c.addEntity(e);
+                    e.setContainer(c);
+                }
+            }
+        }
     }
 
     private void closeGame() {
@@ -602,8 +616,17 @@ public final class GameManager
             GameState.EntityState entityState = new GameState.EntityState();
             entityState.name = entity.getName();
             entityState.indefiniteArticle = entity.getIndefiniteArticle();
-            // TOOD: containment
             entityState.attributes = entity.getAttributes();
+            if (entity instanceof EntityContainer) {
+                EntityContainer c = (EntityContainer) entity;
+                final List<Entity> contents = c.getEntities();
+                if (!contents.isEmpty()) {
+                    entityState.contentIds = new String[contents.size()];
+                    int idx = 0;
+                    for (Entity e : contents)
+                        entityState.contentIds[idx++] = e.getId();
+                }
+            }
             entityState.stateObj = entity.getState();
             state.entityStateMap.put(id, entityState);
         }
@@ -614,6 +637,7 @@ public final class GameManager
             GameState.RoomState roomState = new GameState.RoomState();
             roomState.name = room.getName();
             roomState.exitName = room.getExitName();
+            roomState.attributes = room.getAttributes();
             roomState.exitRoomIds = new String[UIConstants.NUM_EXIT_BUTTONS];
             roomState.exitLabels = new String[UIConstants.NUM_EXIT_BUTTONS];
             for (int position = 0; position < UIConstants.NUM_EXIT_BUTTONS; position++) {
@@ -621,6 +645,13 @@ public final class GameManager
                 if (exit != null)
                     roomState.exitRoomIds[position] = exit.getId();
                 roomState.exitLabels[position] = room.getExitLabel(position);
+            }
+            final List<Entity> contents = room.getEntities();
+            if (!contents.isEmpty()) {
+                roomState.contentIds = new String[contents.size()];
+                int idx = 0;
+                for (Entity e : contents)
+                    roomState.contentIds[idx++] = e.getId();
             }
             roomState.stateObj = room.getState();
             state.roomStateMap.put(id, roomState);
