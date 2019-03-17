@@ -139,8 +139,7 @@ public final class GameManager
             if (container != null)
                 container.addEntity(entity);
             entity.getAttributes().setTo(entityState.attributes);
-            if (entityState.stateObj != null)
-                entity.restoreState(entityState.stateObj);
+            entity.restoreState(entityState.stateObj);
         }
 
         // fix up the state of all rooms in the roomIdMap from state.roomState
@@ -158,8 +157,7 @@ public final class GameManager
                     room.setExit(i, roomIdMap.get(id));
                 room.setExitLabel(i, roomState.exitLabels[i]);
             }
-            if (roomState.stateObj != null)
-                room.restoreState(roomState.stateObj);
+            room.restoreState(roomState.stateObj);
         }
 
         // restore player state from state.playerState
