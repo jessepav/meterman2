@@ -36,7 +36,7 @@ public final class WorldLoader implements GameObjectIdResolver
     }
 
     public void loadAllGameObjects() {
-        // Create entities and rooms, populating the entityIdMap and roomIdMap
+        // Create entities and rooms, populating the entityLoadInfoMap and roomLoadInfoMap
         for (Pair<Element,XBundle> pair : group.getElementsAndBundles("entity"))
             createEntity(pair.getLeft(), pair.getRight());
         for (Pair<Element,XBundle> pair : group.getElementsAndBundles("room"))
@@ -53,7 +53,7 @@ public final class WorldLoader implements GameObjectIdResolver
     }
 
     /**
-     * Create an entity from an XML definition and add it to the entityIdMap.
+     * Create an entity from an XML definition and add it to the entityLoadInfoMap.
      * @param el element
      * @param bundle bundle where the element was found
      */
@@ -80,7 +80,7 @@ public final class WorldLoader implements GameObjectIdResolver
     }
 
     /**
-     * Create a room from an XML definition and add it to the roomIdMap.
+     * Create a room from an XML definition and add it to the roomLoadInfoMap.
      * @param el element
      * @param bundle bundle where the element was found
      */
@@ -106,9 +106,9 @@ public final class WorldLoader implements GameObjectIdResolver
         roomLoadInfoMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
     }
 
-    // TODO: finish up WorldLoader
     private Player loadPlayer() {
         Player p = new Player();
+        // TODO: write loadPlayer()
         return p;
     }
 
@@ -119,11 +119,23 @@ public final class WorldLoader implements GameObjectIdResolver
     }
 
     public Map<String,Entity> getEntityIdMap() {
-        return null;
+        Map<String, Entity> entityIdMap = new HashMap<>((int) (entityLoadInfoMap.size() * 1.4f), 0.75f);
+        for (Map.Entry<String,LoadInfo<Entity,EntityLoader>> entry : entityLoadInfoMap.entrySet()) {
+            String id = entry.getKey();
+            LoadInfo<Entity,EntityLoader> loadInfo = entry.getValue();
+            entityIdMap.put(id, loadInfo.gameObject);
+        }
+        return entityIdMap;
     }
 
     public Map<String,Room> getRoomIdMap() {
-        return null;
+        Map<String, Room> roomIdMap = new HashMap<>((int) (roomLoadInfoMap.size() * 1.4f), 0.75f);
+        for (Map.Entry<String,LoadInfo<Room,RoomLoader>> entry : roomLoadInfoMap.entrySet()) {
+            String id = entry.getKey();
+            LoadInfo<Room,RoomLoader> loadInfo = entry.getValue();
+            roomIdMap.put(id, loadInfo.gameObject);
+        }
+        return roomIdMap;
     }
 
     //region -- Implement GameObjectIdResolver --

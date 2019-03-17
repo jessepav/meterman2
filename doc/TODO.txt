@@ -5,11 +5,6 @@ Meterman2 To-do
 
 == GameManager and World Model ==
 
-TODO: Doors must be in two rooms at once...how to do this...
-    We'll change the way that containment is saved; rather than having each
-    entity remember where it was, we will save the contents of all rooms,
-    EntityContainer entities, and the player inventory.
-
 == UI ==
 
 Change the font used in the interface, and distribute it with the program. If someone wants to internationalize the program, he can supply a different font and hand-edit the .properties file to load it.

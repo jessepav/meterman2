@@ -1,22 +1,23 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.event.*;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.state.GameState;
 import com.illcode.meterman2.text.TextSource;
 import com.illcode.meterman2.ui.UIConstants;
-import com.illcode.meterman2.MMActions.Action;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
-import static com.illcode.meterman2.model.GameUtils.hasAttr;
-import static com.illcode.meterman2.model.GameUtils.setAttr;
-import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.Meterman2.bundles;
+import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 import static com.illcode.meterman2.SystemAttributes.VISITED;
+import static com.illcode.meterman2.model.GameUtils.hasAttr;
+import static com.illcode.meterman2.model.GameUtils.setAttr;
 
 public final class GameManager
 {
@@ -98,25 +99,25 @@ public final class GameManager
         setAttr(currentRoom, VISITED);
     }
 
-    void loadGame(GameState gameState) {
+    void loadGame(GameState state) {
         closeGame();
-        game = Meterman2.gamesList.createGame(gameState.gameName);
+        game = Meterman2.gamesList.createGame(state.gameName);
         String gameName = game.getName();
         ui.setGameName(gameName);
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
         game.init();
-        gameStateMap = gameState.gameStateMap;
+        player = new Player();
+        gameStateMap = state.gameStateMap;
         game.setGameStateMap(gameStateMap);
         game.constructWorld();
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
-        player = new Player();
 
         // fix up the state of all entities in the entityIdMap from state.entityState
         for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
             String entityId = entry.getKey();
             Entity entity = entry.getValue();
-            GameState.EntityState entityState = gameState.entityStateMap.get(entityId);
+            GameState.EntityState entityState = state.entityStateMap.get(entityId);
             entity.setName(entityState.name);
             entity.setIndefiniteArticle(entityState.indefiniteArticle);
             entity.getAttributes().setTo(entityState.attributes);
@@ -129,7 +130,7 @@ public final class GameManager
         for (Map.Entry<String,Room> entry : roomIdMap.entrySet()) {
             String roomId = entry.getKey();
             Room room = entry.getValue();
-            GameState.RoomState roomState = gameState.roomStateMap.get(roomId);
+            GameState.RoomState roomState = state.roomStateMap.get(roomId);
 
             room.setName(roomState.name);
             room.setExitName(roomState.exitName);
@@ -145,25 +146,32 @@ public final class GameManager
         }
 
         // restore player state from state.playerState
-        for (String entityId : gameState.playerState.equippedEntityIds)
-            player.equipEntity(entityIdMap.get(entityId));
+        final GameState.PlayerState playerState = state.playerState;
+        populateContainer(player, playerState.inventoryEntityIds);
+        player.clearEquippedEntities();
+        final List<Entity> inventoryEntities = player.getEntities();
+        final String[] equippedEntityIds = playerState.equippedEntityIds;
+        for (Entity e : inventoryEntities) {
+            if (ArrayUtils.contains(equippedEntityIds, e.getId()))
+                player.equipEntity(e);
+        }
 
         // restore game handlers from state.gameHandlers
-        for (String id : gameState.gameHandlers.get("gameActionListeners"))
+        for (String id : state.gameHandlers.get("gameActionListeners"))
             addGameActionListener((GameActionListener) game.getEventHandler(id));
-        for (String id : gameState.gameHandlers.get("playerMovementListeners"))
+        for (String id : state.gameHandlers.get("playerMovementListeners"))
             addPlayerMovementListener((PlayerMovementListener) game.getEventHandler(id));
-        for (String id : gameState.gameHandlers.get("turnListeners"))
+        for (String id : state.gameHandlers.get("turnListeners"))
             addTurnListener((TurnListener) game.getEventHandler(id));
-        for (String id : gameState.gameHandlers.get("entityActionsProcessors"))
+        for (String id : state.gameHandlers.get("entityActionsProcessors"))
             addEntityActionsProcessor((EntityActionsProcessor) game.getEventHandler(id));
-        for (String id : gameState.gameHandlers.get("entitySelectionListeners"))
+        for (String id : state.gameHandlers.get("entitySelectionListeners"))
             addEntitySelectionListener((EntitySelectionListener) game.getEventHandler(id));
-        for (String id : gameState.gameHandlers.get("outputTextProcessors"))
+        for (String id : state.gameHandlers.get("outputTextProcessors"))
             addOutputTextProcessor((OutputTextProcessor) game.getEventHandler(id));
 
-        currentRoom = roomIdMap.get(gameState.currentRoomId);
-        numTurns = gameState.numTurns;
+        currentRoom = roomIdMap.get(state.currentRoomId);
+        numTurns = state.numTurns;
 
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
@@ -351,7 +359,7 @@ public final class GameManager
      * @return true if the operation succeeded
      */
     public boolean setEquipped(Entity e, boolean equip) {
-        final Set<Entity> equippedEntities = player.getEquippedEntities();
+        final Collection<Entity> equippedEntities = player.getEquippedEntities();
         if (equip) {
             if (hasAttr(e, EQUIPPABLE) && isInInventory(e) && !equippedEntities.contains(e)) {
                 equippedEntities.add(e);
@@ -398,7 +406,7 @@ public final class GameManager
     private void refreshInventoryUI() {
         Entity savedSE = selectedEntity;
         List<Entity> inventory = player.getEntities();
-        Set<Entity> equippedItems = player.getEquippedEntities();
+        Collection<Entity> equippedItems = player.getEquippedEntities();
         ui.clearInventoryEntities();
         // We make two passes through the player inventory, first adding equipped items, and then the rest.
         for (Entity item : inventory) {
@@ -617,16 +625,8 @@ public final class GameManager
             entityState.name = entity.getName();
             entityState.indefiniteArticle = entity.getIndefiniteArticle();
             entityState.attributes = entity.getAttributes();
-            if (entity instanceof EntityContainer) {
-                EntityContainer c = (EntityContainer) entity;
-                final List<Entity> contents = c.getEntities();
-                if (!contents.isEmpty()) {
-                    entityState.contentIds = new String[contents.size()];
-                    int idx = 0;
-                    for (Entity e : contents)
-                        entityState.contentIds[idx++] = e.getId();
-                }
-            }
+            if (entity instanceof EntityContainer)
+                entityState.contentIds = getContainerContentIds((EntityContainer) entity);
             entityState.stateObj = entity.getState();
             state.entityStateMap.put(id, entityState);
         }
@@ -646,19 +646,15 @@ public final class GameManager
                     roomState.exitRoomIds[position] = exit.getId();
                 roomState.exitLabels[position] = room.getExitLabel(position);
             }
-            final List<Entity> contents = room.getEntities();
-            if (!contents.isEmpty()) {
-                roomState.contentIds = new String[contents.size()];
-                int idx = 0;
-                for (Entity e : contents)
-                    roomState.contentIds[idx++] = e.getId();
-            }
+            roomState.contentIds = getContainerContentIds(room);
             roomState.stateObj = room.getState();
             state.roomStateMap.put(id, roomState);
         }
-        state.playerState = new GameState.PlayerState();
-        state.playerState.equippedEntityIds = new String[player.getEquippedEntities().size()];
-        player.getEquippedEntities().toArray(state.playerState.equippedEntityIds);
+        final GameState.PlayerState playerState = new GameState.PlayerState();
+        playerState.inventoryEntityIds = getContainerContentIds(player);
+        playerState.equippedEntityIds = getEntityIds(player.getEquippedEntities());
+        state.playerState = playerState;
+
         state.gameHandlers = new HashMap<>(10, 0.75f);
         for (Map.Entry<String, List<? extends GameEventHandler>>
                 entry : handlerManager.getEventHandlerMap().entrySet()) {
@@ -675,6 +671,22 @@ public final class GameManager
         Meterman2.persistence.saveGameState(state, out);
         ui.hideWaitDialog();
         ui.appendText("\n------- Game Saved -------\n\n");
+    }
+
+    // Returns the content IDs of a container's contents, or null if no contents.
+    private String[] getContainerContentIds(EntityContainer c) {
+        return getEntityIds(c.getEntities());
+    }
+
+    private String[] getEntityIds(Collection<Entity> c) {
+        String[] entityIds = null;
+        if (!c.isEmpty()) {
+            entityIds = new String[c.size()];
+            int idx = 0;
+            for (Entity e : c)
+                entityIds[idx++] = e.getId();
+        }
+        return entityIds;
     }
 
     //region -- Delegate event handler registration to the gameHandlerManager --
