@@ -1,8 +1,8 @@
 package com.illcode.meterman2.model;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * The player character.
@@ -12,13 +12,13 @@ public final class Player implements EntityContainer
     /** A special, unique object ID (cf. entity and room IDs) representing the player character. */
     public static final String PLAYER_ID = "__PLAYER_ID__";
 
-    private Set<Entity> equippedEntities;
+    private Collection<Entity> equippedEntities;
 
     private ContainerSupport containerSupport;
 
     public Player() {
+        equippedEntities = new ArrayList<>();
         containerSupport = new ContainerSupport(this);
-        equippedEntities = new HashSet<>();
     }
 
     public void equipEntity(Entity e) {
@@ -30,7 +30,7 @@ public final class Player implements EntityContainer
         equippedEntities.remove(e);
     }
 
-    public Set<Entity> getEquippedEntities() {
+    public Collection<Entity> getEquippedEntities() {
         return equippedEntities;
     }
 
