@@ -1,8 +1,11 @@
 package com.illcode.meterman2.loader;
 
+import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
@@ -66,8 +69,17 @@ public class BaseEntityLoader implements EntityLoader
         case "door":
             if (e.getImpl() instanceof DoorImpl) {
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
-                loadDoorProperties(bundle, el, doorImpl, resolver, helper);
-                doorImpl.updateRoomConnections(e);  // (dis)connect rooms
+                if (loadDoorProperties(bundle, el, doorImpl, resolver, helper)) {
+                    doorImpl.updateRoomConnections(e);  // (dis)connect rooms
+                    // put the door into both its rooms
+                    e.setContainer(null); // it is a strange, manifold creation.
+                    Pair<Room,Room> rooms = doorImpl.getRooms();
+                    rooms.getLeft().addEntity(e);
+                    rooms.getRight().addEntity(e);
+                    final AttributeSet attr = e.getAttributes();
+                    attr.clear(SystemAttributes.TAKEABLE); // doors shall not move!
+                    attr.clear(SystemAttributes.MOVEABLE);
+                }
             }
             break;
         }
@@ -92,6 +104,24 @@ public class BaseEntityLoader implements EntityLoader
             ScriptedEntityImpl scriptedImpl = new ScriptedEntityImpl(e.getId(), script.getTextTrim());
             e.setDelegate(scriptedImpl, scriptedImpl.getScriptedEntityMethods());
         }
+
+        // Containment.
+        String location = helper.getValue("location");
+        if (location != null) {
+            // It could be (most likely) a room
+            Room r = resolver.getRoom(location);
+            if (r != null) {
+                e.setContainer(r);
+                r.addEntity(e);
+            } else { // or an entity
+                Entity locEntity = resolver.getEntity(location);
+                if (locEntity instanceof EntityContainer) {
+                    EntityContainer c = (EntityContainer) locEntity;
+                    e.setContainer(c);
+                    c.addEntity(e);
+                }
+            }
+        }
     }
 
     protected void loadContainerProperties(XBundle bundle, Element el, ContainerImpl containerImpl, GameObjectIdResolver resolver,
@@ -101,31 +131,31 @@ public class BaseEntityLoader implements EntityLoader
         containerImpl.setKey(resolver.getEntity(helper.getValue("key")));
     }
 
-    protected void loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
-                                      LoaderHelper helper) {
-        readRooms: {
-            final Element roomsEl = el.getChild("rooms");
-            if (roomsEl == null)
-                break readRooms;
-            final Room[] rooms = new Room[2];
-            final int[] positions = new int[2];
-            final String[] exitLabels = new String[2];
-            for (int i = 0; i < 2; i++) {
-                final Element roomEl = roomsEl.getChild("room" + (i+1));
-                if (roomEl == null)
-                    break readRooms;
-                rooms[i] = resolver.getRoom(roomEl.getAttributeValue("roomId"));
-                positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
-                exitLabels[i] = roomEl.getAttributeValue("label");
-                if (rooms[i] == null || positions[i] == -1)
-                    break readRooms;
-            }
-            doorImpl.setRooms(rooms[0], rooms[1]);
-            doorImpl.setPositions(positions[0], positions[1]);
-            doorImpl.setExitLabels(exitLabels[0], exitLabels[1]);
+    // Returns true if the door was loaded successfully.
+    protected boolean loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
+                                         LoaderHelper helper) {
+        final Element roomsEl = el.getChild("rooms");
+        if (roomsEl == null)
+            return false;
+        final Room[] rooms = new Room[2];
+        final int[] positions = new int[2];
+        final String[] exitLabels = new String[2];
+        for (int i = 0; i < 2; i++) {
+            final Element roomEl = roomsEl.getChild("room" + (i+1));
+            if (roomEl == null)
+                return false;
+            rooms[i] = resolver.getRoom(roomEl.getAttributeValue("roomId"));
+            positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
+            exitLabels[i] = roomEl.getAttributeValue("label");
+            if (rooms[i] == null || positions[i] == -1)
+                return false;
         }
+        doorImpl.setRooms(rooms[0], rooms[1]);
+        doorImpl.setPositions(positions[0], positions[1]);
+        doorImpl.setExitLabels(exitLabels[0], exitLabels[1]);
         doorImpl.setClosedExitLabel(helper.getValue("closedExitLabel"));
         doorImpl.setKey(resolver.getEntity(helper.getValue("key")));
+        return true;
     }
 
 }

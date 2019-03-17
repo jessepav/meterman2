@@ -20,7 +20,6 @@ import java.util.Map;
  *     <li>constructWorld()</li>
  *     <li>getEntityIdMap()</li>
  *     <li>getRoomIdMap()</li>
- *     <li>setInitialWorldState()</li>
  *     <li>getPlayer()</li>
  *     <li>getStartingRoom()</li>
  *     <li>registerInitialGameHandlers()</li>
@@ -101,10 +100,9 @@ public interface Game
     void setGameStateMap(Map<String,Object> gameStateMap);
 
     /**
-     * Instantiate all rooms and entities. This method does not link rooms or place entities into
-     * containers: that's the job of {@link #setInitialWorldState()}. Called both for new and loaded
-     * games. It is only after calling this method that {@link #getEntityIdMap()} and {@link #getRoomIdMap()}
-     * will return valid values.
+     * Instantiate all rooms and entities as they will be at the start of a game. Called both for new
+     * and loaded games. It is only after calling this method that {@link #getEntityIdMap()} and {@link
+     * #getRoomIdMap()} will return valid values.
      */
     void constructWorld();
 
@@ -119,13 +117,6 @@ public interface Game
      * This map's contents may change throughout the course of the game.
      */
     Map<String,Room> getRoomIdMap();
-
-    /**
-     * Place entities into rooms and other containers (including the player inventory) at
-     * the start of a new game. This method is not called when a game is loaded, but rather
-     * the entities are put where they were when the game was saved.
-     */
-    void setInitialWorldState();
 
     /**
      * Called at the start of a new game, after {@code constructWorld()} and {@code setInitialEntityPlacements()},

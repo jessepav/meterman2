@@ -4,6 +4,7 @@ import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.SystemMessages;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,11 @@ public class DoorImpl extends BaseEntityImpl
     public void setRooms(Room room1, Room room2) {
         this.room1 = room1;
         this.room2 = room2;
+    }
+
+    /** Get the two rooms connected by this door. */
+    public Pair<Room,Room> getRooms() {
+        return Pair.of(room1, room2);
     }
 
     /**

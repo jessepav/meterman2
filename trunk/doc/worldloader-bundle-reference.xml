@@ -34,7 +34,7 @@
   </entity>
 
   <entity id="basic-entity-variant-2" name="New Tractor" indefiniteArticle="a"
-          attributes="moveable, lightsource">
+          attributes="moveable, lightsource" location="grassy-field">
     <description passageId="equipment-description" />
     <script>
       <![CDATA[
@@ -49,6 +49,7 @@
     The ${entity.name} is a nice piece of equipment.
   </passage>
 
+  <!-- Doors do not specify a location; rather, they appear in both of the rooms they connect. -->
   <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key"
           attributes="closed">
     <description>
@@ -63,6 +64,7 @@
 
   <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
           attributes="closed, locked">
+    <location>small-hut</location>
     <description>A doughty iron chest.</description>
     <key>brass-key</key>
   </entity>
@@ -77,4 +79,12 @@
       <exit roomId="small-hut" pos="X2" />
     </exits>
   </room>
+
+  <player location="grassy-field">
+    <inventory>
+      <item>iron-key</item>
+      <item>old-map</item>
+      <item equipped="true">elvish-sword</item>
+    </inventory>
+  </player>
 </xbundle>

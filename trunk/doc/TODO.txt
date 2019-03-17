@@ -5,8 +5,10 @@ Meterman2 To-do
 
 == GameManager and World Model ==
 
-Get rid of all the faux-parser stuff. Instead, add confirmation messages for actions that would otherwise have none.
-
+TODO: Doors must be in two rooms at once...how to do this...
+    We'll change the way that containment is saved; rather than having each
+    entity remember where it was, we will save the contents of all rooms,
+    EntityContainer entities, and the player inventory.
 
 == UI ==
 
