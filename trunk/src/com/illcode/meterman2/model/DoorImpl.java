@@ -160,6 +160,12 @@ public class DoorImpl extends BaseEntityImpl
         return false;
     }
 
+    @Override
+    public void restoreState(Entity e, Object state) {
+        super.restoreState(e, state);
+        e.setContainer(null);  // doors are in two places at once.
+    }
+
     /**
      * Connects or disconnects the door's two rooms depending on if it's open or closed.
      */
