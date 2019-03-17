@@ -252,9 +252,8 @@ public class Entity
     }
 
     /**
-     * Called when a game is loaded if this entity returned non-null state from getState()
-     * when the game was saved.
-     * @param state non-null state object previously returned by getState()
+     * Called when a game is loaded to restore entity state.
+     * @param state state object (possibly null) previously returned by getState().
      */
     public void restoreState(Object state) {
         if (delegate != null && delegateMethods.contains(RESTORE_STATE))
