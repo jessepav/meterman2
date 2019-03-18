@@ -106,28 +106,6 @@ public final class BundleGroup
     }
 
     /**
-     * Get a list of all the elements in all the bundles in this group that have a given name
-     * and a unique ID (if more than one element have the same ID, only the first one encountered
-     * will be included in the returned list), along with the bundle in which each was found.
-     * @param cname name of the child element (directly under <em>xbundle</em>)
-     * @return list of element,bundle pairs
-     */
-    public List<Pair<Element,XBundle>> getElementsAndBundles(String cname) {
-        Set<String> elementIds = new HashSet<>(64);
-        List<Pair<Element,XBundle>> ebList = new ArrayList<>(64);
-        for (XBundle b : bundles) {
-            for (Element e : b.getElements(cname)) {
-                String id = e.getAttributeValue("id");
-                if (id != null && !elementIds.contains(id)) {
-                    elementIds.add(id);
-                    ebList.add(Pair.of(e, b));
-                }
-            }
-        }
-        return ebList;
-    }
-
-    /**
      * Search our bundle list from head to tail for a passage.
      * @param id id of the passage element
      * @return TextSource representing the text contained in the passage, or {@link XBundle#MISSING_TEXT_SOURCE}
@@ -156,5 +134,27 @@ public final class BundleGroup
                 return Pair.of(e, b);
         }
         return null;
+    }
+
+    /**
+     * Get a list of all the elements in all the bundles in this group that have a given name
+     * and a unique ID (if more than one element have the same ID, only the first one encountered
+     * will be included in the returned list), along with the bundle in which each was found.
+     * @param cname name of the child element (directly under <em>xbundle</em>)
+     * @return list of element,bundle pairs
+     */
+    public List<Pair<Element,XBundle>> getElementsAndBundles(String cname) {
+        Set<String> elementIds = new HashSet<>(64);
+        List<Pair<Element,XBundle>> ebList = new ArrayList<>(64);
+        for (XBundle b : bundles) {
+            for (Element e : b.getElements(cname)) {
+                String id = e.getAttributeValue("id");
+                if (id != null && !elementIds.contains(id)) {
+                    elementIds.add(id);
+                    ebList.add(Pair.of(e, b));
+                }
+            }
+        }
+        return ebList;
     }
 }

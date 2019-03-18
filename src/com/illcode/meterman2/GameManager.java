@@ -617,7 +617,7 @@ public final class GameManager
         GameState state = new GameState();
         state.gameName = game.getName();
         state.gameStateMap = new HashMap<>(gameStateMap);
-        state.entityStateMap = new HashMap<>((int) (entityIdMap.size() * 1.4f), 0.75f);
+        state.entityStateMap = Utils.createSizedHashMap(entityIdMap);
         for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
             String id = entry.getKey();
             Entity entity = entry.getValue();
@@ -630,7 +630,7 @@ public final class GameManager
             entityState.stateObj = entity.getState();
             state.entityStateMap.put(id, entityState);
         }
-        state.roomStateMap = new HashMap<>((int) (roomIdMap.size() * 1.4f), 0.75f);
+        state.roomStateMap = Utils.createSizedHashMap(roomIdMap);
         for (Map.Entry<String,Room> entry : roomIdMap.entrySet()) {
             String id = entry.getKey();
             Room room = entry.getValue();

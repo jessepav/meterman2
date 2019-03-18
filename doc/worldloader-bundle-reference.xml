@@ -60,8 +60,8 @@
     </description>
     <rooms>
       <!-- The door connects the N exit of cave-entrance with the SW exit of grassy-field. -->
-      <room1 roomId="cave-entrance" pos="N" label="Dark Cave" />
-      <room2 roomId="grassy-field" pos="SW" />
+      <room1 room="cave-entrance" pos="N" label="Dark Cave" />
+      <room2 room="grassy-field" pos="SW" />
     </rooms>
   </entity>
 
@@ -82,12 +82,13 @@
     </description>
     <exits>
       <!-- These should not include exits connected by doors, as the door will handle those. -->
-      <exit roomId="cliffs" pos="N" label="Vague Cliffs" />
-      <exit roomId="small-hut" pos="X2" />
+      <exit room="cliffs" pos="N" label="Vague Cliffs" />
+      <exit room="small-hut" pos="X2" />
     </exits>
   </room>
 
-  <player location="grassy-field">
+  <!-- The player element must have an id of "player". -->
+  <player id="player" location="grassy-field">
     <inventory>
       <item>iron-key</item>
       <item>old-map</item>

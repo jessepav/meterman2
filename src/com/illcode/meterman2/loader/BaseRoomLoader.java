@@ -67,7 +67,7 @@ public class BaseRoomLoader implements RoomLoader
         final Element exits = el.getChild("exits");
         if (exits != null) {
             for (Element exit : exits.getChildren("exit")) {
-                final Room room = resolver.getRoom(exit.getAttributeValue("roomId"));
+                final Room room = resolver.getRoom(exit.getAttributeValue("room"));
                 final int pos = UIConstants.buttonTextToPosition(exit.getAttributeValue("pos"));
                 final String exitLabel = exit.getAttributeValue("label");
                 if (room != null && pos != -1) {

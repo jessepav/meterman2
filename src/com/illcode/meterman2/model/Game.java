@@ -119,9 +119,8 @@ public interface Game
     Map<String,Room> getRoomIdMap();
 
     /**
-     * Called at the start of a new game, after {@code constructWorld()} and {@code setInitialEntityPlacements()},
-     * to retrieve the player character, who should already be located in the starting container with his/her
-     * inventory in hand.
+     * Called at the start of a new game, after {@code constructWorld()}, to retrieve the player character,
+     * who should already be have his/her inventory in hand.
      */
     Player getPlayer();
 
