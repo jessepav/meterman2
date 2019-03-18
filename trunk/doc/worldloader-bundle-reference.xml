@@ -33,11 +33,11 @@
     </attributes>
   </entity>
 
-  <!-- You specify the initial placement of an entity by including either a 'location' attribute
-       or child element to place it in a room, or a 'container' attribute or child element to
+  <!-- You specify the initial placement of an entity by including either an 'inRoom' attribute
+       or child element to place it in a room, or an 'inContainer' attribute or child element to
        place it in another entity (which must be a container). -->
   <entity id="basic-entity-variant-2" name="New Tractor" indefiniteArticle="a"
-          attributes="moveable, lightsource" location="grassy-field">
+          attributes="moveable, lightsource" inRoom="grassy-field">
     <description passageId="equipment-description" />
     <script>
       <![CDATA[
@@ -52,7 +52,7 @@
     The ${entity.name} is a nice piece of equipment.
   </passage>
 
-  <!-- Doors do not specify a location; rather, they appear in both of the rooms they connect. -->
+  <!-- Doors do not specify a room or container; rather, they appear in both of the rooms they connect. -->
   <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key"
           attributes="closed">
     <description>
@@ -60,19 +60,19 @@
     </description>
     <rooms>
       <!-- The door connects the N exit of cave-entrance with the SW exit of grassy-field. -->
-      <room1 room="cave-entrance" pos="N" label="Dark Cave" />
-      <room2 room="grassy-field" pos="SW" />
+      <room1 id="cave-entrance" pos="N" label="Dark Cave" />
+      <room2 id="grassy-field" pos="SW" />
     </rooms>
   </entity>
 
   <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
           attributes="closed, locked">
-    <location>small-hut</location>
+    <inRoom>small-hut</inRoom>
     <description>A doughty iron chest.</description>
     <key>brass-key</key>
   </entity>
 
-  <entity id="cheese" attributes="takeable" container="iron-chest">
+  <entity id="cheese" attributes="takeable" inContainer="iron-chest">
     <description>A nice piece of cheese.</description>
   </entity>
 
@@ -88,7 +88,7 @@
   </room>
 
   <!-- The player element must have an id of "player". -->
-  <player id="player" location="grassy-field">
+  <player id="player" inRoom="grassy-field">
     <inventory>
       <item>iron-key</item>
       <item>old-map</item>

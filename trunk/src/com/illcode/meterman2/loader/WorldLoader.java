@@ -56,7 +56,7 @@ public final class WorldLoader implements GameObjectIdResolver
         Element playerEl = group.getElement("player");
         if (playerEl != null) {
             LoaderHelper helper = LoaderHelper.wrap(playerEl);
-            startingRoom = getRoom(helper.getValue("location"));
+            startingRoom = getRoom(helper.getValue("inRoom"));
             Element inventory = playerEl.getChild("inventory");
             if (inventory != null) {
                 List<Element> items = inventory.getChildren("item");

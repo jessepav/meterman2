@@ -106,15 +106,15 @@ public class BaseEntityLoader implements EntityLoader
         }
 
         // Containment.
-        final String location = helper.getValue("location");
-        if (location != null) {
-            Room r = resolver.getRoom(location);
+        final String room = helper.getValue("inRoom");
+        if (room != null) {
+            Room r = resolver.getRoom(room);
             if (r != null) {
                 e.setContainer(r);
                 r.addEntity(e);
             }
         } else {
-            final String container = helper.getValue("container");
+            final String container = helper.getValue("inContainer");
             if (container != null) {
                 Entity e2 = resolver.getEntity(container);
                 if (e2 instanceof EntityContainer) {
@@ -146,7 +146,7 @@ public class BaseEntityLoader implements EntityLoader
             final Element roomEl = roomsEl.getChild("room" + (i+1));
             if (roomEl == null)
                 return false;
-            rooms[i] = resolver.getRoom(roomEl.getAttributeValue("room"));
+            rooms[i] = resolver.getRoom(roomEl.getAttributeValue("id"));
             positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
             exitLabels[i] = roomEl.getAttributeValue("label");
             if (rooms[i] == null || positions[i] == -1)
