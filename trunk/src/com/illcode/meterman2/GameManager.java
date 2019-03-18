@@ -306,17 +306,19 @@ public final class GameManager
         final EntityContainer fromContainer = e.getContainer();
         if (fromContainer == toContainer)
             return;
+        final boolean inInventoryBefore = GameUtils.isParentContainer(player, fromContainer);
+        final boolean inInventoryAfter = GameUtils.isParentContainer(player, toContainer);
         boolean uiRefreshNeeded = false;
-        if (GameUtils.isParentContainer(player, fromContainer)) {
-            if (!GameUtils.isParentContainer(player, toContainer)) {
+        if (inInventoryBefore) {
+            if (!inInventoryAfter) {
                 player.unequipEntity(e);
                 e.dropped();
             }
             uiRefreshNeeded = true;
         }
-        final Room fromRoom = GameUtils.getRoom(fromContainer);  // keep track of rooms for scope
-        final Room toRoom = GameUtils.getRoom(toContainer);
-        if (fromRoom != toRoom && fromRoom == currentRoom)
+        final boolean inScopeBefore = GameUtils.getRoom(fromContainer) == currentRoom;
+        final boolean inScopeAfter = GameUtils.getRoom(toContainer) == currentRoom;
+        if (inScopeBefore && !inScopeAfter)
             e.exitingScope();
         // Now move the entity.
         if (fromContainer != null)
@@ -325,14 +327,14 @@ public final class GameManager
         if (toContainer != null)
             toContainer.addEntity(e);
         // done moving!
-        if (fromRoom != toRoom && toRoom == currentRoom)
+        if (!inScopeBefore && inScopeAfter)
             e.enterScope();
         if (fromContainer == currentRoom || toContainer == currentRoom)
             refreshRoomUI();
         if (e == selectedEntity)
             entitySelected(null);
-        if (GameUtils.isParentContainer(player, toContainer)) {
-            if (!GameUtils.isParentContainer(player, fromContainer))
+        if (inInventoryAfter) {
+            if (!inInventoryBefore)
                 e.taken();
             uiRefreshNeeded = true;
         }
