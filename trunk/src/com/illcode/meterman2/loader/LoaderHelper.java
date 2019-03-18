@@ -29,7 +29,7 @@ public class LoaderHelper
 
     /**
      * Returns either the value of the attribute with the given name, or if not present,
-     * the text content of the child element with the given name. If neither are present,
+     * the trimmed text content of the child element with the given name. If neither are present,
      * returns a default value.
      * @param name name of attribute or child element
      * @param defaultVal default to return if value not present
@@ -38,7 +38,7 @@ public class LoaderHelper
     public String getValue(String name, String defaultVal) {
         String val = el.getAttributeValue(name);
         if (val == null)
-            val = el.getChildText(name);
+            val = el.getChildTextTrim(name);
         return val != null ? val : defaultVal;
     }
 

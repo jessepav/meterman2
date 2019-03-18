@@ -193,15 +193,15 @@ public final class XBundle
         if (isTemplateElement(e)) {
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
-            return new TemplateSource(id, e.getText(), this);
+            return new TemplateSource(id, e.getTextTrim(), this);
         } else if (isScriptElement(e)) {
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
-            return new ScriptSource(id, e.getText(), this);
+            return new ScriptSource(id, e.getTextTrim(), this);
         } else if (isFormatStringElement(e)) {
-            return new FormatStringSource(e.getText(), this);
+            return new FormatStringSource(e.getTextTrim(), this);
         } else { // a normal text passage
-            return new StringSource(formatText(e.getText()));
+            return new StringSource(formatText(e.getTextTrim()));
         }
     }
 

@@ -146,7 +146,7 @@ public class BaseEntityLoader implements EntityLoader
             final Element roomEl = roomsEl.getChild("room" + (i+1));
             if (roomEl == null)
                 return false;
-            rooms[i] = resolver.getRoom(roomEl.getAttributeValue("roomId"));
+            rooms[i] = resolver.getRoom(roomEl.getAttributeValue("room"));
             positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
             exitLabels[i] = roomEl.getAttributeValue("label");
             if (rooms[i] == null || positions[i] == -1)

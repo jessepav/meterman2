@@ -5,6 +5,8 @@ import org.apache.commons.io.FilenameUtils;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -240,5 +242,14 @@ public final class Utils
      */
     public static String getPathExtension(Path p) {
         return FilenameUtils.getExtension(p.toString());
+    }
+
+    /**
+     * Create a new HashMap with a capacity chosen to hold an equal number of entries as a given map.
+     * @param m map whose size is used to determine the capicity of the returned HashMap
+     * @return new HashMap
+     */
+    public static <T,S> HashMap<T,S> createSizedHashMap(Map<?,?> m) {
+        return new HashMap<T,S>((int) (m.size() * 1.4f), 0.75f);
     }
 }

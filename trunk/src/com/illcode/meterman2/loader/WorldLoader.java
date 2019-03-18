@@ -1,6 +1,7 @@
 package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.bundle.BundleGroup;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.Entity;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.illcode.meterman2.MMLogging.logger;
@@ -24,6 +26,7 @@ public final class WorldLoader implements GameObjectIdResolver
     private Map<String,LoadInfo<Entity,EntityLoader>> entityLoadInfoMap;
     private Map<String,LoadInfo<Room,RoomLoader>> roomLoadInfoMap;
     private Player player;
+    private Room startingRoom;
 
     /**
      * Create a new world loader.
@@ -49,7 +52,25 @@ public final class WorldLoader implements GameObjectIdResolver
             rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
 
         // Load the player.
-        player = loadPlayer();
+        player = new Player();
+        Element playerEl = group.getElement("player");
+        if (playerEl != null) {
+            LoaderHelper helper = LoaderHelper.wrap(playerEl);
+            startingRoom = getRoom(helper.getValue("location"));
+            Element inventory = playerEl.getChild("inventory");
+            if (inventory != null) {
+                List<Element> items = inventory.getChildren("item");
+                for (Element item : items) {
+                    final Entity e = getEntity(item.getTextTrim());
+                    if (e != null) {
+                        player.addEntity(e);
+                        e.setContainer(player);
+                        if (Utils.parseBoolean(item.getAttributeValue("equipped")))
+                            player.equipEntity(e);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -106,20 +127,18 @@ public final class WorldLoader implements GameObjectIdResolver
         roomLoadInfoMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
     }
 
-    private Player loadPlayer() {
-        Player p = new Player();
-        // TODO: write loadPlayer()
-        return p;
-    }
-
     // Methods to retrieve the world.
 
     public Player getPlayer() {
         return player;
     }
 
+    public Room getStartingRoom() {
+        return startingRoom;
+    }
+
     public Map<String,Entity> getEntityIdMap() {
-        Map<String, Entity> entityIdMap = new HashMap<>((int) (entityLoadInfoMap.size() * 1.4f), 0.75f);
+        Map<String, Entity> entityIdMap = Utils.createSizedHashMap(entityLoadInfoMap);
         for (Map.Entry<String,LoadInfo<Entity,EntityLoader>> entry : entityLoadInfoMap.entrySet()) {
             String id = entry.getKey();
             LoadInfo<Entity,EntityLoader> loadInfo = entry.getValue();
