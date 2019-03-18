@@ -15,7 +15,7 @@ import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
-class ListDialog implements ActionListener, MouseListener
+final class ListDialog implements ActionListener, MouseListener
 {
     Window owner;
 
