@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/classloader-resources" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/assets-src" />
+      <excludeFolder url="file://$MODULE_DIR$/assets/riverboat" />
       <excludeFolder url="file://$MODULE_DIR$/docjars" />
       <excludeFolder url="file://$MODULE_DIR$/expanded-javadoc" />
       <excludeFolder url="file://$MODULE_DIR$/games" />

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<game>
+  <name>The Riverboat</name>
+  <assets-path>riverboat</assets-path>
+  <class>com.illcode.riverboat.RiverboatGame</class>
+</game>
