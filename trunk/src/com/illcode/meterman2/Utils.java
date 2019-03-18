@@ -15,6 +15,8 @@ import java.util.Random;
  */
 public final class Utils
 {
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     private static Random random;
 
     /**

@@ -1,8 +1,10 @@
 package com.illcode.meterman2.ui;
 
+import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.swing.*;
 import java.awt.Window;
@@ -21,7 +23,8 @@ public class ImageDialog implements ActionListener
     JLabel headerLabel;
     JLabel imageLabel;
     JTextArea textArea;
-    JButton closeButton;
+    JButton[] buttons;
+    private int selectedButtonIdx;
 
     ImageIcon imageIcon;
     BufferedImage emptyImage;
@@ -36,13 +39,16 @@ public class ImageDialog implements ActionListener
             headerLabel = cr.getLabel("headerLabel");
             imageLabel = cr.getLabel("imageLabel");
             textArea = cr.getTextArea("textArea");
-            closeButton = cr.getButton("closeButton");
+            buttons = new JButton[3];
+            buttons[0] = cr.getButton("button1");
+            buttons[1] = cr.getButton("button2");
+            buttons[2] = cr.getButton("button3");
 
             imageIcon = new ImageIcon();
             imageLabel.setIcon(imageIcon);
 
-            closeButton.addActionListener(this);
-            dialog.getRootPane().setDefaultButton(closeButton);
+            for (JButton b : buttons)
+                b.addActionListener(this);
 
             emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         } catch (Exception ex) {
@@ -54,22 +60,52 @@ public class ImageDialog implements ActionListener
      * Show the ImageDialog. If 'image' == null, no image is displayed.
      * @see MMUI#showImageDialog(String, String, int, String, String)
      */
-    void show(String header, BufferedImage image, String text, String buttonLabel) {
+    int show(String header, BufferedImage image, String text, String... buttonLabels) {
         headerLabel.setText(header);
         imageIcon.setImage(image == null ? emptyImage : image);
         textArea.setText(text);
-        closeButton.setText(buttonLabel);
+        setButtonsText(buttonLabels);
         dialog.pack();
         dialog.setLocationRelativeTo(owner);
-        closeButton.requestFocusInWindow();
+        requestButtonFocus();
+        selectedButtonIdx = -1;
         dialog.setVisible(true);  // blocks until hidden
         imageIcon.setImage(emptyImage);  // allow 'image' to be GC'd
+        return selectedButtonIdx;
+    }
+
+    private void setButtonsText(String... labels) {
+        if (labels == null)
+            labels = Utils.EMPTY_STRING_ARRAY;
+        for (int i = 0; i < buttons.length; i++) {
+            String label = labels.length > i ? labels[i] : null;
+            if (label != null) {
+                buttons[i].setText(labels[i]);
+                buttons[i].setVisible(true);
+            } else {
+                buttons[i].setVisible(false);
+            }
+        }
+    }
+
+    // Have the first visible button request focus in the window.
+    private void requestButtonFocus() {
+        for (int i = 0; i < buttons.length; i++) {
+            if (buttons[i].isVisible()) {
+                buttons[i].requestFocusInWindow();
+                dialog.getRootPane().setDefaultButton(buttons[i]);
+                break;
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        if (source == closeButton)
+        int buttonIdx;
+        if ((buttonIdx = ArrayUtils.indexOf(buttons, source)) != -1) {
+            selectedButtonIdx = buttonIdx;
             dialog.setVisible(false);
+        }
     }
 
     public void dispose() {
