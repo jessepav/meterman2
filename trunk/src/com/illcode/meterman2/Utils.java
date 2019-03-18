@@ -23,7 +23,8 @@ public final class Utils
      * @return truth value of {@code s}
      */
     public static boolean parseBoolean(String s) {
-        if (s != null && (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("on") || s.equals("1") || s.equals("yes")))
+        if (s != null && (s.equalsIgnoreCase("true") || s.equalsIgnoreCase("on") ||
+                          s.equalsIgnoreCase("yes")|| s.equals("1") ))
             return true;
         else
             return false;

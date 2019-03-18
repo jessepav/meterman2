@@ -15,7 +15,7 @@ import java.util.List;
  * A wrapper for a DOM element that provides a variety of utility methods
  * useful in writing loaders.
  */
-public class LoaderHelper
+public final class LoaderHelper
 {
     private Element el;
 
@@ -33,7 +33,7 @@ public class LoaderHelper
      * returns a default value.
      * @param name name of attribute or child element
      * @param defaultVal default to return if value not present
-     * @return text value
+     * @return text value, or default
      */
     public String getValue(String name, String defaultVal) {
         String val = el.getAttributeValue(name);
@@ -47,7 +47,7 @@ public class LoaderHelper
      * the text content of the child element with the given name. If neither are present,
      * returns null.
      * @param name name of attribute or child element
-     * @return text value
+     * @return text value, or null
      */
     public String getValue(String name) {
         return getValue(name, null);
@@ -109,7 +109,7 @@ public class LoaderHelper
     /**
      * Load game attributes from an XML attribute or child element.
      * @param name name of XML attribute or child element
-     * @param attributes attribute set
+     * @param attributes attribute set in which we set the attributes found in the XML
      */
     public void loadAttributes(String name, AttributeSet attributes) {
         final List<String> attributeNames = getListValue(name);
