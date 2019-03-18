@@ -12,7 +12,7 @@ import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
-class PromptDialog implements ActionListener
+final class PromptDialog implements ActionListener
 {
     Window owner;
 

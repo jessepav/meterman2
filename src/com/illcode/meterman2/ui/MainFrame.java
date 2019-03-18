@@ -24,7 +24,7 @@ import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
-public final class MainFrame implements ActionListener, ListSelectionListener
+final class MainFrame implements ActionListener, ListSelectionListener
 {
     static final int NUM_EXIT_BUTTONS = 12;
     static final int NUM_ACTION_BUTTONS = 8;

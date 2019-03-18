@@ -15,17 +15,9 @@ import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
-public class ImageDialog implements ActionListener
+final class ImageDialog extends TextDialog
 {
-    Window owner;
-
-    JDialog dialog;
-    JLabel headerLabel;
     JLabel imageLabel;
-    JTextArea textArea;
-    JButton[] buttons;
-    private int selectedButtonIdx;
-
     ImageIcon imageIcon;
     BufferedImage emptyImage;
 
@@ -46,14 +38,18 @@ public class ImageDialog implements ActionListener
 
             imageIcon = new ImageIcon();
             imageLabel.setIcon(imageIcon);
+            emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
             for (JButton b : buttons)
                 b.addActionListener(this);
-
-            emptyImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "ImageDialog()", ex);
         }
+    }
+
+    @Override
+    int show(String header, String text, String... buttonLabels) {
+        return show(header, null, text, buttonLabels);
     }
 
     /**
@@ -74,43 +70,12 @@ public class ImageDialog implements ActionListener
         return selectedButtonIdx;
     }
 
-    private void setButtonsText(String... labels) {
-        if (labels == null)
-            labels = Utils.EMPTY_STRING_ARRAY;
-        for (int i = 0; i < buttons.length; i++) {
-            String label = labels.length > i ? labels[i] : null;
-            if (label != null) {
-                buttons[i].setText(labels[i]);
-                buttons[i].setVisible(true);
-            } else {
-                buttons[i].setVisible(false);
-            }
-        }
-    }
-
-    // Have the first visible button request focus in the window.
-    private void requestButtonFocus() {
-        for (int i = 0; i < buttons.length; i++) {
-            if (buttons[i].isVisible()) {
-                buttons[i].requestFocusInWindow();
-                dialog.getRootPane().setDefaultButton(buttons[i]);
-                break;
-            }
-        }
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        int buttonIdx;
-        if ((buttonIdx = ArrayUtils.indexOf(buttons, source)) != -1) {
-            selectedButtonIdx = buttonIdx;
-            dialog.setVisible(false);
-        }
-    }
-
+    @Override
     public void dispose() {
         imageLabel.setIcon(null);
-        dialog.dispose();
+        emptyImage.flush();
+        emptyImage = null;
+        super.dispose();
     }
 
 }

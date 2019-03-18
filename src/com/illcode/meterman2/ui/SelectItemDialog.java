@@ -17,7 +17,7 @@ import static com.illcode.meterman2.MMLogging.logger;
  * A modal dialog that displays a list of items in a combo box for user selection.
  * It is intended for internal use by the <tt>MMUI</tt>.
  */
-public final class SelectItemDialog implements ActionListener
+final class SelectItemDialog implements ActionListener
 {
     Window owner;
 

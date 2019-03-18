@@ -26,7 +26,11 @@ class TextDialog implements ActionListener
     JLabel headerLabel;
     JTextArea textArea;
     JButton[] buttons;
-    private int selectedButtonIdx;
+
+    int selectedButtonIdx;
+
+    TextDialog() {
+    }
 
     TextDialog(Window owner) {
         this.owner = owner;
@@ -61,7 +65,7 @@ class TextDialog implements ActionListener
         return selectedButtonIdx;
     }
 
-    private void setButtonsText(String... labels) {
+    void setButtonsText(String... labels) {
         if (labels == null)
             labels = Utils.EMPTY_STRING_ARRAY;
         for (int i = 0; i < buttons.length; i++) {
@@ -76,7 +80,7 @@ class TextDialog implements ActionListener
     }
 
     // Have the first visible button request focus in the window.
-    private void requestButtonFocus() {
+    void requestButtonFocus() {
         for (int i = 0; i < buttons.length; i++) {
             if (buttons[i].isVisible()) {
                 buttons[i].requestFocusInWindow();
