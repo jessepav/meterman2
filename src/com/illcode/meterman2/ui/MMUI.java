@@ -494,13 +494,15 @@ public final class MMUI
 
 
     /**
-     * Displays a modal dialog showing a passage of text.
+     * Displays a modal dialog showing a passage of text, with multiple button choices.
      * @param header header surmounted above the text passage
      * @param text text passage
-     * @param buttonLabel label of the button to dismiss dialog
+     * @param buttonLabels labels of the buttons presented as choices (up to 3)
+     * @return the 0-based index of the button selected by the user, or -1 if the dialog
+     *         was closed without selecting a button.
      */
-    public void showTextDialog(String header, String text, String buttonLabel) {
-        textDialog.show(header, wrapDialogText(text), buttonLabel);
+    public int showTextDialog(String header, String text, String... buttonLabels) {
+        return textDialog.show(header, wrapDialogText(text), buttonLabels);
     }
 
     /**
@@ -530,18 +532,20 @@ public final class MMUI
     }
 
     /**
-     * Shows a dialog displaying an image.
+     * Shows a modal dialog displaying an image and text, with multiple button choices.
      * @param header header surmounted above the image
      * @param imageName name of the image
      * @param scale the factor (>= 1) by which the image will be scaled before being shown
      * @param text text passage shown below the image
-     * @param buttonLabel label of the button used to dismiss dialog
+     * @param buttonLabels labels of the buttons presented as choices (up to 3)
+     * @return the 0-based index of the button selected by the user, or -1 if the dialog
+     *         was closed without selecting a button.
      */
-    public void showImageDialog(String header, String imageName, int scale, String text, String buttonLabel) {
+    public int showImageDialog(String header, String imageName, int scale, String text, String... buttonLabels) {
         BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : loadImage(imageName);
         if (image != null && scale > 1)
             image = GuiUtils.getScaledImage(image, scale);
-        imageDialog.show(header, image, wrapDialogText(text), buttonLabel);
+        return imageDialog.show(header, image, wrapDialogText(text), buttonLabels);
     }
 
     /**

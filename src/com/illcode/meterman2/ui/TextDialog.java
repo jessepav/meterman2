@@ -5,9 +5,11 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
+import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -23,7 +25,8 @@ class TextDialog implements ActionListener
     JDialog dialog;
     JLabel headerLabel;
     JTextArea textArea;
-    JButton pageButton;
+    JButton[] buttons;
+    private int selectedButtonIdx;
 
     TextDialog(Window owner) {
         this.owner = owner;
@@ -34,29 +37,62 @@ class TextDialog implements ActionListener
             dialog = (JDialog) cr.createWindow(owner);
             headerLabel = cr.getLabel("headerLabel");
             textArea = cr.getTextArea("textArea");
-            pageButton = cr.getButton("pageButton");
+            buttons = new JButton[3];
+            buttons[0] = cr.getButton("button1");
+            buttons[1] = cr.getButton("button2");
+            buttons[2] = cr.getButton("button3");
 
-            pageButton.addActionListener(this);
-            dialog.getRootPane().setDefaultButton(pageButton);
+            for (JButton b : buttons)
+                b.addActionListener(this);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "TextDialog()", ex);
         }
     }
 
-    void show(String header, String text, String buttonLabel) {
+    int show(String header, String text, String... buttonLabels) {
         headerLabel.setText(header);
         textArea.setText(text);
-        pageButton.setText(buttonLabel);
+        setButtonsText(buttonLabels);
         dialog.pack();
         dialog.setLocationRelativeTo(owner);
-        pageButton.requestFocusInWindow();
+        requestButtonFocus();
+        selectedButtonIdx = -1;
         dialog.setVisible(true);  // blocks until hidden
+        return selectedButtonIdx;
+    }
+
+    private void setButtonsText(String... labels) {
+        if (labels == null)
+            labels = Utils.EMPTY_STRING_ARRAY;
+        for (int i = 0; i < buttons.length; i++) {
+            String label = labels.length > i ? labels[i] : null;
+            if (label != null) {
+                buttons[i].setText(labels[i]);
+                buttons[i].setVisible(true);
+            } else {
+                buttons[i].setVisible(false);
+            }
+        }
+    }
+
+    // Have the first visible button request focus in the window.
+    private void requestButtonFocus() {
+        for (int i = 0; i < buttons.length; i++) {
+            if (buttons[i].isVisible()) {
+                buttons[i].requestFocusInWindow();
+                dialog.getRootPane().setDefaultButton(buttons[i]);
+                break;
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
-        if (source == pageButton)
+        int buttonIdx;
+        if ((buttonIdx = ArrayUtils.indexOf(buttons, source)) != -1) {
+            selectedButtonIdx = buttonIdx;
             dialog.setVisible(false);
+        }
     }
 
     public void dispose() {
