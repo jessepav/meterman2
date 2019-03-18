@@ -53,6 +53,8 @@ public final class MMAssets
         this.assetsPath = assetsPath;
     }
 
+    // TODO: check for a .zip version of assets before a non-zip version.
+
     /** Sets the system assets path. This can be a directory or a ZIP file.
      * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
     void setSystemAssetsPath(String path) {
