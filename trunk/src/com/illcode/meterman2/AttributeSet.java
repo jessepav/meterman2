@@ -70,18 +70,18 @@ public final class AttributeSet
         return bits;
     }
 
-    /** Return this attribute set as a byte array. */
-    public byte[] toByteArray() {
-        return bits.toByteArray();
+    /**
+     * Return a new AttributeSet from the value of a BitSet. This bitset will be wrapped,
+     * and any changes to one will be reflected in the other.
+     * @param bits bitset to wrap
+     * @return a new attribute set
+     */
+    public static AttributeSet fromBitSet(BitSet bits) {
+        AttributeSet set = new AttributeSet();
+        set.bits = bits;
+        return set;
     }
 
     // The shiftLeft() and shiftRight() methods were last present in SVN revision 91,
     // if for some reason you need them again.
-
-    /** Return a new attribute set from a byte array. */
-    public static AttributeSet fromByteArray(byte[] bytes) {
-        AttributeSet as = new AttributeSet();
-        as.bits = BitSet.valueOf(bytes);
-        return as;
-    }
 }
