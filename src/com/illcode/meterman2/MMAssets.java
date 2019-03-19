@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
 
@@ -47,21 +48,26 @@ public final class MMAssets
 
     /**
      * Sets the base assets path against which the system and game assets paths will be resolved.
-     * @param assetsPath
      */
     void setAssetsPath(Path assetsPath) {
         this.assetsPath = assetsPath;
     }
 
-    // TODO: check for a .zip version of assets before a non-zip version.
-
-    /** Sets the system assets path. This can be a directory or a ZIP file.
-     * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
+    /** Sets the system assets path. This will be resolved to a directory or a ZIP file.
+     * @param path path, relative to {@link #setAssetsPath(Path) assetsPath}. We will first check
+     * if the path is a directory, and if so, use it as is; if not, we append a ".zip" extension
+     * and check if it's a ZIP file.*/
     void setSystemAssetsPath(String path) {
         closeSystemZipFs();
         if (path != null) {
+            boolean isZip = StringUtils.endsWithIgnoreCase(path, ".zip");
             systemAssetsPath = assetsPath.resolve(path);
-            if (StringUtils.endsWithIgnoreCase(path, ".zip")) {
+            // If the path does not resolve to a directory, check for a ZIP file.
+            if (!isZip && !Files.isDirectory(systemAssetsPath)) {
+                systemAssetsPath = assetsPath.resolve(path + ".zip");
+                isZip = true;
+            }
+            if (isZip) {
                 try {
                     systemZipFs = FileSystems.newFileSystem(systemAssetsPath, null);
                     systemAssetsPath = systemZipFs.getPath("/");
@@ -75,13 +81,20 @@ public final class MMAssets
         }
     }
 
-    /** Sets the game assets path. This can be a directory or a ZIP file.
-     * @param path path, relative to {@link #setAssetsPath(Path) assetsPath} */
+    /** Sets the game assets path. This will be resolved to a directory or a ZIP file.
+     * @param path path, relative to {@link #setAssetsPath(Path) assetsPath}. We will first check
+     * if the path is a directory, and if so, use it as is; if not, we append a ".zip" extension
+     * and check if it's a ZIP file.*/
     void setGameAssetsPath(String path) {
         closeGameZipFs();
         if (path != null) {
+            boolean isZip = StringUtils.endsWithIgnoreCase(path, ".zip");
             gameAssetsPath = assetsPath.resolve(path);
-            if (StringUtils.endsWithIgnoreCase(path, ".zip")) {
+            if (!isZip && !Files.isDirectory(gameAssetsPath)) {
+                gameAssetsPath = assetsPath.resolve(path + ".zip");
+                isZip = true;
+            }
+            if (isZip) {
                 try {
                     gameZipFs = FileSystems.newFileSystem(gameAssetsPath, null);
                     gameAssetsPath = gameZipFs.getPath("/");
