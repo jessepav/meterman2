@@ -9,14 +9,16 @@ import java.util.BitSet;
 
 class BitSetSerializer extends Serializer<BitSet>
 {
+    // See SVN rev 142 for the code that used byte arrays rather than long arrays.
+
     public void write(Kryo kryo, Output output, BitSet bitSet) {
-        final byte[] bytes = bitSet.toByteArray();
-        output.writeInt(bytes.length, true);
-        output.writeBytes(bytes);
+        long[] longs = bitSet.toLongArray();
+        output.writeInt(longs.length, true);
+        output.writeLongs(longs);
     }
 
     public BitSet read(Kryo kryo, Input input, Class<BitSet> type) {
-        final int len = input.readInt(true);
-        return BitSet.valueOf(input.readBytes(len));
+        int len = input.readInt(true);
+        return BitSet.valueOf(input.readLongs(len));
     }
 }
