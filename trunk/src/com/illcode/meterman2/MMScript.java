@@ -67,9 +67,9 @@ public final class MMScript
     }
 
     private void initSystemNameSpace() {
+        systemNameSpace.importPackage("com.illcode.meterman2");
         systemNameSpace.importPackage("com.illcode.meterman2.model");
         systemNameSpace.importPackage("com.illcode.meterman2.loader");
-        systemNameSpace.importClass("com.illcode.meterman2.MMActions");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
 
         outputBuilder = new StringBuilder(1024);

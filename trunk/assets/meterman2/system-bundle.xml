@@ -48,4 +48,8 @@
   <passage id="container-take-message" format="printf"> <!-- args: item.defName, outPrep, defName -->
     You take %s %s %s.
   </passage>
+
+  <passage id="darkroom-description">
+    It is too dark here for you to see anything.
+  </passage>
 </xbundle>

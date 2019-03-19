@@ -1,7 +1,8 @@
-package com.illcode.meterman2.model;
+package com.illcode.meterman2;
 
-import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.SystemAttributes;
+import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.EntityContainer;
+import com.illcode.meterman2.model.Room;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

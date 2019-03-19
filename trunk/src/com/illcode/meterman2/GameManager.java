@@ -16,8 +16,8 @@ import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 import static com.illcode.meterman2.SystemAttributes.VISITED;
-import static com.illcode.meterman2.model.GameUtils.hasAttr;
-import static com.illcode.meterman2.model.GameUtils.setAttr;
+import static com.illcode.meterman2.GameUtils.hasAttr;
+import static com.illcode.meterman2.GameUtils.setAttr;
 
 public final class GameManager
 {
@@ -158,17 +158,17 @@ public final class GameManager
 
         // restore game handlers from state.gameHandlers
         for (String id : state.gameHandlers.get("gameActionListeners"))
-            addGameActionListener((GameActionListener) game.getEventHandler(id));
+            addGameActionListener((GameActionListener) getHandler(id));
         for (String id : state.gameHandlers.get("playerMovementListeners"))
-            addPlayerMovementListener((PlayerMovementListener) game.getEventHandler(id));
+            addPlayerMovementListener((PlayerMovementListener) getHandler(id));
         for (String id : state.gameHandlers.get("turnListeners"))
-            addTurnListener((TurnListener) game.getEventHandler(id));
+            addTurnListener((TurnListener) getHandler(id));
         for (String id : state.gameHandlers.get("entityActionsProcessors"))
-            addEntityActionsProcessor((EntityActionsProcessor) game.getEventHandler(id));
+            addEntityActionsProcessor((EntityActionsProcessor) getHandler(id));
         for (String id : state.gameHandlers.get("entitySelectionListeners"))
-            addEntitySelectionListener((EntitySelectionListener) game.getEventHandler(id));
+            addEntitySelectionListener((EntitySelectionListener) getHandler(id));
         for (String id : state.gameHandlers.get("outputTextProcessors"))
-            addOutputTextProcessor((OutputTextProcessor) game.getEventHandler(id));
+            addOutputTextProcessor((OutputTextProcessor) getHandler(id));
 
         currentRoom = roomIdMap.get(state.currentRoomId);
         numTurns = state.numTurns;
@@ -195,6 +195,19 @@ public final class GameManager
                 }
             }
         }
+    }
+
+    // Handles the special cases where id begins with "roomId:" or "entityId:".
+    // See DarkRoomImpl for example usage.
+    private GameEventHandler getHandler(String id) {
+        if (id.startsWith(GameEventHandler.ENTITY_EVENT_HANDLER_PREFIX))
+            return (GameEventHandler) entityIdMap.get(
+                id.substring(GameEventHandler.ENTITY_EVENT_HANDLER_PREFIX.length()));
+        else if (id.startsWith(GameEventHandler.ROOM_EVENT_HANDLER_PREFIX))
+            return (GameEventHandler) roomIdMap.get(
+                id.substring(GameEventHandler.ROOM_EVENT_HANDLER_PREFIX.length()));
+        else
+            return game.getEventHandler(id);
     }
 
     private void closeGame() {
@@ -665,7 +678,7 @@ public final class GameManager
             String[] handlerIds = new String[handlerList.size()];
             int idx = 0;
             for (GameEventHandler handler : handlerList)
-                handlerIds[idx++] = handler.getId();
+                handlerIds[idx++] = handler.getHandlerId();
             state.gameHandlers.put(listName, handlerIds);
         }
         state.currentRoomId = currentRoom.getId();

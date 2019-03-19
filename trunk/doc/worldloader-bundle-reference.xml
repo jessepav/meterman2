@@ -22,6 +22,7 @@
   </passage>
 
   <entity id="basic-entity-variant-1">
+    <loader>BaseEntityLoader.getInstance()</loader>
     <name>Old Tractor</name>
     <indefiniteArticle>an</indefiniteArticle>
     <description format="ftl">
@@ -55,14 +56,10 @@
   <!-- Doors do not specify a room or container; rather, they appear in both of the rooms they connect. -->
   <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key"
           attributes="closed">
-    <description>
-      A doughty iron door.
-    </description>
-    <rooms>
-      <!-- The door connects the N exit of cave-entrance with the SW exit of grassy-field. -->
-      <room1 id="cave-entrance" pos="N" label="Dark Cave" />
-      <room2 id="grassy-field" pos="SW" />
-    </rooms>
+    <description>A doughty iron door.</description>
+
+    <!-- The door connects the N exit of dark-cave with the SW exit of grassy-field. -->
+    <connects room1="dark-cave" pos1="N" room2="grassy-field" pos2="SW" />
   </entity>
 
   <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
@@ -95,4 +92,15 @@
       <item equipped="true">elvish-sword</item>
     </inventory>
   </player>
+
+  <room id="dark-cave" type="dark"
+        name="Rough Cave" darkName="Dark Rough Cave"
+        exitName="Cave" darkExitName="Dark Cave"
+        attributes="dark">
+    <description>A rough cave whose walls are decorated with rude carvings.</description>
+    <darkDescription>The faintest hints of carvings are visible in the shadows.</darkDescription>
+    <exits>
+      <exit room="cave-passage" pos="S"/>
+    </exits>
+  </room>
 </xbundle>
