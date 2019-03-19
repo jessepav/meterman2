@@ -1,6 +1,5 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.GameManager;
 import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.event.GameEventHandler;
 
@@ -139,7 +138,7 @@ public interface Game
      * Returns the handler with a given ID. This method is used upon loading a game, so that the
      * engine can query the game for listeners by id and add them again, rather than having to
      * serialize the handler instances themselves.
-     * @param id handler id as returned by {@link GameEventHandler#getId()}.
+     * @param id handler id as returned by {@link GameEventHandler#getHandlerId()}.
      * @return an instance of the corresponding handler
      */
     GameEventHandler getEventHandler(String id);

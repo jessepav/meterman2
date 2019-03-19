@@ -216,14 +216,14 @@ public class Room implements EntityContainer
     }
 
     //region -- implement EntityContainer
-    public final int getContainerType() { return CONTAINER_ROOM; }
-    public final String getContainerId() { return getId(); }
-    public final Room getContainerAsRoom() { return this; }
-    public final Entity getContainerAsEntity() { return null; }
-    public final Player getContainerAsPlayer() { return null; }
-    public final void addEntity(Entity e) { containerSupport.addEntity(e); }
-    public final void clearEntities() { containerSupport.clearEntities(); }
-    public final List<Entity> getEntities() { return containerSupport.getEntities(); }
-    public final void removeEntity(Entity e) { containerSupport.removeEntity(e); }
+    public int getContainerType() { return CONTAINER_ROOM; }
+    public String getContainerId() { return getId(); }
+    public Room getContainerAsRoom() { return this; }
+    public Entity getContainerAsEntity() { return null; }
+    public Player getContainerAsPlayer() { return null; }
+    public void addEntity(Entity e) { containerSupport.addEntity(e); }
+    public void clearEntities() { containerSupport.clearEntities(); }
+    public List<Entity> getEntities() { return containerSupport.getEntities(); }
+    public void removeEntity(Entity e) { containerSupport.removeEntity(e); }
     //endregion
 }

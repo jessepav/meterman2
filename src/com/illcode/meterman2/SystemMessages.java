@@ -22,4 +22,6 @@ public final class SystemMessages
     public static final String CONTAINER_NO_CONTENTS_TAKE = "container-no-contents-take-message";
     public static final String CONTAINER_TAKE_PROMPT = "container-take-prompt-message";
     public static final String CONTAINER_TAKE = "container-take-message";
+
+    public static final String DARKROOM_DESCRIPTION = "darkroom-description";
 }

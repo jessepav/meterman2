@@ -21,7 +21,6 @@ public class DoorImpl extends BaseEntityImpl
 {
     protected Room room1, room2;
     protected int pos1, pos2;
-    protected String exitLabel1, exitLabel2;
     protected String closedExitLabel;
     protected Entity key;
 
@@ -70,16 +69,6 @@ public class DoorImpl extends BaseEntityImpl
     public void setPositions(int pos1, int pos2) {
         this.pos1 = pos1;
         this.pos2 = pos2;
-    }
-
-    /**
-     * Sets the exit labels to be used for the two rooms when the door is open.
-     * @param exitLabel1 exit label for room #1, or null
-     * @param exitLabel2 exit label for room #2, or null
-     */
-    public void setExitLabels(String exitLabel1, String exitLabel2) {
-        this.exitLabel1 = exitLabel1;
-        this.exitLabel2 = exitLabel2;
     }
 
     /**
@@ -177,9 +166,9 @@ public class DoorImpl extends BaseEntityImpl
             room2.setExitLabel(pos2, closedExitLabel);
         } else {
             room1.setExit(pos1, room2);
-            room1.setExitLabel(pos1, exitLabel1);
+            room1.setExitLabel(pos1, null);  // use room2's exit label
             room2.setExit(pos2, room1);
-            room2.setExitLabel(pos2, exitLabel2);
+            room2.setExitLabel(pos2, null);  // use room1's exit label
         }
     }
 }

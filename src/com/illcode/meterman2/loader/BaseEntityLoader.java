@@ -11,7 +11,7 @@ import org.jdom2.Element;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
 /**
- * Loader for base entity implementations.
+ * Loader for system entity implementations.
  * <p/>
  * The type of entity created can be controlled by the 'type' attribute of the XML element
  * from which the definition is read. Valid values of 'type' and the corresponding Entity or
@@ -71,10 +71,10 @@ public class BaseEntityLoader implements EntityLoader
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
                 if (loadDoorProperties(bundle, el, doorImpl, resolver, helper)) {
                     doorImpl.updateRoomConnections(e);  // (dis)connect rooms
-                    // put the door into both its rooms
-                    e.setContainer(null); // it is a strange, manifold creation.
+                    // Put the door into both its rooms
+                    e.setContainer(null); // it is a strange creation, nowhere...
                     Pair<Room,Room> rooms = doorImpl.getRooms();
-                    rooms.getLeft().addEntity(e);
+                    rooms.getLeft().addEntity(e); //...and yet manifold.
                     rooms.getRight().addEntity(e);
                     final AttributeSet attr = e.getAttributes();
                     attr.clear(SystemAttributes.TAKEABLE); // doors shall not move!
@@ -136,25 +136,17 @@ public class BaseEntityLoader implements EntityLoader
     // Returns true if the door was loaded successfully.
     protected boolean loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
                                          LoaderHelper helper) {
-        final Element roomsEl = el.getChild("rooms");
-        if (roomsEl == null)
+        final Element connects = el.getChild("connects");
+        if (connects == null)
             return false;
-        final Room[] rooms = new Room[2];
-        final int[] positions = new int[2];
-        final String[] exitLabels = new String[2];
-        for (int i = 0; i < 2; i++) {
-            final Element roomEl = roomsEl.getChild("room" + (i+1));
-            if (roomEl == null)
-                return false;
-            rooms[i] = resolver.getRoom(roomEl.getAttributeValue("id"));
-            positions[i] = UIConstants.buttonTextToPosition(roomEl.getAttributeValue("pos"));
-            exitLabels[i] = roomEl.getAttributeValue("label");
-            if (rooms[i] == null || positions[i] == -1)
-                return false;
-        }
-        doorImpl.setRooms(rooms[0], rooms[1]);
-        doorImpl.setPositions(positions[0], positions[1]);
-        doorImpl.setExitLabels(exitLabels[0], exitLabels[1]);
+        final Room room1 = resolver.getRoom(connects.getAttributeValue("room1"));
+        final Room room2 = resolver.getRoom(connects.getAttributeValue("room2"));
+        final int pos1 = UIConstants.buttonTextToPosition(connects.getAttributeValue("pos1"));
+        final int pos2 = UIConstants.buttonTextToPosition(connects.getAttributeValue("pos2"));
+        if (room1 == null || room2 == null || pos1 == -1 || pos2 == -1)
+            return false;
+        doorImpl.setRooms(room1, room2);
+        doorImpl.setPositions(pos1, pos2);
         doorImpl.setClosedExitLabel(helper.getValue("closedExitLabel"));
         doorImpl.setKey(resolver.getEntity(helper.getValue("key")));
         return true;

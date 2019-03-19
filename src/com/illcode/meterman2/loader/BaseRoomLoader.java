@@ -1,14 +1,24 @@
 package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.bundle.XBundle;
-import com.illcode.meterman2.model.GameObjectIdResolver;
-import com.illcode.meterman2.model.Room;
-import com.illcode.meterman2.model.ScriptedRoomImpl;
+import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
 import org.jdom2.Element;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
+/**
+ * Loader for system room implementations.
+ * <p/>
+ * The type of room created can be controlled by the 'type' attribute of the XML element
+ * from which the definition is read. Valid values of 'type' and the corresponding Room or
+ * RoomImpl classes are:
+ * <dl>
+ *     <dt>"dark"</dt>
+ *     <dd>{@link DarkRoom} + {@link DarkRoomImpl}</dd>
+ * </dl>
+ * Otherwise we create an instance of {@link Room} with a {@link BaseRoomImpl} implementation.
+ */
 public class BaseRoomLoader implements RoomLoader
 {
     private static BaseRoomLoader instance;
@@ -29,6 +39,9 @@ public class BaseRoomLoader implements RoomLoader
     public Room createRoom(XBundle bundle, Element el, String id) {
         Room r;
         switch (defaultString(el.getAttributeValue("type"))) {
+        case "dark":
+            r = DarkRoom.create(id);
+            break;
         default:
             r = Room.create(id);
             break;
@@ -41,6 +54,11 @@ public class BaseRoomLoader implements RoomLoader
         LoaderHelper helper = LoaderHelper.wrap(el);
         loadBasicProperties(bundle, el, r, resolver, helper);  // always load basic properties
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
+        case "dark":
+            RoomImpl impl = r.getImpl();
+            if (r instanceof DarkRoom && impl instanceof DarkRoomImpl)
+                loadDarkRoomProperties(bundle, el, (DarkRoom) r, (DarkRoomImpl) impl, resolver, helper);
+            break;
         }
     }
 
@@ -76,5 +94,14 @@ public class BaseRoomLoader implements RoomLoader
                 }
             }
         }
+    }
+
+    private void loadDarkRoomProperties(XBundle bundle, Element el, DarkRoom r, DarkRoomImpl impl,
+                                        GameObjectIdResolver resolver, LoaderHelper helper) {
+        r.setDarkName(helper.getValue("darkName"));
+        r.setDarkExitName(helper.getValue("darkExitName"));
+        final Element darkDescription = el.getChild("darkDescription");
+        if (darkDescription != null)
+            impl.setDarkDescription(bundle.elementTextSource(darkDescription));
     }
 }
