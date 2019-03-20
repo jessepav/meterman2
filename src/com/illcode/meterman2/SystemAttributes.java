@@ -25,7 +25,7 @@ public class SystemAttributes
      *  The string representation for this attribute is {@code "proper-name"}. */
     public static int PROPER_NAME;
 
-    /** The entity is not quite small enough to be carried, but can be pushed or pulled along the floor. */
+    /** Something that can be pulled or pushed. */
     public static int MOVEABLE;
 
     /** The entity (ex. door, container) is closed. */

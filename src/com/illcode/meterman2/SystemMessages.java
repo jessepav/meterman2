@@ -8,7 +8,8 @@ public final class SystemMessages
     public static final String ACTION_NOT_HANDLED = "action-not-handled-message";
     public static final String WAIT = "wait-message";
     public static final String EXIT_BLOCKED = "exit-blocked-message";
-    
+    public static final String MAX_INVENTORY = "max-inventory-message";
+
     public static final String DOOR_LOCKED = "door-locked-message";
     public static final String DOOR_NOKEY = "door-nokey-message";
 

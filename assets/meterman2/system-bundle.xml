@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xbundle name="system-bundle">
+  <!-- Used by the basic game system. -->
   <passage id="wait-message">
     Time passes...
   </passage>
@@ -10,7 +11,11 @@
   <passage id="exit-blocked-message">
     The exit in that direction is blocked.
   </passage>
+  <passage id="max-inventory-message">
+    You can't tote any more items around with you.
+  </passage>
 
+  <!-- Used by doors. -->
   <passage id="door-nokey-message" format="printf"> <!-- args: defName -->
     You do not have the key for %s.
   </passage>
@@ -18,6 +23,7 @@
     It is locked.
   </passage>
 
+  <!-- Used by containers. -->
   <passage id="container-locked-message"> <!-- args: defName -->
     It is locked.
   </passage>
@@ -49,6 +55,7 @@
     You take %s %s %s.
   </passage>
 
+  <!-- Used by dark rooms. -->
   <passage id="darkroom-description">
     It is too dark here for you to see anything.
   </passage>
