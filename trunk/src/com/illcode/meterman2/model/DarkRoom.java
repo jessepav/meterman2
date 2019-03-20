@@ -2,6 +2,8 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemAttributes;
+import com.illcode.meterman2.SystemMessages;
+import com.illcode.meterman2.text.TextSource;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +19,7 @@ public class DarkRoom extends Room
 {
     protected String darkName;
     protected String darkExitName;
+    protected TextSource darkDescription;
 
     private boolean wasDark;  // used to detect changes in darkness
     private boolean firstDarkCheck;  // is this the first time we're checking if we're dark?
@@ -28,7 +31,7 @@ public class DarkRoom extends Room
 
     /** Create a dark room with the given ID and a dark room implemention. */
     public static DarkRoom create(String id) {
-        return create(id, new DarkRoomImpl());
+        return create(id, new BaseRoomImpl());
     }
 
     /** Create a dark room with the given ID and implemention. */
@@ -42,6 +45,10 @@ public class DarkRoom extends Room
 
     public void setDarkExitName(String darkExitName) {
         this.darkExitName = darkExitName;
+    }
+
+    public void setDarkDescription(TextSource darkDescription) {
+        this.darkDescription = darkDescription;
     }
 
     @Override
@@ -58,6 +65,15 @@ public class DarkRoom extends Room
             return darkExitName;
         else
             return super.getExitName();
+    }
+
+    @Override
+    public String getDescription() {
+        if (isDark())
+            return darkDescription != null ? darkDescription.getText() :
+                Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
+        else
+            return super.getDescription();
     }
 
     @Override
@@ -119,12 +135,6 @@ public class DarkRoom extends Room
     }
 
     @Override
-    public void entered(Room fromRoom) {
-        wasDark = isDark();
-        super.entered(fromRoom);
-    }
-
-    @Override
     public void eachTurn() {
         isDark();  // this will queue a room refresh if needed
         super.eachTurn();
@@ -132,14 +142,13 @@ public class DarkRoom extends Room
 
     @Override
     public Object getState() {
-        Object[] stateObj = new Object[4];
+        Object[] stateObj = new Object[3];
         // We have to save the current values of name and exitName because if we're dark when state
         // is saved, the darkName and darkExitName will overwrite the real values of name and exitName
         // when state is restored.
         stateObj[0] = name;
         stateObj[1] = exitName;
-        stateObj[2] = Boolean.valueOf(wasDark);
-        stateObj[3] = super.getState();
+        stateObj[2] = super.getState();
         return stateObj;
     }
 
@@ -148,7 +157,6 @@ public class DarkRoom extends Room
         Object[] stateObj = (Object[]) state;
         name = (String) stateObj[0];
         exitName = (String) stateObj[1];
-        wasDark = ((Boolean) stateObj[2]).booleanValue();
-        super.restoreState(stateObj[3]);
+        super.restoreState(stateObj[2]);
     }
 }

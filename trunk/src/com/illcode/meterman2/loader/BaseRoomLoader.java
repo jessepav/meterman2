@@ -15,7 +15,7 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
  * RoomImpl classes are:
  * <dl>
  *     <dt>"dark"</dt>
- *     <dd>{@link DarkRoom} + {@link DarkRoomImpl}</dd>
+ *     <dd>{@link DarkRoom}</dd>
  * </dl>
  * Otherwise we create an instance of {@link Room} with a {@link BaseRoomImpl} implementation.
  */
@@ -56,8 +56,8 @@ public class BaseRoomLoader implements RoomLoader
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
         case "dark":
             RoomImpl impl = r.getImpl();
-            if (r instanceof DarkRoom && impl instanceof DarkRoomImpl)
-                loadDarkRoomProperties(bundle, el, (DarkRoom) r, (DarkRoomImpl) impl, resolver, helper);
+            if (r instanceof DarkRoom)
+                loadDarkRoomProperties(bundle, el, (DarkRoom) r, resolver, helper);
             break;
         }
     }
@@ -96,12 +96,12 @@ public class BaseRoomLoader implements RoomLoader
         }
     }
 
-    private void loadDarkRoomProperties(XBundle bundle, Element el, DarkRoom r, DarkRoomImpl impl,
+    private void loadDarkRoomProperties(XBundle bundle, Element el, DarkRoom r,
                                         GameObjectIdResolver resolver, LoaderHelper helper) {
         r.setDarkName(helper.getValue("darkName"));
         r.setDarkExitName(helper.getValue("darkExitName"));
         final Element darkDescription = el.getChild("darkDescription");
         if (darkDescription != null)
-            impl.setDarkDescription(bundle.elementTextSource(darkDescription));
+            r.setDarkDescription(bundle.elementTextSource(darkDescription));
     }
 }
