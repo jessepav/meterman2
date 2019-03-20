@@ -26,6 +26,10 @@ public class BaseRoomImpl implements RoomImpl
         return false;
     }
 
+    public void eachTurn(Room r) {
+        // empty
+    }
+
     public Object getState(Room r) {
         return null;
     }

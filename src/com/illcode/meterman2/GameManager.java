@@ -482,6 +482,7 @@ public final class GameManager
     /** Called as one turn is transitioning to the next. */
     private void nextTurn() {
         handlerManager.fireTurn();
+        currentRoom.eachTurn();
         outputText();  // send any buffered text to the UI
         numTurns++;
     }

@@ -64,6 +64,10 @@ public final class ScriptedRoomImpl implements RoomImpl
         return invokeWithResultOrError(RoomMethod.EXITING, Boolean.class, Boolean.FALSE, r, toRoom);
     }
 
+    public void eachTurn(Room r) {
+        invokeMethod(RoomMethod.EACH_TURN, r);
+    }
+
     public Object getState(Room r) {
         return invokeWithResultOrError(RoomMethod.GET_STATE, Object.class, null, r);
     }

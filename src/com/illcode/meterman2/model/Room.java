@@ -192,6 +192,16 @@ public class Room implements EntityContainer
     }
 
     /**
+     * Called at the end of each turn that the player is in this room.
+     */
+    public void eachTurn() {
+        if (delegate != null && delegateMethods.contains(EACH_TURN))
+            delegate.eachTurn(this);
+        else
+            impl.eachTurn(this);
+    }
+
+    /**
      * Called when a game is saved to get a state object that will be persisted in the saved game file.
      * The object's class should be one of the standard POJO types descripted in {@link Game#getGameStateMap()}
      * @return state object, or null to indicate no state needs to be saved
