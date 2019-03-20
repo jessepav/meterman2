@@ -19,6 +19,7 @@ mkdir %output_dir%
 javadoc -classpath lib\*;build\production\meterman2 -%visibility% %linksrc% ^
    -sourcepath src -subpackages com.illcode.meterman2 -d "%output_dir%" ^
    -windowtitle "Meterman2 Javadocs" -doctitle "Meterman2 Javadocs" ^
+   -overview src\overview.html ^
    -linkoffline https://docs.oracle.com/javase/7/docs/api/ scripts\package-info\java7 ^
    -linkoffline https://jessepav.github.io/java-api-docs/bsh-2.1.9-JP-javadoc/ scripts\package-info\bsh ^
    -linkoffline http://static.javadoc.io/org.jdom/jdom2/2.0.6/ scripts\package-info\jdom2 ^

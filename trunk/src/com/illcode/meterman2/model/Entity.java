@@ -313,7 +313,6 @@ public class Entity
 
     /**
      * Return the name of the entity prefixed by the indefinite article ("a/an/other") in lowercase.
-     * @param e entity
      */
     public String getIndefName() {
         return getIndefName(false);
