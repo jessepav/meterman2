@@ -4,6 +4,7 @@ import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.SystemMessages;
+import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -27,8 +28,7 @@ public class DoorImpl extends BaseEntityImpl
     protected List<MMActions.Action> actions;
 
     /**
-     * Create a new door implementation. You must call {@link #setEntity(Entity)} to attach
-     * this implementation to an entity before it will be functional.
+     * Create a new door implementation.
      */
     public DoorImpl() {
         super();
