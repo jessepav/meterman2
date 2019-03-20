@@ -9,6 +9,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
+import static com.illcode.meterman2.MMLogging.logger;
 
 /**
  * Loader for system entity implementations.
@@ -79,6 +80,8 @@ public class BaseEntityLoader implements EntityLoader
                     final AttributeSet attr = e.getAttributes();
                     attr.clear(SystemAttributes.TAKEABLE); // doors shall not move!
                     attr.clear(SystemAttributes.MOVEABLE);
+                } else {
+                    logger.warning("Error in loadDoorProperties for ID " + e.getId());
                 }
             }
             break;
