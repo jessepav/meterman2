@@ -129,6 +129,11 @@ public class BasicWorldHandler
         return false;
     }
 
+    @Override
+    public boolean objectAction(MMActions.Action action, Entity e, Entity object) {
+        return false;
+    }
+
     // Implement TurnListener
     @Override
     public void turn() {

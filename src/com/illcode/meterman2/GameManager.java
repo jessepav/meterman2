@@ -328,13 +328,12 @@ public final class GameManager
             return;
         final boolean inInventoryBefore = GameUtils.isParentContainer(player, fromContainer);
         final boolean inInventoryAfter = GameUtils.isParentContainer(player, toContainer);
-        boolean uiRefreshNeeded = false;
         if (inInventoryBefore) {
             if (!inInventoryAfter) {
                 player.unequipEntity(e);
                 e.dropped();
             }
-            uiRefreshNeeded = true;
+            refreshInventoryUI();
         }
         final boolean inScopeBefore = GameUtils.getRoom(fromContainer) == currentRoom;
         final boolean inScopeAfter = GameUtils.getRoom(toContainer) == currentRoom;
@@ -356,10 +355,8 @@ public final class GameManager
         if (inInventoryAfter) {
             if (!inInventoryBefore)
                 e.taken();
-            uiRefreshNeeded = true;
-        }
-        if (uiRefreshNeeded)
             refreshInventoryUI();
+        }
     }
 
     /** Returns true if the given entity is in the player inventory. */
@@ -790,4 +787,15 @@ public final class GameManager
     public void addOutputTextProcessor(OutputTextProcessor p) {handlerManager.addOutputTextProcessor(p);}
     public void removeOutputTextProcessor(OutputTextProcessor p) {handlerManager.removeOutputTextProcessor(p);}
     //endregion
+
+    /**
+     * Called when an action on the selected entity is performed that uses an additional object (ex. putting
+     * an item in a continer).
+     * @param action action
+     * @param object the additional object
+     * @return true if the action was blocked; false to allow the action to continue.
+     */
+    public boolean testObjectAction(Action action, Entity object) {
+        return handlerManager.fireObjectAction(action, selectedEntity, object);
+    }
 }

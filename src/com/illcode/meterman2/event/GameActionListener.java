@@ -32,4 +32,16 @@ public interface GameActionListener extends GameEventHandler
      * @return true to suppress the normal "Nothing much happened" message if actionHandled is false.
      */
     boolean postAction(Action action, Entity e, boolean actionHandled);
+
+    /**
+     * Called during the processing of certain actions, like putting an item in a container, that
+     * involve the selected entity (ex. the container) and an additional object (ex. the item being
+     * put in).
+     * @param action action
+     * @param e selected entity
+     * @param object additional object of the action
+     * @return true to block the action, false to allow it to continue. If the method returns true,
+     *      it should print a message indicating why the action was blocked.
+     */
+    boolean objectAction(Action action, Entity e, Entity object);
 }
