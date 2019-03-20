@@ -109,6 +109,21 @@ public final class EventHandlerManager
     }
 
     /**
+     * Notifies all registered {@code GameActionListener}S that an object action is going to be performed.
+     * @param action action
+     * @param e selected entity
+     * @param object additional object of the action
+     * @return true if any GameActionListener interrupted the chain by returning true, and thus that
+     *      the action should be blocked.
+     */
+    public boolean fireObjectAction(MMActions.Action action, Entity e, Entity object) {
+        for (GameActionListener l : gameActionListeners)
+            if (l.objectAction(action, e, object))
+                return true;
+        return false;
+    }
+
+    /**
      * Adds a PlayerMovementListener to be called when the player moves. The listener may return true from
      * its {@link PlayerMovementListener#playerMove} method to halt further movement processing.
      * <p/>
