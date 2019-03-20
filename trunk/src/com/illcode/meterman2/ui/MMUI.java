@@ -470,7 +470,7 @@ public final class MMUI
      * Sets one of the three status bar labels.
      * @param labelPosition one of {@link UIConstants#LEFT_LABEL},
      *           {@link UIConstants#CENTER_LABEL}, {@link UIConstants#RIGHT_LABEL}
-     * @param label the text to show for the given label
+     * @param label the text to show for the given label; if null, the label is cleared.
      */
     public void setStatusLabel(int labelPosition, String label) {
         switch (labelPosition) {

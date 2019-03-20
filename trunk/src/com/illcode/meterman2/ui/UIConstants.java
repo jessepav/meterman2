@@ -12,6 +12,8 @@ public final class UIConstants
                             CENTER_LABEL = 1,
                             RIGHT_LABEL = 2;
 
+    public static final int NUM_LABELS = 3;
+
     /** Series of constants indicating the exit button position in the UI */
     public static final int NW_BUTTON = 0,
                             N_BUTTON = 1,
@@ -25,7 +27,7 @@ public final class UIConstants
                             X1_BUTTON = 3,
                             X2_BUTTON = 7,
                             X3_BUTTON = 11;
-
+        
     /** The number of exit buttons in the UI */
     public static final int NUM_EXIT_BUTTONS = 12;
 
