@@ -130,7 +130,7 @@ public class BasicWorldHandler
     }
 
     @Override
-    public boolean objectAction(MMActions.Action action, Entity e, Entity object) {
+    public boolean objectAction(Entity object, MMActions.Action action, Entity selectedEntity) {
         return false;
     }
 

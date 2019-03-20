@@ -43,6 +43,9 @@ public interface EntityImpl
     /** See {@link Entity#processAction(MMActions.Action)} */
     boolean processAction(Entity e, Action action);
 
+    /** See {@link Entity#objectAction(Action, Entity)} */
+    boolean objectAction(Entity e, Action action, Entity selectEntity);
+
     /** See {@link Entity#getState()} */
     Object getState(Entity e);
 
@@ -56,7 +59,7 @@ public interface EntityImpl
     {
         GET_DESCRIPTION("getDescription"), LOOK_IN_ROOM("lookInRoom"),
         ENTER_SCOPE("enterScope"), EXITING_SCOPE("exitingScope"), TAKEN("taken"), DROPPED("dropped"),
-        GET_ACTIONS("getActions"), PROCESS_ACTION("processAction"),
+        GET_ACTIONS("getActions"), PROCESS_ACTION("processAction"), OBJECT_ACTION("objectAction"),
         GET_STATE("getState"), RESTORE_STATE("restoreState");
 
         private final String methodName;

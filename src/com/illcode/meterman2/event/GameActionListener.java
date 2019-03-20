@@ -37,11 +37,11 @@ public interface GameActionListener extends GameEventHandler
      * Called during the processing of certain actions, like putting an item in a container, that
      * involve the selected entity (ex. the container) and an additional object (ex. the item being
      * put in).
-     * @param action action
-     * @param e selected entity
      * @param object additional object of the action
+     * @param action action
+     * @param selectedEntity the selected entity
      * @return true to block the action, false to allow it to continue. If the method returns true,
-     *      it should print a message indicating why the action was blocked.
+     *      it should additionally print a message indicating why the action was blocked.
      */
-    boolean objectAction(Action action, Entity e, Entity object);
+    boolean objectAction(Entity object, Action action, Entity selectedEntity);
 }

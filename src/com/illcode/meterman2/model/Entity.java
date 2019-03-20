@@ -240,6 +240,21 @@ public class Entity
     }
 
     /**
+     * Called when this entity is the object of an action selected on another entity
+     * (ex. if this entity is put into a container).
+     * @param action action
+     * @param selectedEntity the selected entity on which the action was chosen (ex. the container)
+     * @return true to block action processing from continuing; false to allow it. If this method
+     *      returns true, it should print a message indicating to the player why the action was blocked.
+     */
+    public boolean objectAction(Action action, Entity selectedEntity) {
+        if (delegate != null && delegateMethods.contains(OBJECT_ACTION))
+            return delegate.objectAction(this, action, selectedEntity);
+        else
+            return impl.objectAction(this, action, selectedEntity);
+    }
+
+    /**
      * Called when a game is saved to get a state object that will be persisted in the saved game file.
      * The object's class should be one of the standard POJO types descripted in {@link Game#getGameStateMap()}
      * @return state object, or null to indicate no state needs to be saved

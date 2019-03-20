@@ -92,6 +92,11 @@ public final class ScriptedEntityImpl implements EntityImpl
         return invokeWithResultOrError(EntityMethod.PROCESS_ACTION, Boolean.class, Boolean.FALSE, e, action);
     }
 
+    public boolean objectAction(Entity e, MMActions.Action action, Entity selectEntity) {
+        return invokeWithResultOrError(EntityMethod.OBJECT_ACTION, Boolean.class, Boolean.FALSE,
+                                       e, action, selectEntity);
+    }
+
     public Object getState(Entity e) {
         return invokeWithResultOrError(EntityMethod.GET_STATE, Object.class, null, e);
     }

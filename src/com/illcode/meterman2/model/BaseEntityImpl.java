@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.text.TextSource;
 
@@ -47,6 +48,10 @@ public class BaseEntityImpl implements EntityImpl
     }
 
     public boolean processAction(Entity e, Action action) {
+        return false;
+    }
+
+    public boolean objectAction(Entity e, Action action, Entity selectEntity) {
         return false;
     }
 
