@@ -130,7 +130,7 @@ public class ContainerImpl extends BaseEntityImpl
                 Entity item = ui.showListDialog(c.getName(),
                     bundles.getPassage(SystemMessages.CONTAINER_PUT_PROMPT).getTextWithArgs(getInPrep(), c.getDefName()),
                     takeables, true);
-                if (item != null) {
+                if (item != null && !gm.testObjectAction(action, item)) {
                     gm.moveEntity(item, c);
                     gm.println(bundles.getPassage(SystemMessages.CONTAINER_PUT).
                         getTextWithArgs(item.getDefName(), getInPrep(), c.getDefName()));
@@ -146,7 +146,7 @@ public class ContainerImpl extends BaseEntityImpl
                 Entity item = ui.showListDialog(c.getName(),
                     bundles.getPassage(SystemMessages.CONTAINER_TAKE_PROMPT).getTextWithArgs(getOutPrep(), c.getDefName()),
                     takeables, true);
-                if (item != null) {
+                if (item != null && !gm.testObjectAction(action, item)) {
                     gm.moveEntity(item, gm.getPlayer());
                     gm.println(bundles.getPassage(SystemMessages.CONTAINER_TAKE).
                         getTextWithArgs(item.getDefName(), getOutPrep(), c.getDefName()));

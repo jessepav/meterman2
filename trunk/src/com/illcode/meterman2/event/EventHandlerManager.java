@@ -110,15 +110,15 @@ public final class EventHandlerManager
 
     /**
      * Notifies all registered {@code GameActionListener}S that an object action is going to be performed.
-     * @param action action
-     * @param e selected entity
      * @param object additional object of the action
+     * @param action action
+     * @param selectedEntity selected entity
      * @return true if any GameActionListener interrupted the chain by returning true, and thus that
      *      the action should be blocked.
      */
-    public boolean fireObjectAction(MMActions.Action action, Entity e, Entity object) {
+    public boolean fireObjectAction(Entity object, MMActions.Action action, Entity selectedEntity) {
         for (GameActionListener l : gameActionListeners)
-            if (l.objectAction(action, e, object))
+            if (l.objectAction(object, action, selectedEntity))
                 return true;
         return false;
     }

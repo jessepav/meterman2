@@ -796,6 +796,11 @@ public final class GameManager
      * @return true if the action was blocked; false to allow the action to continue.
      */
     public boolean testObjectAction(Action action, Entity object) {
-        return handlerManager.fireObjectAction(action, selectedEntity, object);
+        if (selectedEntity == null)
+            return false;
+        else if (object.objectAction(action, selectedEntity) == true)
+            return true;
+        else
+            return handlerManager.fireObjectAction(object, action, selectedEntity);
     }
 }
