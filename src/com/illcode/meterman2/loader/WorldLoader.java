@@ -127,6 +127,42 @@ public final class WorldLoader implements GameObjectIdResolver
         roomLoadInfoMap.put(id, new LoadInfo<>(loader.createRoom(bundle, el, id), loader, el, bundle));
     }
 
+    /**
+     * Reload an entity's properties from its definition.
+     * @param id entity ID
+     * @return true on success
+     */
+    public boolean reloadEntity(String id) {
+        LoadInfo<Entity,EntityLoader> eli = entityLoadInfoMap.get(id);
+        if (eli == null)
+            return false;
+        XBundle.reloadBundle(eli.bundle);
+        Element e = eli.bundle.getElement(id);
+        if (e == null)
+            return false;
+        eli.element = e;
+        eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this);
+        return true;
+    }
+
+    /**
+     * Reload a rooms's properties from its definition.
+     * @param id room ID
+     * @return true on success
+     */
+    public boolean reloadRoom(String id) {
+        LoadInfo<Room,RoomLoader> rli = roomLoadInfoMap.get(id);
+        if (rli == null)
+            return false;
+        XBundle.reloadBundle(rli.bundle);
+        Element e = rli.bundle.getElement(id);
+        if (e == null)
+            return false;
+        rli.element = e;
+        rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
+        return true;
+    }
+
     // Methods to retrieve the world.
 
     public Player getPlayer() {
@@ -169,10 +205,10 @@ public final class WorldLoader implements GameObjectIdResolver
 
     private static final class LoadInfo<T,S>
     {
-        final T gameObject;
-        final S loader;
-        final Element element;
-        final XBundle bundle;
+        T gameObject;
+        S loader;
+        Element element;
+        XBundle bundle;
 
         LoadInfo(T gameObject, S loader, Element element, XBundle bundle) {
             this.gameObject = gameObject;

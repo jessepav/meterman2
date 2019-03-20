@@ -145,7 +145,7 @@ public final class BundleGroup
      */
     public List<Pair<Element,XBundle>> getElementsAndBundles(String cname) {
         Set<String> elementIds = new HashSet<>(64);
-        List<Pair<Element,XBundle>> ebList = new ArrayList<>(64);
+        List<Pair<Element,XBundle>> ebList = new ArrayList<>(32);
         for (XBundle b : bundles) {
             for (Element e : b.getElements(cname)) {
                 String id = e.getAttributeValue("id");
