@@ -102,8 +102,8 @@ public class DarkRoom extends Room
             wasDark = nowDark;
             needRefresh = true;
         } else if (wasDark != nowDark) {
-            wasDark = nowDark;
             needRefresh = true;
+            wasDark = nowDark;
         }
         if (needRefresh)
             Meterman2.gm.roomChanged(this);
@@ -126,26 +126,29 @@ public class DarkRoom extends Room
 
     @Override
     public void eachTurn() {
-        boolean nowDark = isDark();
-        if (wasDark != nowDark) {
-            wasDark = nowDark;
-            Meterman2.gm.roomChanged(this);
-        }
+        isDark();  // this will queue a room refresh if needed
         super.eachTurn();
     }
 
     @Override
     public Object getState() {
-        Object[] stateObj = new Object[2];
-        stateObj[0] = Boolean.valueOf(wasDark);
-        stateObj[1] = super.getState();
+        Object[] stateObj = new Object[4];
+        // We have to save the current values of name and exitName because if we're dark when state
+        // is saved, the darkName and darkExitName will overwrite the real values of name and exitName
+        // when state is restored.
+        stateObj[0] = name;
+        stateObj[1] = exitName;
+        stateObj[2] = Boolean.valueOf(wasDark);
+        stateObj[3] = super.getState();
         return stateObj;
     }
 
     @Override
     public void restoreState(Object state) {
         Object[] stateObj = (Object[]) state;
-        wasDark = ((Boolean) stateObj[0]).booleanValue();
-        super.restoreState(stateObj[1]);
+        name = (String) stateObj[0];
+        exitName = (String) stateObj[1];
+        wasDark = ((Boolean) stateObj[2]).booleanValue();
+        super.restoreState(stateObj[3]);
     }
 }
