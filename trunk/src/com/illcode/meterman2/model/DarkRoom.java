@@ -1,9 +1,7 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.GameManager;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemAttributes;
-import com.illcode.meterman2.event.TurnListener;
 
 import java.util.Collections;
 import java.util.List;
@@ -15,15 +13,17 @@ import java.util.List;
  * in the room, then we return a different "dark name" and "dark exit name", and hide the
  * contents of the room.
  */
-public class DarkRoom extends Room implements TurnListener
+public class DarkRoom extends Room
 {
     protected String darkName;
     protected String darkExitName;
 
-    private boolean wasDark;  // used to detect changes in darkness at the end of each turn.
+    private boolean wasDark;  // used to detect changes in darkness
+    private boolean firstDarkCheck;  // is this the first time we're checking if we're dark?
 
     protected DarkRoom(String id, RoomImpl impl) {
         super(id, impl);
+        firstDarkCheck = true;
     }
 
     /** Create a dark room with the given ID and a dark room implemention. */
@@ -68,36 +68,50 @@ public class DarkRoom extends Room implements TurnListener
             return super.getEntities();
     }
 
-    public static boolean isDark(Room r) {
-        return r instanceof DarkRoom && ((DarkRoom)r).isDark();
+    public boolean isDark() {
+        boolean nowDark = false;
+        checkDark: {
+            // if we're not naturally dark, then we're definite not dark now.
+            if (!getAttributes().get(SystemAttributes.DARK))
+                break checkDark;
+
+            // Otherwise, let us see if something in the room is a light source.
+            for (Entity e : getEntities()) {
+                if (isLightSource(e)) {
+                    break checkDark;
+                } else if (e instanceof EntityContainer) {
+                    // we check only one level deep in containment, for the reasonable situation where,
+                    // say, a lamp is sitting on a shelf.
+                    EntityContainer c = (EntityContainer) e;
+                    if (!e.getAttributes().get(SystemAttributes.LOCKED))
+                        for (Entity ce : c.getEntities())
+                            if (isLightSource(ce))
+                                break checkDark;
+                }
+            }
+            // In player inventory, we do not check for containment: a lamp in a bag doesn't light the room.
+            for (Entity e : Meterman2.gm.getPlayer().getEntities())
+                if (isLightSource(e))
+                    break checkDark;
+
+            nowDark = true;  // DARKNESS! Charley Murphy!
+        }
+        boolean needRefresh = false;
+        if (firstDarkCheck) {
+            firstDarkCheck = false;
+            wasDark = nowDark;
+            needRefresh = true;
+        } else if (wasDark != nowDark) {
+            wasDark = nowDark;
+            needRefresh = true;
+        }
+        if (needRefresh)
+            Meterman2.gm.roomChanged(this);
+        return nowDark;
     }
 
-    public boolean isDark() {
-        // if we're not naturally dark, then we're definite not dark now.
-        if (!getAttributes().get(SystemAttributes.DARK))
-            return false;
-
-        // Otherwise, let us see if something in the room is a light source.
-        for (Entity e : getEntities()) {
-            if (isLightSource(e)) {
-                return false;
-            } else if (e instanceof EntityContainer) {
-                // we check only one level deep in containment, for the reasonable situation where,
-                // say, a lamp is sitting on a shelf.
-                EntityContainer c = (EntityContainer) e;
-                if (!e.getAttributes().get(SystemAttributes.LOCKED))
-                    for (Entity ce : c.getEntities())
-                        if (isLightSource(ce))
-                            return false;
-            }
-        }
-        // In player inventory, we do not check for containment: a lamp in a bag doesn't light the room.
-        for (Entity e : Meterman2.gm.getPlayer().getEntities())
-            if (isLightSource(e))
-                return false;
-
-        // DARKNESS! Charley Murphy!
-        return true;
+    public static boolean isDark(Room r) {
+        return r instanceof DarkRoom && ((DarkRoom)r).isDark();
     }
 
     private static boolean isLightSource(Entity e) {
@@ -106,17 +120,18 @@ public class DarkRoom extends Room implements TurnListener
 
     @Override
     public void entered(Room fromRoom) {
-        Meterman2.gm.addTurnListener(this);
         wasDark = isDark();
         super.entered(fromRoom);
     }
 
     @Override
-    public boolean exiting(Room toRoom) {
-        boolean blocked = super.exiting(toRoom);
-        if (!blocked)
-            Meterman2.gm.removeTurnListener(this);
-        return blocked;
+    public void eachTurn() {
+        boolean nowDark = isDark();
+        if (wasDark != nowDark) {
+            wasDark = nowDark;
+            Meterman2.gm.roomChanged(this);
+        }
+        super.eachTurn();
     }
 
     @Override
@@ -133,18 +148,4 @@ public class DarkRoom extends Room implements TurnListener
         wasDark = ((Boolean) stateObj[0]).booleanValue();
         super.restoreState(stateObj[1]);
     }
-
-    //region -- Implement TurnListener --
-    public void turn() {
-        boolean nowDark = isDark();
-        if (wasDark != nowDark) {
-            wasDark = nowDark;
-            Meterman2.gm.roomChanged(this);
-        }
-    }
-
-    public String getHandlerId() {
-        return ROOM_EVENT_HANDLER_PREFIX + getId();
-    }
-    //endregion
 }
