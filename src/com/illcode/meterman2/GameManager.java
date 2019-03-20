@@ -40,6 +40,12 @@ public final class GameManager
     private List<Action> actions; // Used for composing UI actions - reuse same list to avoid allocation
     private boolean alwaysLook; // see setAlwaysLook()
 
+    // See processChangedObjects()
+    private Set<Entity> changedEntities;
+    private List<Entity> entityProcessingList;
+    private Set<Room> changedRooms;
+    private List<Room> roomProcessingList;
+
     GameManager() {
         handlerManager = new EventHandlerManager();
 
@@ -48,6 +54,11 @@ public final class GameManager
         paragraphBuilder = new StringBuilder(1024);
 
         actions = new ArrayList<>(16);
+
+        changedEntities = new HashSet<>();
+        entityProcessingList = new ArrayList<>();
+        changedRooms = new HashSet<>();
+        roomProcessingList = new ArrayList<>();
     }
 
 
@@ -479,11 +490,82 @@ public final class GameManager
         nextTurn();
     }
 
+    /**
+     * Called to indicate that the given entity's state has changed in such
+     * a way that the UI may need to be refreshed. Any such UI updates will
+     * be performed not at the time of the method call, but at the end of the turn.
+     * @param e entity that has changed
+     */
+    public void entityChanged(Entity e) {
+        changedEntities.add(e);
+    }
+
+    private void entityChangedImpl(Entity e) {
+        if (e == null)
+            return;
+        if (e.getContainer() == currentRoom) {
+            ui.updateRoomEntity(e.getId(), e.getName());
+        } else if (isInInventory(e)) {
+            String listname;
+            if (isEquipped(e))
+                listname = e.getName() + " (e)";
+            else
+                listname = e.getName();
+            ui.updateInventoryEntity(e.getId(), listname);
+        }
+        if (e == selectedEntity)
+            refreshEntityUI();
+    }
+
+    /**
+     * Called when a room's internal state changes in such a way that the UI
+     * may have to be updated to reflect the change. Any such UI updates will
+     * be performed not at the time of the method call, but at the end of the turn.
+     * @param r room that has changed
+     */
+    public void roomChanged(Room r) {
+        changedRooms.add(r);
+    }
+
+    private void roomChangedImpl(Room r) {
+        if (r == currentRoom) {
+            refreshRoomUI();
+        } else {
+            // If the changed room is adjacent to the current room, it's possible that
+            // the exit label it supplied will have changed as well.
+            for (int pos = 0; pos < UIConstants.NUM_EXIT_BUTTONS; pos++)
+                if (currentRoom.getExit(pos) == r)
+                    ui.setExitLabel(pos, currentRoom.getExitLabel(pos));
+        }
+    }
+
+    /* Go through our changed object queues and update the UI as necessary. We make copies
+       of the changed-object sets before iterating over them to avoid potentially infinite
+       loops where a UI refresh triggers some cycle of adding the same objects to the sets
+       over and over. */
+    private void processChangedObjects() {
+        if (!changedEntities.isEmpty()) {
+            entityProcessingList.addAll(changedEntities);
+            changedEntities.clear();
+            for (Entity e : entityProcessingList)
+                entityChangedImpl(e);
+            entityProcessingList.clear();
+        }
+        if (!changedRooms.isEmpty()) {
+            roomProcessingList.addAll(changedRooms);
+            changedRooms.clear();
+            for (Room r : roomProcessingList)
+                roomChangedImpl(r);
+            roomProcessingList.clear();
+        }
+    }
+
     /** Called as one turn is transitioning to the next. */
     private void nextTurn() {
         handlerManager.fireTurn();
         currentRoom.eachTurn();
         outputText();  // send any buffered text to the UI
+        processChangedObjects();
         numTurns++;
     }
 
@@ -530,45 +612,6 @@ public final class GameManager
         refreshEntityUI();
         if (selectedEntity != null)
             handlerManager.fireEntitySelected(selectedEntity);
-    }
-
-    /**
-     * Called to indicate that the given entity's state has changed in such
-     * a way that the UI may need to be refreshed.
-     * @param e entity that has changed
-     */
-    public void entityChanged(Entity e) {
-        if (e == null)
-            return;
-        if (e.getContainer() == currentRoom) {
-            ui.updateRoomEntity(e.getId(), e.getName());
-        } else if (isInInventory(e)) {
-            String listname;
-            if (isEquipped(e))
-                listname = e.getName() + " (e)";
-            else
-                listname = e.getName();
-            ui.updateInventoryEntity(e.getId(), listname);
-        }
-        if (e == selectedEntity)
-            refreshEntityUI();
-    }
-
-    /**
-     * Called when a room's internal state changes in such a way that the UI
-     * may have to be updated to reflect the change.
-     * @param r room that has changed
-     */
-    public void roomChanged(Room r) {
-        if (r == currentRoom) {
-            refreshRoomUI();
-        } else {
-            // If the changed room is adjacent to the current room, it's possible that
-            // the exit label it supplied will have changed as well.
-            for (int pos = 0; pos < UIConstants.NUM_EXIT_BUTTONS; pos++)
-                if (currentRoom.getExit(pos) == r)
-                    ui.setExitLabel(pos, currentRoom.getExitLabel(pos));
-        }
     }
 
     private void putBinding(String name, Object value) {
@@ -724,5 +767,4 @@ public final class GameManager
     public void addOutputTextProcessor(OutputTextProcessor p) {handlerManager.addOutputTextProcessor(p);}
     public void removeOutputTextProcessor(OutputTextProcessor p) {handlerManager.removeOutputTextProcessor(p);}
     //endregion
-
 }
