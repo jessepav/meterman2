@@ -195,6 +195,7 @@ public final class GameManager
         entitySelected(null);
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
+        refreshUI();  // since no nextTurn() is called.
         game.start(false);
     }
 
@@ -396,7 +397,12 @@ public final class GameManager
         return false;
     }
 
+    // Indicate the entity UI should be refreshed at the end of turn.
     private void refreshEntityUI() {
+        entityRefreshNeeded = true;
+    }
+
+    private void refreshEntityUIImpl() {
         if (selectedEntity != null) {
             actions.clear();
             actions.addAll(selectedEntity.getActions());
@@ -410,8 +416,12 @@ public final class GameManager
         }
     }
 
-
+    // Indicate the room UI should be refreshed at the end of turn.
     private void refreshRoomUI() {
+        roomRefreshNeeded = true;
+    }
+
+    private void refreshRoomUIImpl() {
         ui.setRoomName(currentRoom.getName());
         for (int pos = 0; pos < UIConstants.NUM_EXIT_BUTTONS; pos++)
             ui.setExitLabel(pos, currentRoom.getExitLabel(pos));
@@ -421,10 +431,12 @@ public final class GameManager
                 ui.addRoomEntity(e.getId(), e.getName());
     }
 
-    /**
-     * Called when the player inventory changes in such a way that the UI needs to be refreshed.
-     */
+    // Indicate the inventory UI should be refreshed at the end of turn.
     private void refreshInventoryUI() {
+        inventoryRefreshNeeded = true;
+    }
+
+    private void refreshInventoryUIImpl() {
         Entity savedSE = selectedEntity;
         List<Entity> inventory = player.getEntities();
         Collection<Entity> equippedItems = player.getEquippedEntities();
@@ -534,7 +546,7 @@ public final class GameManager
         }
     }
 
-    /* Go through our changed object queues and update the UI as necessary. We make copies
+    /* Go through our changed object queues and refresh the UI as necessary. We make copies
        of the changed-object sets before iterating over them to avoid potentially infinite
        loops where a UI refresh triggers some cycle of adding the same objects to the sets
        over and over. */
@@ -556,7 +568,18 @@ public final class GameManager
     }
 
     private void refreshUI() {
-        
+        if (roomRefreshNeeded) {
+            refreshRoomUIImpl();
+            roomRefreshNeeded = false;
+        }
+        if (entityRefreshNeeded) {
+            refreshEntityUIImpl();
+            entityRefreshNeeded = false;
+        }
+        if (inventoryRefreshNeeded) {
+            refreshInventoryUIImpl();
+            inventoryRefreshNeeded = false;
+        }
     }
 
     /** Called as one turn is transitioning to the next. */
@@ -565,6 +588,7 @@ public final class GameManager
         currentRoom.eachTurn();
         outputText();  // send any buffered text to the UI
         processChangedObjects();
+        refreshUI();
         numTurns++;
     }
 
