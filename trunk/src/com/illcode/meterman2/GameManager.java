@@ -169,17 +169,17 @@ public final class GameManager
 
         // restore game handlers from state.gameHandlers
         for (String id : state.gameHandlers.get("gameActionListeners"))
-            addGameActionListener((GameActionListener) getHandler(id));
+            addGameActionListener((GameActionListener) game.getEventHandler(id));
         for (String id : state.gameHandlers.get("playerMovementListeners"))
-            addPlayerMovementListener((PlayerMovementListener) getHandler(id));
+            addPlayerMovementListener((PlayerMovementListener) game.getEventHandler(id));
         for (String id : state.gameHandlers.get("turnListeners"))
-            addTurnListener((TurnListener) getHandler(id));
+            addTurnListener((TurnListener) game.getEventHandler(id));
         for (String id : state.gameHandlers.get("entityActionsProcessors"))
-            addEntityActionsProcessor((EntityActionsProcessor) getHandler(id));
+            addEntityActionsProcessor((EntityActionsProcessor) game.getEventHandler(id));
         for (String id : state.gameHandlers.get("entitySelectionListeners"))
-            addEntitySelectionListener((EntitySelectionListener) getHandler(id));
+            addEntitySelectionListener((EntitySelectionListener) game.getEventHandler(id));
         for (String id : state.gameHandlers.get("outputTextProcessors"))
-            addOutputTextProcessor((OutputTextProcessor) getHandler(id));
+            addOutputTextProcessor((OutputTextProcessor) game.getEventHandler(id));
 
         currentRoom = roomIdMap.get(state.currentRoomId);
         numTurns = state.numTurns;
@@ -206,19 +206,6 @@ public final class GameManager
                 }
             }
         }
-    }
-
-    // Handles the special cases where id begins with "roomId:" or "entityId:".
-    // See DarkRoomImpl for example usage.
-    private GameEventHandler getHandler(String id) {
-        if (id.startsWith(GameEventHandler.ENTITY_EVENT_HANDLER_PREFIX))
-            return (GameEventHandler) entityIdMap.get(
-                id.substring(GameEventHandler.ENTITY_EVENT_HANDLER_PREFIX.length()));
-        else if (id.startsWith(GameEventHandler.ROOM_EVENT_HANDLER_PREFIX))
-            return (GameEventHandler) roomIdMap.get(
-                id.substring(GameEventHandler.ROOM_EVENT_HANDLER_PREFIX.length()));
-        else
-            return game.getEventHandler(id);
     }
 
     private void closeGame() {
