@@ -45,6 +45,9 @@ public final class GameManager
     private List<Entity> entityProcessingList;
     private Set<Room> changedRooms;
     private List<Room> roomProcessingList;
+    private boolean roomRefreshNeeded;
+    private boolean entityRefreshNeeded;
+    private boolean inventoryRefreshNeeded;
 
     GameManager() {
         handlerManager = new EventHandlerManager();
@@ -215,6 +218,11 @@ public final class GameManager
         gameStateMap = null;
         entityIdMap = null;
         roomIdMap = null;
+        changedEntities.clear();
+        changedRooms.clear();
+        roomRefreshNeeded = false;
+        entityRefreshNeeded = false;
+        inventoryRefreshNeeded = false;
 
         if (game != null) {
             game.dispose();
@@ -545,6 +553,10 @@ public final class GameManager
                 roomChangedImpl(r);
             roomProcessingList.clear();
         }
+    }
+
+    private void refreshUI() {
+        
     }
 
     /** Called as one turn is transitioning to the next. */
