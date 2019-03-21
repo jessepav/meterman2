@@ -53,7 +53,7 @@
     The ${entity.name} is a nice piece of equipment.
   </passage>
 
-  <!-- Doors do not specify a room or container; rather, they appear in both of the rooms they connect. -->
+  <!-- Doors must not specify a room or container; rather, they appear in both of the rooms they connect. -->
   <entity id="door-entity" type="door" name="Iron Door" closedExitLabel="Iron Door" key="iron-key"
           attributes="closed">
     <description>A doughty iron door.</description>
@@ -114,10 +114,10 @@
 
   <!-- For use with GameUtils.showPassageSequence(). Note that the element names of both the top-level element
        and its children don't matter, so long as they have the correct attributes. -->
-  <sequence id="animal-sequence">
-    <!-- You must give header and button attributes even if the passages themselves provide them. -->
-    <item passageId="elephant-message" header="Elephant One" button="There's More" />
-    <item passageId="dolphin-message" header="Aquatic" button="That's it!" />
+  <sequence id="animal-sequence" defaultHeader="Animal" defaultButton="Okay">
+    <!-- the default header and button will be used if the item doesn't specify its own. -->
+    <item passageId="elephant-message" button="There's More" />
+    <item passageId="dolphin-message" header="Aquatic" />
   </sequence>
 
 </xbundle>

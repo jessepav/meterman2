@@ -11,14 +11,31 @@
     </description>
   </room>
 
-  <entity id="stick" name="Stick" inRoom="starting-room"
-          attributes="takeable, equippable">
+  <entity id="stick" name="Stick" attributes="takeable, equippable">
     <description>
       A little stick.
     </description>
   </entity>
 
-  <player id="player" inRoom="starting-room">
+  <entity id="chest" name="Teak Chest" type="container" inRoom="starting-room">
+    <attributes>
+      <a>locked</a>
+    </attributes>
+    <description format="ftl">
+      ${entity.defName?cap_first} is a chest made of wood.
+    </description>
+    <key>wood-key</key>
+  </entity>
 
+  <entity id="wood-key" name="Wood Key" inRoom="starting-room" attributes="takeable">
+    <description script="bsh">
+      out("You look at " + entity.getDefName() + " and feel a little strange");
+    </description>
+  </entity>
+
+  <player id="player" inRoom="starting-room">
+    <inventory>
+      <item equipped="true">stick</item>
+    </inventory>
   </player>
 </xbundle>

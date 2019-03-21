@@ -45,9 +45,9 @@ public class RiverboatGame implements Game
 
     }
 
-    public void constructWorld() {
+    public void constructWorld(boolean processContainment) {
         worldLoader = new WorldLoader(Meterman2.bundles);
-        worldLoader.loadAllGameObjects();
+        worldLoader.loadAllGameObjects(processContainment);
     }
 
     public Map<String,Entity> getEntityIdMap() {
@@ -90,15 +90,15 @@ public class RiverboatGame implements Game
         GameUtils.showPassage("about");
     }
 
-    public boolean reloadEntity(String id) {
+    public Entity reloadEntity(String id) {
         return worldLoader.reloadEntity(id);
     }
 
-    public boolean reloadRoom(String id) {
+    public Room reloadRoom(String id) {
         return worldLoader.reloadRoom(id);
     }
 
-    public void debugCommand(String command) {
+    public void debugCommand(String[] args) {
 
     }
 }

@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.*;
+import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,8 @@ import java.util.List;
 import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.ui;
-import static com.illcode.meterman2.SystemAttributes.*;
+import static com.illcode.meterman2.SystemAttributes.LOCKED;
+import static com.illcode.meterman2.SystemAttributes.TAKEABLE;
 
 /**
  * Implementation for container entities.
@@ -20,7 +22,7 @@ public class ContainerImpl extends BaseEntityImpl
     protected Entity key;
 
     private List<MMActions.Action> actions;
-    private MMActions.Action putInAction, takeOutAction;
+    private MMActions.Action lookInAction, putInAction, takeOutAction;
 
     public ContainerImpl() {
         super();
@@ -79,14 +81,16 @@ public class ContainerImpl extends BaseEntityImpl
         Container c = (Container) e;
         if (actions == null) {
             actions = new ArrayList<>(6);
-            putInAction = SystemActions.CONTAINER_PUT.formattedTextCopy(getInPrep());
-            takeOutAction = SystemActions.CONTAINER_TAKE.formattedTextCopy(getOutPrep());
+            lookInAction = SystemActions.CONTAINER_LOOK_IN.formattedTextCopy(WordUtils.capitalize(getInPrep()));
+            putInAction = SystemActions.CONTAINER_PUT.formattedTextCopy(WordUtils.capitalize(getInPrep()));
+            takeOutAction = SystemActions.CONTAINER_TAKE.formattedTextCopy(WordUtils.capitalize(getOutPrep()));
         }
         actions.clear();
         if (c.getAttributes().get(LOCKED)) {
-            actions.add(SystemActions.UNLOCK);
+            if (getKey() != null)
+                actions.add(SystemActions.UNLOCK);
         } else {
-            actions.add(SystemActions.CONTAINER_EXAMINE);
+            actions.add(lookInAction);
             actions.add(putInAction);
             actions.add(takeOutAction);
             if (getKey() != null)
@@ -101,14 +105,23 @@ public class ContainerImpl extends BaseEntityImpl
             return super.processAction(e, action);
         Container c = (Container) e;
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
-            if (getKey() != null && !gm.isInInventory(getKey())) {
+            final Entity _key = getKey();
+            // key should not be null (LOCK and UNLOCK shouldn't have been added),
+            // but if it is, we act as though you don't have the key
+            if (_key == null || !gm.isInInventory(_key)) {
                 gm.println(bundles.getPassage(SystemMessages.CONTAINER_NOKEY).getTextWithArgs(e.getDefName()));
             } else {
                 e.getAttributes().toggle(LOCKED);
+                String message;
+                if (e.getAttributes().get(LOCKED))
+                    message = SystemMessages.CONTAINER_LOCK;
+                else
+                    message = SystemMessages.CONTAINER_UNLOCK;
+                gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName(), _key.getDefName()));
                 gm.entityChanged(e);
             }
             return true;
-        } else if (action.equals(SystemActions.CONTAINER_EXAMINE)) {
+        } else if (action.equals(SystemActions.CONTAINER_LOOK_IN)) {
             List<Entity> contents = c.getEntities();
             if (contents.isEmpty()) {
                 gm.println(bundles.getPassage(SystemMessages.CONTAINER_EMPTY).getTextWithArgs(getInPrep(), c.getDefName()));

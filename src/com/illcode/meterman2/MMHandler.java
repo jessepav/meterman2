@@ -1,7 +1,10 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Game;
+import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIHandler;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -23,9 +26,37 @@ public class MMHandler implements UIHandler
     }
 
     public void debugCommand(String cmd) {
+        if (cmd == null || cmd.isEmpty())
+            return;
         Game g = gm.getGame();
-        if (g != null)
-            g.debugCommand(cmd);
+        if (g != null) {
+            String[] args = StringUtils.split(cmd);
+            switch (args[0]) {
+            case "reload": // We handle reloads ourself.
+                if (args.length == 3) {
+                    switch (args[1]) {
+                    case "r":
+                        Room r = g.reloadRoom(args[2]);
+                        if (r != null) {
+                            Meterman2.gm.roomChanged(r);
+                            Meterman2.gm.refreshUI();
+                        }
+                        break;
+                    case "e":
+                        Entity e = g.reloadEntity(args[2]);
+                        if (e != null) {
+                            Meterman2.gm.entityChanged(e);
+                            Meterman2.gm.refreshUI();
+                        }
+                        break;
+                    }
+                }
+                break;
+            default:
+                g.debugCommand(args);
+                break;
+            }
+        }
     }
 
     public List<String> getGameNames() {

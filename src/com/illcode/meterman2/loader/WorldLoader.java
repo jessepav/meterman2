@@ -38,7 +38,12 @@ public final class WorldLoader implements GameObjectIdResolver
         roomLoadInfoMap = new HashMap<>(40);
     }
 
-    public void loadAllGameObjects() {
+    /**
+     * Load all the <em>entity</em> and <em>room</em> elements found in the bundle group.
+     * @param processContainment true if entities should be put into their specified containers
+     * and rooms should have their exits connected.
+     */
+    public void loadAllGameObjects(boolean processContainment) {
         // Create entities and rooms, populating the entityLoadInfoMap and roomLoadInfoMap
         for (Pair<Element,XBundle> pair : group.getElementsAndBundles("entity"))
             createEntity(pair.getLeft(), pair.getRight());
@@ -47,26 +52,28 @@ public final class WorldLoader implements GameObjectIdResolver
 
         // and load their properties.
         for (LoadInfo<Entity,EntityLoader> eli : entityLoadInfoMap.values())
-            eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this);
+            eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this, processContainment);
         for (LoadInfo<Room,RoomLoader> rli : roomLoadInfoMap.values())
-            rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
+            rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this, processContainment);
 
         // Load the player.
         player = new Player();
-        Element playerEl = group.getElement("player");
-        if (playerEl != null) {
-            LoaderHelper helper = LoaderHelper.wrap(playerEl);
-            startingRoom = getRoom(helper.getValue("inRoom"));
-            Element inventory = playerEl.getChild("inventory");
-            if (inventory != null) {
-                List<Element> items = inventory.getChildren("item");
-                for (Element item : items) {
-                    final Entity e = getEntity(item.getTextTrim());
-                    if (e != null) {
-                        player.addEntity(e);
-                        e.setContainer(player);
-                        if (Utils.parseBoolean(item.getAttributeValue("equipped")))
-                            player.equipEntity(e);
+        if (processContainment) {
+            Element playerEl = group.getElement("player");
+            if (playerEl != null) {
+                LoaderHelper helper = LoaderHelper.wrap(playerEl);
+                startingRoom = getRoom(helper.getValue("inRoom"));
+                Element inventory = playerEl.getChild("inventory");
+                if (inventory != null) {
+                    List<Element> items = inventory.getChildren("item");
+                    for (Element item : items) {
+                        final Entity e = getEntity(item.getTextTrim());
+                        if (e != null) {
+                            player.addEntity(e);
+                            e.setContainer(player);
+                            if (Utils.parseBoolean(item.getAttributeValue("equipped")))
+                                player.equipEntity(e);
+                        }
                     }
                 }
             }
@@ -130,39 +137,39 @@ public final class WorldLoader implements GameObjectIdResolver
     /**
      * Reload an entity's properties from its definition.
      * @param id entity ID
-     * @return true on success
+     * @return the entity reloaded on success, null on failure
      */
-    public boolean reloadEntity(String id) {
+    public Entity reloadEntity(String id) {
         LoadInfo<Entity,EntityLoader> eli = entityLoadInfoMap.get(id);
         if (eli == null)
-            return false;
+            return null;
         if (!eli.bundle.reloadElement(id))
-            return false;
+            return null;
         Element e = eli.bundle.getElement(id);
         if (e == null)
-            return false;
+            return null;
         eli.element = e;
-        eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this);
-        return true;
+        eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this, false);
+        return eli.gameObject;
     }
 
     /**
      * Reload a rooms's properties from its definition.
      * @param id room ID
-     * @return true on success
+     * @return the Room reloaded on success, null on failure
      */
-    public boolean reloadRoom(String id) {
+    public Room reloadRoom(String id) {
         LoadInfo<Room,RoomLoader> rli = roomLoadInfoMap.get(id);
         if (rli == null)
-            return false;
+            return null;
         if (!rli.bundle.reloadElement(id))
-            return false;
+            return null;
         Element e = rli.bundle.getElement(id);
         if (e == null)
-            return false;
+            return null;
         rli.element = e;
-        rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this);
-        return true;
+        rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this, false);
+        return rli.gameObject;
     }
 
     // Methods to retrieve the world.
@@ -197,11 +204,19 @@ public final class WorldLoader implements GameObjectIdResolver
 
     //region -- Implement GameObjectIdResolver --
     public Entity getEntity(String id) {
-        return entityLoadInfoMap.get(id).gameObject;
+        final LoadInfo<Entity,EntityLoader> eli = entityLoadInfoMap.get(id);
+        if (eli != null)
+            return eli.gameObject;
+        else
+            return null;
     }
 
     public Room getRoom(String id) {
-        return roomLoadInfoMap.get(id).gameObject;
+        final LoadInfo<Room,RoomLoader> rli = roomLoadInfoMap.get(id);
+        if (rli != null)
+            return rli.gameObject;
+        else
+            return null;
     }
     //endregion
 

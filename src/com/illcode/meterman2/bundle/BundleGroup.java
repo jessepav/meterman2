@@ -59,7 +59,7 @@ public final class BundleGroup
     }
 
     /** Return the bundle in our list with the given name, or null if not found. */
-    public XBundle getBundleWithName(String name) {
+    public XBundle getBundle(String name) {
         for (XBundle bundle : bundles) {
             if (StringUtils.equals(bundle.getName(), name))
                 return bundle;

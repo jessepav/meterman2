@@ -49,10 +49,11 @@ public class BaseRoomLoader implements RoomLoader
         return r;
     }
 
-    public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver)
+    public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver,
+                                   boolean processConnections)
     {
         LoaderHelper helper = LoaderHelper.wrap(el);
-        loadBasicProperties(bundle, el, r, resolver, helper);  // always load basic properties
+        loadBasicProperties(bundle, el, r, resolver, processConnections, helper);  // always load basic properties
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
         case "dark":
             RoomImpl impl = r.getImpl();
@@ -63,7 +64,7 @@ public class BaseRoomLoader implements RoomLoader
     }
 
     private void loadBasicProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver,
-                                     LoaderHelper helper) {
+                                     boolean processConnections, LoaderHelper helper) {
         // Text properties
         r.setName(helper.getValue("name"));
         r.setExitName(helper.getValue("exitName"));
@@ -81,23 +82,24 @@ public class BaseRoomLoader implements RoomLoader
             r.setDelegate(scriptedImpl, scriptedImpl.getScriptedRoomMethods());
         }
 
-        // connections
-        final Element exits = el.getChild("exits");
-        if (exits != null) {
-            for (Element exit : exits.getChildren("exit")) {
-                final Room room = resolver.getRoom(exit.getAttributeValue("room"));
-                final int pos = UIConstants.buttonTextToPosition(exit.getAttributeValue("pos"));
-                final String exitLabel = exit.getAttributeValue("label");
-                if (room != null && pos != -1) {
-                    r.setExit(pos, room);
-                    r.setExitLabel(pos, exitLabel);
+        if (processConnections) {
+            final Element exits = el.getChild("exits");
+            if (exits != null) {
+                for (Element exit : exits.getChildren("exit")) {
+                    final Room room = resolver.getRoom(exit.getAttributeValue("room"));
+                    final int pos = UIConstants.buttonTextToPosition(exit.getAttributeValue("pos"));
+                    final String exitLabel = exit.getAttributeValue("label");
+                    if (room != null && pos != -1) {
+                        r.setExit(pos, room);
+                        r.setExitLabel(pos, exitLabel);
+                    }
                 }
             }
         }
     }
 
-    private void loadDarkRoomProperties(XBundle bundle, Element el, DarkRoom r,
-                                        GameObjectIdResolver resolver, LoaderHelper helper) {
+    private void loadDarkRoomProperties(XBundle bundle, Element el, DarkRoom r, GameObjectIdResolver resolver,
+                                        LoaderHelper helper) {
         r.setDarkName(helper.getValue("darkName"));
         r.setDarkExitName(helper.getValue("darkExitName"));
         final Element darkDescription = el.getChild("darkDescription");

@@ -333,4 +333,8 @@ public class Entity
         return getIndefName(false);
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
