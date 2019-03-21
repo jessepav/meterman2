@@ -21,6 +21,8 @@ import static com.illcode.meterman2.GameUtils.setAttr;
 
 public final class GameManager
 {
+    private String outputSeparator;
+
     private Game game;  // The game we're currently playing
     private Player player;
     private Map<String,Object> gameStateMap;
@@ -62,6 +64,8 @@ public final class GameManager
         entityProcessingList = new ArrayList<>();
         changedRooms = new HashSet<>();
         roomProcessingList = new ArrayList<>();
+
+        outputSeparator = bundles.getPassage(SystemMessages.OUTPUT_SEPARATOR).getText() + "\n";
     }
 
 
@@ -98,13 +102,14 @@ public final class GameManager
         player = game.getPlayer();
         currentRoom = game.getStartingRoom();
         game.registerInitialGameHandlers();
+        selectedEntity = null;
 
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
 
         refreshRoomUI();
         refreshInventoryUI();
-        entitySelected(null);
+        refreshEntityUI();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         game.start(true);
@@ -186,13 +191,14 @@ public final class GameManager
 
         currentRoom = roomIdMap.get(state.currentRoomId);
         numTurns = state.numTurns;
+        selectedEntity = null;
 
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
 
         refreshRoomUI();
         refreshInventoryUI();
-        entitySelected(null);
+        refreshEntityUI();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         refreshUI();  // since no nextTurn() is called.
@@ -361,7 +367,7 @@ public final class GameManager
 
     /** Returns true if the given entity is in the player inventory. */
     public boolean isInInventory(Entity e) {
-        return e.getContainer() == player;
+        return e != null && e.getContainer() == player;
     }
 
     /** Returns true if the entity is equipped by the player */
@@ -447,7 +453,7 @@ public final class GameManager
             if (!equippedItems.contains(item))
                 ui.addInventoryEntity(item.getId(), item.getName());
         }
-        if (isInInventory(savedSE))
+        if (savedSE != null && isInInventory(savedSE))
             ui.selectEntity(savedSE.getId());
     }
 
@@ -629,7 +635,7 @@ public final class GameManager
             selectedEntity = null;
         else
             selectedEntity = entityIdMap.get(id);
-        refreshEntityUI();
+        refreshEntityUIImpl();  // we must update immediately!
         if (selectedEntity != null)
             handlerManager.fireEntitySelected(selectedEntity);
     }
@@ -678,6 +684,7 @@ public final class GameManager
     private void outputText() {
         if (outputBuilder.length() != 0) {
             handlerManager.fireOutputTextReady(outputBuilder);
+            ui.appendText(outputSeparator);
             ui.appendText(outputBuilder.toString());
             outputBuilder.setLength(0);
         }

@@ -67,7 +67,7 @@ public final class EventHandlerManager
      * @param l listener to add
      */
     public void addGameActionListener(GameActionListener l) {
-        if (!gameActionListeners.contains(l))
+        if (l != null && !gameActionListeners.contains(l))
             gameActionListeners.addFirst(l);
     }
 
@@ -132,7 +132,7 @@ public final class EventHandlerManager
      * @param l listener to add
      */
     public void addPlayerMovementListener(PlayerMovementListener l) {
-        if (!playerMovementListeners.contains(l))
+        if (l != null && !playerMovementListeners.contains(l))
             playerMovementListeners.addFirst(l);
     }
 
@@ -167,7 +167,7 @@ public final class EventHandlerManager
      * @param l listener to add
      */
     public void addTurnListener(TurnListener l) {
-        if (!turnListeners.contains(l))
+        if (l != null && !turnListeners.contains(l))
             turnListeners.addFirst(l);
     }
 
@@ -193,7 +193,7 @@ public final class EventHandlerManager
      * @param l listener to add
      */
     public void addEntityActionsProcessor(EntityActionsProcessor l) {
-        if (!entityActionsProcessors.contains(l))
+        if (l != null && !entityActionsProcessors.contains(l))
             entityActionsProcessors.addFirst(l);
     }
 
@@ -225,7 +225,7 @@ public final class EventHandlerManager
      * @param l listener to add
      */
     public void addEntitySelectionListener(EntitySelectionListener l) {
-        if (!entitySelectionListeners.contains(l))
+        if (l != null && !entitySelectionListeners.contains(l))
             entitySelectionListeners.addFirst(l);
     }
 
@@ -255,7 +255,7 @@ public final class EventHandlerManager
      * @param p processor to add
      */
     public void addOutputTextProcessor(OutputTextProcessor p) {
-        if (!outputTextProcessors.contains(p))
+        if (p != null && !outputTextProcessors.contains(p))
             outputTextProcessors.addFirst(p);
     }
 

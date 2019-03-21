@@ -52,7 +52,7 @@ public final class GamesList
      * @return string assets path
      */
     public String getGameAssetsPath(String gameName) {
-        return gamesMap.get(gameName).assetsPath;
+        return gamesMap.get(gameName).getAssetsPath();
     }
 
     private void loadGamesFromGlue() {

@@ -103,4 +103,21 @@
       <exit room="cave-passage" pos="S"/>
     </exits>
   </room>
+
+  <!-- For use with GameUtils.showPassage()-->
+  <passage id="elephant-message" header="Elephant" button="Yes">
+    Do you like elephants?
+  </passage>
+  <passage id="dolphin-message" header="Dolphin" button="Sure">
+    Do you like dolphins?
+  </passage>
+
+  <!-- For use with GameUtils.showPassageSequence(). Note that the element names of both the top-level element
+       and its children don't matter, so long as they have the correct attributes. -->
+  <sequence id="animal-sequence">
+    <!-- You must give header and button attributes even if the passages themselves provide them. -->
+    <item passageId="elephant-message" header="Elephant One" button="There's More" />
+    <item passageId="dolphin-message" header="Aquatic" button="That's it!" />
+  </sequence>
+
 </xbundle>

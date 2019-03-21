@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xbundle name="riverboat">
+  <passage id="about" header="Riverboat" button="Boat Away">
+    The Riverboat on the River Effluvious.
+  </passage>
 
+  <room id="starting-room" name="Hillock">
+    <description>
+      You are standing on a grassy hillock.
+    </description>
+  </room>
+
+  <entity id="stick" name="Stick" inRoom="starting-room"
+          attributes="takeable, equippable">
+    <description>
+      A little stick.
+    </description>
+  </entity>
+
+  <player id="player" inRoom="starting-room">
+
+  </player>
 </xbundle>

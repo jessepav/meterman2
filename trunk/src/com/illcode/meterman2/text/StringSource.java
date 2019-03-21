@@ -1,15 +1,13 @@
 package com.illcode.meterman2.text;
 
+import com.illcode.meterman2.bundle.XBundle;
+
 /**
  * A {@code TextSource} backed by a String.
  */
 public final class StringSource implements TextSource
 {
-    public String str;
-
-    public StringSource() {
-        str = "";
-    }
+    private String str;
 
     public StringSource(String str) {
         this.str = str;
@@ -30,7 +28,7 @@ public final class StringSource implements TextSource
      * @param args ignored
      */
     public String getTextWithArgs(Object... args) {
-        return null;
+        return getText();
     }
 
     public String toString() {
