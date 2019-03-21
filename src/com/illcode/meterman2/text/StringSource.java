@@ -8,13 +8,22 @@ import com.illcode.meterman2.bundle.XBundle;
 public final class StringSource implements TextSource
 {
     private String str;
+    private XBundle bundle;
 
     public StringSource(String str) {
         this.str = str;
     }
 
+    public StringSource(String str, XBundle bundle) {
+        this.str = str;
+        this.bundle = bundle;
+    }
+
     public String getText() {
-        return str;
+        if (bundle != null)
+            return bundle.formatText(str);
+        else
+            return str;
     }
 
     /**

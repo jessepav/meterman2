@@ -201,7 +201,7 @@ public final class XBundle
         } else if (isFormatStringElement(e)) {
             return new FormatStringSource(e.getTextTrim(), this);
         } else { // a normal text passage
-            return new StringSource(formatText(e.getTextTrim()));
+            return new StringSource(e.getTextTrim(), this);
         }
     }
 
