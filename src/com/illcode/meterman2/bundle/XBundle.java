@@ -36,6 +36,9 @@ public final class XBundle
     /** Returned if a passage has some sort of error. */
     public static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
 
+    /** Returned as an error value from methods with a String return type. */
+    public static final String ERROR_TEXT_STRING = "[error]";
+
     // Used to indicate a passage exists but hasn't yet been parsed.
     private static final TextSource PLACEHOLDER_TEXT_SOURCE = new StringSource("[placeholder]");
 
@@ -252,6 +255,17 @@ public final class XBundle
                 return id + ":" + e.getName();
             parent = parent.getParentElement();
         }
+        return null;
+    }
+
+    /**
+     * Returns the text of an element, supporting the <em>fileRef</em> attribute to read text
+     * from an external file.
+     * @param el element
+     * @return element text
+     */
+    public String getElementText(Element el) {
+        // TODO: getElementText()
         return null;
     }
 
