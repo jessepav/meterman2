@@ -9,6 +9,18 @@
     <description>
       You are standing on a grassy hillock.
     </description>
+    <exits>
+      <exit room="playroom" pos="N" />
+    </exits>
+  </room>
+
+  <room id="playroom" name="Child's Playroom" exitName="Playroom">
+    <description script="bsh">
+      out("After " + gm.getNumTurns() + " turns, it's pretty messy in here.");
+    </description>
+    <exits>
+      <exit room="starting-room" pos="S"/>
+    </exits>
   </room>
 
   <entity id="stick" name="Stick" attributes="takeable, equippable">

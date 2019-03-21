@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- For for information, see the source for these classes:
-      XBundle, WorldLoader, BaseEntityLoader, BaseRoomLoader -->
+      XBundle, WorldLoader, BaseEntityLoader, BaseRoomLoader, GameUtils -->
 
 <xbundle name="reference-bundle">
   <passage id="simple-passage">
