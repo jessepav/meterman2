@@ -24,6 +24,17 @@
   </room>
 
   <entity id="stick" name="Stick" attributes="takeable, equippable">
+    <script>
+      <![CDATA[
+        boolean objectAction(Entity e, Action action, Entity selectEntity) {
+            if (action.equals(SystemActions.CONTAINER_PUT)) {
+                gm.println("Why would you want to put a stick in a box?");
+                return true;
+            }
+            return false;
+        }
+      ]]>
+    </script>
     <description>
       A little stick.
     </description>

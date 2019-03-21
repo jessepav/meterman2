@@ -260,6 +260,8 @@ public final class MMScript
             Object result;
             try {
                 result = bshMethod.invoke(getBshArgs(args), intr);
+                if (result instanceof Primitive)
+                    result = ((Primitive)result).getValue();
             } catch (EvalError err) {
                 logger.log(Level.WARNING, "MMScript error:", err);
                 result = null;
