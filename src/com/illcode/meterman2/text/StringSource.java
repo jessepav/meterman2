@@ -7,11 +7,12 @@ import com.illcode.meterman2.bundle.XBundle;
  */
 public final class StringSource implements TextSource
 {
-    private String str;
-    private XBundle bundle;
+    private final String str;
+    private final XBundle bundle;
 
     public StringSource(String str) {
         this.str = str;
+        this.bundle = null;
     }
 
     public StringSource(String str, XBundle bundle) {
