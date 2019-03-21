@@ -83,7 +83,7 @@ public class BasicWorldHandler
     // Implement EntityActionsProcessor
     @Override
     public void processEntityActions(Entity e, List<MMActions.Action> actions) {
-        actions.add(SystemActions.EXAMINE);
+        actions.add(0, SystemActions.EXAMINE);  // Examine should always be first.
         if (hasAttr(e, SystemAttributes.TAKEABLE)) {
             if (gm.isInInventory(e))
                 actions.add(SystemActions.DROP);

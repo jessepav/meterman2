@@ -17,7 +17,7 @@ public final class SystemActions
     public static Action UNLOCK;
     public static Action CONTAINER_PUT;
     public static Action CONTAINER_TAKE;
-    public static Action CONTAINER_EXAMINE;
+    public static Action CONTAINER_LOOK_IN;
 
     public static void init() {
         LOOK = Meterman2.actions.registerAction("Look");
@@ -33,7 +33,7 @@ public final class SystemActions
         UNLOCK = Meterman2.actions.registerAction("Unlock");
         CONTAINER_PUT = Meterman2.actions.registerAction("Put Item %s");
         CONTAINER_TAKE = Meterman2.actions.registerAction("Take Item %s");
-        CONTAINER_EXAMINE = Meterman2.actions.registerAction("Examine Items");
+        CONTAINER_LOOK_IN = Meterman2.actions.registerAction("Look %s");
         Meterman2.actions.markSystemActionsDone();
     }
 }

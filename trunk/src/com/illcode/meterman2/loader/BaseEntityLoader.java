@@ -58,10 +58,11 @@ public class BaseEntityLoader implements EntityLoader
         return e;
     }
 
-    public void loadEntityProperties(XBundle bundle, Element el, Entity e, GameObjectIdResolver resolver)
+    public void loadEntityProperties(XBundle bundle, Element el, Entity e,
+                                     GameObjectIdResolver resolver, boolean processContainment)
     {
         LoaderHelper helper = LoaderHelper.wrap(el);
-        loadBasicProperties(bundle, el, e, resolver, helper);  // always load basic properties
+        loadBasicProperties(bundle, el, e, resolver, processContainment, helper);  // always load basic properties
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
         case "container":
             if (e.getImpl() instanceof ContainerImpl)
@@ -71,12 +72,14 @@ public class BaseEntityLoader implements EntityLoader
             if (e.getImpl() instanceof DoorImpl) {
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
                 if (loadDoorProperties(bundle, el, doorImpl, resolver, helper)) {
-                    doorImpl.updateRoomConnections(e);  // (dis)connect rooms
-                    // Put the door into both its rooms
-                    e.setContainer(null); // it is a strange creation, nowhere...
-                    Pair<Room,Room> rooms = doorImpl.getRooms();
-                    rooms.getLeft().addEntity(e); //...and yet manifold.
-                    rooms.getRight().addEntity(e);
+                    doorImpl.updateRoomConnections(e);  // connect/disconnect rooms
+                    if (processContainment) {
+                        // Put the door into both its rooms
+                        e.setContainer(null); // it is a strange creation, nowhere...
+                        Pair<Room,Room> rooms = doorImpl.getRooms();
+                        rooms.getLeft().addEntity(e); //...and yet manifold.
+                        rooms.getRight().addEntity(e);
+                    }
                     final AttributeSet attr = e.getAttributes();
                     attr.clear(SystemAttributes.TAKEABLE); // doors shall not move!
                     attr.clear(SystemAttributes.MOVEABLE);
@@ -90,7 +93,7 @@ public class BaseEntityLoader implements EntityLoader
     }
 
     protected void loadBasicProperties(XBundle bundle, Element el, Entity e, GameObjectIdResolver resolver,
-                                       LoaderHelper helper) {
+                                       boolean processContainment, LoaderHelper helper) {
         // Text properties
         e.setName(helper.getValue("name"));
         e.setIndefiniteArticle(helper.getValue("indefiniteArticle"));
@@ -108,22 +111,23 @@ public class BaseEntityLoader implements EntityLoader
             e.setDelegate(scriptedImpl, scriptedImpl.getScriptedEntityMethods());
         }
 
-        // Containment.
-        final String room = helper.getValue("inRoom");
-        if (room != null) {
-            Room r = resolver.getRoom(room);
-            if (r != null) {
-                e.setContainer(r);
-                r.addEntity(e);
-            }
-        } else {
-            final String container = helper.getValue("inContainer");
-            if (container != null) {
-                Entity e2 = resolver.getEntity(container);
-                if (e2 instanceof EntityContainer) {
-                    EntityContainer c = (EntityContainer) e2;
-                    e.setContainer(c);
-                    c.addEntity(e);
+        if (processContainment) {
+            final String room = helper.getValue("inRoom");
+            if (room != null) {
+                Room r = resolver.getRoom(room);
+                if (r != null) {
+                    e.setContainer(r);
+                    r.addEntity(e);
+                }
+            } else {
+                final String container = helper.getValue("inContainer");
+                if (container != null) {
+                    Entity e2 = resolver.getEntity(container);
+                    if (e2 instanceof EntityContainer) {
+                        EntityContainer c = (EntityContainer) e2;
+                        e.setContainer(c);
+                        c.addEntity(e);
+                    }
                 }
             }
         }

@@ -33,6 +33,12 @@
   <passage id="container-nokey-message" format="printf"> <!-- args: defName -->
     You do not have the key for %s.
   </passage>
+  <passage id="container-unlock-message" format="printf"> <!-- args: defName, key.defName -->
+    You unlock %s with %s.
+  </passage>
+  <passage id="container-lock-message" format="printf"> <!-- args: defName, key.defName -->
+    You lock %s with %s.
+  </passage>
   <passage id="container-empty-message" format="printf"> <!-- args: inPrep, defName -->
     There is nothing interesting %s %s.
   </passage>

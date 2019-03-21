@@ -16,7 +16,7 @@ import java.util.Map;
  *     <li>getName()</li>
  *     <li>init()</li>
  *     <li>getGameStateMap()</li>
- *     <li>constructWorld()</li>
+ *     <li>constructWorld(true)</li>
  *     <li>getEntityIdMap()</li>
  *     <li>getRoomIdMap()</li>
  *     <li>getPlayer()</li>
@@ -29,7 +29,7 @@ import java.util.Map;
  *     <li>getName()</li>
  *     <li>init()</li>
  *     <li>setGameStateMap()</li>
- *     <li>constructWorld()</li>
+ *     <li>constructWorld(false)</li>
  *     <li>getEntityIdMap()</li>
  *     <li>getRoomIdMap()</li>
  *     <li>getEventHandler()</li>
@@ -102,8 +102,10 @@ public interface Game
      * Instantiate all rooms and entities as they will be at the start of a game. Called both for new
      * and loaded games. It is only after calling this method that {@link #getEntityIdMap()} and {@link
      * #getRoomIdMap()} will return valid values.
+     * @param processContainment true if entities should be put into their containers and rooms should have
+     * their exits linked. When a new game is started, this will be true; when a game is loaded, this will be false.
      */
-    void constructWorld();
+    void constructWorld(boolean processContainment);
 
     /**
      * Return a mapping from entity IDs to the actual Entity instances for all entities in the game.
@@ -155,22 +157,22 @@ public interface Game
     /**
      * Reload an entity from its XBundle.
      * @param id entity ID
-     * @return true on success
+     * @return the entity reloaded on success, null on failure
      */
-    boolean reloadEntity(String id);
+    Entity reloadEntity(String id);
 
     /**
      * Reload room from its XBundle.
      * @param id room ID
-     * @return true on success
+     * @return the room reloaded on success, null on failure
      */
-    boolean reloadRoom(String id);
+    Room reloadRoom(String id);
 
     /**
      * The UI provides a facility for the implementor to enter debug commands, which will
      * be passed along to the game using this method. These commands can be used to,
      * for instance, jump to a later part of the game, move entities around, etc.
-     * @param command debug command
+     * @param args arguments passed to the command
      */
-    void debugCommand(String command);
+    void debugCommand(String[] args);
 }

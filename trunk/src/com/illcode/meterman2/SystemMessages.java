@@ -16,6 +16,8 @@ public final class SystemMessages
 
     public static final String CONTAINER_LOCKED = "container-locked-message";
     public static final String CONTAINER_NOKEY = "container-nokey-message";
+    public static final String CONTAINER_UNLOCK = "container-unlock-message";
+    public static final String CONTAINER_LOCK = "container-lock-message";
     public static final String CONTAINER_EMPTY = "container-empty-message";
     public static final String CONTAINER_EXAMINE = "container-examine-message";
     public static final String CONTAINER_NO_CONTENTS_PUT = "container-no-contents-put-message";

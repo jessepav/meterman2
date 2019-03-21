@@ -113,6 +113,7 @@ public final class LoaderHelper
      */
     public void loadAttributes(String name, AttributeSet attributes) {
         final List<String> attributeNames = getListValue(name);
+        attributes.clear();
         for (String attrName : attributeNames) {
             int attrNum = Meterman2.attributes.attributeForName(attrName);
             if (attrNum != -1)

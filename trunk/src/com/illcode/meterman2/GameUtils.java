@@ -182,10 +182,10 @@ public final class GameUtils
         final Element e = Meterman2.bundles.getElement(id);
         if (e == null || !e.getName().equals("passage"))
             return;
-        final String header = e.getAttributeValue("header");
-        final String button = e.getAttributeValue("button");
+        final String header = e.getAttributeValue("header", "");
+        final String button = e.getAttributeValue("button", "Okay");
         final String text = Meterman2.bundles.getPassage(id).getText();
-        Meterman2.ui.showTextDialog(header != null ? header : "", text, button != null ? button : "Okay");
+        Meterman2.ui.showTextDialog(header, text, button);
     }
 
     /**
@@ -198,10 +198,12 @@ public final class GameUtils
         final Element e = Meterman2.bundles.getElement(id);
         if (e == null)
             return;
+        String defaultHeader = e.getAttributeValue("defaultHeader", "");
+        String defaultButton = e.getAttributeValue("defaultButton", "Okay");
         for (Element item : e.getChildren()) {
             final String passageId = item.getAttributeValue("passageId");
-            final String header = item.getAttributeValue("header");
-            final String button = item.getAttributeValue("button");
+            final String header = item.getAttributeValue("header", defaultHeader);
+            final String button = item.getAttributeValue("button", defaultButton);
             if (passageId == null || header == null || button == null)
                 continue;
             final String text = Meterman2.bundles.getPassage(passageId).getText();

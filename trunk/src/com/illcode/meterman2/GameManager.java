@@ -95,7 +95,7 @@ public final class GameManager
         ui.clearText();
         game.init();
         gameStateMap = game.getGameStateMap();
-        game.constructWorld();
+        game.constructWorld(true);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
         numTurns = 0;
@@ -107,9 +107,9 @@ public final class GameManager
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
 
-        refreshRoomUI();
-        refreshInventoryUI();
-        refreshEntityUI();
+        queueRoomUIReferesh();
+        queueInventoryUIRefresh();
+        queueEntityUIRefresh();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         game.start(true);
@@ -128,7 +128,7 @@ public final class GameManager
         player = new Player();
         gameStateMap = state.gameStateMap;
         game.setGameStateMap(gameStateMap);
-        game.constructWorld();
+        game.constructWorld(false);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
 
@@ -196,9 +196,9 @@ public final class GameManager
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
 
-        refreshRoomUI();
-        refreshInventoryUI();
-        refreshEntityUI();
+        queueRoomUIReferesh();
+        queueInventoryUIRefresh();
+        queueEntityUIRefresh();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         refreshUI();  // since no nextTurn() is called.
@@ -320,7 +320,7 @@ public final class GameManager
         if (alwaysLook || !hasAttr(toRoom, SystemAttributes.VISITED))
             performLook();
         setAttr(toRoom, SystemAttributes.VISITED);
-        refreshRoomUI();
+        queueRoomUIReferesh();
     }
 
     /**
@@ -339,7 +339,7 @@ public final class GameManager
                 player.unequipEntity(e);
                 e.dropped();
             }
-            refreshInventoryUI();
+            queueInventoryUIRefresh();
         }
         final boolean inScopeBefore = GameUtils.getRoom(fromContainer) == currentRoom;
         final boolean inScopeAfter = GameUtils.getRoom(toContainer) == currentRoom;
@@ -355,13 +355,13 @@ public final class GameManager
         if (!inScopeBefore && inScopeAfter)
             e.enterScope();
         if (fromContainer == currentRoom || toContainer == currentRoom)
-            refreshRoomUI();
+            queueRoomUIReferesh();
         if (e == selectedEntity)
             entitySelected(null);
         if (inInventoryAfter) {
             if (!inInventoryBefore)
                 e.taken();
-            refreshInventoryUI();
+            queueInventoryUIRefresh();
         }
     }
 
@@ -388,12 +388,12 @@ public final class GameManager
         if (equip) {
             if (hasAttr(e, EQUIPPABLE) && isInInventory(e) && !equippedEntities.contains(e)) {
                 equippedEntities.add(e);
-                refreshInventoryUI();
+                queueInventoryUIRefresh();
                 return true;
             }
         } else {
             if (equippedEntities.remove(e)) {
-                refreshInventoryUI();
+                queueInventoryUIRefresh();
                 return true;
             }
         }
@@ -401,11 +401,11 @@ public final class GameManager
     }
 
     // Indicate the entity UI should be refreshed at the end of turn.
-    private void refreshEntityUI() {
+    private void queueEntityUIRefresh() {
         entityRefreshNeeded = true;
     }
 
-    private void refreshEntityUIImpl() {
+    private void refreshEntityUI() {
         if (selectedEntity != null) {
             actions.clear();
             actions.addAll(selectedEntity.getActions());
@@ -420,26 +420,29 @@ public final class GameManager
     }
 
     // Indicate the room UI should be refreshed at the end of turn.
-    private void refreshRoomUI() {
+    private void queueRoomUIReferesh() {
         roomRefreshNeeded = true;
     }
 
-    private void refreshRoomUIImpl() {
+    private void refreshRoomUI() {
         ui.setRoomName(currentRoom.getName());
         for (int pos = 0; pos < UIConstants.NUM_EXIT_BUTTONS; pos++)
             ui.setExitLabel(pos, currentRoom.getExitLabel(pos));
+        Entity savedSE = selectedEntity;
         ui.clearRoomEntities();
         for (Entity e : currentRoom.getEntities())
             if (!e.getAttributes().get(SystemAttributes.CONCEALED))
                 ui.addRoomEntity(e.getId(), e.getName());
+        if (savedSE != null)
+            ui.selectEntity(savedSE.getId());
     }
 
     // Indicate the inventory UI should be refreshed at the end of turn.
-    private void refreshInventoryUI() {
+    private void queueInventoryUIRefresh() {
         inventoryRefreshNeeded = true;
     }
 
-    private void refreshInventoryUIImpl() {
+    private void refreshInventoryUI() {
         Entity savedSE = selectedEntity;
         List<Entity> inventory = player.getEntities();
         Collection<Entity> equippedItems = player.getEquippedEntities();
@@ -453,7 +456,7 @@ public final class GameManager
             if (!equippedItems.contains(item))
                 ui.addInventoryEntity(item.getId(), item.getName());
         }
-        if (savedSE != null && isInInventory(savedSE))
+        if (savedSE != null)
             ui.selectEntity(savedSE.getId());
     }
 
@@ -524,7 +527,7 @@ public final class GameManager
             ui.updateInventoryEntity(e.getId(), listname);
         }
         if (e == selectedEntity)
-            refreshEntityUI();
+            queueEntityUIRefresh();
     }
 
     /**
@@ -539,7 +542,7 @@ public final class GameManager
 
     private void roomChangedImpl(Room r) {
         if (r == currentRoom) {
-            refreshRoomUI();
+            queueRoomUIReferesh();
         } else {
             // If the changed room is adjacent to the current room, it's possible that
             // the exit label it supplied will have changed as well.
@@ -570,17 +573,19 @@ public final class GameManager
         }
     }
 
-    private void refreshUI() {
+    /** Refresh the UI as necessary. */
+    public void refreshUI() {
+        processChangedObjects();
         if (roomRefreshNeeded) {
-            refreshRoomUIImpl();
+            refreshRoomUI();
             roomRefreshNeeded = false;
         }
         if (entityRefreshNeeded) {
-            refreshEntityUIImpl();
+            refreshEntityUI();
             entityRefreshNeeded = false;
         }
         if (inventoryRefreshNeeded) {
-            refreshInventoryUIImpl();
+            refreshInventoryUI();
             inventoryRefreshNeeded = false;
         }
     }
@@ -590,7 +595,6 @@ public final class GameManager
         handlerManager.fireTurn();
         currentRoom.eachTurn();
         outputText();  // send any buffered text to the UI
-        processChangedObjects();
         refreshUI();
         numTurns++;
     }
@@ -635,7 +639,7 @@ public final class GameManager
             selectedEntity = null;
         else
             selectedEntity = entityIdMap.get(id);
-        refreshEntityUIImpl();  // we must update immediately!
+        refreshEntityUI();  // we must update immediately!
         if (selectedEntity != null)
             handlerManager.fireEntitySelected(selectedEntity);
     }

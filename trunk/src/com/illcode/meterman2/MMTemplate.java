@@ -45,6 +45,7 @@ public class MMTemplate
         cfg.setInterpolationSyntax(Configuration.DOLLAR_INTERPOLATION_SYNTAX);
         cfg.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
         cfg.setCacheStorage(new MruCacheStorage(0, 50));
+        cfg.setAPIBuiltinEnabled(true);
 
         systemTemplates = new HashSet<>(20);
         gameTemplates = new HashSet<>(40);

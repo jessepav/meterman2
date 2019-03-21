@@ -236,4 +236,10 @@ public class Room implements EntityContainer
     public List<Entity> getEntities() { return containerSupport.getEntities(); }
     public void removeEntity(Entity e) { containerSupport.removeEntity(e); }
     //endregion
+
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }
