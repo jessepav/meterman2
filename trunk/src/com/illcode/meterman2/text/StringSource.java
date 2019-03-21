@@ -22,7 +22,9 @@ public final class StringSource implements TextSource
 
     public String getText() {
         if (bundle != null)
-            return bundle.formatText(str);
+            // the text was already normalized when it was passed into the constructor
+            // in XBundle.elementTextSource().
+            return bundle.unescapeText(str);
         else
             return str;
     }

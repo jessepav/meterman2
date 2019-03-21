@@ -136,7 +136,8 @@ public final class WorldLoader implements GameObjectIdResolver
         LoadInfo<Entity,EntityLoader> eli = entityLoadInfoMap.get(id);
         if (eli == null)
             return false;
-        XBundle.reloadBundle(eli.bundle);
+        if (!eli.bundle.reloadElement(id))
+            return false;
         Element e = eli.bundle.getElement(id);
         if (e == null)
             return false;
@@ -154,7 +155,8 @@ public final class WorldLoader implements GameObjectIdResolver
         LoadInfo<Room,RoomLoader> rli = roomLoadInfoMap.get(id);
         if (rli == null)
             return false;
-        XBundle.reloadBundle(rli.bundle);
+        if (!rli.bundle.reloadElement(id))
+            return false;
         Element e = rli.bundle.getElement(id);
         if (e == null)
             return false;

@@ -68,7 +68,7 @@ public final class ScriptSource implements TextSource
 
     private boolean ensureMethodInitialized() {
         if (method == null) {  // this is the first time we're invoked
-            StringBuilder sb = new StringBuilder(source.length() + 100);
+            StringBuilder sb = new StringBuilder(source.length() + 50);
             sb.append("void getScriptedText() {\n");
             sb.append(source);
             sb.append("\n}");
