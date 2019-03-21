@@ -148,7 +148,7 @@ public final class MMScript
      * @param source script source
      * @return result of the evaluation of the last statement or expression in the source
      */
-    public Object evalSystemScript(String source) {
+    Object evalSystemScript(String source) {
         return evalScript(source, systemNameSpace);
     }
 
