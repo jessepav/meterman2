@@ -5,6 +5,7 @@ package com.illcode.meterman2;
  */
 public final class SystemMessages
 {
+    public static final String OUTPUT_SEPARATOR = "output-separator";
     public static final String ACTION_NOT_HANDLED = "action-not-handled-message";
     public static final String WAIT = "wait-message";
     public static final String EXIT_BLOCKED = "exit-blocked-message";

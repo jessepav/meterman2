@@ -2,6 +2,9 @@
 
 <xbundle name="system-bundle">
   <!-- Used by the basic game system. -->
+  <passage id="output-separator">
+    @t@t~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+  </passage>
   <passage id="wait-message">
     Time passes...
   </passage>

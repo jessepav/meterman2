@@ -3,6 +3,8 @@ package com.illcode.meterman2;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.text.TextSource;
+import org.jdom2.Element;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -169,5 +171,41 @@ public final class GameUtils
     public static void getCurrentTakeableEntities(List<Entity> takeables) {
         filterByAttribute(Meterman2.gm.getCurrentRoom().getEntities(), SystemAttributes.TAKEABLE, true, takeables);
         filterByAttribute(Meterman2.gm.getPlayer().getEntities(), SystemAttributes.TAKEABLE, true, takeables);
+    }
+
+    /**
+     * Shows a passage, which may specify its own header string and button label by including
+     * 'header' and 'button' attributes in its XML passage element.
+     * @param id ID of the passage in the system bundle group
+     */
+    public static void showPassage(String id) {
+        final Element e = Meterman2.bundles.getElement(id);
+        if (e == null || !e.getName().equals("passage"))
+            return;
+        final String header = e.getAttributeValue("header");
+        final String button = e.getAttributeValue("button");
+        final String text = Meterman2.bundles.getPassage(id).getText();
+        Meterman2.ui.showTextDialog(header != null ? header : "", text, button != null ? button : "Okay");
+    }
+
+    /**
+     * Shows a sequence of passages, each of which may specify its own header string and button label.
+     * <p/>
+     * See <tt>worldloader-bundle-reference.xml</tt> for an example.
+     * @param id ID of the passage sequence element in the system bundle group.
+     */
+    public static void showPassageSequence(String id) {
+        final Element e = Meterman2.bundles.getElement(id);
+        if (e == null)
+            return;
+        for (Element item : e.getChildren()) {
+            final String passageId = item.getAttributeValue("passageId");
+            final String header = item.getAttributeValue("header");
+            final String button = item.getAttributeValue("button");
+            if (passageId == null || header == null || button == null)
+                continue;
+            final String text = Meterman2.bundles.getPassage(passageId).getText();
+            Meterman2.ui.showTextDialog(header, text, button);
+        }
     }
 }
