@@ -2,7 +2,7 @@ package com.illcode.meterman2.bundle;
 
 import com.illcode.meterman2.text.*;
 import org.apache.commons.lang3.StringUtils;
-import org.jdom2.Attribute;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
@@ -68,47 +68,27 @@ public final class XBundle
     /**
      * Load a new XBundle by reading and parsing an XML document at a given path.
      * <p/>
-     * This method along with {@link #reloadBundle(XBundle)} are not thread-safe (they share a common
-     * XML parser), and invocations of either must be properly synchronized.
+     * This method along with {@link #reloadElement(String)} are not thread-safe (they share a common
+     * class-wide XML parser), and invocations of either must be properly synchronized.
      * @param p path of the XML document, must not be null
      */
     public static XBundle loadFromPath(Path p) {
         XBundle b = new XBundle(p);
-        reloadBundle(b);
-        return b;
-    }
-
-    /**
-     * Reload a bundle from its original path.
-     * <p/>
-     * This method along with {@link #loadFromPath(Path)} are not thread-safe (they share a common
-     * XML parser), and invocations of either must be properly synchronized.
-     * @param b bundle
-     */
-    public static void reloadBundle(XBundle b) {
         try {
             Document doc = getSAXBuilder().build(b.path.toFile());
             b.initBundle(doc);
         } catch (JDOMException|IOException ex) {
             logger.log(Level.WARNING, "Exception loading an XBundle from " + b.path.getFileName().toString(), ex);
         }
+        return b;
     }
 
     private void initBundle(Document doc) {
-        if (!doc.hasRootElement()) {
-            logger.warning("XBundle document has no root element.");
+        final Pair<Element,String> pair = checkDocument(doc);
+        if (pair == null)
             return;
-        }
-        root = doc.getRootElement();
-        if (!root.getName().equals("xbundle")) {
-            logger.warning("Invalid XBundle root element: " + root.getName());
-            return;
-        }
-        name = root.getAttributeValue("name");
-        if (name == null) {
-            logger.warning("XBundle root element has no 'name' attribute.");
-            return;
-        }
+        root = pair.getLeft();
+        name = pair.getRight();
         elementMap.clear();
         passageMap.clear();
         for (Element e : root.getChildren()) {
@@ -119,6 +99,29 @@ public final class XBundle
                     passageMap.put(id, PLACEHOLDER_TEXT_SOURCE);
             }
         }
+    }
+
+    /**
+     * Checks if the given document is a valid XBundle.
+     * @param doc JDOM document
+     * @return a pair of the document root element and XBundle name if valid, null otherwise
+     */
+    private Pair<Element,String> checkDocument(Document doc) {
+        if (!doc.hasRootElement()) {
+            logger.warning("XBundle document has no root element.");
+            return null;
+        }
+        final Element rootEl = doc.getRootElement();
+        if (!rootEl.getName().equals("xbundle")) {
+            logger.warning("Invalid XBundle root element: " + rootEl.getName());
+            return null;
+        }
+        final String rootName = rootEl.getAttributeValue("name");
+        if (rootName == null) {
+            logger.warning("XBundle root element has no 'name' attribute.");
+            return null;
+        }
+        return Pair.of(rootEl, rootName);
     }
 
     /** Return the name of this bundle. */
@@ -201,7 +204,7 @@ public final class XBundle
         } else if (isFormatStringElement(e)) {
             return new FormatStringSource(e.getTextTrim(), this);
         } else { // a normal text passage
-            return new StringSource(e.getTextTrim(), this);
+            return new StringSource(e.getTextNormalize(), this);
         }
     }
 
@@ -250,6 +253,46 @@ public final class XBundle
             parent = parent.getParentElement();
         }
         return null;
+    }
+
+    /**
+     * Reload a top-level (i.e. directly under the root element) from the original XML source path,
+     * and update our element and passage maps.
+     * @param id element ID
+     * @return true if successful
+     */
+    public boolean reloadElement(String id) {
+        final Element oldEl = getElement(id);
+        if (oldEl == null)
+            return false;  // we didn't have it in the first place
+        Document doc;
+        try {
+            doc = getSAXBuilder().build(path.toFile());
+        } catch (JDOMException|IOException ex) {
+            logger.log(Level.WARNING, "Exception loading an XBundle from " + path.getFileName().toString(), ex);
+            return false;
+        }
+        final Pair<Element,String> pair = checkDocument(doc);
+        if (pair == null)
+            return false;
+        final Element newRoot = pair.getLeft();
+        for (Element newEl : newRoot.getChildren()) {
+            if (StringUtils.equals(id, newEl.getAttributeValue("id"))) {
+                final String name = newEl.getName();
+                if (!oldEl.getName().equals(name))
+                    return false; // the element names must match
+                // graft the new element into the place of the old element
+                newEl.detach();
+                int idx = root.indexOf(oldEl);
+                root.setContent(idx, newEl);
+                // update our maps
+                elementMap.put(id, newEl);
+                if (name.equals("passage"))
+                    passageMap.put(id, PLACEHOLDER_TEXT_SOURCE);
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Get the escape character (by default '@') used to start escape sequences. */
