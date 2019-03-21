@@ -153,6 +153,20 @@ public interface Game
     void about();
 
     /**
+     * Reload an entity from its XBundle.
+     * @param id entity ID
+     * @return true on success
+     */
+    boolean reloadEntity(String id);
+
+    /**
+     * Reload room from its XBundle.
+     * @param id room ID
+     * @return true on success
+     */
+    boolean reloadRoom(String id);
+
+    /**
      * The UI provides a facility for the implementor to enter debug commands, which will
      * be passed along to the game using this method. These commands can be used to,
      * for instance, jump to a later part of the game, move entities around, etc.
