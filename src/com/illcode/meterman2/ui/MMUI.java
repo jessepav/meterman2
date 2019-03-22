@@ -6,6 +6,7 @@ import com.illcode.meterman2.MMActions.Action;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.text.WordUtils;
+import org.jdom2.Element;
 
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
@@ -173,6 +174,22 @@ public final class MMUI
     public void removeImageMapping(String name) {
         unloadImage(name);
         imageMap.remove(name);
+    }
+
+    /**
+     * Load image mappings from an image-map XML element.
+     * @param el element
+     */
+    public void loadImageMap(Element el) {
+        if (el == null)
+            return;
+        for (Element source : el.getChildren("image")) {
+            String name = source.getAttributeValue("name");
+            String path = source.getAttributeValue("path");
+            if (name == null || path == null)
+                continue;
+            imageMap.put(name, Meterman2.assets.pathForGameAsset(path));
+        }
     }
 
     /**

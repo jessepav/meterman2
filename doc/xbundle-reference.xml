@@ -127,4 +127,19 @@
     <item passageId="dolphin-message" header="Aquatic" />
   </sequence>
 
+  <!-- For use with MMUI.loadImageMap() -->
+  <imageMap id="image-map">
+    <!-- path is relative to the game assets path. -->
+    <image name="panther-head" path="images/panther-head.jpg" />
+    <image name="watermelon" path="images/xigua.jpg" />
+  </imageMap>
+
+  <!-- For use with MMSound.loadSourceMap() -->
+  <soundMap id="sound-map">
+    <!-- path is relative to the game assets path. -->
+    <source name="explosion-1" path="audio/explosion1.wav" />
+    <!-- if music="true" the source will be streamed rather than preloaded. -->
+    <source name="haunting-lullaby" path="audio/lullaby.ogg" music="true" />
+  </soundMap>
+
 </xbundle>
