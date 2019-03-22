@@ -49,6 +49,9 @@ public interface EntityContainer
     /** Remove an entity from this container.*/
     void removeEntity(Entity e);
 
+    /** Returns true if this container contains a given entity. */
+    boolean containsEntity(Entity e);
+
     /** Clears (empties) this container. */
     void clearEntities();
 }
