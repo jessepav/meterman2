@@ -54,8 +54,6 @@ public final class Meterman2
     /** GamesList instance responsible for discovery of games at startup time. */
     public static GamesList gamesList;
 
-    private static MMHandler uiHandler;
-
     public static void main(String[] args) throws IOException {
         prefsPath = Paths.get("config/meterman2.properties");
         if (!loadPrefs(prefsPath)) {
@@ -96,21 +94,12 @@ public final class Meterman2
         SystemAttributes.init();
 
         template = new MMTemplate();
-
         script = new MMScript();
-
         sound = new MMSound();
-        sound.setSoundEnabled(Utils.booleanPref("sound-enabled", true));
-        sound.setMusicEnabled(Utils.booleanPref("music-enabled", true));
-
         persistence = new KryoPersistence();
-
         gamesList = new GamesList();
-
         gm = new GameManager();
-
-        uiHandler = new MMHandler();
-        ui = new MMUI(uiHandler);
+        ui = new MMUI(new MMHandler());
 
         addScriptBindings();
 

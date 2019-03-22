@@ -104,6 +104,13 @@
     </exits>
   </room>
 
+  <entity id="ivory-watch" name="Ivory Watch" attributes="takeable">
+    <!-- description, passage, and script elements can provide a 'fileRef' attribute, in which
+         case the text content of the element is read from an external file resolved as a sibling
+         of the xbundle itself. -->
+    <description fileRef="ivory-watch-description.ftl" format="ftl" />
+  </entity>
+
   <!-- For use with GameUtils.showPassage()-->
   <passage id="elephant-message" header="Elephant" button="Yes">
     Do you like elephants?
