@@ -37,5 +37,6 @@ public class Container extends Entity implements EntityContainer
     public void clearEntities() { containerSupport.clearEntities(); }
     public List<Entity> getEntities() { return containerSupport.getEntities(); }
     public void removeEntity(Entity e) { containerSupport.removeEntity(e); }
+    public boolean containsEntity(Entity e) {return containerSupport.containsEntity(e);}
     //endregion
 }

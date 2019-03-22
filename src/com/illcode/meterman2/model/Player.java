@@ -22,7 +22,7 @@ public final class Player implements EntityContainer
     }
 
     public void equipEntity(Entity e) {
-        if (getEntities().contains(e))
+        if (containsEntity(e) && !equippedEntities.contains(e))
             equippedEntities.add(e);
     }
 
@@ -48,6 +48,7 @@ public final class Player implements EntityContainer
     public void removeEntity(Entity e) {containerSupport.removeEntity(e);}
     public void clearEntities() {containerSupport.clearEntities();}
     public List<Entity> getEntities() {return containerSupport.getEntities();}
+    public boolean containsEntity(Entity e) {return containerSupport.containsEntity(e);}
     //endregion
 
 }
