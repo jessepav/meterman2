@@ -54,12 +54,12 @@ public class Room implements EntityContainer
     }
 
     /** Return the room implementation instance used by this Room. */
-    public RoomImpl getImpl() {
+    public final RoomImpl getImpl() {
         return impl;
     }
 
     /** Set the room implementation instance used by this Room. */
-    public void setImpl(RoomImpl impl) {
+    public final void setImpl(RoomImpl impl) {
         this.impl = impl;
     }
 
@@ -70,19 +70,19 @@ public class Room implements EntityContainer
      * @param delegate the delegate implementation
      * @param delegateMethods a set indicating which methods should be forwarded
      */
-    public void setDelegate(RoomImpl delegate, EnumSet<RoomMethod> delegateMethods) {
+    public final void setDelegate(RoomImpl delegate, EnumSet<RoomMethod> delegateMethods) {
         this.delegate = delegate;
         this.delegateMethods = delegateMethods;
     }
 
     /** Remove the delegate. */
-    public void clearDelegate() {
+    public final void clearDelegate() {
         delegate = null;
         delegateMethods = null;
     }
 
     /** Return the unique ID of this room. */
-    public String getId() {
+    public final String getId() {
         return id;
     }
 
@@ -96,8 +96,13 @@ public class Room implements EntityContainer
         return name != null ? name : "[" + getId() + "]";
     }
 
+    /** Returns the name property of the room. Intended for internal use. */
+    public final String getNameProperty() {
+        return name;
+    }
+
     /** Set the name of the room. */
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 
@@ -106,8 +111,13 @@ public class Room implements EntityContainer
         return exitName != null ? exitName : getName();
     }
 
+    /** Returns the exit name property of the room. Intended for internal use. */
+    public final String getExitNameProperty() {
+        return exitName;
+    }
+
     /** Set the version of the name to be used in Exit buttons. */
-    public void setExitName(String exitName) {
+    public final void setExitName(String exitName) {
         this.exitName = exitName;
     }
 
@@ -123,13 +133,18 @@ public class Room implements EntityContainer
         return exits[position];
     }
 
+    /** Returns the exit property of the room for the given position. Intended for internal use. */
+    public final Room getExitProperty(int position) {
+        return exits[position];
+    }
+
     /**
      * Set the room associated with a given exit position.
      * @param position one of the button constants in {@link UIConstants}, ex {@link UIConstants#NW_BUTTON}
      * @param destination the room that is found when exiting this room in the given position, or null if no
      *         exit is possible in that position.
      */
-    public void setExit(int position, Room destination) {
+    public final void setExit(int position, Room destination) {
         exits[position] = destination;
     }
 
@@ -148,13 +163,18 @@ public class Room implements EntityContainer
             return null;
     }
 
+    /** Returns the exit label property for a given position. Intended for internal use. */
+    public final String getExitLabelProperty(int position) {
+        return exitLabels[position];
+    }
+
     /**
      * Set the text that should be shown on the UI button for a given position.
      * @param position one of the button constants in {@link UIConstants}
      * @param label the text that should be shown on the respective UI button, or null if the exit name
      * of the room in the given position should be used, if any.
      */
-    public void setExitLabel(int position, String label) {
+    public final void setExitLabel(int position, String label) {
         exitLabels[position] = label;
     }
 

@@ -139,24 +139,4 @@ public class DarkRoom extends Room
         isDark();  // this will queue a room refresh if needed
         super.eachTurn();
     }
-
-    @Override
-    public Object getState() {
-        Object[] stateObj = new Object[3];
-        // We have to save the current values of name and exitName because if we're dark when state
-        // is saved, the darkName and darkExitName will overwrite the real values of name and exitName
-        // when state is restored.
-        stateObj[0] = name;
-        stateObj[1] = exitName;
-        stateObj[2] = super.getState();
-        return stateObj;
-    }
-
-    @Override
-    public void restoreState(Object state) {
-        Object[] stateObj = (Object[]) state;
-        name = (String) stateObj[0];
-        exitName = (String) stateObj[1];
-        super.restoreState(stateObj[2]);
-    }
 }
