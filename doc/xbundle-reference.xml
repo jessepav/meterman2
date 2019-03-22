@@ -115,7 +115,7 @@
   <passage id="elephant-message" header="Elephant" button="Yes">
     Do you like elephants?
   </passage>
-  <passage id="dolphin-message" header="Dolphin" button="Sure">
+  <passage id="dolphin-message" header="Dolphin" button="Sure" image="dolphin-1" scale="3">
     Do you like dolphins?
   </passage>
 
@@ -123,7 +123,7 @@
        and its children don't matter, so long as they have the correct attributes. -->
   <sequence id="animal-sequence" defaultHeader="Animal" defaultButton="Okay">
     <!-- the default header and button will be used if the item doesn't specify its own. -->
-    <item passageId="elephant-message" button="There's More" />
+    <item passageId="elephant-message" button="There's More" image="elephant-head" scale="2" />
     <item passageId="dolphin-message" header="Aquatic" />
   </sequence>
 
