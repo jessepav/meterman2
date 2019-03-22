@@ -55,6 +55,15 @@ public final class GamesList
         return gamesMap.get(gameName).getAssetsPath();
     }
 
+    /**
+     * Return the package of the game class.
+     * @param gameName game name
+     * @return package name
+     */
+    public String getGamePackageName(String gameName) {
+        return gamesMap.get(gameName).getGamePackageName();
+    }
+
     private void loadGamesFromGlue() {
         gamesMap = new HashMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(Meterman2.gluePath)) {
@@ -92,7 +101,7 @@ public final class GamesList
         Collections.sort(gameNames);  // alphabetical order please
     }
 
-    private static class PieceOfGlue {
+    private static final class PieceOfGlue {
         private final String assetsPath;
         private final String gameClassName;
 
@@ -103,6 +112,14 @@ public final class GamesList
 
         public String getAssetsPath() {
             return assetsPath;
+        }
+
+        public String getGamePackageName() {
+            final int idx = gameClassName.lastIndexOf('.');
+            if (idx == -1)
+                return "";
+            else
+                return gameClassName.substring(0, idx);
         }
 
         public Game createGame() {

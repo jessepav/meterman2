@@ -93,6 +93,9 @@ public final class GameManager
         ui.showWaitDialog("Starting " + gameName + "...");
         ui.setGameName(gameName);
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
+        final String packageName = Meterman2.gamesList.getGamePackageName(gameName);
+        if (!packageName.isEmpty())
+            Meterman2.script.importPackage(packageName);
         ui.clearText();
         game.init();
         gameStateMap = game.getGameStateMap();
@@ -130,6 +133,9 @@ public final class GameManager
         String gameName = game.getName();
         ui.setGameName(gameName);
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
+        final String packageName = Meterman2.gamesList.getGamePackageName(gameName);
+        if (!packageName.isEmpty())
+            Meterman2.script.importPackage(packageName);
         game.init();
         player = new Player();
         gameStateMap = state.gameStateMap;
@@ -243,7 +249,7 @@ public final class GameManager
         }
         Meterman2.ui.clearImages();
         Meterman2.sound.clearAudio();
-        Meterman2.script.clearGameBindings();
+        Meterman2.script.clearBindings();
         Meterman2.template.clearBindings();
         Meterman2.template.clearGameTemplates();
         Meterman2.template.clearTemplateCache();
@@ -657,7 +663,7 @@ public final class GameManager
 
     private void putBindings(Map<String,Object> bindings) {
         Meterman2.template.putBindings(bindings);
-        Meterman2.script.putGameBindings(bindings);
+        Meterman2.script.putBindings(bindings);
     }
 
     /**
