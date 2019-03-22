@@ -128,7 +128,22 @@ public final class MMSound
             if (name == null || path == null)
                 continue;
             boolean music = Utils.parseBoolean(source.getAttributeValue("music"));
-            sourceMap.put(name, new SoundRecord(Meterman2.assets.pathForGameAsset(path), music));
+            addSourceMapping(name, Meterman2.assets.pathForGameAsset(path), music);
+        }
+    }
+
+    /**
+     * Remove source mappings defined in a sound-map XML element.
+     * @param el element
+     */
+    public void removeSourceMap(Element el) {
+        if (el == null)
+            return;
+        for (Element source : el.getChildren("source")) {
+            String name = source.getAttributeValue("name");
+            if (name == null)
+                continue;
+            removeSourceMapping(name);
         }
     }
 
