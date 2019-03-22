@@ -79,7 +79,7 @@ public class Entity
     }
 
     /** Return the unique ID of this entity. */
-    public String getId() {
+    public final String getId() {
         return id;
     }
 
@@ -89,7 +89,7 @@ public class Entity
     }
 
     /** Return the container that holds this entity, or null if none. */
-    public EntityContainer getContainer() {
+    public final EntityContainer getContainer() {
         return container;
     }
 
@@ -98,7 +98,7 @@ public class Entity
      * @param container the entity container that holds this entity, or null to
      *         indicate the entity is removed from the game world.
      */
-    public void setContainer(EntityContainer container) {
+    public final void setContainer(EntityContainer container) {
         this.container = container;
     }
 
@@ -107,18 +107,23 @@ public class Entity
         return name != null ? name : "[" + getId() + "]";
     }
 
+    /** Returns the name property of the entity. Intended for internal use. */
+    public final String getNameProperty() {
+        return name;
+    }
+
     /** Set the name of this entity. */
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 
     /** Return the indefinite article used when referring to this entity (may be null). */
-    public String getIndefiniteArticle() {
+    public final String getIndefiniteArticle() {
         return indefiniteArticle;
     }
 
     /** Set the indefinite article used when referring to this entity. */
-    public void setIndefiniteArticle(String indefiniteArticle) {
+    public final void setIndefiniteArticle(String indefiniteArticle) {
         this.indefiniteArticle = indefiniteArticle;
     }
 

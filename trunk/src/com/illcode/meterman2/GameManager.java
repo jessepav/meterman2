@@ -111,7 +111,7 @@ public final class GameManager
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
 
-        queueRoomUIReferesh();
+        queueRoomUIRefresh();
         queueInventoryUIRefresh();
         queueEntityUIRefresh();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
@@ -208,7 +208,7 @@ public final class GameManager
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
 
-        queueRoomUIReferesh();
+        queueRoomUIRefresh();
         queueInventoryUIRefresh();
         queueEntityUIRefresh();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
@@ -332,7 +332,7 @@ public final class GameManager
         if (alwaysLook || !hasAttr(toRoom, SystemAttributes.VISITED))
             performLook();
         setAttr(toRoom, SystemAttributes.VISITED);
-        queueRoomUIReferesh();
+        queueRoomUIRefresh();
     }
 
     /**
@@ -358,16 +358,12 @@ public final class GameManager
         if (inScopeBefore && !inScopeAfter)
             e.exitingScope();
         // Now move the entity.
-        if (fromContainer != null)
-            fromContainer.removeEntity(e);
-        e.setContainer(toContainer);
-        if (toContainer != null)
-            toContainer.addEntity(e);
+        GameUtils.putInContainer(e, toContainer);
         // done moving!
         if (!inScopeBefore && inScopeAfter)
             e.enterScope();
         if (fromContainer == currentRoom || toContainer == currentRoom)
-            queueRoomUIReferesh();
+            queueRoomUIRefresh();
         if (e == selectedEntity)
             entitySelected(null);
         if (inInventoryAfter) {
@@ -432,7 +428,7 @@ public final class GameManager
     }
 
     // Indicate the room UI should be refreshed at the end of turn.
-    private void queueRoomUIReferesh() {
+    private void queueRoomUIRefresh() {
         roomRefreshNeeded = true;
     }
 
@@ -554,7 +550,7 @@ public final class GameManager
 
     private void roomChangedImpl(Room r) {
         if (r == currentRoom) {
-            queueRoomUIReferesh();
+            queueRoomUIRefresh();
         } else {
             // If the changed room is adjacent to the current room, it's possible that
             // the exit label it supplied will have changed as well.
@@ -725,7 +721,7 @@ public final class GameManager
             String id = entry.getKey();
             Entity entity = entry.getValue();
             GameState.EntityState entityState = new GameState.EntityState();
-            entityState.name = entity.getName();
+            entityState.name = entity.getNameProperty();
             entityState.indefiniteArticle = entity.getIndefiniteArticle();
             entityState.attributes = entity.getAttributes();
             if (entity instanceof EntityContainer)
@@ -738,16 +734,16 @@ public final class GameManager
             String id = entry.getKey();
             Room room = entry.getValue();
             GameState.RoomState roomState = new GameState.RoomState();
-            roomState.name = room.getName();
-            roomState.exitName = room.getExitName();
+            roomState.name = room.getNameProperty();
+            roomState.exitName = room.getExitNameProperty();
             roomState.attributes = room.getAttributes();
             roomState.exitRoomIds = new String[UIConstants.NUM_EXIT_BUTTONS];
             roomState.exitLabels = new String[UIConstants.NUM_EXIT_BUTTONS];
             for (int position = 0; position < UIConstants.NUM_EXIT_BUTTONS; position++) {
-                final Room exit = room.getExit(position);
+                final Room exit = room.getExitProperty(position);
                 if (exit != null)
                     roomState.exitRoomIds[position] = exit.getId();
-                roomState.exitLabels[position] = room.getExitLabel(position);
+                roomState.exitLabels[position] = room.getExitLabelProperty(position);
             }
             roomState.contentIds = getContainerContentIds(room);
             roomState.stateObj = room.getState();
