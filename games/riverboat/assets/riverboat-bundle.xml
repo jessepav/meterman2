@@ -23,7 +23,7 @@
     </exits>
   </room>
 
-  <entity id="stick" name="Stick" attributes="takeable, equippable">
+  <entity id="stick" name="Stick" attributes="takeable, equippable" inRoom="starting-room">
     <script fileRef="stick-script.bsh" />
     <description>
       A little stick.
@@ -38,15 +38,39 @@
     <key>wood-key</key>
   </entity>
 
+  <entity id="mirror" name="Magic Mirror" attributes="takeable">
+    <description format="ftl">
+      In the magic mirror you see that the door is[#if !state.doorOpened] not[/#if] open.
+    </description>
+  </entity>
+
   <entity id="wood-key" name="Wood Key" inRoom="starting-room" attributes="takeable">
     <description script="bsh">
       out("You look at " + entity.getDefName() + " and feel a little strange");
     </description>
   </entity>
 
+  <entity id="iron-door" type="door" name="Iron Door" closedExitLabel="Iron Door" attributes="closed">
+    <description>A stalwart iron door.</description>
+    <connects room1="playroom" pos1="E" room2="dungeon" pos2="W" />
+    <script><![CDATA[
+      boolean processAction(Entity e, Action action) {
+          if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE))
+              state.doorOpened = !state.doorOpened;
+          return false;
+      }
+    ]]>
+    </script>
+  </entity>
+
+  <room id="dungeon" name="Dark Dungeon">
+    <description>Oh my, this is one dark dungeon!</description>
+  </room>
+
   <player id="player" inRoom="starting-room">
     <inventory>
       <item equipped="true">stick</item>
+      <item>mirror</item>
     </inventory>
   </player>
 </xbundle>

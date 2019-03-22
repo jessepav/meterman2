@@ -12,16 +12,20 @@ import com.illcode.meterman2.model.Player;
 import com.illcode.meterman2.model.Room;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RiverboatGame implements Game
 {
-    public static final String RIVERBOAT_NAME = "The Riverboat";
+    static final String RIVERBOAT_NAME = "The Riverboat";
 
     static final String RIVERBOAT_BASIC_HANDLER_ID = "riverboat-basic-handler";
 
-    private WorldLoader worldLoader;
-    private BasicWorldHandler basicWorldHandler;
+    WorldLoader worldLoader;
+    BasicWorldHandler basicWorldHandler;
+    Map<String,Room> roomIdMap;
+    Map<String,Entity> entityIdMap;
+    Map<String,Object> gameStateMap;
 
     public String getName() {
         return RIVERBOAT_NAME;
@@ -33,31 +37,37 @@ public class RiverboatGame implements Game
     }
 
     public void dispose() {
-
+        // empty
     }
 
-    public Map<String,Object> getGameStateMap() {
-        return Collections.emptyMap();
+    public Map<String,Object> getInitialGameStateMap() {
+        if (gameStateMap == null) {
+            gameStateMap = new HashMap<>();
+            gameStateMap.put("state", new RiverboatState());
+        }
+        return gameStateMap;
     }
 
     public void setGameStateMap(Map<String,Object> gameStateMap) {
-
+        this.gameStateMap = gameStateMap;
     }
 
     public void constructWorld(boolean processContainment) {
         worldLoader = new WorldLoader(Meterman2.bundles);
         worldLoader.loadAllGameObjects(processContainment);
+        roomIdMap = worldLoader.getRoomIdMap();
+        entityIdMap = worldLoader.getEntityIdMap();
     }
 
     public Map<String,Entity> getEntityIdMap() {
-        return worldLoader.getEntityIdMap();
+        return entityIdMap;
     }
 
     public Map<String,Room> getRoomIdMap() {
-        return worldLoader.getRoomIdMap();
+        return roomIdMap;
     }
 
-    public Player getPlayer() {
+    public Player getStartingPlayer() {
         return worldLoader.getPlayer();
     }
 

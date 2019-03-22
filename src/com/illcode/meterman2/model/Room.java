@@ -1,7 +1,6 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
-import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.model.RoomImpl.RoomMethod;
 import com.illcode.meterman2.ui.UIConstants;
 
@@ -223,7 +222,7 @@ public class Room implements EntityContainer
 
     /**
      * Called when a game is saved to get a state object that will be persisted in the saved game file.
-     * The object's class should be one of the standard POJO types descripted in {@link Game#getGameStateMap()}
+     * The object's class should be one of the standard POJO types descripted in {@link Game#getInitialGameStateMap()}
      * @return state object, or null to indicate no state needs to be saved
      */
     public Object getState() {
@@ -257,7 +256,6 @@ public class Room implements EntityContainer
     public void removeEntity(Entity e) { containerSupport.removeEntity(e); }
     public boolean containsEntity(Entity e) {return containerSupport.containsEntity(e);}
     //endregion
-
 
     @Override
     public String toString() {

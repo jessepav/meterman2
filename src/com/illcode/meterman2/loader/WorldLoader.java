@@ -1,8 +1,6 @@
 package com.illcode.meterman2.loader;
 
-import com.illcode.meterman2.GameUtils;
-import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.Utils;
+import com.illcode.meterman2.*;
 import com.illcode.meterman2.bundle.BundleGroup;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.Entity;
@@ -17,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.illcode.meterman2.MMLogging.logger;
+import static com.illcode.meterman2.SystemAttributes.TAKEABLE;
+import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 
 /**
  * Loads our world from a bundle group.
@@ -68,11 +68,14 @@ public final class WorldLoader implements GameObjectIdResolver
                 if (inventory != null) {
                     List<Element> items = inventory.getChildren("item");
                     for (Element item : items) {
-                        final Entity e = getEntity(item.getTextTrim());
-                        if (e != null) {
-                            GameUtils.putInContainer(e, player);
-                            if (Utils.parseBoolean(item.getAttributeValue("equipped")))
-                                player.equipEntity(e);
+                        final Entity itemEntity = getEntity(item.getTextTrim());
+                        if (itemEntity == null)
+                            continue;
+                        final AttributeSet attr = itemEntity.getAttributes();
+                        if (attr.get(TAKEABLE)) {
+                            GameUtils.putInContainer(itemEntity, player);
+                            if (Utils.parseBoolean(item.getAttributeValue("equipped")) && attr.get(EQUIPPABLE))
+                                player.equipEntity(itemEntity);
                         }
                     }
                 }

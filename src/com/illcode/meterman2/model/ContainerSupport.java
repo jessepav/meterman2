@@ -74,7 +74,7 @@ public final class ContainerSupport implements EntityContainer
     }
 
     public void addEntity(Entity e) {
-        if (e != null && !contentsSet.contains(e))
+        if (e != null && contentsSet.add(e))
             contents.add(e);
     }
 

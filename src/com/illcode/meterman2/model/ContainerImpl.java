@@ -32,12 +32,12 @@ public class ContainerImpl extends BaseEntityImpl
      * Return the preposition used when putting an object into the container
      * (ex. "in" for a box, and "on" for a shelf).
      */
-    public String getInPrep() {
+    public final String getInPrep() {
         return inPrep != null ? inPrep : "in";
     }
 
     /** Set the preposition used when putting an object into the container. */
-    public void setInPrep(String inPrep) {
+    public final void setInPrep(String inPrep) {
         this.inPrep = inPrep;
     }
 
@@ -45,22 +45,22 @@ public class ContainerImpl extends BaseEntityImpl
      * Return the preposition used when taking an object out of the container
      * (ex. "from" for a box, and "off" for a shelf).
      */
-    public String getOutPrep() {
+    public final String getOutPrep() {
         return outPrep != null ? outPrep : "from";
     }
 
     /** Set the preposition used when taking an object out of the container. */
-    public void setOutPrep(String outPrep) {
+    public final void setOutPrep(String outPrep) {
         this.outPrep = outPrep;
     }
 
     /** Get the key used to lock/unlock this container. Null means no key is needed. */
-    public Entity getKey() {
+    public final Entity getKey() {
         return key;
     }
 
     /** Set the key used to lock/unlock this container. Null means no key is needed. */
-    public void setKey(Entity key) {
+    public final void setKey(Entity key) {
         this.key = key;
     }
 
@@ -69,7 +69,7 @@ public class ContainerImpl extends BaseEntityImpl
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
             return description + " " +
-                bundles.getPassage(SystemMessages.CONTAINER_LOCKED).getTextWithArgs(e.getDefName());
+                bundles.getPassage(SystemMessages.LOCKED).getTextWithArgs(e.getDefName());
         else
             return description;
     }
@@ -87,13 +87,13 @@ public class ContainerImpl extends BaseEntityImpl
         }
         actions.clear();
         if (c.getAttributes().get(LOCKED)) {
-            if (getKey() != null)
+            if (key != null)
                 actions.add(SystemActions.UNLOCK);
         } else {
             actions.add(lookInAction);
             actions.add(putInAction);
             actions.add(takeOutAction);
-            if (getKey() != null)
+            if (key != null)
                 actions.add(SystemActions.LOCK);
         }
         return actions;
@@ -104,20 +104,16 @@ public class ContainerImpl extends BaseEntityImpl
         if (!(e instanceof Container))
             return super.processAction(e, action);
         Container c = (Container) e;
+        final AttributeSet attr = e.getAttributes();
         if (action.equals(SystemActions.LOCK) || action.equals(SystemActions.UNLOCK)) {
-            final Entity _key = getKey();
             // key should not be null (LOCK and UNLOCK shouldn't have been added),
             // but if it is, we act as though you don't have the key
-            if (_key == null || !gm.isInInventory(_key)) {
-                gm.println(bundles.getPassage(SystemMessages.CONTAINER_NOKEY).getTextWithArgs(e.getDefName()));
+            if (key == null || !gm.isInInventory(key)) {
+                gm.println(bundles.getPassage(SystemMessages.NOKEY).getTextWithArgs(e.getDefName()));
             } else {
-                e.getAttributes().toggle(LOCKED);
-                String message;
-                if (e.getAttributes().get(LOCKED))
-                    message = SystemMessages.CONTAINER_LOCK;
-                else
-                    message = SystemMessages.CONTAINER_UNLOCK;
-                gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName(), _key.getDefName()));
+                attr.toggle(LOCKED);
+                final String message = attr.get(LOCKED) ? SystemMessages.LOCK : SystemMessages.UNLOCK;
+                gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName(), key.getDefName()));
                 gm.entityChanged(e);
             }
             return true;
@@ -135,7 +131,7 @@ public class ContainerImpl extends BaseEntityImpl
         } else if (action.equals(SystemActions.CONTAINER_PUT)) {
             List<Entity> takeables = new ArrayList<>();
             GameUtils.getCurrentTakeableEntities(takeables);
-            if (GameUtils.hasAttr(c, TAKEABLE))
+            if (attr.get(TAKEABLE))
                 takeables.remove(c);
             if (takeables.isEmpty()) {
                 gm.println(bundles.getPassage(SystemMessages.CONTAINER_NO_CONTENTS_PUT).getTextWithArgs(getInPrep(), c.getDefName()));

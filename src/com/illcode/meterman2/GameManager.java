@@ -98,12 +98,12 @@ public final class GameManager
             Meterman2.script.importPackage(packageName);
         ui.clearText();
         game.init();
-        gameStateMap = game.getGameStateMap();
+        gameStateMap = game.getInitialGameStateMap();
         game.constructWorld(true);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
         numTurns = 0;
-        player = game.getPlayer();
+        player = game.getStartingPlayer();
         currentRoom = game.getStartingRoom();
         game.registerInitialGameHandlers();
         selectedEntity = null;
@@ -612,12 +612,12 @@ public final class GameManager
         Room toRoom = currentRoom.getExit(buttonPosition);
         if (toRoom != null) {
             movePlayer(toRoom);
-            nextTurn();
         } else {
             // This can occur if there is an exit label on a room, but not an exit,
             // for instance if a closed door is in the way.
             println(bundles.getPassage(SystemMessages.EXIT_BLOCKED));
         }
+        nextTurn();
     }
 
     /** Called by when the user clicks an action button (or selects an action
