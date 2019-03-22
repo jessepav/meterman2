@@ -1,6 +1,7 @@
 package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.*;
@@ -72,10 +73,10 @@ public class BaseEntityLoader implements EntityLoader
             if (e.getImpl() instanceof DoorImpl) {
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
                 if (loadDoorProperties(bundle, el, doorImpl, resolver, helper)) {
-                    doorImpl.updateRoomConnections(e);  // connect/disconnect rooms
                     if (processContainment) {
+                        doorImpl.updateRoomConnections(e);  // connect/disconnect rooms
                         // Put the door into both its rooms
-                        e.setContainer(null); // it is a strange creation, nowhere...
+                        GameUtils.putInContainer(e, null);  // it is a strange creation, nowhere...
                         Pair<Room,Room> rooms = doorImpl.getRooms();
                         rooms.getLeft().addEntity(e); //...and yet manifold.
                         rooms.getRight().addEntity(e);
@@ -115,19 +116,14 @@ public class BaseEntityLoader implements EntityLoader
             final String room = helper.getValue("inRoom");
             if (room != null) {
                 Room r = resolver.getRoom(room);
-                if (r != null) {
-                    e.setContainer(r);
-                    r.addEntity(e);
-                }
+                if (r != null)
+                    GameUtils.putInContainer(e, r);
             } else {
                 final String container = helper.getValue("inContainer");
                 if (container != null) {
-                    Entity e2 = resolver.getEntity(container);
-                    if (e2 instanceof EntityContainer) {
-                        EntityContainer c = (EntityContainer) e2;
-                        e.setContainer(c);
-                        c.addEntity(e);
-                    }
+                    Entity c = resolver.getEntity(container);
+                    if (c instanceof EntityContainer)
+                        GameUtils.putInContainer(e, (EntityContainer) c);
                 }
             }
         }

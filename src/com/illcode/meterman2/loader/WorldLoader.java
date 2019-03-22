@@ -1,5 +1,6 @@
 package com.illcode.meterman2.loader;
 
+import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.bundle.BundleGroup;
@@ -69,8 +70,7 @@ public final class WorldLoader implements GameObjectIdResolver
                     for (Element item : items) {
                         final Entity e = getEntity(item.getTextTrim());
                         if (e != null) {
-                            player.addEntity(e);
-                            e.setContainer(player);
+                            GameUtils.putInContainer(e, player);
                             if (Utils.parseBoolean(item.getAttributeValue("equipped")))
                                 player.equipEntity(e);
                         }
