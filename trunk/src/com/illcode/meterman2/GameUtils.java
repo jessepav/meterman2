@@ -188,8 +188,9 @@ public final class GameUtils
     }
 
     /**
-     * Shows a passage, which may specify its own header string and button label by including
-     * 'header' and 'button' attributes in its XML passage element.
+     * Shows a passage, which may specify its own header string, button label, image, and scale.
+     * <p/>
+     * See <tt>xbundle-reference.xml</tt> for an example.
      * @param id ID of the passage in the system bundle group
      */
     public static void showPassage(String id) {
@@ -198,14 +199,20 @@ public final class GameUtils
             return;
         final String header = e.getAttributeValue("header", "");
         final String button = e.getAttributeValue("button", "Okay");
+        final String image = e.getAttributeValue("image");
+        final int scale = Utils.parseInt(e.getAttributeValue("scale"), 1);
         final String text = Meterman2.bundles.getPassage(id).getText();
-        Meterman2.ui.showTextDialog(header, text, button);
+        if (image == null)
+            Meterman2.ui.showTextDialog(header, text, button);
+        else
+            Meterman2.ui.showImageDialog(header, image, scale, text, button);
     }
 
     /**
-     * Shows a sequence of passages, each of which may specify its own header string and button label.
+     * Shows a sequence of passages, each of which may specify its own
+     * header string, button label, image, and scale.
      * <p/>
-     * See <tt>worldloader-bundle-reference.xml</tt> for an example.
+     * See <tt>xbundle-reference.xml</tt> for an example.
      * @param id ID of the passage sequence element in the system bundle group.
      */
     public static void showPassageSequence(String id) {
@@ -216,12 +223,17 @@ public final class GameUtils
         String defaultButton = e.getAttributeValue("defaultButton", "Okay");
         for (Element item : e.getChildren()) {
             final String passageId = item.getAttributeValue("passageId");
+            if (passageId == null)
+                continue;
             final String header = item.getAttributeValue("header", defaultHeader);
             final String button = item.getAttributeValue("button", defaultButton);
-            if (passageId == null || header == null || button == null)
-                continue;
+            final String image = e.getAttributeValue("image");
+            final int scale = Utils.parseInt(e.getAttributeValue("scale"), 1);
             final String text = Meterman2.bundles.getPassage(passageId).getText();
-            Meterman2.ui.showTextDialog(header, text, button);
+            if (image == null)
+                Meterman2.ui.showTextDialog(header, text, button);
+            else
+                Meterman2.ui.showImageDialog(header, image, scale, text, button);
         }
     }
 }
