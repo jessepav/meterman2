@@ -2,7 +2,6 @@ package com.illcode.meterman2.state;
 
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Game;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIConstants;
@@ -21,7 +20,7 @@ public final class GameState
     /** The name of the game, as found in its definition file. */
     public String gameName;
 
-    /** The game state map as returned by {@link Game#getGameStateMap()} when the game
+    /** The game state map as returned by {@link Game#getInitialGameStateMap()} when the game
      *  was first started. */
     public HashMap<String,Object> gameStateMap;
 

@@ -87,13 +87,13 @@ public interface Game
      * as well as "entity" and "room", for the selected entity and current room, respectively; and "args",
      * for text sources with argument lists.
      */
-    Map<String,Object> getGameStateMap();
+    Map<String,Object> getInitialGameStateMap();
 
     /**
      * Called when a game is loaded, so that the game can retain references to game-state objects as they
      * were at the point when the game was saved.
      * @param gameStateMap map whose keys and values (state-objects) were initially returned by
-     *      {@link #getGameStateMap()}, though the data in the state-objects may have been changed
+     *      {@link #getInitialGameStateMap()}, though the data in the state-objects may have been changed
      *      during the course of play.
      */
     void setGameStateMap(Map<String,Object> gameStateMap);
@@ -123,7 +123,7 @@ public interface Game
      * Called at the start of a new game, after {@code constructWorld()}, to retrieve the player character,
      * who should already be have his/her inventory in hand.
      */
-    Player getPlayer();
+    Player getStartingPlayer();
 
     /** Called at the start of a new game to get the starting room. */
     Room getStartingRoom();

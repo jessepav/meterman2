@@ -51,12 +51,12 @@ public class Entity
     }
 
     /** Return the entity implementation instance used by this Entity. */
-    public EntityImpl getImpl() {
+    public final EntityImpl getImpl() {
         return impl;
     }
 
     /** Set the entity implementation instance used by this Entity. */
-    public void setImpl(EntityImpl impl) {
+    public final void setImpl(EntityImpl impl) {
         this.impl = impl;
     }
 
@@ -261,7 +261,7 @@ public class Entity
 
     /**
      * Called when a game is saved to get a state object that will be persisted in the saved game file.
-     * The object's class should be one of the standard POJO types descripted in {@link Game#getGameStateMap()}
+     * The object's class should be one of the standard POJO types descripted in {@link Game#getInitialGameStateMap()}
      * @return state object, or null to indicate no state needs to be saved
      */
     public Object getState() {

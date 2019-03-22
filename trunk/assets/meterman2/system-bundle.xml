@@ -18,27 +18,27 @@
     You can't tote any more items around with you.
   </passage>
 
-  <!-- Used by doors. -->
-  <passage id="door-nokey-message" format="printf"> <!-- args: defName -->
+  <!-- Used by doors and containers. -->
+  <passage id="nokey-message" format="printf"> <!-- args: defName -->
     You do not have the key for %s.
   </passage>
-  <passage id="door-locked-message"> <!-- args: defName -->
+  <passage id="locked-message"> <!-- args: defName -->
     It is locked.
+  </passage>
+  <passage id="unlock-message" format="printf"> <!-- args: defName, key.defName -->
+    You unlock %s with %s.
+  </passage>
+  <passage id="lock-message" format="printf"> <!-- args: defName, key.defName -->
+    You lock %s with %s.
+  </passage>
+  <passage id="open-message" format="printf"> <!-- args: defName -->
+    You open %s.
+  </passage>
+  <passage id="close-message" format="printf"> <!-- args: defName -->
+    You close %s.
   </passage>
 
   <!-- Used by containers. -->
-  <passage id="container-locked-message"> <!-- args: defName -->
-    It is locked.
-  </passage>
-  <passage id="container-nokey-message" format="printf"> <!-- args: defName -->
-    You do not have the key for %s.
-  </passage>
-  <passage id="container-unlock-message" format="printf"> <!-- args: defName, key.defName -->
-    You unlock %s with %s.
-  </passage>
-  <passage id="container-lock-message" format="printf"> <!-- args: defName, key.defName -->
-    You lock %s with %s.
-  </passage>
   <passage id="container-empty-message" format="printf"> <!-- args: inPrep, defName -->
     There is nothing interesting %s %s.
   </passage>
