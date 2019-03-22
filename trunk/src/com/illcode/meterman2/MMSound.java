@@ -1,7 +1,9 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.bundle.XBundle;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
+import org.jdom2.Element;
 import paulscode.sound.Library;
 import paulscode.sound.SoundSystem;
 import paulscode.sound.SoundSystemConfig;
@@ -111,6 +113,23 @@ public final class MMSound
     public void removeSourceMapping(String name) {
         unloadSource(name);
         sourceMap.remove(name);
+    }
+
+    /**
+     * Load source mappings from a sound-map XML element.
+     * @param el element
+     */
+    public void loadSourceMap(Element el) {
+        if (el == null)
+            return;
+        for (Element source : el.getChildren("source")) {
+            String name = source.getAttributeValue("name");
+            String path = source.getAttributeValue("path");
+            if (name == null || path == null)
+                continue;
+            boolean music = Utils.parseBoolean(source.getAttributeValue("music"));
+            sourceMap.put(name, new SoundRecord(Meterman2.assets.pathForGameAsset(path), music));
+        }
     }
 
     /**
