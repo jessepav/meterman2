@@ -127,6 +127,20 @@ public final class GameUtils
     }
 
     /**
+     * Puts an entity in a container removing it from its previous container, if it had one.
+     * @param e entity
+     * @param c container (may be null, to have the entity floating in the void).
+     */
+    public static void putInContainer(Entity e, EntityContainer c) {
+        final EntityContainer oldC = e.getContainer();
+        if (oldC != null)
+            oldC.removeEntity(e);
+        e.setContainer(c);
+        if (c != null)
+            c.addEntity(e);
+    }
+
+    /**
      * Returns the subset of a given list of entities that have a specific attribute value.
      * @param entities list of entities to filter
      * @param attrNum attribute to filter by
