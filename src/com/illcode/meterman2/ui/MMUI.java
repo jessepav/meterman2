@@ -188,7 +188,22 @@ public final class MMUI
             String path = source.getAttributeValue("path");
             if (name == null || path == null)
                 continue;
-            imageMap.put(name, Meterman2.assets.pathForGameAsset(path));
+            addImageMapping(name, Meterman2.assets.pathForGameAsset(path));
+        }
+    }
+
+    /**
+     * Remove image mappings defined in an image-map XML element.
+     * @param el element
+     */
+    public void removeImageMap(Element el) {
+        if (el == null)
+            return;
+        for (Element source : el.getChildren("image")) {
+            String name = source.getAttributeValue("name");
+            if (name == null)
+                continue;
+            removeImageMapping(name);
         }
     }
 
