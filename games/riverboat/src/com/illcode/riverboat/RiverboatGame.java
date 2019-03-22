@@ -30,7 +30,6 @@ public class RiverboatGame implements Game
     public void init() {
         XBundle b = XBundle.loadFromPath(Meterman2.assets.pathForGameAsset("riverboat-bundle.xml"));
         Meterman2.bundles.addFirst(b);
-        Meterman2.script.evalGameScript("import com.illcode.riverboat.*;");
     }
 
     public void dispose() {

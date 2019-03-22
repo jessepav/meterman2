@@ -94,7 +94,7 @@ public final class WorldLoader implements GameObjectIdResolver
             loader = BaseEntityLoader.getInstance();
         } else {
             try {
-                loader = (EntityLoader) Meterman2.script.evalGameScript(snippet);
+                loader = (EntityLoader) Meterman2.script.evalScript(snippet);
             } catch (ClassCastException ex) {
                 logger.warning("ClassCastException in WorldLoader for id '" + id + "'");
                 return;
@@ -121,7 +121,7 @@ public final class WorldLoader implements GameObjectIdResolver
             loader = BaseRoomLoader.getInstance();
         } else {
             try {
-                loader = (RoomLoader) Meterman2.script.evalGameScript(snippet);
+                loader = (RoomLoader) Meterman2.script.evalScript(snippet);
             } catch (ClassCastException ex) {
                 logger.warning("ClassCastException in WorldLoader for id '" + id + "'");
                 return;

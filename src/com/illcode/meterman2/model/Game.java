@@ -60,7 +60,7 @@ public interface Game
      *     <li>add image and sound mappings</li>
      *     <li>register game-specific actions and attributes</li>
      *     <li>add its {@code XBundle}(s) to the system group</li>
-     *     <li>call {@link MMScript#evalGameScript(java.lang.String)} to import packages and classes and
+     *     <li>call {@link MMScript#evalScript(java.lang.String)} to import packages and classes and
      *     define any methods used by scripts.</li>
      * </ul>
      */

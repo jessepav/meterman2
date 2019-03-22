@@ -69,7 +69,6 @@ public final class MMScript
     private void initSystemNameSpace() {
         systemNameSpace.importPackage("com.illcode.meterman2");
         systemNameSpace.importPackage("com.illcode.meterman2.model");
-        systemNameSpace.importPackage("com.illcode.meterman2.loader");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
 
         outputBuilder = new StringBuilder(1024);
@@ -124,7 +123,7 @@ public final class MMScript
      * Put a map of game-state bindings into our game namespace.
      * @param bindings name to game-state object mapping
      */
-    public void putGameBindings(Map<String,Object> bindings) {
+    public void putBindings(Map<String,Object> bindings) {
         try {
             for (Map.Entry<String,Object> entry : bindings.entrySet()) {
                 Object value = entry.getValue();
@@ -138,8 +137,24 @@ public final class MMScript
         }
     }
 
+    /**
+     * Import a package into the game namespace.
+     * @param name package name
+     */
+    public void importPackage(String name) {
+        gameNameSpace.importPackage(name);
+    }
+
+    /**
+     * Import a class into the game namespace.
+     * @param name class name
+     */
+    public void importClass(String name) {
+        gameNameSpace.importClass(name);
+    }
+
     /** Clear all game-state bindings from our game namespace. */
-    public void clearGameBindings() {
+    public void clearBindings() {
         gameNameSpace.clear();
     }
 
@@ -158,7 +173,7 @@ public final class MMScript
      * @param source script source
      * @return result of the evaluation of the last statement or expression in the source
      */
-    public Object evalGameScript(String source) {
+    public Object evalScript(String source) {
         return evalScript(source, gameNameSpace);
     }
 
