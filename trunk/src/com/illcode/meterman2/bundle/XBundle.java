@@ -1,6 +1,7 @@
 package com.illcode.meterman2.bundle;
 
 import com.illcode.meterman2.text.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Document;
@@ -9,6 +10,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.HashMap;
@@ -199,15 +201,15 @@ public final class XBundle
         if (isTemplateElement(e)) {
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
-            return new TemplateSource(id, e.getTextTrim(), this);
+            return new TemplateSource(id, getElementTextTrim(e), this);
         } else if (isScriptElement(e)) {
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
-            return new ScriptSource(id, e.getTextTrim(), this);
+            return new ScriptSource(id, getElementTextTrim(e), this);
         } else if (isFormatStringElement(e)) {
-            return new FormatStringSource(e.getTextTrim(), this);
+            return new FormatStringSource(getElementTextTrim(e), this);
         } else { // a normal text passage
-            return new StringSource(e.getTextNormalize(), this);
+            return new StringSource(getElementTextNormalize(e), this);
         }
     }
 
@@ -262,11 +264,34 @@ public final class XBundle
      * Returns the text of an element, supporting the <em>fileRef</em> attribute to read text
      * from an external file.
      * @param el element
-     * @return element text
+     * @return element text, or {@link #ERROR_TEXT_STRING} if an IO exception occurs
      */
     public String getElementText(Element el) {
-        // TODO: getElementText()
-        return null;
+        String fileRef = el.getAttributeValue("fileRef");
+        String text;
+        if (fileRef != null) {
+            try {
+                text = FileUtils.readFileToString(path.resolveSibling(fileRef).toFile(), StandardCharsets.UTF_8);
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "XBundle fileRef error: ", e);
+                text = ERROR_TEXT_STRING;
+            }
+        } else {
+            text = el.getText();
+        }
+        return text;
+    }
+
+    /** Return element text with whitespace trimmed.
+     *  @see #getElementText(Element) */
+    public String getElementTextTrim(Element el) {
+        return getElementText(el).trim();
+    }
+
+    /** Return element text with whitespace normalized.
+     *  @see #getElementText(Element) */
+    public String getElementTextNormalize(Element el) {
+        return StringUtils.normalizeSpace(getElementText(el));
     }
 
     /**

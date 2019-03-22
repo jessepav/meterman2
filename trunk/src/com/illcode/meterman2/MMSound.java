@@ -78,6 +78,9 @@ public final class MMSound
         sourceMap = new HashMap<>(cacheSize * 2);
         loadedSources = new LRUAudioCacheMap(cacheSize);
         musicSource = null;
+
+        soundEnabled = Utils.booleanPref("sound-enabled", true);
+        musicEnabled = Utils.booleanPref("music-enabled", true);
     }
 
     /**
@@ -234,8 +237,7 @@ public final class MMSound
      * @param enabled true if sounds should be enabled
      */
     public void setSoundEnabled(boolean enabled) {
-        if (soundEnabled != enabled)
-            soundEnabled = enabled;
+        soundEnabled = enabled;
     }
 
     /** Returns true if the playing of sounds is enabled.*/

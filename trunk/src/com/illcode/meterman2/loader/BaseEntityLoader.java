@@ -107,7 +107,7 @@ public class BaseEntityLoader implements EntityLoader
         // Scripted delegate
         final Element script = el.getChild("script");
         if (script != null) {
-            ScriptedEntityImpl scriptedImpl = new ScriptedEntityImpl(e.getId(), script.getTextTrim());
+            ScriptedEntityImpl scriptedImpl = new ScriptedEntityImpl(e.getId(), bundle.getElementTextTrim(script));
             e.setDelegate(scriptedImpl, scriptedImpl.getScriptedEntityMethods());
         }
 

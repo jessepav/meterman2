@@ -66,6 +66,7 @@ public final class GameManager
         roomProcessingList = new ArrayList<>();
 
         outputSeparator = bundles.getPassage(SystemMessages.OUTPUT_SEPARATOR).getText() + "\n";
+        alwaysLook = Utils.booleanPref("always-look", true);
     }
 
 
@@ -121,6 +122,11 @@ public final class GameManager
     void loadGame(GameState state) {
         closeGame();
         game = Meterman2.gamesList.createGame(state.gameName);
+        if (game == null) {
+            ui.hideWaitDialog();
+            ui.showTextDialog("Error", "Error loading game!", "OK");
+            return;
+        }
         String gameName = game.getName();
         ui.setGameName(gameName);
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
@@ -697,7 +703,8 @@ public final class GameManager
     /** Called by the when it's time to load a saved game. */
     void loadGameState(InputStream in) {
         ui.showWaitDialog("Loading game...");
-        loadGame(Meterman2.persistence.loadGameState(in));
+        final GameState state = Meterman2.persistence.loadGameState(in);
+        loadGame(state);
         ui.appendText("\n------- Game Loaded -------\n\n");
     }
 

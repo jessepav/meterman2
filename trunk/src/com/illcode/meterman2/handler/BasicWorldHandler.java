@@ -75,7 +75,7 @@ public class BasicWorldHandler
     // Implement StatusBarProvider
     public String getStatusText(int labelPos) {
         if (labelPos == UIConstants.RIGHT_LABEL)
-            return "Turn No: " + (gm.getNumTurns() + 1);
+            return "Current Turn: " + (gm.getNumTurns() + 1);
         else
             return null;
     }
@@ -137,6 +137,11 @@ public class BasicWorldHandler
     // Implement TurnListener
     @Override
     public void turn() {
+        refreshStatusBar();
+    }
+
+    /** Refreshes the status bar labels. */
+    public void refreshStatusBar() {
         if (statusBarProvider != null) {
             for (int pos = 0; pos < UIConstants.NUM_LABELS; pos++)
                 ui.setStatusLabel(pos, statusBarProvider.getStatusText(pos));

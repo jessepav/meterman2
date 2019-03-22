@@ -78,7 +78,7 @@ public class BaseRoomLoader implements RoomLoader
         // Scripted delegate
         final Element script = el.getChild("script");
         if (script != null) {
-            ScriptedRoomImpl scriptedImpl = new ScriptedRoomImpl(r.getId(), script.getTextTrim());
+            ScriptedRoomImpl scriptedImpl = new ScriptedRoomImpl(r.getId(), bundle.getElementTextTrim(script));
             r.setDelegate(scriptedImpl, scriptedImpl.getScriptedRoomMethods());
         }
 
