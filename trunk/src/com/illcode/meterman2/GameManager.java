@@ -3,6 +3,7 @@ package com.illcode.meterman2;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.event.*;
 import com.illcode.meterman2.model.*;
+import com.illcode.meterman2.state.AttributeSetPermuter;
 import com.illcode.meterman2.state.GameState;
 import com.illcode.meterman2.text.TextSource;
 import com.illcode.meterman2.ui.UIConstants;
@@ -144,6 +145,9 @@ public final class GameManager
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
 
+        AttributeSetPermuter attrPermuter =
+            new AttributeSetPermuter(Arrays.asList(state.attributeNames), Meterman2.attributes.getAttributeNames());
+
         // fix up the state of all entities in the entityIdMap from state.entityState
         for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
             String entityId = entry.getKey();
@@ -152,6 +156,7 @@ public final class GameManager
             entity.setName(entityState.name);
             entity.setIndefiniteArticle(entityState.indefiniteArticle);
             entity.getAttributes().setTo(entityState.attributes);
+            attrPermuter.permuteAttributeSet(entity.getAttributes());
             if (entity instanceof EntityContainer)
                 populateContainer((EntityContainer) entity, entityState.contentIds);
             entity.restoreState(entityState.stateObj);
@@ -166,6 +171,7 @@ public final class GameManager
             room.setName(roomState.name);
             room.setExitName(roomState.exitName);
             room.getAttributes().setTo(roomState.attributes);
+            attrPermuter.permuteAttributeSet(room.getAttributes());
             for (int i = 0; i < UIConstants.NUM_EXIT_BUTTONS; i++) {
                 final String id = roomState.exitRoomIds[i];
                 if (id != null)
@@ -716,6 +722,7 @@ public final class GameManager
         GameState state = new GameState();
         state.gameName = game.getName();
         state.gameStateMap = new HashMap<>(gameStateMap);
+        state.attributeNames = Meterman2.attributes.getAttributeNames().toArray(new String[0]);
         state.entityStateMap = Utils.createSizedHashMap(entityIdMap);
         for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
             String id = entry.getKey();

@@ -24,6 +24,11 @@ public final class GameState
      *  was first started. */
     public HashMap<String,Object> gameStateMap;
 
+    /** Names of attributes (and implicitly their indices) at the time the game was saved.
+     *  We examine this list, along with the list at the time the game is restored, to see
+     *  if we need to perform attribute index permutation. */
+    public String[] attributeNames;
+
     /** Map from entity ID to its state. */
     public HashMap<String,EntityState> entityStateMap;
 
