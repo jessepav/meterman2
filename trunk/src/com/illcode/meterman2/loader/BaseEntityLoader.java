@@ -1,13 +1,16 @@
 package com.illcode.meterman2.loader;
 
-import com.illcode.meterman2.AttributeSet;
-import com.illcode.meterman2.GameUtils;
-import com.illcode.meterman2.SystemAttributes;
+import com.illcode.meterman2.*;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static com.illcode.meterman2.MMLogging.logger;
@@ -25,13 +28,24 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link DoorImpl}</dd>
  * </dl>
  * Otherwise we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
+ * <p/>
+ * <b>Note</b>: this class is <em>not</em> thread-safe!
  */
 public class BaseEntityLoader implements EntityLoader
 {
     private static BaseEntityLoader instance;
 
+    // These are used to pass parameters down to protected methods.
+    protected XBundle bundle;
+    protected Element el;
+    protected Entity e;
+    protected GameObjectIdResolver resolver;
+    protected boolean processContainment;
+    protected LoaderHelper helper;
+    protected Map<String,MMScript.ScriptedMethod> methodMap;
+
     private BaseEntityLoader() {
-        // empty
+        methodMap = new HashMap<>();
     }
 
     /**
@@ -59,20 +73,29 @@ public class BaseEntityLoader implements EntityLoader
         return e;
     }
 
-    public void loadEntityProperties(XBundle bundle, Element el, Entity e,
-                                     GameObjectIdResolver resolver, boolean processContainment)
+    public void loadEntityProperties(final XBundle bundle, final Element el, final Entity e,
+                                     final GameObjectIdResolver resolver, final boolean processContainment)
     {
-        LoaderHelper helper = LoaderHelper.wrap(el);
-        loadBasicProperties(bundle, el, e, resolver, processContainment, helper);  // always load basic properties
+        this.bundle = bundle;
+        this.el = el;
+        this.e = e;
+        this.resolver = resolver;
+        this.processContainment = processContainment;
+        helper = LoaderHelper.wrap(el);
+        methodMap.clear();
+
+        loadScriptedMethods();
+
+        loadBasicProperties();  // always load basic properties
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
         case "container":
             if (e.getImpl() instanceof ContainerImpl)
-                loadContainerProperties(bundle, el, (ContainerImpl) e.getImpl(), resolver, helper);
+                loadContainerProperties((ContainerImpl) e.getImpl());
             break;
         case "door":
             if (e.getImpl() instanceof DoorImpl) {
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
-                if (loadDoorProperties(bundle, el, doorImpl, resolver, helper)) {
+                if (loadDoorProperties(doorImpl)) {
                     if (processContainment) {
                         doorImpl.updateRoomConnections(e);  // connect/disconnect rooms
                         // Put the door into both its rooms
@@ -90,11 +113,28 @@ public class BaseEntityLoader implements EntityLoader
             }
             break;
         }
-
+        // So we don't accidentally see stale values.
+        this.bundle = null;
+        this.el = null;
+        this.e = null;
+        this.resolver = null;
+        this.processContainment = false;
+        helper = null;
+        methodMap.clear();
     }
 
-    protected void loadBasicProperties(XBundle bundle, Element el, Entity e, GameObjectIdResolver resolver,
-                                       boolean processContainment, LoaderHelper helper) {
+    // Read all 'script' elements and populate the methodMap.
+    private void loadScriptedMethods() {
+        final List<Element> scripts = el.getChildren("script");
+        for (Element script : scripts) {
+            final List<MMScript.ScriptedMethod> methods =
+                Meterman2.script.getScriptedMethods(e.getId(), bundle.getElementTextTrim(script));
+            for (MMScript.ScriptedMethod sm : methods)
+                methodMap.put(sm.getName(), sm);
+        }
+    }
+
+    protected void loadBasicProperties() {
         // Text properties
         e.setName(helper.getValue("name"));
         e.setIndefiniteArticle(helper.getValue("indefiniteArticle"));
@@ -105,11 +145,12 @@ public class BaseEntityLoader implements EntityLoader
         // Attributes
         helper.loadAttributes("attributes", e.getAttributes());
 
-        // Scripted delegate
-        final Element script = el.getChild("script");
-        if (script != null) {
-            ScriptedEntityImpl scriptedImpl = new ScriptedEntityImpl(e.getId(), bundle.getElementTextTrim(script));
-            e.setDelegate(scriptedImpl, scriptedImpl.getScriptedEntityMethods());
+        // Set a delegate if appropriate
+        if (!methodMap.isEmpty()) {
+            final ScriptedEntityImpl scriptedImpl = new ScriptedEntityImpl(e.getId(), methodMap);
+            final EnumSet<EntityImpl.EntityMethod> entityMethodSet = scriptedImpl.getScriptedEntityMethods();
+            if (!entityMethodSet.isEmpty())
+                e.setDelegate(scriptedImpl, entityMethodSet);
         }
 
         if (processContainment) {
@@ -129,16 +170,14 @@ public class BaseEntityLoader implements EntityLoader
         }
     }
 
-    protected void loadContainerProperties(XBundle bundle, Element el, ContainerImpl containerImpl, GameObjectIdResolver resolver,
-                                           LoaderHelper helper) {
+    protected void loadContainerProperties(ContainerImpl containerImpl) {
         containerImpl.setInPrep(helper.getValue("inPrep"));
         containerImpl.setOutPrep(helper.getValue("outPrep"));
         containerImpl.setKey(resolver.getEntity(helper.getValue("key")));
     }
 
     // Returns true if the door was loaded successfully.
-    protected boolean loadDoorProperties(XBundle bundle, Element el, DoorImpl doorImpl, GameObjectIdResolver resolver,
-                                         LoaderHelper helper) {
+    protected boolean loadDoorProperties(DoorImpl doorImpl) {
         final Element connects = el.getChild("connects");
         if (connects == null)
             return false;

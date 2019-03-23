@@ -1,12 +1,11 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMScript.ScriptedMethod;
-import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.text.TextSource;
 
 import java.util.EnumMap;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Map;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -14,23 +13,17 @@ public final class ScriptedRoomImpl implements RoomImpl
 {
     private final EnumMap<RoomMethod,ScriptedMethod> scriptedRoomMethods;
 
-    private EnumSet<RoomMethod> methodSet;  // cache for getScriptedRoomMethods()
-
     /**
-     * Construct a scripted room implementation whose methods are defined in a script.
-     * @param id the ID of script (for instance as given in a bundle)
-     * @param source script source
+     * Construct a scripted room implementation from methods given in a map.
+     * @param id the ID of the script (for instance as defined in a bundle)
+     * @param methodMap map from method name to scripted method
      */
-    public ScriptedRoomImpl(String id, String source) {
+    public ScriptedRoomImpl(String id, Map<String,ScriptedMethod> methodMap) {
         scriptedRoomMethods = new EnumMap<>(RoomMethod.class);
-        List<ScriptedMethod> scriptedMethods = Meterman2.script.getScriptedMethods(id, source);
-        for (ScriptedMethod sm : scriptedMethods) {  // methods defined in the script
-            for (RoomMethod rm : RoomMethod.values()) {  // our "method name" enum
-                if (sm.getName().equals(rm.getMethodName())) {
-                    scriptedRoomMethods.put(rm, sm);
-                    break;
-                }
-            }
+        for (RoomMethod rm : RoomMethod.values()) {
+            ScriptedMethod sm = methodMap.get(rm.getMethodName());
+            if (sm != null)
+                scriptedRoomMethods.put(rm, sm);
         }
     }
 
@@ -38,13 +31,12 @@ public final class ScriptedRoomImpl implements RoomImpl
      * Return a set of the methods defined in the script.
      */
     public EnumSet<RoomMethod> getScriptedRoomMethods() {
-        if (methodSet == null) {
-            // EnumSet.copyOf() requires that the passed collection have at least one element.
-            if (scriptedRoomMethods.isEmpty())
-                methodSet = EnumSet.noneOf(RoomMethod.class);
-            else
-                methodSet = EnumSet.copyOf(scriptedRoomMethods.keySet());
-        }
+        EnumSet<RoomMethod> methodSet;
+        // EnumSet.copyOf() requires that the passed collection have at least one element.
+        if (scriptedRoomMethods.isEmpty())
+            methodSet = EnumSet.noneOf(RoomMethod.class);
+        else
+            methodSet = EnumSet.copyOf(scriptedRoomMethods.keySet());
         return methodSet;
     }
 
