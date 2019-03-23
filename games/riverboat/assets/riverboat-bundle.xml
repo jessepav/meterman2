@@ -50,7 +50,7 @@
     </description>
   </entity>
 
-  <entity id="iron-door" type="door" name="Iron Door" closedExitLabel="Iron Door" attributes="closed">
+  <entity id="iron-door" type="door" name="Iron Door" closedExitLabel="Closed Iron Door" attributes="closed">
     <description>A stalwart iron door.</description>
     <connects room1="playroom" pos1="E" room2="dungeon" pos2="W" />
     <script><![CDATA[
