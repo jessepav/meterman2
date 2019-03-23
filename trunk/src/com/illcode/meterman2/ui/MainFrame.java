@@ -38,6 +38,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
     private static final KeyStroke LOOK_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.SHIFT_MASK);
     private static final KeyStroke WAIT_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_W, InputEvent.SHIFT_MASK);
     private static final KeyStroke EXAMINE_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.SHIFT_MASK);
+    private static final KeyStroke AGAIN_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_G, InputEvent.SHIFT_MASK);
 
     private MMUI ui;
 
@@ -64,6 +65,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     private BufferedImage frameImage, entityImage;
     private List<Action> actions;
+    private Action lastAction;
 
     private boolean suppressValueChanged;
 
@@ -188,13 +190,9 @@ final class MainFrame implements ActionListener, ListSelectionListener
         inputMap.put(WAIT_KEYSTROKE, "waitButton");
         actionMap.put("waitButton", new ButtonAction(waitButton));
         inputMap.put(EXAMINE_KEYSTROKE, "examineAction");
-        actionMap.put("examineAction", new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e) {
-                if (actions.contains(SystemActions.EXAMINE))
-                    ui.handler.entityActionSelected(SystemActions.EXAMINE);
-            }
-        });
+        actionMap.put("examineAction", new SpecialAction(SpecialAction.EXAMINE));
+        inputMap.put(AGAIN_KEYSTROKE, "againAction");
+        actionMap.put("againAction", new SpecialAction(SpecialAction.AGAIN));
 
         inputMap.put(SELECT_ROOM_ENTITY_KEYSTROKE, "selectRoomEntity");
         actionMap.put("selectRoomEntity",
@@ -341,11 +339,11 @@ final class MainFrame implements ActionListener, ListSelectionListener
         } else if ((buttonIdx = ArrayUtils.indexOf(exitButtons, source)) != -1) {
             ui.handler.exitSelected(buttonIdx);
         } else if ((buttonIdx = ArrayUtils.indexOf(actionButtons, source)) != -1) {
-            ui.handler.entityActionSelected(actions.get(buttonIdx));
+            actionSelected(actions.get(buttonIdx));
         } else if (source == moreActionCombo) {
             int idx = moreActionCombo.getSelectedIndex();
             if (idx > 0)   // index 0 is "More..."
-                ui.handler.entityActionSelected(actions.get(idx - 1 + NUM_ACTION_BUTTONS));
+                actionSelected(actions.get(idx - 1 + NUM_ACTION_BUTTONS));
         } else if (source == newMenuItem) {
             String gameName = Utils.getPref("single-game-name");
             if (gameName == null)
@@ -433,6 +431,11 @@ final class MainFrame implements ActionListener, ListSelectionListener
         }
     }
 
+    private void actionSelected(Action a) {
+        lastAction = a;
+        ui.handler.entityActionSelected(a);
+    }
+
     private class FrameImageComponent extends JComponent {
         protected void paintComponent(Graphics g) {
             Graphics2D g2d = (Graphics2D) g;
@@ -518,7 +521,32 @@ final class MainFrame implements ActionListener, ListSelectionListener
             } else if (actionsList != null && !actionsList.isEmpty()) {
                 int idx = ui.selectItemDialog.showSelectItemDialog(header, prompt, actionsList, -1);
                 if (idx != -1)
-                    ui.handler.entityActionSelected(actionsList.get(idx));
+                    actionSelected(actionsList.get(idx));
+            }
+        }
+    }
+
+    private class SpecialAction extends AbstractAction
+    {
+        private final static int EXAMINE = 0;
+        private final static int AGAIN = 1;
+
+        private int actionType;
+
+        private SpecialAction(int actionType) {
+            this.actionType = actionType;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            switch (actionType) {
+            case EXAMINE:
+                if (actions.contains(SystemActions.EXAMINE))
+                    actionSelected(SystemActions.EXAMINE);
+                break;
+            case AGAIN:
+                if (lastAction != null && actions.contains(lastAction))
+                    ui.handler.entityActionSelected(lastAction);
+                break;
             }
         }
     }
