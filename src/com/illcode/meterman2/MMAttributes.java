@@ -73,8 +73,8 @@ public class MMAttributes
         return attributeNames.indexOf(name.toLowerCase());
     }
 
-    /** Return a list of all registered attribute names. */
+    /** Return a list of all registered attribute names. Do not modify the returned list! */
     public List<String> getAttributeNames() {
-        return Collections.unmodifiableList(attributeNames);
+        return attributeNames;
     }
 }
