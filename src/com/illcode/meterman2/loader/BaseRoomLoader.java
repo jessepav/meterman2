@@ -1,9 +1,16 @@
 package com.illcode.meterman2.loader;
 
+import com.illcode.meterman2.MMScript;
+import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
 import org.jdom2.Element;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
@@ -18,13 +25,24 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
  *     <dd>{@link DarkRoom}</dd>
  * </dl>
  * Otherwise we create an instance of {@link Room} with a {@link BaseRoomImpl} implementation.
+ * <p/>
+ * <b>Note</b>: this class is <em>not</em> thread-safe!
  */
 public class BaseRoomLoader implements RoomLoader
 {
     private static BaseRoomLoader instance;
 
+    // These are used to pass parameters down to protected methods.
+    protected XBundle bundle;
+    protected Element el;
+    protected Room r;
+    protected GameObjectIdResolver resolver;
+    protected boolean processConnections;
+    protected LoaderHelper helper;
+    protected Map<String,MMScript.ScriptedMethod> methodMap;
+
     private BaseRoomLoader() {
-        // empty
+        methodMap = new HashMap<>();
     }
 
     /**
@@ -52,19 +70,46 @@ public class BaseRoomLoader implements RoomLoader
     public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver,
                                    boolean processConnections)
     {
-        LoaderHelper helper = LoaderHelper.wrap(el);
-        loadBasicProperties(bundle, el, r, resolver, processConnections, helper);  // always load basic properties
+        this.bundle = bundle;
+        this.el = el;
+        this.r = r;
+        this.resolver = resolver;
+        this.processConnections = processConnections;
+        helper = LoaderHelper.wrap(el);
+        methodMap.clear();
+
+        loadScriptedMethods();
+
+        loadBasicProperties();  // always load basic properties
         switch (defaultString(el.getAttributeValue("type"))) {  // and then perhaps class-specific properties
         case "dark":
             RoomImpl impl = r.getImpl();
             if (r instanceof DarkRoom)
-                loadDarkRoomProperties(bundle, el, (DarkRoom) r, resolver, helper);
+                loadDarkRoomProperties((DarkRoom) r);
             break;
+        }
+        // So we don't accidentally see stale values.
+        this.bundle = null;
+        this.el = null;
+        this.r = null;
+        this.resolver = null;
+        this.processConnections = false;
+        helper = null;
+        methodMap.clear();
+    }
+
+    // Read all 'script' elements and populate the methodMap.
+    private void loadScriptedMethods() {
+        final List<Element> scripts = el.getChildren("script");
+        for (Element script : scripts) {
+            final List<MMScript.ScriptedMethod> methods =
+                Meterman2.script.getScriptedMethods(r.getId(), bundle.getElementTextTrim(script));
+            for (MMScript.ScriptedMethod sm : methods)
+                methodMap.put(sm.getName(), sm);
         }
     }
 
-    private void loadBasicProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver,
-                                     boolean processConnections, LoaderHelper helper) {
+    private void loadBasicProperties() {
         // Text properties
         r.setName(helper.getValue("name"));
         r.setExitName(helper.getValue("exitName"));
@@ -75,11 +120,12 @@ public class BaseRoomLoader implements RoomLoader
         // Attributes
         helper.loadAttributes("attributes", r.getAttributes());
 
-        // Scripted delegate
-        final Element script = el.getChild("script");
-        if (script != null) {
-            ScriptedRoomImpl scriptedImpl = new ScriptedRoomImpl(r.getId(), bundle.getElementTextTrim(script));
-            r.setDelegate(scriptedImpl, scriptedImpl.getScriptedRoomMethods());
+        // Set a delegate if appropriate
+        if (!methodMap.isEmpty()) {
+            final ScriptedRoomImpl scriptedImpl = new ScriptedRoomImpl(r.getId(), methodMap);
+            final EnumSet<RoomImpl.RoomMethod> roomMethodSet = scriptedImpl.getScriptedRoomMethods();
+            if (!roomMethodSet.isEmpty())
+                r.setDelegate(scriptedImpl, roomMethodSet);
         }
 
         if (processConnections) {
@@ -98,12 +144,11 @@ public class BaseRoomLoader implements RoomLoader
         }
     }
 
-    private void loadDarkRoomProperties(XBundle bundle, Element el, DarkRoom r, GameObjectIdResolver resolver,
-                                        LoaderHelper helper) {
-        r.setDarkName(helper.getValue("darkName"));
-        r.setDarkExitName(helper.getValue("darkExitName"));
+    private void loadDarkRoomProperties(DarkRoom dr) {
+        dr.setDarkName(helper.getValue("darkName"));
+        dr.setDarkExitName(helper.getValue("darkExitName"));
         final Element darkDescription = el.getChild("darkDescription");
         if (darkDescription != null)
-            r.setDarkDescription(bundle.elementTextSource(darkDescription));
+            dr.setDarkDescription(bundle.elementTextSource(darkDescription));
     }
 }

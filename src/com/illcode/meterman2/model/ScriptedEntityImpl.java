@@ -2,13 +2,9 @@ package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMScript.ScriptedMethod;
-import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.text.TextSource;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
@@ -16,23 +12,17 @@ public final class ScriptedEntityImpl implements EntityImpl
 {
     private final EnumMap<EntityMethod,ScriptedMethod> scriptedEntityMethods;
 
-    private EnumSet<EntityMethod> methodSet;  // cache for getScriptedEntityMethods()
-
     /**
-     * Construct a scripted entity implementation whose methods are defined in a script.
-     * @param id the ID of script (for instance as given in a bundle)
-     * @param source script source
+     * Construct a scripted entity implementation from methods given in a map.
+     * @param id the ID of the script (for instance as defined in a bundle)
+     * @param methodMap map from method name to scripted method
      */
-    public ScriptedEntityImpl(String id, String source) {
+    public ScriptedEntityImpl(String id, Map<String,ScriptedMethod> methodMap) {
         scriptedEntityMethods = new EnumMap<>(EntityMethod.class);
-        List<ScriptedMethod> scriptedMethods = Meterman2.script.getScriptedMethods(id, source);
-        for (ScriptedMethod sm : scriptedMethods) {  // methods defined in the script
-            for (EntityMethod em : EntityMethod.values()) {  // our "method name" enum
-                if (sm.getName().equals(em.getMethodName())) {
-                    scriptedEntityMethods.put(em, sm);
-                    break;
-                }
-            }
+        for (EntityMethod em : EntityMethod.values()) {
+            ScriptedMethod sm = methodMap.get(em.getMethodName());
+            if (sm != null)
+                scriptedEntityMethods.put(em, sm);
         }
     }
 
@@ -40,13 +30,12 @@ public final class ScriptedEntityImpl implements EntityImpl
      * Return a set of the methods defined in the script.
      */
     public EnumSet<EntityMethod> getScriptedEntityMethods() {
-        if (methodSet == null) {
-            // EnumSet.copyOf() requires that the passed collection have at least one element.
-            if (scriptedEntityMethods.isEmpty())
-                methodSet = EnumSet.noneOf(EntityMethod.class);
-            else
-                methodSet = EnumSet.copyOf(scriptedEntityMethods.keySet());
-        }
+        EnumSet<EntityMethod> methodSet;
+        // EnumSet.copyOf() requires that the passed collection have at least one element.
+        if (scriptedEntityMethods.isEmpty())
+            methodSet = EnumSet.noneOf(EntityMethod.class);
+        else
+            methodSet = EnumSet.copyOf(scriptedEntityMethods.keySet());
         return methodSet;
     }
 
