@@ -145,68 +145,8 @@ public final class GameManager
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
 
-        AttributeSetPermuter attrPermuter =
-            new AttributeSetPermuter(Arrays.asList(state.attributeNames), Meterman2.attributes.getAttributeNames());
-
-        // fix up the state of all entities in the entityIdMap from state.entityState
-        for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
-            String entityId = entry.getKey();
-            Entity entity = entry.getValue();
-            GameState.EntityState entityState = state.entityStateMap.get(entityId);
-            entity.setName(entityState.name);
-            entity.setIndefiniteArticle(entityState.indefiniteArticle);
-            entity.getAttributes().setTo(entityState.attributes);
-            attrPermuter.permuteAttributeSet(entity.getAttributes());
-            if (entity instanceof EntityContainer)
-                populateContainer((EntityContainer) entity, entityState.contentIds);
-            entity.restoreState(entityState.stateObj);
-        }
-
-        // fix up the state of all rooms in the roomIdMap from state.roomState
-        for (Map.Entry<String,Room> entry : roomIdMap.entrySet()) {
-            String roomId = entry.getKey();
-            Room room = entry.getValue();
-            GameState.RoomState roomState = state.roomStateMap.get(roomId);
-
-            room.setName(roomState.name);
-            room.setExitName(roomState.exitName);
-            room.getAttributes().setTo(roomState.attributes);
-            attrPermuter.permuteAttributeSet(room.getAttributes());
-            for (int i = 0; i < UIConstants.NUM_EXIT_BUTTONS; i++) {
-                final String id = roomState.exitRoomIds[i];
-                if (id != null)
-                    room.setExit(i, roomIdMap.get(id));
-                room.setExitLabel(i, roomState.exitLabels[i]);
-            }
-            populateContainer(room, roomState.contentIds);
-            room.restoreState(roomState.stateObj);
-        }
-
-        // restore player state from state.playerState
-        final GameState.PlayerState playerState = state.playerState;
-        populateContainer(player, playerState.inventoryEntityIds);
-        player.clearEquippedEntities();
-        final List<Entity> inventoryEntities = player.getEntities();
-        final String[] equippedEntityIds = playerState.equippedEntityIds;
-        for (Entity e : inventoryEntities) {
-            if (ArrayUtils.contains(equippedEntityIds, e.getId()))
-                player.equipEntity(e);
-        }
-
-        // restore game handlers from state.gameHandlers
-        for (String id : state.gameHandlers.get("gameActionListeners"))
-            addGameActionListener((GameActionListener) game.getEventHandler(id));
-        for (String id : state.gameHandlers.get("playerMovementListeners"))
-            addPlayerMovementListener((PlayerMovementListener) game.getEventHandler(id));
-        for (String id : state.gameHandlers.get("turnListeners"))
-            addTurnListener((TurnListener) game.getEventHandler(id));
-        for (String id : state.gameHandlers.get("entityActionsProcessors"))
-            addEntityActionsProcessor((EntityActionsProcessor) game.getEventHandler(id));
-        for (String id : state.gameHandlers.get("entitySelectionListeners"))
-            addEntitySelectionListener((EntitySelectionListener) game.getEventHandler(id));
-        for (String id : state.gameHandlers.get("outputTextProcessors"))
-            addOutputTextProcessor((OutputTextProcessor) game.getEventHandler(id));
-
+        restoreGameObjectProperties(entityIdMap, roomIdMap, player, state);
+        restoreHandlers(state, game);
         currentRoom = roomIdMap.get(state.currentRoomId);
         numTurns = state.numTurns;
         selectedEntity = null;
@@ -221,19 +161,6 @@ public final class GameManager
         ui.hideWaitDialog();
         refreshUI();  // since no nextTurn() is called.
         game.start(false);
-    }
-
-    private void populateContainer(EntityContainer c, String[] contentIds) {
-        c.clearEntities();
-        if (contentIds != null) {
-            for (String id : contentIds) {
-                final Entity e = entityIdMap.get(id);
-                if (e != null) {
-                    c.addEntity(e);
-                    e.setContainer(c);
-                }
-            }
-        }
     }
 
     private void closeGame() {
@@ -712,8 +639,89 @@ public final class GameManager
     void loadGameState(InputStream in) {
         ui.showWaitDialog("Loading game...");
         final GameState state = Meterman2.persistence.loadGameState(in);
-        loadGame(state);
-        ui.appendText("\n------- Game Loaded -------\n\n");
+        loadGame(state);  // in turn calls restoreGameState() below
+        ui.appendText("\n   ------- Game Loaded -------\n\n");
+    }
+    
+    // Patch up the properties of entities, rooms, and the player from saved values in game-state.
+    private void restoreGameObjectProperties(final Map<String,Entity> entityIdMap, final Map<String,Room> roomIdMap,
+                                             final Player player, final GameState state) 
+    {
+        AttributeSetPermuter attrPermuter =
+            new AttributeSetPermuter(Arrays.asList(state.attributeNames), Meterman2.attributes.getAttributeNames());
+
+        // fix up the state of all entities in the entityIdMap from state.entityState
+        for (Map.Entry<String,Entity> entry : entityIdMap.entrySet()) {
+            String id = entry.getKey();
+            Entity e = entry.getValue();
+            GameState.EntityState entityState = state.entityStateMap.get(id);
+            e.setName(entityState.name);
+            e.setIndefiniteArticle(entityState.indefiniteArticle);
+            e.getAttributes().setTo(entityState.attributes);
+            attrPermuter.permuteAttributeSet(e.getAttributes());
+            if (e instanceof EntityContainer)
+                populateContainer((EntityContainer) e, entityState.contentIds);
+            e.restoreState(entityState.stateObj);
+        }
+
+        // fix up the state of all rooms in the roomIdMap from state.roomState
+        for (Map.Entry<String,Room> entry : roomIdMap.entrySet()) {
+            String id = entry.getKey();
+            Room r = entry.getValue();
+            GameState.RoomState roomState = state.roomStateMap.get(id);
+            r.setName(roomState.name);
+            r.setExitName(roomState.exitName);
+            r.getAttributes().setTo(roomState.attributes);
+            attrPermuter.permuteAttributeSet(r.getAttributes());
+            for (int i = 0; i < UIConstants.NUM_EXIT_BUTTONS; i++) {
+                final String exitId = roomState.exitRoomIds[i];
+                if (exitId != null)
+                    r.setExit(i, roomIdMap.get(exitId));
+                r.setExitLabel(i, roomState.exitLabels[i]);
+            }
+            populateContainer(r, roomState.contentIds);
+            r.restoreState(roomState.stateObj);
+        }
+
+        // restore player state from state.playerState
+        final GameState.PlayerState playerState = state.playerState;
+        populateContainer(player, playerState.inventoryEntityIds);
+        player.clearEquippedEntities();
+        final List<Entity> inventoryEntities = player.getEntities();
+        final String[] equippedEntityIds = playerState.equippedEntityIds;
+        for (Entity e : inventoryEntities) {
+            if (ArrayUtils.contains(equippedEntityIds, e.getId()))
+                player.equipEntity(e);
+        }
+    }
+
+    private void populateContainer(EntityContainer c, String[] contentIds) {
+        c.clearEntities();
+        if (contentIds != null) {
+            for (String id : contentIds) {
+                final Entity e = entityIdMap.get(id);
+                if (e != null) {
+                    c.addEntity(e);
+                    e.setContainer(c);
+                }
+            }
+        }
+    }
+
+    // restore game handlers from state.gameHandlers
+    private void restoreHandlers(final GameState state, final Game g) {
+        for (String id : state.gameHandlers.get("gameActionListeners"))
+            addGameActionListener((GameActionListener) g.getEventHandler(id));
+        for (String id : state.gameHandlers.get("playerMovementListeners"))
+            addPlayerMovementListener((PlayerMovementListener) g.getEventHandler(id));
+        for (String id : state.gameHandlers.get("turnListeners"))
+            addTurnListener((TurnListener) g.getEventHandler(id));
+        for (String id : state.gameHandlers.get("entityActionsProcessors"))
+            addEntityActionsProcessor((EntityActionsProcessor) g.getEventHandler(id));
+        for (String id : state.gameHandlers.get("entitySelectionListeners"))
+            addEntitySelectionListener((EntitySelectionListener) g.getEventHandler(id));
+        for (String id : state.gameHandlers.get("outputTextProcessors"))
+            addOutputTextProcessor((OutputTextProcessor) g.getEventHandler(id));
     }
 
     /** Called by the UI when it's time to save a game. */
@@ -776,7 +784,7 @@ public final class GameManager
         state.numTurns = numTurns;
         Meterman2.persistence.saveGameState(state, out);
         ui.hideWaitDialog();
-        ui.appendText("\n------- Game Saved -------\n\n");
+        ui.appendText("\n   ------- Game Saved -------\n\n");
     }
 
     // Returns the content IDs of a container's contents, or null if no contents.
