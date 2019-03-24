@@ -111,6 +111,8 @@ public final class GameManager
 
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
+        putBinding("entities", entityIdMap);
+        putBinding("rooms", roomIdMap);
 
         queueRoomUIRefresh();
         queueInventoryUIRefresh();
@@ -153,6 +155,8 @@ public final class GameManager
 
         putBindings(gameStateMap);
         putBinding("room", currentRoom);
+        putBinding("entities", entityIdMap);
+        putBinding("rooms", roomIdMap);
 
         queueRoomUIRefresh();
         queueInventoryUIRefresh();
@@ -830,7 +834,7 @@ public final class GameManager
      * @param object the additional object
      * @return true if the action was blocked; false to allow the action to continue.
      */
-    public boolean testObjectAction(Action action, Entity object) {
+    public boolean objectAction(Action action, Entity object) {
         if (selectedEntity == null)
             return false;
         else if (object.objectAction(action, selectedEntity) == true)

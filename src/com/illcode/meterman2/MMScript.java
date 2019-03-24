@@ -3,10 +3,7 @@ package com.illcode.meterman2;
 import bsh.*;
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
@@ -38,6 +35,9 @@ public final class MMScript
      */
     private NameSpace gameNameSpace;
 
+    // Used for push/pop binding.
+    private Map<String,Deque<Object>> savedBindings;
+
     // Used to gather up the output emitted by a script using the out() BeanShell method.
     private StringBuilder outputBuilder;
 
@@ -47,10 +47,12 @@ public final class MMScript
         unimportUnneededDefaults(systemNameSpace);
         initSystemNameSpace();
         gameNameSpace = new NameSpace(systemNameSpace, "gameNameSpace");
+        savedBindings = new HashMap<>();
     }
 
     /** Free any resources allocated by this MMScript instance. */
     public void dispose() {
+        savedBindings = null;
         gameNameSpace = null;
         systemNameSpace = null;
         intr = null;
@@ -117,6 +119,41 @@ public final class MMScript
         } catch (UtilEvalError err) {
             logger.log(Level.WARNING, "MMScript error:", err);
         }
+    }
+
+    /**
+     * Saves the current value of a binding in the game namespace and sets a new one.
+     * @param name variable name
+     * @param value value; if null, the binding will be removed.
+     */
+    public void pushBinding(String name, Object value) {
+        Object oldVal = null;
+        try {
+            oldVal = gameNameSpace.getVariable(name, false);
+            if (oldVal == Primitive.VOID)
+                oldVal = null;
+        } catch (UtilEvalError err) {
+            logger.log(Level.WARNING, "MMScript error:", err);
+        }
+        Deque<Object> savedVals = savedBindings.get(name);
+        if (savedVals == null) {
+            savedVals = new LinkedList<>();
+            savedBindings.put(name, savedVals);
+        }
+        savedVals.push(oldVal);
+        putBinding(name, value);
+    }
+
+    /**
+     * Restores the value of a binding in the game namespace saved with {@link #pushBinding(String, Object)}.
+     * @param name variable name
+     */
+    public void popBinding(String name) {
+        Object previousVal = null;
+        Deque<Object> savedVals = savedBindings.get(name);
+        if (savedVals != null && !savedVals.isEmpty())
+            previousVal = savedVals.pop();
+        putBinding(name, previousVal);
     }
 
     /**
@@ -258,8 +295,8 @@ public final class MMScript
             try {
                 bshMethod.invoke(getBshArgs(args), intr);
                 output = outputBuilder.toString();
-            } catch (EvalError err) {
-                output = "MMScript error: " + err.getMessage();
+            } catch (Throwable t) {
+                output = "MMScript error: " + t.getMessage();
                 logger.warning(output);
             }
             outputBuilder.setLength(0);
@@ -277,8 +314,8 @@ public final class MMScript
                 result = bshMethod.invoke(getBshArgs(args), intr);
                 if (result instanceof Primitive)
                     result = ((Primitive)result).getValue();
-            } catch (EvalError err) {
-                logger.log(Level.WARNING, "MMScript error:", err);
+            } catch (Throwable t) {
+                logger.log(Level.WARNING, "MMScript error:", t);
                 result = null;
             }
             outputBuilder.setLength(0);  // in case the script output something anyway
