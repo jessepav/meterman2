@@ -56,12 +56,12 @@ public final class TemplateSource implements TextSource
         if (bindings != null) {
             numVars = bindings.length / 2;
             for (int i = 0; i < numVars; i++)
-                template.putBinding(bindings[i*2], bindings[i*2+1]);
+                template.pushBinding(bindings[i*2], bindings[i*2+1]);
         }
         final String output = getTextImpl();
         if (bindings != null)
             for (int i = 0; i < numVars; i++)
-                template.removeBinding(bindings[i*2]);
+                template.popBinding(bindings[i*2]);
         return output;
     }
 
@@ -69,9 +69,11 @@ public final class TemplateSource implements TextSource
      * @param args put into the template data model as a sequence variable "args".
      */
     public String getTextWithArgs(Object... args) {
-        template.putBinding("args", args);
+        if (args != null)
+            template.pushBinding("args", args);
         final String output = getTextImpl();
-        template.removeBinding("args");
+        if (args != null)
+            template.popBinding("args");
         return output;
     }
 

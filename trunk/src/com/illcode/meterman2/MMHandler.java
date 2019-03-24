@@ -35,6 +35,7 @@ public class MMHandler implements UIHandler
             case "reload": // We handle reloads ourself.
                 if (args.length == 3) {
                     switch (args[1]) {
+                    case "room":
                     case "r":
                         Room r = g.reloadRoom(args[2]);
                         if (r != null) {
@@ -42,6 +43,7 @@ public class MMHandler implements UIHandler
                             Meterman2.gm.refreshUI();
                         }
                         break;
+                    case "entity":
                     case "e":
                         Entity e = g.reloadEntity(args[2]);
                         if (e != null) {

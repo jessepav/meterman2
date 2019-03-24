@@ -46,9 +46,9 @@
     <description format="ftl">
       First we look at the chest:
       @p
-      ¬¬¬¬${entities["chest"].description}.
+      ¬¬¬¬${entities["chest"].description}
       @p
-      And then, in ${entity.defName}, you see that the door is[#if !state.doorOpened] not[/#if] open.
+      And then, in ${entity.defName}, you see that the door is [#if state.doorOpened]open[#else]closed[/#if].
     </description>
   </entity>
 
@@ -72,7 +72,9 @@
   </entity>
 
   <room id="dungeon" name="Dark Dungeon">
-    <description>Oh my, this is one dark dungeon!</description>
+    <description script="bsh">
+      out("Oh my, this is one " + room.getName() + "!");
+    </description>
   </room>
 
   <player id="player" inRoom="starting-room">

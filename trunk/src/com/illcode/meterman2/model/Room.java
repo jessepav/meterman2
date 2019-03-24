@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.model.RoomImpl.RoomMethod;
 import com.illcode.meterman2.ui.UIConstants;
 
@@ -180,10 +181,17 @@ public class Room implements EntityContainer
 
     /** Returns the text to be displayed when the player enters the room or clicks "Look". */
     public String getDescription() {
-        if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
-            return delegate.getDescription(this);
-        else
-            return impl.getDescription(this);
+        try {
+            Meterman2.script.pushBinding("room", this);
+            Meterman2.template.pushBinding("room", this);
+            if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
+                return delegate.getDescription(this);
+            else
+                return impl.getDescription(this);
+        } finally {
+            Meterman2.script.popBinding("room");
+            Meterman2.template.popBinding("room");
+        }
     }
 
     /**

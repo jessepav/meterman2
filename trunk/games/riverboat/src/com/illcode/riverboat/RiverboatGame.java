@@ -109,6 +109,6 @@ public class RiverboatGame implements Game
     }
 
     public void debugCommand(String[] args) {
-
+        // empty
     }
 }

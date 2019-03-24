@@ -207,20 +207,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             new SelectItemAction(actions, "Select an action", "Action:"));
 
         inputMap.put(DEBUG_KEYSTROKE, "debugCommand");
-        actionMap.put("debugCommand", new AbstractAction()
-        {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    if (ui.handler.isGameActive()) {
-                        String command = ui.showPromptDialog("Debug Command",
-                            "What is your debug command, oh Implementer?", "Command", "");
-                        ui.handler.debugCommand(command);
-                    }
-                } catch (Exception ex) {
-                    logger.log(Level.FINE, "debugTriggered()", ex);
-                }
-            }
-        });
+        actionMap.put("debugCommand", new SpecialAction(SpecialAction.DEBUG));
     }
 
     void setVisible(boolean visible) {
@@ -530,6 +517,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
     {
         private final static int EXAMINE = 0;
         private final static int AGAIN = 1;
+        private final static int DEBUG = 2;
 
         private int actionType;
 
@@ -546,6 +534,17 @@ final class MainFrame implements ActionListener, ListSelectionListener
             case AGAIN:
                 if (lastAction != null && actions.contains(lastAction))
                     ui.handler.entityActionSelected(lastAction);
+                break;
+            case DEBUG:
+                try {
+                    if (ui.handler.isGameActive()) {
+                        String command = ui.showPromptDialog("Debug Command",
+                            "What is your debug command, oh Implementer?", "Command", "");
+                        ui.handler.debugCommand(command);
+                    }
+                } catch (Exception ex) {
+                    logger.log(Level.FINE, "debugTriggered()", ex);
+                }
                 break;
             }
         }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Predefined Script and Template Variables</title>
+</head>
+<body>
+<h1>Pre-defined Variables</h1>
+Certain variables are made available to scripts and templates by the system:
+<p/>
+<table border="1">
+    <tr>
+        <th>Name</th><th>Value</th><th>In Scripts</th><th>In Templates</th>
+    </tr>
+    <tr>
+        <td><tt>entities</tt></td>
+        <td>A map from entity ID to Entity.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>rooms</tt></td>
+        <td>A map from room ID to Room.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>currentRoom</tt></td>
+        <td>The current room, where the player resides.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>selectedEntity</tt></td>
+        <td>In entity action processing, the entity upon whom the action was invoked.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>entity</tt></td>
+        <td>In entity descriptions, the Entity whose description we're generating.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>room</tt></td>
+        <td>In room descriptions, the Room whose description we're generating.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>args</tt></td>
+        <td>An array of the arguments passed to TextSource.getTextWithArgs()</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><tt>logger</tt></td>
+        <td>Instance of the system logger.</td>
+        <td>Y</td><td>N</td>
+    </tr>
+    <tr>
+        <td><tt>gm</tt></td>
+        <td>Global GameManager instance running the show.</td>
+        <td>Y</td><td>N</td>
+    </tr>
+    <tr>
+        <td><tt>ui</tt></td>
+        <td>Global MMUI instance</td>
+        <td>Y</td><td>N</td>
+    </tr>
+    <tr>
+        <td><tt>sound</tt></td>
+        <td>Global MMSound instance</td>
+        <td>Y</td><td>N</td>
+    </tr>
+    <tr>
+        <td><tt>bundles</tt></td>
+        <td>System BundleGroup instance</td>
+        <td>Y</td><td>N</td>
+    </tr>
+    <tr>
+        <td><tt>assets</tt></td>
+        <td>System MMAssets instance</td>
+        <td>Y</td><td>N</td>
+    </tr>
+</table>
+</body>
+</html>

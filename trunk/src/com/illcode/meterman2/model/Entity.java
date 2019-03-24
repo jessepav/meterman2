@@ -227,15 +227,15 @@ public class Entity
      */
     public boolean processAction(Action action) {
         try {
-            Meterman2.script.pushBinding("entity", this);
-            Meterman2.template.pushBinding("entity", this);
+            Meterman2.script.pushBinding("selectedEntity", this);
+            Meterman2.template.pushBinding("selectedEntity", this);
             if (delegate != null && delegateMethods.contains(PROCESS_ACTION))
                 return delegate.processAction(this, action);
             else
                 return impl.processAction(this, action);
         } finally {
-            Meterman2.script.popBinding("entity");
-            Meterman2.template.popBinding("entity");
+            Meterman2.script.popBinding("selectedEntity");
+            Meterman2.template.popBinding("selectedEntity");
         }
     }
 
