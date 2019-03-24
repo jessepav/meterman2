@@ -1,6 +1,7 @@
 package com.illcode.meterman2;
 
 import java.util.Formatter;
+import java.util.List;
 
 /**
  * This class handles registration of actions.
@@ -78,8 +79,8 @@ public final class MMActions
     public final static class Action
     {
         private final int actionNo;
-        private final String templateText;
-        private final String fixedText;
+        private String templateText;
+        private String fixedText;
 
         /**
          * Create a new action with a given action number and template-text. This is used only
@@ -105,6 +106,22 @@ public final class MMActions
          */
         public String getText() {
             return fixedText != null ? fixedText : templateText;
+        }
+
+        public String getTemplateText() {
+            return templateText;
+        }
+
+        public void setTemplateText(String templateText) {
+            this.templateText = templateText;
+        }
+
+        public String getFixedText() {
+            return fixedText;
+        }
+
+        public void setFixedText(String fixedText) {
+            this.fixedText = fixedText;
         }
 
         /**
