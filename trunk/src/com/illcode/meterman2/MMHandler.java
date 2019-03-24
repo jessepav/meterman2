@@ -41,6 +41,8 @@ public class MMHandler implements UIHandler
                         if (r != null) {
                             Meterman2.gm.roomChanged(r);
                             Meterman2.gm.refreshUI();
+                        } else {
+                            Meterman2.ui.showTextDialog("Reload", "Reloading room ID " + args[2] + " failed!", "Rats");
                         }
                         break;
                     case "entity":
@@ -49,6 +51,8 @@ public class MMHandler implements UIHandler
                         if (e != null) {
                             Meterman2.gm.entityChanged(e);
                             Meterman2.gm.refreshUI();
+                        } else {
+                            Meterman2.ui.showTextDialog("Reload", "Reloading entity ID " + args[2] + " failed!", "Rats");
                         }
                         break;
                     }
