@@ -33,6 +33,7 @@
     <orderEntry type="library" name="freemarker-2.3.28" level="project" />
     <orderEntry type="library" name="commons-collections4" level="project" />
     <orderEntry type="library" name="commons-io" level="project" />
+    <orderEntry type="library" name="gdx-collections" level="project" />
   </component>
 </module>
 
