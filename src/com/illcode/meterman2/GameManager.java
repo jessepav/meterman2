@@ -110,7 +110,7 @@ public final class GameManager
         selectedEntity = null;
 
         putBindings(gameStateMap);
-        putBinding("room", currentRoom);
+        putBinding("currentRoom", currentRoom);
         putBinding("entities", entityIdMap);
         putBinding("rooms", roomIdMap);
 
@@ -154,7 +154,7 @@ public final class GameManager
         selectedEntity = null;
 
         putBindings(gameStateMap);
-        putBinding("room", currentRoom);
+        putBinding("currentRoom", currentRoom);
         putBinding("entities", entityIdMap);
         putBinding("rooms", roomIdMap);
 
@@ -260,7 +260,7 @@ public final class GameManager
         for (Entity e : GameUtils.getEntitiesRecursive(fromRoom))
             e.exitingScope();
         currentRoom = toRoom;  // we've moved!
-        putBinding("room", currentRoom);
+        putBinding("currentRoom", currentRoom);
         toRoom.entered(fromRoom);
         for (Entity e : GameUtils.getEntitiesRecursive(toRoom))
             e.enterScope();

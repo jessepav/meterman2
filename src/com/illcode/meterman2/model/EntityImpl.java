@@ -43,8 +43,8 @@ public interface EntityImpl
     /** See {@link Entity#processAction(MMActions.Action)} */
     boolean processAction(Entity e, Action action);
 
-    /** See {@link Entity#objectAction(Action, Entity)} */
-    boolean objectAction(Entity e, Action action, Entity selectEntity);
+    /** See {@link Entity#objectAction(MMActions.Action, Entity)} */
+    boolean objectAction(Entity e, Action action, Entity selectedEntity);
 
     /** See {@link Entity#getState()} */
     Object getState(Entity e);

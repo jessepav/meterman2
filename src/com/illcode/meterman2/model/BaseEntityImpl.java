@@ -51,7 +51,7 @@ public class BaseEntityImpl implements EntityImpl
         return false;
     }
 
-    public boolean objectAction(Entity e, Action action, Entity selectEntity) {
+    public boolean objectAction(Entity e, Action action, Entity selectedEntity) {
         return false;
     }
 

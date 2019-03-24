@@ -24,6 +24,7 @@ import java.util.Map;
  *     <li>registerInitialGameHandlers()</li>
  *     <li>start()</li>
  * </ol>
+ * <p/>
  * For loaded games, we call methods in this order:
  * <ol>
  *     <li>getName()</li>
@@ -84,9 +85,7 @@ public interface Game
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
      * namespace and template data model. Keys with a leading underscore are reserved for use by the system,
-     * as well as "entity" and "room", for the selected entity and current room, respectively; "args",
-     * for text sources with argument lists; and "entities" and "rooms", for the entity and room ID-maps,
-     * respectively.
+     * as well as certain <b><a href="../doc-files/bound-variables.html">pre-defined variables</a></b>.
      */
     Map<String,Object> getInitialGameStateMap();
 
