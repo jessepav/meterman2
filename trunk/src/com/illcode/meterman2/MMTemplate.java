@@ -10,10 +10,7 @@ import static com.illcode.meterman2.MMLogging.logger;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Level;
 
 /**
@@ -26,6 +23,9 @@ public class MMTemplate
 
     private Map<String,Object> rootHash;
     private Map<String,Object> systemHash;
+
+    // Used for push/pop binding.
+    private Map<String,Deque<Object>> savedBindings;
 
     private Set<String> systemTemplates, gameTemplates;
 
@@ -51,6 +51,7 @@ public class MMTemplate
         gameTemplates = new HashSet<>(40);
         rootHash = new HashMap<>();
         systemHash = new HashMap<>();
+        savedBindings = new HashMap<>();
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -59,8 +60,11 @@ public class MMTemplate
         clearGameTemplates();
         clearSystemTemplates();
         clearBindings();
-        systemTemplates = null;
+        savedBindings = null;
+        systemHash = null;
+        rootHash = null;
         gameTemplates = null;
+        systemTemplates = null;
         strLoader = null;
         cfg = null;
     }
@@ -127,17 +131,50 @@ public class MMTemplate
      */
     public void putBinding(String name, Object value) {
         if (value == null)
-            rootHash.remove(name);
+            removeBinding(name);
         else
             rootHash.put(name, value);
     }
 
     /**
-     * Remove a binding from our template data model.
+     * Remove a binding from our template data model. If a system binding with the same name
+     * exists, it will be put into the data model in place of the removed binding.
      * @param name key name to remove
      */
     public void removeBinding(String name) {
-        rootHash.remove(name);
+        Object systemVal = systemHash.get(name);
+        if (systemVal != null)
+            rootHash.put(name, systemVal);
+        else
+            rootHash.remove(name);
+    }
+
+    /**
+     * Saves the current value of a binding in root hash and sets a new one.
+     * @param name variable name
+     * @param value value; if null, the binding will be removed.
+     */
+    public void pushBinding(String name, Object value) {
+        final Object oldVal = rootHash.get(name);
+        Deque<Object> savedVals = savedBindings.get(name);
+        if (savedVals == null) {
+            savedVals = new LinkedList<>();
+            savedBindings.put(name, savedVals);
+        }
+        savedVals.push(oldVal);
+        putBinding(name, value);
+    }
+
+    /**
+     * Restores the value of a binding in the root hash saved with {@link #pushBinding(String, Object)}.
+     * @param name variable name
+     */
+    public void popBinding(String name) {
+        Object previousVal = null;
+        final Deque<Object> savedVals = savedBindings.get(name);
+        if (savedVals != null && !savedVals.isEmpty())
+            previousVal = savedVals.pop();
+        putBinding(name, previousVal);
     }
 
     /**
@@ -160,9 +197,10 @@ public class MMTemplate
         }
     }
 
-    /** Remove a binding from our system hash. */
+    /** Remove a binding from our system hash.
+     *  The binding will still persist in the data model, however */
     void removeSystemBinding(String name) {
-        systemHash.remove(name);
+        Object val = systemHash.remove(name);
     }
 
     /** Clear all game-state bindings from our template data model, resetting it

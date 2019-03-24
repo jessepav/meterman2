@@ -130,20 +130,20 @@ public class Entity
     /**
      * Return the entity description (never null).
      * <p/>
-     * {@code TextSource}S involved in the generation of the description will have "entity" bound
-     * to this entity in the script and template namespaces.
+     * Templates and scripts invoked during action processing will
+     * have the "entity" variable set to this entity.
      */
     public String getDescription() {
         try {
-            Meterman2.script.putBinding("entity", this);
-            Meterman2.template.putBinding("entity", this);
+            Meterman2.script.pushBinding("entity", this);
+            Meterman2.template.pushBinding("entity", this);
             if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
                 return delegate.getDescription(this);
             else
                 return impl.getDescription(this);
         } finally {
-            Meterman2.script.removeBinding("entity");
-            Meterman2.template.removeBinding("entity");
+            Meterman2.script.popBinding("entity");
+            Meterman2.template.popBinding("entity");
         }
     }
 
@@ -218,29 +218,24 @@ public class Entity
     }
 
     /**
-     * The player invoked an action on this entity from the UI.
+     * The player invoked an action on this entity.
      * <p/>
-     * If there is an entity delegate registered for this method, and that delegate returns
-     * false, then we continue on to our normal implementation. This allows delegates to handle
-     * only specific actions, while leaving the rest to the normal implementation.
-     * <p/>
-     * {@code TextSource}S invoked during action processing will have "entity" bound
-     * to this entity in the script and template namespaces.
-     * @param action action name
-     * @return true if the entity processed the action itself, false to continue
-     *              through the processing chain
+     * Templates and scripts invoked during action processing will
+     * have the "entity" variable set to this entity.
+     * @param action action
+     * @return true to consume the action, false to continue through the processing chain
      */
     public boolean processAction(Action action) {
         try {
-            Meterman2.script.putBinding("entity", this);
-            Meterman2.template.putBinding("entity", this);
+            Meterman2.script.pushBinding("entity", this);
+            Meterman2.template.pushBinding("entity", this);
             if (delegate != null && delegateMethods.contains(PROCESS_ACTION))
-                if(delegate.processAction(this, action))
-                    return true;
-            return impl.processAction(this, action);
+                return delegate.processAction(this, action);
+            else
+                return impl.processAction(this, action);
         } finally {
-            Meterman2.script.removeBinding("entity");
-            Meterman2.template.removeBinding("entity");
+            Meterman2.script.popBinding("entity");
+            Meterman2.template.popBinding("entity");
         }
     }
 
@@ -318,7 +313,7 @@ public class Entity
             return "";
         if (getAttributes().get(SystemAttributes.PROPER_NAME))
             return name;
-        String indefArt = getIndefiniteArticle();
+        String indefArt = indefiniteArticle;
         if (indefArt == null) {
             char c = Character.toLowerCase(name.charAt(0));
             if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u')

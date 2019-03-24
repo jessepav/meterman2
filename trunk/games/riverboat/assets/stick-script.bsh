@@ -2,6 +2,7 @@ boolean objectAction(Entity e, Action action, Entity selectEntity) {
     if (action.equals(SystemActions.CONTAINER_PUT)) {
         gm.println("Why would you want to put a stick in a box?");
         return true;
+    } else {
+        return false;
     }
-    return false;
 }

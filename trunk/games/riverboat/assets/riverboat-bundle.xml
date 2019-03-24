@@ -16,7 +16,9 @@
 
   <room id="playroom" name="Child's Playroom" exitName="Playroom">
     <description script="bsh">
-      out("After " + gm.getNumTurns() + " turns, it's pretty messy in here.");
+      out("To the east is a dungeon: " + rooms.get("dungeon").getDescription());
+      out("@p");
+      out("After " + gm.getNumTurns() + " turns, it's pretty messy in the " + room.getName());
     </description>
     <exits>
       <exit room="starting-room" pos="S"/>
@@ -34,13 +36,19 @@
     <attributes>
       <a>locked</a>
     </attributes>
-    <description format="ftl" fileRef="chest-description.ftl" />
+    <description format="ftl">
+      ${entity.defName?cap_first} is a chest made of wood.
+    </description>
     <key>wood-key</key>
   </entity>
 
   <entity id="mirror" name="Magic Mirror" attributes="takeable">
     <description format="ftl">
-      In the magic mirror you see that the door is[#if !state.doorOpened] not[/#if] open.
+      First we look at the chest:
+      @p
+      ¬¬¬¬${entities["chest"].description}.
+      @p
+      And then, in ${entity.defName}, you see that the door is[#if !state.doorOpened] not[/#if] open.
     </description>
   </entity>
 
@@ -55,9 +63,9 @@
     <connects room1="playroom" pos1="E" room2="dungeon" pos2="W" />
     <script><![CDATA[
       boolean processAction(Entity e, Action action) {
-          if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE))
-              state.doorOpened = !state.doorOpened;
-          return false;
+          boolean b = e.getImpl().processAction(e, action);
+          state.doorOpened = !e.getAttributes().get(SystemAttributes.CLOSED);
+          return b;
       }
     ]]>
     </script>

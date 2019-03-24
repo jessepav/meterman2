@@ -84,8 +84,9 @@ public interface Game
      * <p/>
      * The map keys will be used as the names under which these objects will be inserted in the scripting
      * namespace and template data model. Keys with a leading underscore are reserved for use by the system,
-     * as well as "entity" and "room", for the selected entity and current room, respectively; and "args",
-     * for text sources with argument lists.
+     * as well as "entity" and "room", for the selected entity and current room, respectively; "args",
+     * for text sources with argument lists; and "entities" and "rooms", for the entity and room ID-maps,
+     * respectively.
      */
     Map<String,Object> getInitialGameStateMap();
 
