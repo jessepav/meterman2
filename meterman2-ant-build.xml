@@ -84,6 +84,10 @@
     <pathelement location="${basedir}/lib/freemarker-2.3.28.jar"/>
   </path>
   
+  <path id="library.gdx-collections.classpath">
+    <pathelement location="${basedir}/lib/gdx-collections-1.9.8.jar"/>
+  </path>
+  
   <path id="library.jdom.classpath">
     <pathelement location="${basedir}/lib/jaxen-1.1.6.jar"/>
     <pathelement location="${basedir}/lib/jdom-2.0.6.jar"/>
@@ -155,6 +159,7 @@
     <path refid="library.freemarker-2.3.28.classpath"/>
     <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
+    <path refid="library.gdx-collections.classpath"/>
   </path>
   
   <path id="meterman2.runtime.production.module.classpath">
@@ -171,6 +176,7 @@
     <path refid="library.freemarker-2.3.28.classpath"/>
     <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
+    <path refid="library.gdx-collections.classpath"/>
   </path>
   
   <path id="meterman2.module.classpath">
@@ -187,6 +193,7 @@
     <path refid="library.freemarker-2.3.28.classpath"/>
     <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
+    <path refid="library.gdx-collections.classpath"/>
   </path>
   
   <path id="meterman2.runtime.module.classpath">
@@ -204,6 +211,7 @@
     <path refid="library.freemarker-2.3.28.classpath"/>
     <path refid="library.commons-collections4.classpath"/>
     <path refid="library.commons-io.classpath"/>
+    <path refid="library.gdx-collections.classpath"/>
   </path>
   
   
