@@ -1,8 +1,9 @@
 package com.illcode.meterman2.ui;
 
-import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.MMActions.Action;
+import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.SystemActions;
+import com.illcode.meterman2.Utils;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.commons.lang3.text.WordUtils;
@@ -259,6 +260,12 @@ public final class MMUI
         imageMap.clear();
     }
 
+    /** Set the text of the Look and Wait UI buttons to the text of the
+     *  LOOK and WAIT system actions, respectively. */
+    public void setGlobalActionButtonText() {
+        mainFrame.lookButton.setText(SystemActions.LOOK.getText());
+        mainFrame.waitButton.setText(SystemActions.WAIT.getText());
+    }
 
     /**
      * Sets the image displayed in the main UI frame. The recommended size for

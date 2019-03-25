@@ -1,6 +1,7 @@
 package com.illcode.meterman2;
 
 import static com.illcode.meterman2.MMActions.Action;
+import static com.illcode.meterman2.Meterman2.actions;
 
 public final class SystemActions
 {
@@ -20,20 +21,19 @@ public final class SystemActions
     public static Action CONTAINER_LOOK_IN;
 
     public static void init() {
-        LOOK = Meterman2.actions.registerAction("Look");
-        WAIT = Meterman2.actions.registerAction("Wait");
-        EXAMINE = Meterman2.actions.registerAction("Examine");
-        TAKE = Meterman2.actions.registerAction("Take");
-        DROP = Meterman2.actions.registerAction("Drop");
-        EQUIP = Meterman2.actions.registerAction("Equip");
-        UNEQUIP = Meterman2.actions.registerAction("Unequip");
-        OPEN = Meterman2.actions.registerAction("Open");
-        CLOSE = Meterman2.actions.registerAction("Close");
-        LOCK = Meterman2.actions.registerAction("Lock");
-        UNLOCK = Meterman2.actions.registerAction("Unlock");
-        CONTAINER_PUT = Meterman2.actions.registerAction("Put Item %s");
-        CONTAINER_TAKE = Meterman2.actions.registerAction("Take Item %s");
-        CONTAINER_LOOK_IN = Meterman2.actions.registerAction("Look %s");
-        Meterman2.actions.markSystemActionsDone();
+        LOOK = actions.registerSystemAction("LOOK", "Look");
+        WAIT = actions.registerSystemAction("WAIT", "Wait");
+        EXAMINE = actions.registerSystemAction("EXAMINE", "Examine");
+        TAKE = actions.registerSystemAction("TAKE", "Take");
+        DROP = actions.registerSystemAction("DROP", "Drop");
+        EQUIP = actions.registerSystemAction("EQUIP", "Equip");
+        UNEQUIP = actions.registerSystemAction("UNEQUIP", "Unequip");
+        OPEN = actions.registerSystemAction("OPEN", "Open");
+        CLOSE = actions.registerSystemAction("CLOSE", "Close");
+        LOCK = actions.registerSystemAction("LOCK", "Lock");
+        UNLOCK = actions.registerSystemAction("UNLOCK", "Unlock");
+        CONTAINER_PUT = actions.registerSystemAction("CONTAINER_PUT", "Put Item %s");
+        CONTAINER_TAKE = actions.registerSystemAction("CONTAINER_TAKE", "Take Item %s");
+        CONTAINER_LOOK_IN = actions.registerSystemAction("CONTAINER_LOOK_IN", "Look %s");
     }
 }
