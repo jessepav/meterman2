@@ -1,7 +1,10 @@
 package com.illcode.meterman2;
 
-import java.util.Formatter;
-import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import org.mini2Dx.gdx.utils.IntMap;
+import org.mini2Dx.gdx.utils.ObjectMap;
+
+import java.util.BitSet;
 
 /**
  * This class handles registration of actions.
@@ -9,46 +12,125 @@ import java.util.List;
  */
 public final class MMActions
 {
-    private int numActions;
-    private int numSystemActions;
+    private BitSet actionNumSet;  // all registered action numbers
+    private BitSet sysActionNumSet; // registered system action numbers
+
+    private IntMap<Pair<Action,String>> sysSavedActionTextMap;  // to save the original templateText of system actions
+    private IntMap<String> actionNumNameMap; // quick lookup of name by action #
+    private ObjectMap<String,Action> actionNameMap; // to lookup actions by name
 
     MMActions() {
+        actionNumSet = new BitSet();
+        sysActionNumSet = new BitSet();
+        sysSavedActionTextMap = new IntMap<>(32);
+        actionNameMap = new ObjectMap<>(48);
+        actionNumNameMap = new IntMap<>(48);
     }
 
     void dispose() {
         clear();
+        actionNumSet = null;
+        sysActionNumSet = null;
+        sysSavedActionTextMap = null;
+        actionNumNameMap = null;
+        actionNameMap = null;
     }
 
     /**
-     * Register an action.
+     * Register a system action.
+     * @param name unique logical name for the action
      * @param templateText the action template text. This may contain printf-style
-     *      format string syntax as interpreted by {@link Formatter}.
+     *      format string syntax as interpreted by {@link java.util.Formatter}.
      * @return a new Action
      */
-    public Action registerAction(String templateText) {
-        return new Action(numActions++, templateText);
+    public Action registerSystemAction(String name, String templateText) {
+        Action a = actionNameMap.get(name);
+        if (a == null) {
+            final int n = actionNumSet.nextClearBit(0);
+            actionNumSet.set(n);
+            sysActionNumSet.set(n);
+            a = new Action(n, name, templateText);
+            sysSavedActionTextMap.put(n, Pair.of(a, templateText));
+            actionNameMap.put(name, a);
+            actionNumNameMap.put(n, name);
+        }
+        return a;
+    }
+
+    /** Deregister a system action. */
+    public void deregisterSystemAction(Action a) {
+        final int n = a.actionNo;
+        if (sysActionNumSet.get(n)) {  // only release system actions
+            sysSavedActionTextMap.remove(n);
+            actionNameMap.remove(a.getName());
+            actionNumNameMap.remove(n);
+            sysActionNumSet.clear(n);
+            actionNumSet.clear(n);
+        }
+    }
+
+    /**
+     * Register a game action.
+     * @param name unique logical name for the action
+     * @param templateText the action template text. This may contain printf-style
+     *      format string syntax as interpreted by {@link java.util.Formatter}.
+     * @return a new Action
+     */
+    public Action registerAction(String name, String templateText) {
+        Action a = actionNameMap.get(name);
+        if (a == null) {
+            final int n = actionNumSet.nextClearBit(0);
+            actionNumSet.set(n);
+            a = new Action(n, name, templateText);
+            actionNameMap.put(name, a);
+            actionNumNameMap.put(n, name);
+        }
+        return a;
+    }
+
+    /** Deregister a game action. */
+    public void deregisterAction(Action a) {
+        final int n = a.actionNo;
+        if (!sysActionNumSet.get(n)) { // don't let a game release a system action
+            actionNameMap.remove(a.getName());
+            actionNumNameMap.remove(n);
+            actionNumSet.clear(n);
+        }
+    }
+
+    /** Return the action with the given name, or null if none exists. */
+    public Action getAction(String name) {
+        return actionNameMap.get(name);
     }
 
     /** Clear all registered actions. */
     void clear() {
-        numActions = numSystemActions = 0;
+        actionNumSet.clear();
+        sysActionNumSet.clear();
+        actionNameMap.clear();
+        actionNumNameMap.clear();
+        sysSavedActionTextMap.clear();
     }
 
-    /**
-     * Indicate that the registration of system actions is finished. A subsequent call to
-     * {@link #clearGameActions()} will reset the registration system to the state at the
-     * point of this call.
-     */
-    void markSystemActionsDone() {
-        numSystemActions = numActions;
-    }
-
-    /**
-     * Reset the action registration system to its state at the point when
-     * {@link #markSystemActionsDone()} was called.
-     */
+    /** Clear all game actions, and reset system actions to their original state. */
     void clearGameActions() {
-        numActions = numSystemActions;
+        // First clear all the game actions.
+        final int size = actionNumSet.size();
+        for (int i = 0; i < size; i++) {
+            if (actionNumSet.get(i)) {
+                if (!sysActionNumSet.get(i)) { // a game action
+                    actionNameMap.remove(actionNumNameMap.get(i));
+                    actionNumNameMap.remove(i);
+                    actionNumSet.clear(i);
+                } else {  // a system action
+                    final Pair<Action,String> pair = sysSavedActionTextMap.get(i);
+                    final Action a = pair.getLeft();
+                    final String templateText = pair.getRight();
+                    a.setTemplateText(templateText);
+                    a.setFixedText(null);
+                }
+            }
+        }
     }
 
     /**
@@ -74,10 +156,11 @@ public final class MMActions
      * where the template-text of {@code SystemAction.PUT} is {@code "Put %s"}. In the action-processing
      * code, {@code SystemAction.PUT.equals(putAction) == true}.
      * <p/>
-     * The only way to mint an action with a new action number is by a call to {@link MMActions#registerAction}.
+     * The only way to mint an action with a new action number is by a call to {@link MMActions#registerSystemAction}.
      */
     public final static class Action
     {
+        private final String name;
         private final int actionNo;
         private String templateText;
         private String fixedText;
@@ -86,15 +169,16 @@ public final class MMActions
          * Create a new action with a given action number and template-text. This is used only
          * by {@link MMActions}.
          * @param actionNo action number
+         * @param name
          * @param templateText template text
          */
-        private Action(int actionNo, String templateText) {
-            this(actionNo, templateText, null);
+        private Action(int actionNo, String name, String templateText) {
+            this(actionNo, name, templateText, null);
         }
 
-        /** Constructor used by {@link #formattedTextCopy} and {@link #fixedTextCopy}.*/
-        private Action(int actionNo, String templateText, String fixedText) {
+        private Action(int actionNo, String name, String templateText, String fixedText) {
             this.actionNo = actionNo;
+            this.name = name;
             this.templateText = templateText;
             this.fixedText = fixedText;
         }
@@ -106,6 +190,10 @@ public final class MMActions
          */
         public String getText() {
             return fixedText != null ? fixedText : templateText;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public String getTemplateText() {
@@ -131,7 +219,7 @@ public final class MMActions
          * @return copy of this Action with its fixed-text set
          */
         public Action formattedTextCopy(Object... args) {
-            return new Action(actionNo, templateText, String.format(templateText, args));
+            return new Action(actionNo, name, templateText, String.format(templateText, args));
         }
 
         /**
@@ -140,7 +228,7 @@ public final class MMActions
          * @return copy of this Action with its fixed-text set
          */
         public Action fixedTextCopy(String text) {
-            return new Action(actionNo, templateText, text);
+            return new Action(actionNo, name, templateText, text);
         }
 
         public int hashCode() {

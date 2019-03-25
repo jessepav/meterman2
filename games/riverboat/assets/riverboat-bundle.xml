@@ -50,6 +50,28 @@
       @p
       And then, in ${entity.defName}, you see that the door is [#if state.doorOpened]open[#else]closed[/#if].
     </description>
+    <script><![CDATA[
+      Action frob = Meterman2.actions.registerAction("FROB", "Frobnicate");
+      List actions = new ArrayList(4);
+
+      List getActions(Entity e) {
+          actions.clear();
+          actions.addAll(e.getImpl().getActions(e));
+          actions.add(frob);
+          return actions;
+      }
+
+      boolean processAction(Entity e, Action action) {
+          if (action.equals(frob)) {
+              println("Frobnicate!");
+              Meterman2.actions.getAction("CONTAINER_PUT").setTemplateText("Frob %s");
+              return true;
+          } else {
+              return false;
+          }
+      }
+    ]]>
+    </script>
   </entity>
 
   <entity id="wood-key" name="Wood Key" inRoom="starting-room" attributes="takeable">

@@ -13,12 +13,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import static com.illcode.meterman2.GameUtils.hasAttr;
+import static com.illcode.meterman2.GameUtils.setAttr;
 import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 import static com.illcode.meterman2.SystemAttributes.VISITED;
-import static com.illcode.meterman2.GameUtils.hasAttr;
-import static com.illcode.meterman2.GameUtils.setAttr;
 
 public final class GameManager
 {
@@ -117,6 +117,7 @@ public final class GameManager
         queueRoomUIRefresh();
         queueInventoryUIRefresh();
         queueEntityUIRefresh();
+        ui.setGlobalActionButtonText();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         game.start(true);
@@ -161,6 +162,7 @@ public final class GameManager
         queueRoomUIRefresh();
         queueInventoryUIRefresh();
         queueEntityUIRefresh();
+        ui.setGlobalActionButtonText();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
         refreshUI();  // since no nextTurn() is called.
@@ -196,6 +198,7 @@ public final class GameManager
         Meterman2.assets.setGameAssetsPath(null);
         ui.setGameName(null);
         ui.clearStatusLabels();
+        ui.setGlobalActionButtonText();
     }
 
     public Game getGame() {

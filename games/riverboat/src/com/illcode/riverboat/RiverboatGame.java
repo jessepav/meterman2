@@ -11,7 +11,6 @@ import com.illcode.meterman2.model.Game;
 import com.illcode.meterman2.model.Player;
 import com.illcode.meterman2.model.Room;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,8 @@ public class RiverboatGame implements Game
     public void init() {
         XBundle b = XBundle.loadFromPath(Meterman2.assets.pathForGameAsset("riverboat-bundle.xml"));
         Meterman2.bundles.addFirst(b);
+        Meterman2.actions.getAction("LOOK").setFixedText("Survey");
+        Meterman2.actions.getAction("WAIT").setFixedText("Bide Time");
     }
 
     public void dispose() {

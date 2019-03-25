@@ -58,11 +58,11 @@ public interface Game
     /**
      * Called when a game is started or loaded. A game should, in this method:
      * <ul>
+     *     <li>add its {@code XBundle}(s) to the system group</li>
      *     <li>add image and sound mappings</li>
      *     <li>register game-specific actions and attributes</li>
-     *     <li>add its {@code XBundle}(s) to the system group</li>
-     *     <li>call {@link MMScript#evalScript(java.lang.String)} to import packages and classes and
-     *     define any methods used by scripts.</li>
+     *     <li>change the text of system actions, if desired</li>
+     *     <li>import packages and classes and define any methods used by scripts</li>
      * </ul>
      */
     void init();
