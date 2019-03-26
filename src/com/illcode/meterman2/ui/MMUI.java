@@ -95,6 +95,7 @@ public final class MMUI
                 maxBufferSize = Utils.intPref("max-text-buffer-size", 50000);
                 dialogTextColumns = Utils.intPref("dialog-text-columns", 60);
                 setGameName(null);
+                handler.uiInitialized();
                 mainFrame.setVisible(true);
                 mainFrame.startup();
             }
@@ -149,6 +150,29 @@ public final class MMUI
             mainFrame.aboutMenuItem.setEnabled(true);
         }
     }
+
+    /** Set the text of the Look and Wait UI buttons to the text of the
+     *  LOOK and WAIT system actions, respectively. */
+    public void setGlobalActionButtonText() {
+        mainFrame.lookButton.setText(SystemActions.LOOK.getText());
+        mainFrame.waitButton.setText(SystemActions.WAIT.getText());
+    }
+
+    /**
+     * Add an action keyboard shortcut.
+     * @param a action
+     * @param keystroke keystroke, as specified by {@link javax.swing.KeyStroke#getKeyStroke(java.lang.String)}.
+     */
+    public void putActionBinding(Action a, String keystroke) { mainFrame.putActionBinding(a, keystroke); }
+
+    /**
+     * Remove an action keyboard shortcut.
+     * @param a action
+     */
+    public void removeActionBinding(Action a) { mainFrame.removeActionBinding(a); }
+
+    /** Clear all action keyboard shortcuts. */
+    public void clearActionBindings() { mainFrame.clearActionBindings(); }
 
     /**
      * Opens a web browser to the given URL, if applicable. If the UI doesn't
@@ -258,13 +282,6 @@ public final class MMUI
         }
         loadedImages.clear();
         imageMap.clear();
-    }
-
-    /** Set the text of the Look and Wait UI buttons to the text of the
-     *  LOOK and WAIT system actions, respectively. */
-    public void setGlobalActionButtonText() {
-        mainFrame.lookButton.setText(SystemActions.LOOK.getText());
-        mainFrame.waitButton.setText(SystemActions.WAIT.getText());
     }
 
     /**

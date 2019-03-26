@@ -33,8 +33,7 @@ public class RiverboatGame implements Game
     public void init() {
         XBundle b = XBundle.loadFromPath(Meterman2.assets.pathForGameAsset("riverboat-bundle.xml"));
         Meterman2.bundles.addFirst(b);
-        Meterman2.actions.getAction("LOOK").setFixedText("Survey");
-        Meterman2.actions.getAction("WAIT").setFixedText("Bide Time");
+        GameUtils.registerActions(b.getElement("riverboat-actions"));
     }
 
     public void dispose() {
