@@ -21,19 +21,22 @@ public final class SystemActions
     public static Action CONTAINER_LOOK_IN;
 
     public static void init() {
-        LOOK = actions.registerSystemAction("LOOK", "Look");
-        WAIT = actions.registerSystemAction("WAIT", "Wait");
-        EXAMINE = actions.registerSystemAction("EXAMINE", "Examine");
-        TAKE = actions.registerSystemAction("TAKE", "Take");
-        DROP = actions.registerSystemAction("DROP", "Drop");
-        EQUIP = actions.registerSystemAction("EQUIP", "Equip");
-        UNEQUIP = actions.registerSystemAction("UNEQUIP", "Unequip");
-        OPEN = actions.registerSystemAction("OPEN", "Open");
-        CLOSE = actions.registerSystemAction("CLOSE", "Close");
-        LOCK = actions.registerSystemAction("LOCK", "Lock");
-        UNLOCK = actions.registerSystemAction("UNLOCK", "Unlock");
-        CONTAINER_PUT = actions.registerSystemAction("CONTAINER_PUT", "Put Item %s");
-        CONTAINER_TAKE = actions.registerSystemAction("CONTAINER_TAKE", "Take Item %s");
-        CONTAINER_LOOK_IN = actions.registerSystemAction("CONTAINER_LOOK_IN", "Look %s");
+        // Don't set shortcuts yet because the UI doesn't exist
+        GameUtils.registerActions(Meterman2.bundles.getElement("system-actions"), true, false);
+
+        LOOK = actions.getAction("LOOK");
+        WAIT = actions.getAction("WAIT");
+        EXAMINE = actions.getAction("EXAMINE");
+        TAKE = actions.getAction("TAKE");
+        DROP = actions.getAction("DROP");
+        EQUIP = actions.getAction("EQUIP");
+        UNEQUIP = actions.getAction("UNEQUIP");
+        OPEN = actions.getAction("OPEN");
+        CLOSE = actions.getAction("CLOSE");
+        LOCK = actions.getAction("LOCK");
+        UNLOCK = actions.getAction("UNLOCK");
+        CONTAINER_PUT = actions.getAction("CONTAINER_PUT");
+        CONTAINER_TAKE = actions.getAction("CONTAINER_TAKE");
+        CONTAINER_LOOK_IN = actions.getAction("CONTAINER_LOOK_IN");
     }
 }

@@ -4,7 +4,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.mini2Dx.gdx.utils.IntMap;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 /**
  * This class handles registration of actions.
@@ -19,12 +21,17 @@ public final class MMActions
     private IntMap<String> actionNumNameMap; // quick lookup of name by action #
     private ObjectMap<String,Action> actionNameMap; // to lookup actions by name
 
+    private List<Action> systemActions;
+    private List<Action> gameActions;
+
     MMActions() {
         actionNumSet = new BitSet();
         sysActionNumSet = new BitSet();
         sysSavedActionTextMap = new IntMap<>(32);
         actionNameMap = new ObjectMap<>(48);
         actionNumNameMap = new IntMap<>(48);
+        systemActions = new ArrayList<>(32);
+        gameActions = new ArrayList<>(16);
     }
 
     void dispose() {
@@ -34,6 +41,8 @@ public final class MMActions
         sysSavedActionTextMap = null;
         actionNumNameMap = null;
         actionNameMap = null;
+        systemActions = null;
+        gameActions = null;
     }
 
     /**
@@ -53,6 +62,7 @@ public final class MMActions
             sysSavedActionTextMap.put(n, Pair.of(a, templateText));
             actionNameMap.put(name, a);
             actionNumNameMap.put(n, name);
+            systemActions.add(a);
         }
         return a;
     }
@@ -66,6 +76,7 @@ public final class MMActions
             actionNumNameMap.remove(n);
             sysActionNumSet.clear(n);
             actionNumSet.clear(n);
+            systemActions.remove(a);
         }
     }
 
@@ -84,6 +95,7 @@ public final class MMActions
             a = new Action(n, name, templateText);
             actionNameMap.put(name, a);
             actionNumNameMap.put(n, name);
+            gameActions.add(a);
         }
         return a;
     }
@@ -95,6 +107,7 @@ public final class MMActions
             actionNameMap.remove(a.getName());
             actionNumNameMap.remove(n);
             actionNumSet.clear(n);
+            gameActions.remove(a);
         }
     }
 
@@ -110,6 +123,8 @@ public final class MMActions
         actionNameMap.clear();
         actionNumNameMap.clear();
         sysSavedActionTextMap.clear();
+        systemActions.clear();
+        gameActions.clear();
     }
 
     /** Clear all game actions, and reset system actions to their original state. */
@@ -131,6 +146,26 @@ public final class MMActions
                 }
             }
         }
+        gameActions.clear();
+    }
+
+    /** Return a list of registered system actions. This list is "live" in that it will reflect subsequent
+     *  calls to {@code registerSystemAction} and {@code deregisterSystemAction} (and thus you should not
+     *  call either of those methods while iterating over this list). */
+    public List<Action> getSystemActions() {
+        return systemActions;
+    }
+
+    /** Return a list of registered game actions.  This list is "live" in that it will reflect subsequent
+     *  calls to {@code registerAction} and {@code deregisterAction} (and thus you should not call either
+     *  of those methods while iterating over this list). */
+    public List<Action> getGameActions() {
+        return gameActions;
+    }
+
+    /** Returns true if the given action is a system action. */
+    public boolean isSystemAction(Action a) {
+        return sysActionNumSet.get(a.actionNo);
     }
 
     /**

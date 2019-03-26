@@ -17,9 +17,7 @@ import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
@@ -62,6 +60,12 @@ final class MainFrame implements ActionListener, ListSelectionListener
     File lastSaveFile;
 
     DefaultListModel<String> roomListModel, inventoryListModel;
+
+    private InputMap inputMap;    // key binding maps for the frame's root pane
+    private ActionMap actionMap;
+
+    private Map<Action,KeyStroke> actionKeystrokeMap;
+    private Set<KeyStroke> boundKeystrokes;
 
     private BufferedImage frameImage, entityImage;
     private List<Action> actions;
@@ -139,7 +143,13 @@ final class MainFrame implements ActionListener, ListSelectionListener
             fc = new JFileChooser();
             fc.setCurrentDirectory(Meterman2.savesPath.toFile());
 
+            final JRootPane root = frame.getRootPane();
+            inputMap = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+            actionMap = root.getActionMap();
+            actionKeystrokeMap = new HashMap<>(32);
+            boundKeystrokes = new HashSet<>(32);
             installKeyBindings();
+
             frame.setIconImage(GuiUtils.loadOpaqueImage(Meterman2.assets.pathForSystemAsset("frame-icon.png")));
 
             GuiUtils.setBoundsFromPrefs(frame, "main-window-size");
@@ -158,11 +168,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
 
     private void installKeyBindings() {
-        JRootPane root = frame.getRootPane();
-        InputMap inputMap = root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        ActionMap actionMap = root.getActionMap();
-
-        KeyStroke[] exitButtonKeystrokes = new KeyStroke[NUM_EXIT_BUTTONS];
+        final KeyStroke[] exitButtonKeystrokes = new KeyStroke[NUM_EXIT_BUTTONS];
         exitButtonKeystrokes[UIConstants.NW_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0);
         exitButtonKeystrokes[UIConstants.N_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_W, 0);
         exitButtonKeystrokes[UIConstants.NE_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_E, 0);
@@ -177,34 +183,57 @@ final class MainFrame implements ActionListener, ListSelectionListener
         exitButtonKeystrokes[UIConstants.X3_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_V, 0);
 
         for (int i = 0; i < NUM_EXIT_BUTTONS; i++) {
-            String actionMapKey = "exitButton:" + UIConstants.buttonPositionToText(i);
+            final String actionMapKey = "exitButton:" + UIConstants.buttonPositionToText(i);
             inputMap.put(exitButtonKeystrokes[i], actionMapKey);
             actionMap.put(actionMapKey, new ButtonAction(exitButtons[i]));
         }
 
-        inputMap.put(LOOK_KEYSTROKE, "lookButton");
-        actionMap.put("lookButton", new ButtonAction(lookButton));
-        inputMap.put(WAIT_KEYSTROKE, "waitButton");
-        actionMap.put("waitButton", new ButtonAction(waitButton));
-        inputMap.put(EXAMINE_KEYSTROKE, "examineAction");
-        actionMap.put("examineAction", new SpecialAction(SpecialAction.EXAMINE));
-        inputMap.put(AGAIN_KEYSTROKE, "againAction");
-        actionMap.put("againAction", new SpecialAction(SpecialAction.AGAIN));
-
         inputMap.put(SELECT_ROOM_ENTITY_KEYSTROKE, "selectRoomEntity");
         actionMap.put("selectRoomEntity",
             new SelectItemAction(roomList, roomListModel, "Select an object in the room", "Object:"));
-
         inputMap.put(SELECT_INVENTORY_ENTITY_KEYSTROKE, "selectInventoryEntity");
         actionMap.put("selectInventoryEntity",
             new SelectItemAction(inventoryList, inventoryListModel, "Select an item in your inventory", "Item:"));
-
         inputMap.put(SELECT_ACTION_KEYSTROKE, "selectAction");
         actionMap.put("selectAction",
             new SelectItemAction(actions, "Select an action", "Action:"));
 
+        inputMap.put(AGAIN_KEYSTROKE, "againAction");
+        actionMap.put("againAction", new SpecialAction(SpecialAction.AGAIN));
         inputMap.put(DEBUG_KEYSTROKE, "debugCommand");
         actionMap.put("debugCommand", new SpecialAction(SpecialAction.DEBUG));
+    }
+
+    void putActionBinding(Action a, String keystroke) {
+        removeActionBinding(a);
+        KeyStroke k = KeyStroke.getKeyStroke(keystroke);
+        if (k == null || boundKeystrokes.contains(k))  // don't allow re-binding
+            return;
+        final Object actionKey = "action:" + a.getName();
+        inputMap.put(k, actionKey);
+        actionMap.put(actionKey, new GameAction(a));
+        actionKeystrokeMap.put(a, k);
+        boundKeystrokes.add(k);
+    }
+
+    void removeActionBinding(Action a) {
+        KeyStroke k = actionKeystrokeMap.remove(a);
+        if (k == null)
+            return;
+        final Object actionKey = inputMap.get(k);
+        inputMap.remove(k);
+        actionMap.remove(actionKey);
+        boundKeystrokes.remove(k);
+    }
+
+    void clearActionBindings() {
+        for (KeyStroke k : actionKeystrokeMap.values()) {
+            final Object actionKey = inputMap.get(k);
+            inputMap.remove(k);
+            actionMap.remove(actionKey);
+        }
+        actionKeystrokeMap.clear();
+        boundKeystrokes.clear();
     }
 
     void setVisible(boolean visible) {
@@ -512,22 +541,20 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     private class SpecialAction extends AbstractAction
     {
-        private final static int EXAMINE = 0;
-        private final static int AGAIN = 1;
-        private final static int DEBUG = 2;
+        private final static int AGAIN = 0;
+        private final static int DEBUG = 1;
 
         private int actionType;
+        private String debugCommand;
 
         private SpecialAction(int actionType) {
             this.actionType = actionType;
+            if (actionType == DEBUG)
+                debugCommand = "";
         }
 
         public void actionPerformed(ActionEvent e) {
             switch (actionType) {
-            case EXAMINE:
-                if (actions.contains(SystemActions.EXAMINE))
-                    actionSelected(SystemActions.EXAMINE);
-                break;
             case AGAIN:
                 if (lastAction != null && actions.contains(lastAction))
                     ui.handler.entityActionSelected(lastAction);
@@ -535,15 +562,37 @@ final class MainFrame implements ActionListener, ListSelectionListener
             case DEBUG:
                 try {
                     if (ui.handler.isGameActive()) {
-                        String command = ui.showPromptDialog("Debug Command",
-                            "What is your debug command, oh Implementer?", "Command", "");
-                        ui.handler.debugCommand(command);
+                        debugCommand = ui.showPromptDialog("Debug Command",
+                            "What is your debug command, oh Implementer?", "Command", debugCommand);
+                        ui.handler.debugCommand(debugCommand);
                     }
                 } catch (Exception ex) {
                     logger.log(Level.FINE, "debugTriggered()", ex);
                 }
                 break;
             }
+        }
+    }
+
+    /**
+     * A {@code javax.swing.Action} that invokes a {@code com.illcode.meterman2.MMActions.Action}.
+     */
+    private class GameAction extends AbstractAction
+    {
+        private final Action action;
+
+        private GameAction(Action action) {
+            this.action = action;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            // Look and Wait are treated specially, since they're not entity actions.
+            if (action.equals(SystemActions.LOOK))
+                ui.handler.lookCommand();
+            else if (action.equals(SystemActions.WAIT))
+                ui.handler.waitCommand();
+            else if (actions.contains(action))
+                actionSelected(action);
         }
     }
 }

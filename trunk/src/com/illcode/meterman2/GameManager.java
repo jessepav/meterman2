@@ -193,6 +193,8 @@ public final class GameManager
         Meterman2.template.clearGameTemplates();
         Meterman2.template.clearTemplateCache();
         Meterman2.attributes.clearGameAttributes();
+        for (Action a : Meterman2.actions.getGameActions())
+            ui.removeActionBinding(a);
         Meterman2.actions.clearGameActions();
         Meterman2.bundles.clearGameBundles();
         Meterman2.assets.setGameAssetsPath(null);

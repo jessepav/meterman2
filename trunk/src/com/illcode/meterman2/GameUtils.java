@@ -3,7 +3,6 @@ package com.illcode.meterman2;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Room;
-import com.illcode.meterman2.text.TextSource;
 import org.jdom2.Element;
 
 import java.util.ArrayList;
@@ -235,5 +234,57 @@ public final class GameUtils
             else
                 Meterman2.ui.showImageDialog(header, image, scale, text, button);
         }
+    }
+
+    /**
+     * Register actions and keyboard shortcuts found in an XML definition.
+     * @param el XML definition element
+     * @param system true if these are system actions
+     * @param putShortcuts true if the shortcuts should be installed in the UI
+     */
+    static void registerActions(Element el, boolean system, boolean putShortcuts) {
+        for (Element actionEl : el.getChildren("action")) {
+            final String name = actionEl.getAttributeValue("name");
+            final String templateText = actionEl.getAttributeValue("templateText");
+            final String shortcut = actionEl.getAttributeValue("shortcut");
+            if (name == null || templateText == null)
+                continue;
+            MMActions.Action a = Meterman2.actions.getAction(name);
+            if (a == null) {  // register a new action
+                if (system)
+                    a = Meterman2.actions.registerSystemAction(name, templateText);
+                else
+                    a = Meterman2.actions.registerAction(name, templateText);
+            } else {  // just change the templateText
+                a.setTemplateText(templateText);
+                a.setFixedText(null);
+            }
+            // Don't let games override bindings for system actions
+            if (putShortcuts && shortcut != null && system == Meterman2.actions.isSystemAction(a))
+                Meterman2.ui.putActionBinding(a, shortcut);
+        }
+    }
+
+    /** Set shortcuts for already-registered actions.
+     *  @param el XML definition element */
+    static void setActionShortcuts(Element el) {
+        for (Element actionEl : el.getChildren("action")) {
+            final String name = actionEl.getAttributeValue("name");
+            final String shortcut = actionEl.getAttributeValue("shortcut");
+            if (name == null || shortcut == null)
+                continue;
+            MMActions.Action a = Meterman2.actions.getAction(name);
+            if (a == null)
+                continue;
+            Meterman2.ui.putActionBinding(a, shortcut);
+        }
+    }
+
+    /**
+     * Register game actions and keyboard shortcuts found in an XML definition.
+     * @param el XML definition element
+     */
+    public static void registerActions(Element el) {
+        registerActions(el, false, true);
     }
 }

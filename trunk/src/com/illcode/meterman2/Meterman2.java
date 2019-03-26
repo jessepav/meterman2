@@ -89,7 +89,6 @@ public final class Meterman2
 
         actions = new MMActions();
         SystemActions.init();
-
         attributes = new MMAttributes();
         SystemAttributes.init();
 

@@ -105,4 +105,9 @@
       <item>mirror</item>
     </inventory>
   </player>
+
+  <actions id="riverboat-actions">
+    <action name="LOOK" templateText="Survey Scene" />
+    <action name="WAIT" templateText="Bide Time" />
+  </actions>
 </xbundle>

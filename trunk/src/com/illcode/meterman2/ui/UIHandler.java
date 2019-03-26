@@ -12,6 +12,9 @@ import java.util.List;
  */
 public interface UIHandler
 {
+    /** Called when the UI has finished initialization. */
+    void uiInitialized();
+
     /** Return true if a game is currently active. */
     boolean isGameActive();
 
