@@ -81,8 +81,9 @@
     <action name="CLOSE" templateText="Close" shortcut="shift C" />
     <action name="LOCK" templateText="Lock" shortcut="shift K" />
     <action name="UNLOCK" templateText="Unlock" shortcut="shift U" />
-    <action name="CONTAINER_PUT" templateText="Put Item %s" shortcut="ctrl shift P" />
-    <action name="CONTAINER_TAKE" templateText="Take Item %s" shortcut="ctrl shift T" />
-    <action name="CONTAINER_LOOK_IN" templateText="Look %s" shortcut="ctrl shift L" />
+    <action name="TALK" templateText="Talk" shortcut="ctrl shift T" />
+    <action name="CONTAINER_PUT" templateText="Put Item %s" shortcut="ctrl shift I" />
+    <action name="CONTAINER_TAKE" templateText="Take Item %s" shortcut="ctrl shift O" />
+    <action name="CONTAINER_LOOK_IN" templateText="Look %s" shortcut="ctrl shift X" />
   </actions>
 </xbundle>
