@@ -16,6 +16,7 @@ public final class SystemActions
     public static Action CLOSE;
     public static Action LOCK;
     public static Action UNLOCK;
+    public static Action TALK;
     public static Action CONTAINER_PUT;
     public static Action CONTAINER_TAKE;
     public static Action CONTAINER_LOOK_IN;
@@ -35,6 +36,7 @@ public final class SystemActions
         CLOSE = actions.getAction("CLOSE");
         LOCK = actions.getAction("LOCK");
         UNLOCK = actions.getAction("UNLOCK");
+        TALK = actions.getAction("TALK");
         CONTAINER_PUT = actions.getAction("CONTAINER_PUT");
         CONTAINER_TAKE = actions.getAction("CONTAINER_TAKE");
         CONTAINER_LOOK_IN = actions.getAction("CONTAINER_LOOK_IN");
