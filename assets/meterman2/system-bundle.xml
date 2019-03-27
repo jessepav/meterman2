@@ -69,6 +69,14 @@
     It is too dark here for you to see anything.
   </passage>
 
+  <!-- Used by talkers. -->
+  <passage id="no-talk-topics-message" format="printf">  <!-- args: entity.defName -->
+    It seems %s has nothing to talk about.
+  </passage>
+  <passage id="talk-prompt-message">
+    What do you want to talk about?
+  </passage>
+
   <actions id="system-actions">
     <action name="LOOK" templateText="Look" shortcut="shift L" />
     <action name="WAIT" templateText="Wait" shortcut="shift W" />

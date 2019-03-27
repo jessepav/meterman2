@@ -32,4 +32,8 @@ public final class SystemMessages
 
     // Used by dark rooms.
     public static final String DARKROOM_DESCRIPTION = "darkroom-description";
+
+    // Used by talkers.
+    public static final String NO_TALK_TOPICS = "no-talk-topics-message";
+    public static final String TALK_PROMPT = "talk-prompt-message";
 }
