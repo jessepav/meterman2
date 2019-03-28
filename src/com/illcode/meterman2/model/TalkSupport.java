@@ -94,6 +94,22 @@ public class TalkSupport
     public void clearTopics() {
         currentTopics.clear();
     }
+	
+  	/**
+     * Set scripted methods to be used by this talk-support.
+     * <p/>
+     * It looks for methods with these names (and implicit signatures) in the passed method map:
+     * <pre>{@code
+     *    boolean topicChosen(Talker talker, TopicMap.Topic t)
+     *    String getOtherTopicLabel(Talker talker)
+     *    void talkOther(Talker talker, String topic)
+     * }</pre>
+     * and if present will call them in place of the corresponding methods of its associated Talker when
+     * going through the talk process.
+     */
+    public void setScriptedMethods(Map<String,MMScript.ScriptedMethod> methodMap) {
+		// TODO: setScriptedMethods()
+    }
 
     protected List<Topic> assembleTopicList() {
         if (checkOtherTopic) {
@@ -107,10 +123,5 @@ public class TalkSupport
         if (otherTopic != null)
             assembledTopics.add(otherTopic);
         return assembledTopics;
-    }
-
-    
-    public void setScriptedMethods(Map<String,MMScript.ScriptedMethod> methodMap) {
-
     }
 }
