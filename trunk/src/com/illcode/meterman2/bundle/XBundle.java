@@ -32,14 +32,14 @@ public final class XBundle
     /** Constant indicating paragraphs should be indicated by an indent. */
     public static final int PARAGRAPH_INDENTED = 1;
 
+    /** Returned as an error value from methods with a String return type. */
+    public static final String ERROR_TEXT_STRING = "[error]";
+
     /** Returned if a passage is requested that doesn't exist.*/
     public static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
 
     /** Returned if a passage has some sort of error. */
-    public static final TextSource ERROR_TEXT_SOURCE = new StringSource("[error]");
-
-    /** Returned as an error value from methods with a String return type. */
-    public static final String ERROR_TEXT_STRING = "[error]";
+    public static final TextSource ERROR_TEXT_SOURCE = new StringSource(ERROR_TEXT_STRING);
 
     // Used to indicate a passage exists but hasn't yet been parsed.
     private static final TextSource PLACEHOLDER_TEXT_SOURCE = new StringSource("[placeholder]");

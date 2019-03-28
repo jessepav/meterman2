@@ -6,10 +6,7 @@ import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.handler.BasicWorldHandler;
 import com.illcode.meterman2.loader.WorldLoader;
-import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.Game;
-import com.illcode.meterman2.model.Player;
-import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.model.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -106,6 +103,10 @@ public class RiverboatGame implements Game
 
     public Room reloadRoom(String id) {
         return worldLoader.reloadRoom(id);
+    }
+
+    public TopicMap reloadTopicMap(String id) {
+        return worldLoader.reloadTopicMap(id);
     }
 
     public void debugCommand(String[] args) {

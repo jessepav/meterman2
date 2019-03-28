@@ -1,7 +1,7 @@
 package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.bundle.XBundle;
-import com.illcode.meterman2.model.GameObjectIdResolver;
+import com.illcode.meterman2.model.GameObjectResolver;
 import com.illcode.meterman2.model.Room;
 import org.jdom2.Element;
 
@@ -33,5 +33,5 @@ public interface RoomLoader
      * @param processConnections true if we should link the rooms via their specified exits
      */
     void loadRoomProperties(XBundle bundle, Element el, Room r,
-                            GameObjectIdResolver resolver, boolean processConnections);
+                            GameObjectResolver resolver, boolean processConnections);
 }

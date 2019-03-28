@@ -36,7 +36,7 @@ public class BaseRoomLoader implements RoomLoader
     protected XBundle bundle;
     protected Element el;
     protected Room r;
-    protected GameObjectIdResolver resolver;
+    protected GameObjectResolver resolver;
     protected boolean processConnections;
     protected LoaderHelper helper;
     protected Map<String,MMScript.ScriptedMethod> methodMap;
@@ -67,7 +67,7 @@ public class BaseRoomLoader implements RoomLoader
         return r;
     }
 
-    public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectIdResolver resolver,
+    public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectResolver resolver,
                                    boolean processConnections)
     {
         this.bundle = bundle;

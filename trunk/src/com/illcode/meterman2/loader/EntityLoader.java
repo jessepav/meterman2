@@ -2,7 +2,7 @@ package com.illcode.meterman2.loader;
 
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.GameObjectIdResolver;
+import com.illcode.meterman2.model.GameObjectResolver;
 import org.jdom2.Element;
 
 /**
@@ -32,5 +32,5 @@ public interface EntityLoader
      * @param resolver used to resolve references in the entity, for instance if a door refers
      * @param processContainment true if the containment of the entity should be processed
      */
-    void loadEntityProperties(XBundle bundle, Element el, Entity e, GameObjectIdResolver resolver, boolean processContainment);
+    void loadEntityProperties(XBundle bundle, Element el, Entity e, GameObjectResolver resolver, boolean processContainment);
 }

@@ -3,6 +3,7 @@ package com.illcode.meterman2;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Game;
 import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.model.TopicMap;
 import com.illcode.meterman2.ui.UIHandler;
 import org.apache.commons.lang3.StringUtils;
 
@@ -59,6 +60,11 @@ public class MMHandler implements UIHandler
                             Meterman2.ui.showTextDialog("Reload", "Reloading entity ID " + args[2] + " failed!", "Rats");
                         }
                         break;
+                    case "topicmap":
+                    case "tm":
+                        TopicMap tm = g.reloadTopicMap(args[2]);
+                        if (tm == null)
+                            Meterman2.ui.showTextDialog("Reload", "Reloading topic map ID " + args[2] + " failed!", "Rats");
                     }
                 }
                 break;
