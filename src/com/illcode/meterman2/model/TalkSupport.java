@@ -1,26 +1,26 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.SystemMessages;
 import com.illcode.meterman2.model.TopicMap.Topic;
 
 import java.util.*;
 
-import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.bundles;
+import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.ui;
 
 public class TalkSupport
 {
-    private Talker talker;
+    protected Talker talker;
 
-    private TopicMap topicMap;
-    private Collection<Topic> currentTopics;
-    private Topic otherTopic;
-    private boolean checkOtherTopic;
+    protected TopicMap topicMap;
+    protected Collection<Topic> currentTopics;
+    protected Topic otherTopic;
+    protected boolean checkOtherTopic;
 
-    private List<Topic> getTopicsList; // for use with getTopics() to avoid allocation
+    protected List<Topic> assembledTopics; // for use with assembleTopicList() to avoid allocation
 
     /**
      * Create a talk-support instance for the given talker.
@@ -30,19 +30,29 @@ public class TalkSupport
         this.talker = talker;
         currentTopics = new LinkedHashSet<>();
         checkOtherTopic = true;
-        getTopicsList = new ArrayList<>();
+        assembledTopics = new ArrayList<>();
     }
 
+    /**
+     * Return the topic map being used by this Talker.
+     */
     public TopicMap getTopicMap() {
         return topicMap;
     }
 
+    /**
+     * Set the topic map being used by this Talker.
+     */
     public void setTopicMap(TopicMap topicMap) {
         this.topicMap = topicMap;
     }
 
+    /**
+     * Entry point to the conversation system, called by the game engine when the user
+     * selects the Talk action on this entity.
+     */
     public void talk() {
-        final List<Topic> topics = getTopics();
+        final List<Topic> topics = assembleTopicList();
         final Entity e = talker.getTalkerEntity();
         if (topics.isEmpty()) {
             gm.println(bundles.getPassage(SystemMessages.NO_TALK_TOPICS).getTextWithArgs(e.getDefName()));
@@ -58,33 +68,49 @@ public class TalkSupport
         }
     }
 
+    /**
+     * Add a topic to our list of current topics.
+     * @param id topic ID, as found in the topic map.
+     */
     public void addTopic(String id) {
         final Topic t = topicMap.getTopic(id);
         if (t != null)
             currentTopics.add(t);
     }
 
+    /**
+     * Remove a topic from our list of current topics.
+     * @param id topic ID, as found in the topic map.
+     */
     public void removeTopic(String id) {
         final Topic t = topicMap.getTopic(id);
         if (t != null)
             currentTopics.remove(t);
     }
 
+    /**
+     * Clear all current topics.
+     */
     public void clearTopics() {
         currentTopics.clear();
     }
 
-    private List<Topic> getTopics() {
+    protected List<Topic> assembleTopicList() {
         if (checkOtherTopic) {
             final String otherLabel = talker.getOtherTopicLabel();
             if (otherLabel != null)
                 otherTopic = new Topic(TopicMap.OTHER_TOPIC_ID, otherLabel);
             checkOtherTopic = false;
         }
-        getTopicsList.clear();
-        getTopicsList.addAll(currentTopics);
+        assembledTopics.clear();
+        assembledTopics.addAll(currentTopics);
         if (otherTopic != null)
-            getTopicsList.add(otherTopic);
-        return getTopicsList;
+            assembledTopics.add(otherTopic);
+        return assembledTopics;
+    }
+
+    
+    public void setScriptedMethods(Map<String,MMScript.ScriptedMethod> methodMap) {
+
     }
 }
