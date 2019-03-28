@@ -80,15 +80,9 @@ public final class ScriptedRoomImpl implements RoomImpl
     private <T> T invokeWithResultOrError(RoomMethod method, Class<? extends T> resultClass,
                                           T errorVal, Object... args) {
         ScriptedMethod m = scriptedRoomMethods.get(method);
-        T result = null;
-        if (m != null) {
-            try {
-                result = resultClass.cast(m.invoke(args));
-            } catch (ClassCastException ex) {
-                logger.warning("ScriptedRoomImpl ClassCastException in " + method.getMethodName());
-                result = null;
-            }
-        }
-        return result != null ? result : errorVal;
+        if (m == null)
+            return errorVal;
+        else
+            return m.invokeWithResultOrError(resultClass, errorVal, args);
     }
 }

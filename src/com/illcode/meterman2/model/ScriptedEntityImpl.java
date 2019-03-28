@@ -106,15 +106,9 @@ public final class ScriptedEntityImpl implements EntityImpl
     private <T> T invokeWithResultOrError(EntityMethod method, Class<? extends T> resultClass,
                                           T errorVal, Object... args) {
         ScriptedMethod m = scriptedEntityMethods.get(method);
-        T result = null;
-        if (m != null) {
-            try {
-                result = resultClass.cast(m.invoke(args));
-            } catch (ClassCastException ex) {
-                logger.warning("ScriptedEntityImpl ClassCastException in " + method.getMethodName());
-                result = null;
-            }
-        }
-        return result != null ? result : errorVal;
+        if (m == null)
+            return errorVal;
+        else
+            return m.invokeWithResultOrError(resultClass, errorVal, args);
     }
 }

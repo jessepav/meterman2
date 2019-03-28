@@ -332,5 +332,23 @@ public final class MMScript
                 bshArgs[i] = args[i] == null ? Primitive.NULL : args[i];
             return bshArgs;
         }
+
+        /**
+         * Invokes the method with an expected return type.
+         * @param resultClass expected class of the method return value
+         * @param errorVal value to return if the method return value is not of the expected class
+         * @param args arguments to the method
+         * @param <T> type of the expected return value
+         * @return result of the method invocation, or error value
+         */
+        public <T> T invokeWithResultOrError(Class<? extends T> resultClass, T errorVal, Object... args) {
+            T result = null;
+            try {
+                result = resultClass.cast(invoke(args));
+            } catch (ClassCastException ex) {
+                logger.warning("ClassCastException in ScriptedMethod " + getName());
+            }
+            return result != null ? result : errorVal;
+        }
     }
 }
