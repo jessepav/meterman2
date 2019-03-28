@@ -22,6 +22,8 @@ public class TalkSupport
 
     protected List<Topic> assembledTopics; // for use with assembleTopicList() to avoid allocation
 
+    protected MMScript.ScriptedMethod topicChosenMethod, otherTopicLabelMethod, talkOtherMethod;
+
     /**
      * Create a talk-support instance for the given talker.
      * @param talker the talker who we're supporting
@@ -94,8 +96,8 @@ public class TalkSupport
     public void clearTopics() {
         currentTopics.clear();
     }
-	
-  	/**
+
+    /**
      * Set scripted methods to be used by this talk-support.
      * <p/>
      * It looks for methods with these names (and implicit signatures) in the passed method map:
@@ -106,14 +108,24 @@ public class TalkSupport
      * }</pre>
      * and if present will call them in place of the corresponding methods of its associated Talker when
      * going through the talk process.
+     * @param methodMap map from method name to scripted method. If null, all of our scripted methods
+     * will be cleared
      */
     public void setScriptedMethods(Map<String,MMScript.ScriptedMethod> methodMap) {
-		// TODO: setScriptedMethods()
+        if (methodMap != null) {
+            topicChosenMethod = methodMap.get("topicChosen");
+            otherTopicLabelMethod = methodMap.get("getOtherTopicLabel");
+            talkOtherMethod = methodMap.get("talkOther");
+        } else {
+            topicChosenMethod = null;
+            otherTopicLabelMethod = null;
+            talkOtherMethod = null;
+        }
     }
 
     protected List<Topic> assembleTopicList() {
         if (checkOtherTopic) {
-            final String otherLabel = talker.getOtherTopicLabel();
+            final String otherLabel = getOtherTopicLabel();
             if (otherLabel != null)
                 otherTopic = new Topic(TopicMap.OTHER_TOPIC_ID, otherLabel);
             checkOtherTopic = false;
@@ -123,5 +135,24 @@ public class TalkSupport
         if (otherTopic != null)
             assembledTopics.add(otherTopic);
         return assembledTopics;
+    }
+
+    protected boolean topicChosen(Topic t) {
+        return topicChosenMethod != null ?
+            topicChosenMethod.invokeWithResultOrError(Boolean.class, false, talker, t) :
+            talker.topicChosen(t);
+    }
+
+    protected String getOtherTopicLabel() {
+        return otherTopicLabelMethod != null ?
+            otherTopicLabelMethod.invokeWithResultOrError(String.class, null, talker) :
+            talker.getOtherTopicLabel();
+    }
+
+    protected void talkOther(String topic) {
+        if (talkOtherMethod != null)
+            talkOtherMethod.invoke(talker, topic);
+        else
+            talker.talkOther(topic);
     }
 }
