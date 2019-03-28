@@ -3,10 +3,7 @@ package com.illcode.meterman2.loader;
 import com.illcode.meterman2.*;
 import com.illcode.meterman2.bundle.BundleGroup;
 import com.illcode.meterman2.bundle.XBundle;
-import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.GameObjectIdResolver;
-import com.illcode.meterman2.model.Player;
-import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.model.*;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
@@ -21,11 +18,12 @@ import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 /**
  * Loads our world from a bundle group.
  */
-public final class WorldLoader implements GameObjectIdResolver
+public final class WorldLoader implements GameObjectResolver
 {
     private BundleGroup group;
     private Map<String,LoadInfo<Entity,EntityLoader>> entityLoadInfoMap;
     private Map<String,LoadInfo<Room,RoomLoader>> roomLoadInfoMap;
+    private Map<String, TopicMap> topicMaps;
     private Player player;
     private Room startingRoom;
 
@@ -37,6 +35,7 @@ public final class WorldLoader implements GameObjectIdResolver
         this.group = group;
         entityLoadInfoMap = new HashMap<>(100);
         roomLoadInfoMap = new HashMap<>(40);
+        topicMaps = new HashMap<>();
     }
 
     /**
@@ -175,6 +174,25 @@ public final class WorldLoader implements GameObjectIdResolver
         return rli.gameObject;
     }
 
+    /**
+     * Reloads a top-level topic map from its definition. The topic map must have been previously loaded
+     * for this method to succeed.
+     * @param id topic map element ID
+     * @return the TopicMap reloaded on success, null on failure.
+     */
+    public TopicMap reloadTopicMap(String id) {
+        TopicMap tm = topicMaps.get(id);
+        if (tm == null)
+            return null;
+        final Pair<Element,XBundle> pair = group.getElementAndBundle(id);
+        if (pair == null)
+            return null;
+        final Element el = pair.getLeft();
+        final XBundle b = pair.getRight();
+        tm.loadFrom(el, b);
+        return tm;
+    }
+
     // Methods to retrieve the world.
 
     public Player getPlayer() {
@@ -205,7 +223,7 @@ public final class WorldLoader implements GameObjectIdResolver
         return roomIdMap;
     }
 
-    //region -- Implement GameObjectIdResolver --
+    //region -- Implement GameObjectResolver --
     public Entity getEntity(String id) {
         final LoadInfo<Entity,EntityLoader> eli = entityLoadInfoMap.get(id);
         if (eli != null)
@@ -220,6 +238,21 @@ public final class WorldLoader implements GameObjectIdResolver
             return rli.gameObject;
         else
             return null;
+    }
+
+    public TopicMap getTopicMap(String id) {
+        TopicMap tm = topicMaps.get(id);
+        if (tm == null) {
+            final Pair<Element,XBundle> pair = group.getElementAndBundle(id);
+            if (pair != null) {
+                final Element el = pair.getLeft();
+                final XBundle b = pair.getRight();
+                tm = new TopicMap();
+                tm.loadFrom(el, b);
+                topicMaps.put(id, tm);
+            }
+        }
+        return tm;
     }
     //endregion
 

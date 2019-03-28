@@ -7,10 +7,7 @@ import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static com.illcode.meterman2.MMLogging.logger;
@@ -26,8 +23,10 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link Container} + {@link ContainerImpl}</dd>
  *     <dt>"door"</dt>
  *     <dd>{@link DoorImpl}</dd>
+ *     <dt>"talking"</dt>
+ *     <dd>{@link com.illcode.meterman2.model.TalkingEntity}</dd>
  * </dl>
- * Otherwise we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
+ * By default we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
  * <p/>
  * <b>Note</b>: this class is <em>not</em> thread-safe!
  */
@@ -39,7 +38,7 @@ public class BaseEntityLoader implements EntityLoader
     protected XBundle bundle;
     protected Element el;
     protected Entity e;
-    protected GameObjectIdResolver resolver;
+    protected GameObjectResolver resolver;
     protected boolean processContainment;
     protected LoaderHelper helper;
     protected Map<String,MMScript.ScriptedMethod> methodMap;
@@ -66,6 +65,9 @@ public class BaseEntityLoader implements EntityLoader
         case "door":
             e = Entity.create(id, new DoorImpl());
             break;
+        case "talking":
+            e = TalkingEntity.create(id);
+            break;
         default:
             e = Entity.create(id);
             break;
@@ -74,7 +76,7 @@ public class BaseEntityLoader implements EntityLoader
     }
 
     public void loadEntityProperties(final XBundle bundle, final Element el, final Entity e,
-                                     final GameObjectIdResolver resolver, final boolean processContainment)
+                                     final GameObjectResolver resolver, final boolean processContainment)
     {
         this.bundle = bundle;
         this.el = el;
@@ -111,6 +113,10 @@ public class BaseEntityLoader implements EntityLoader
                     logger.warning("Error in loadDoorProperties for ID " + e.getId());
                 }
             }
+            break;
+        case "talking":
+            if (e instanceof TalkingEntity)
+                loadTalkingEntityProperties((TalkingEntity) e);
             break;
         }
         // So we don't accidentally see stale values.
@@ -192,6 +198,26 @@ public class BaseEntityLoader implements EntityLoader
         doorImpl.setClosedExitLabel(helper.getValue("closedExitLabel"));
         doorImpl.setKey(resolver.getEntity(helper.getValue("key")));
         return true;
+    }
+
+    protected void loadTalkingEntityProperties(TalkingEntity te) {
+        final TalkSupport talkSupport = te.getTalkSupport();
+        final Element topicmap = el.getChild("topicmap");
+        TopicMap tm = null;
+        if (topicmap != null) {
+            final String topicmapRef = topicmap.getAttributeValue("topicmapRef");
+            if (topicmapRef != null) {
+                tm = resolver.getTopicMap(topicmapRef);
+            } else {
+                tm = new TopicMap();
+                tm.loadFrom(topicmap, bundle);
+            }
+        }
+        talkSupport.setTopicMap(tm);
+        talkSupport.clearTopics();
+        for (String topicId : helper.getListValue("topics"))
+            talkSupport.addTopic(topicId);
+        talkSupport.setScriptedMethods(methodMap);
     }
 
 }

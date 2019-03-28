@@ -55,17 +55,30 @@ public class TalkSupport
      */
     public void talk() {
         final List<Topic> topics = assembleTopicList();
-        final Entity e = talker.getTalkerEntity();
         if (topics.isEmpty()) {
-            gm.println(bundles.getPassage(SystemMessages.NO_TALK_TOPICS).getTextWithArgs(e.getDefName()));
+            gm.println(bundles.getPassage(SystemMessages.NO_TALK_TOPICS)
+                .getTextWithArgs(talker.getTalkerEntity().getDefName()));
         } else {
-            Topic t = ui.showListDialog(SystemActions.TALK.getText(), bundles.getPassage(SystemMessages.TALK_PROMPT).getText(),
-                topics, true);
-            if (t != null) {
-                // TODO: TalkSupport
-                // check for other topic and call talkOther()
-                // check if talker.topicChosen() returns true
-                // run conversation cycle
+            Topic t;
+            if (topics.size() == 1 && topics.get(0).getId().equals(TopicMap.GREETING_TOPIC_ID))
+                t = topics.get(0);
+            else
+                t = ui.showListDialog(SystemActions.TALK.getText(),
+                            bundles.getPassage(SystemMessages.TALK_PROMPT).getText(), topics, true);
+            if (t == null)
+                return;
+            if (t.getId() == TopicMap.OTHER_TOPIC_ID) {
+                String s = ui.showPromptDialog(SystemActions.TALK.getText(), t.getLabel(), "Topic:", "");
+                talkOther(s);
+            } else {
+                if (topicChosen(t))
+                    return;  // it was handled by the talker or script
+                // Now the normal conversation cycle.
+                gm.println(t.getText());
+                for (String topicId : t.getAddTopics())
+                    addTopic(topicId);
+                for (String topicId : t.getRemoveTopics())
+                    removeTopic(topicId);
             }
         }
     }
@@ -75,6 +88,8 @@ public class TalkSupport
      * @param id topic ID, as found in the topic map.
      */
     public void addTopic(String id) {
+        if (topicMap == null)
+            return;
         final Topic t = topicMap.getTopic(id);
         if (t != null)
             currentTopics.add(t);
@@ -85,6 +100,8 @@ public class TalkSupport
      * @param id topic ID, as found in the topic map.
      */
     public void removeTopic(String id) {
+        if (topicMap == null)
+            return;
         final Topic t = topicMap.getTopic(id);
         if (t != null)
             currentTopics.remove(t);

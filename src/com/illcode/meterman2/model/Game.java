@@ -169,6 +169,13 @@ public interface Game
     Room reloadRoom(String id);
 
     /**
+     * Reloads a top-level topic map from its definition.
+     * @param id topic map element ID
+     * @return the TopicMap reloaded on success, null on failure.
+     */
+    TopicMap reloadTopicMap(String id);
+
+    /**
      * The UI provides a facility for the implementor to enter debug commands, which will
      * be passed along to the game using this method. These commands can be used to,
      * for instance, jump to a later part of the game, move entities around, etc.

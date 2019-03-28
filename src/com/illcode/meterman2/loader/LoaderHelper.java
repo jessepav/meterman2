@@ -27,6 +27,14 @@ public final class LoaderHelper
         return new LoaderHelper(el);
     }
 
+    public Element getWrappedElement() {
+        return el;
+    }
+
+    public void setWrappedElement(Element el) {
+        this.el = el;
+    }
+
     /**
      * Returns either the value of the attribute with the given name, or if not present,
      * the trimmed text content of the child element with the given name. If neither are present,
@@ -65,12 +73,13 @@ public final class LoaderHelper
 
     /**
      * Returns either the list value of the attribute with the given name, or if not present, the list value
-     * of the child element with the given name. If neither are present, returns null. The "list value" is
+     * of the child element with the given name. If neither are present, returns an empty list. The "list value" is
      * defined differently for an attribute and child element:
      * <dl>
      *     <dt>attribute</dt>
      *     <dd>The value of the attribute should be a comma-separated list of the form
-     *         <tt>"val1, val2, val3, ..."</tt></dd>
+     *         <tt>"val1, val2, val3, ..."</tt> If this form of list is used, the values cannot
+     *         have whitespace in them.</dd>
      *     <dt>child element</dt>
      *     <dd>
      *         The values of the children of the child element are gathered and returned as a list.
@@ -82,8 +91,10 @@ public final class LoaderHelper
      *     <item>cola</item>
      * </equipment>
      *         }</pre>
-     *         is <tt>["helmet", "sword", "cola"]</tt>.<br/>
-     *         The names of the grandchild elements (in this example <em>item</em>) are not taken into account.
+     *         is <tt>["helmet", "sword", "cola"]</tt>.
+     *         <p/>
+     *         The names of the grandchild elements (in this example <em>item</em>) are not taken into account,
+     *         and whitespace is trimmed from their values.
      *     </dd>
      * </dl>
      *
@@ -102,7 +113,7 @@ public final class LoaderHelper
             return Collections.emptyList();
         final List<String> values = new ArrayList<>();
         for (Element grandchild : child.getChildren())
-            values.add(grandchild.getValue());
+            values.add(grandchild.getTextTrim());
         return values;
     }
 

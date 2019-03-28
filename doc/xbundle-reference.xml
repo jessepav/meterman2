@@ -155,4 +155,49 @@
     <action name="WAIT" templateText="Abide" />
   </actions>
 
+  <!--
+  Topic maps can be used within talking entity definitions or, to enable sharing among multiple
+  entities and reloading, can appear at the top-level and referenced via 'topicmapRef', in
+  which case they must have an 'id' attribute.
+  -->
+  <topicmap id="farmer-topics">
+    <!-- If a topic has an ID of "GREETING" and is the only topic in a talker's current topics,
+         then it will be chosen without prompting the user to select a topic. -->
+    <topic id="GREETING" label="Hello" addTopics="weather, tractor" removeTopics="GREETING">
+      <text>Hello there, neighbor! How'd like the farming life?</text>
+    </topic>
+    <topic id="weather" label="How 'bout that weather?">
+      <addTopics>
+        <t>storm</t>
+      </addTopics>
+      <removeTopics>
+        <t>weather</t>
+      </removeTopics>
+      <text>
+        The storm, it is a comin'.
+      </text>
+    </topic>
+    <topic id="tractor" removeTopics="tractor">
+      <label>That is one fine tractor you got there.</label>
+      <text>Indeed, she's a real beaut.</text>
+    </topic>
+    <topic id="storm" label="What storm is that?" removeTopics="tractor, storm">
+      <text>
+        The giant cyclone of destruction is rumored to be in these parts. I can't
+        think of nothing else anymore.
+      </text>
+    </topic>
+  </topicmap>
+
+  <entity id="johnson" type="talking" name="Johnson the Farmer" attributes="proper-name"
+          inRoom="grassy-field">
+    <description>A farmer with a long beard.</description>
+    <topicmap topicmapRef="farmer-topics" />
+
+    <!-- Set the collection of current topics.
+         This could also be given as an attribute: topics="GREETING"-->
+    <topics>
+      <topic>GREETING</topic>
+    </topics>
+  </entity>
 </xbundle>
