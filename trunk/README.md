@@ -10,3 +10,9 @@
 
 Meterman2 is a game system that is a hybrid of parser IF models,
 point-and-click adventures, and text-based RPGs.
+
+## Manual ##
+
+The game system manual is online here:
+
+- [https://jessepav.github.io/meterman/manual.html](https://jessepav.github.io/meterman/manual.html)
