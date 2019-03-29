@@ -19,6 +19,20 @@ public class TalkingEntity extends Entity implements Talker
         return new TalkingEntity(id, impl);
     }
 
+    @Override
+    public Object getState() {
+        final Object[] stateObjs = new Object[2];
+        stateObjs[0] = talkSupport.getState();
+        stateObjs[1] = super.getState();
+        return stateObjs;
+    }
+
+    @Override
+    public void restoreState(Object state) {
+        final Object[] stateObjs = (Object[]) state;
+        talkSupport.restoreState(stateObjs[0]);
+        super.restoreState(stateObjs[1]);
+    }
 
     //region -- Implement Talker --
     public Entity getTalkerEntity() {

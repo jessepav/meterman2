@@ -140,6 +140,39 @@ public class TalkSupport
         }
     }
 
+    /**
+     * Return a state object that can later be used to restore this talk-support's state.
+     * <p/>
+     * The state of a talk-support instance comprises a collection of current topics IDs.
+     */
+    public Object getState() {
+        if (currentTopics.isEmpty())
+            return null;
+        final String[] currentTopicIds = new String[currentTopics.size()];
+        int idx = 0;
+        for (Topic t : currentTopics)
+            currentTopicIds[idx++] = t.getId();
+        return currentTopicIds;
+    }
+
+    /**
+     * Restore state from a previously saved state object.
+     * <p/>
+     * The state of a talk-support instance comprises a collection of current topics IDs.
+     * @param state state object, as returned by {@code getState()}.
+     */
+    public void restoreState(Object state) {
+        clearTopics();
+        if (state == null || topicMap == null)
+            return;
+        final String[] currentTopicIds = (String[]) state;
+        for (String id : currentTopicIds) {
+            final Topic t = topicMap.getTopic(id);
+            if (t != null)
+                currentTopics.add(t);
+        }
+    }
+
     protected List<Topic> assembleTopicList() {
         if (checkOtherTopic) {
             final String otherLabel = getOtherTopicLabel();
