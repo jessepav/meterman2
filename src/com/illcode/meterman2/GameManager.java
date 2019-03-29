@@ -165,8 +165,9 @@ public final class GameManager
         ui.setGlobalActionButtonText();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
-        refreshUI();  // since no nextTurn() is called.
         game.start(false);
+      	refreshUI();  // since no nextTurn() is called
+        outputText();
     }
 
     private void closeGame() {
@@ -651,10 +652,10 @@ public final class GameManager
         loadGame(state);  // in turn calls restoreGameState() below
         ui.appendText("\n   ------- Game Loaded -------\n\n");
     }
-    
+
     // Patch up the properties of entities, rooms, and the player from saved values in game-state.
     private void restoreGameObjectProperties(final Map<String,Entity> entityIdMap, final Map<String,Room> roomIdMap,
-                                             final Player player, final GameState state) 
+                                             final Player player, final GameState state)
     {
         AttributeSetPermuter attrPermuter =
             new AttributeSetPermuter(Arrays.asList(state.attributeNames), Meterman2.attributes.getAttributeNames());
