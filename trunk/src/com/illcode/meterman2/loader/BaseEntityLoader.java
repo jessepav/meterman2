@@ -202,15 +202,15 @@ public class BaseEntityLoader implements EntityLoader
 
     protected void loadTalkingEntityProperties(TalkingEntity te) {
         final TalkSupport talkSupport = te.getTalkSupport();
-        final Element topicmap = el.getChild("topicmap");
+        final Element topicmapEl = el.getChild("topicmap");
         TopicMap tm = null;
-        if (topicmap != null) {
-            final String topicmapRef = topicmap.getAttributeValue("topicmapRef");
+        if (topicmapEl != null) {
+            final String topicmapRef = topicmapEl.getAttributeValue("topicmapRef");
             if (topicmapRef != null) {
                 tm = resolver.getTopicMap(topicmapRef);
             } else {
                 tm = new TopicMap();
-                tm.loadFrom(topicmap, bundle);
+                tm.loadFrom(topicmapEl, bundle);
             }
         }
         talkSupport.setTopicMap(tm);
