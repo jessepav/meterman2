@@ -15,7 +15,7 @@ import java.util.Map;
  * <p/>
  * If the room has the attribute {@link SystemAttributes#DARK} and there is no lightsource
  * in the room, then we return a different "dark name" and "dark exit name", and hide the
- * contents of the room.
+ * contents of the room (or allow a scripted method to return a list of contents).
  */
 public class DarkRoom extends Room
 {
@@ -26,11 +26,11 @@ public class DarkRoom extends Room
     protected MMScript.ScriptedMethod getDarkEntitiesMethod;
 
     private boolean wasDark;  // used to detect changes in darkness
-    private boolean firstDarkCheck;  // is this the first time we're checking if we're dark?
+    private int darkCheckTurn;  // the turn on which we last checked if it was dark
 
     protected DarkRoom(String id, RoomImpl impl) {
         super(id, impl);
-        firstDarkCheck = true;
+        darkCheckTurn = -1;  // force a dark check
     }
 
     /** Create a dark room with the given ID and a dark room implemention. */
@@ -81,19 +81,26 @@ public class DarkRoom extends Room
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Entity> getEntities() {
-        if (isDark()) {
-            if (getDarkEntitiesMethod != null)
-                return getDarkEntitiesMethod.invokeWithResultOrError(List.class, Collections.emptyList(), this);
-            else
-                return Collections.emptyList();
-        } else {
+        if (isDark())
+            return getDarkEntities();
+        else
             return super.getEntities();
-        }
+    }
+
+    @SuppressWarnings("unchecked")
+    protected List<Entity> getDarkEntities() {
+        if (getDarkEntitiesMethod != null)
+            return getDarkEntitiesMethod.invokeWithResultOrError(List.class, Collections.emptyList(), this);
+        else
+            return Collections.emptyList();
     }
 
     public boolean isDark() {
+        final int turn = Meterman2.gm.getNumTurns();
+        if (darkCheckTurn == turn)
+            return wasDark;
+
         boolean nowDark = false;
         checkDark: {
             // if we're not naturally dark, then we're definite not dark now.
@@ -122,16 +129,15 @@ public class DarkRoom extends Room
             nowDark = true;  // DARKNESS! Charley Murphy!
         }
         boolean needRefresh = false;
-        if (firstDarkCheck) {
-            firstDarkCheck = false;
-            wasDark = nowDark;
+        if (darkCheckTurn == -1)  // first time we've checked for darkness
             needRefresh = true;
-        } else if (wasDark != nowDark) {
+        else if (wasDark != nowDark)
             needRefresh = true;
+        darkCheckTurn = turn;
+        if (needRefresh) {
             wasDark = nowDark;
-        }
-        if (needRefresh)
             Meterman2.gm.roomChanged(this);
+        }
         return nowDark;
     }
 
