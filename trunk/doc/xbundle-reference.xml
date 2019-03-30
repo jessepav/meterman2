@@ -182,9 +182,10 @@
       <text>Indeed, she's a real beaut.</text>
     </topic>
     <topic id="storm" label="What storm is that?" removeTopics="tractor, storm">
-      <text>
-        The giant cyclone of destruction is rumored to be in these parts. I can't
-        think of nothing else anymore.
+      <text format="ftl">
+        ${entity.defName} pauses for a moment, then says, "The giant cyclone
+        of destruction is rumored to be in these parts. I can't think of nothing
+        else no more."
       </text>
     </topic>
   </topicmap>

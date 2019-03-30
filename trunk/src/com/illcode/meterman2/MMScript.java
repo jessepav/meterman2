@@ -124,7 +124,7 @@ public final class MMScript
     /**
      * Saves the current value of a binding in the game namespace and sets a new one.
      * @param name variable name
-     * @param value value; if null, the binding will be removed.
+     * @param value new value; if null, the binding will be removed.
      */
     public void pushBinding(String name, Object value) {
         Object oldVal = null;

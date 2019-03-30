@@ -5,6 +5,7 @@ import com.illcode.meterman2.event.EntityActionsProcessor;
 import com.illcode.meterman2.event.GameActionListener;
 import com.illcode.meterman2.event.TurnListener;
 import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.Talker;
 import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.List;
@@ -96,6 +97,9 @@ public class BasicWorldHandler
             else
                 actions.add(SystemActions.EQUIP);
         }
+        if (e instanceof Talker) {
+            actions.add(SystemActions.TALK);
+        }
     }
 
     // Implement GameActionListener
@@ -118,6 +122,12 @@ public class BasicWorldHandler
             gm.setEquipped(e, true);
         } else if (action.equals(SystemActions.UNEQUIP)) {
             gm.setEquipped(e, false);
+        } else if (action.equals(SystemActions.TALK) && e instanceof Talker) {
+            // since we're processing this outside of the usual Entity.processAction(),
+            // we need to set bindings ourselves.
+            GameUtils.pushBinding("selectedEntity", e);
+            ((Talker) e).getTalkSupport().talk();
+            GameUtils.popBinding("selectedEntity");
         } else {
             handled = false;
         }
