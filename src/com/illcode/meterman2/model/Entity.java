@@ -1,10 +1,7 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.AttributeSet;
-import com.illcode.meterman2.GameManager;
+import com.illcode.meterman2.*;
 import com.illcode.meterman2.MMActions.Action;
-import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.model.EntityImpl.EntityMethod;
 import org.apache.commons.lang3.text.WordUtils;
 
@@ -135,15 +132,13 @@ public class Entity
      */
     public String getDescription() {
         try {
-            Meterman2.script.pushBinding("entity", this);
-            Meterman2.template.pushBinding("entity", this);
+            GameUtils.pushBinding("entity", this);
             if (delegate != null && delegateMethods.contains(GET_DESCRIPTION))
                 return delegate.getDescription(this);
             else
                 return impl.getDescription(this);
         } finally {
-            Meterman2.script.popBinding("entity");
-            Meterman2.template.popBinding("entity");
+            GameUtils.popBinding("entity");
         }
     }
 
@@ -221,21 +216,19 @@ public class Entity
      * The player invoked an action on this entity.
      * <p/>
      * Templates and scripts invoked during action processing will
-     * have the "entity" variable set to this entity.
+     * have the "selectedEntity" variable set to this entity.
      * @param action action
      * @return true to consume the action, false to continue through the processing chain
      */
     public boolean processAction(Action action) {
         try {
-            Meterman2.script.pushBinding("selectedEntity", this);
-            Meterman2.template.pushBinding("selectedEntity", this);
+            GameUtils.pushBinding("selectedEntity", this);
             if (delegate != null && delegateMethods.contains(PROCESS_ACTION))
                 return delegate.processAction(this, action);
             else
                 return impl.processAction(this, action);
         } finally {
-            Meterman2.script.popBinding("selectedEntity");
-            Meterman2.template.popBinding("selectedEntity");
+            GameUtils.popBinding("selectedEntity");
         }
     }
 

@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.SystemMessages;
@@ -55,9 +56,9 @@ public class TalkSupport
      */
     public void talk() {
         final List<Topic> topics = assembleTopicList();
+        final Entity e = talker.getTalkerEntity();
         if (topics.isEmpty()) {
-            gm.println(bundles.getPassage(SystemMessages.NO_TALK_TOPICS)
-                .getTextWithArgs(talker.getTalkerEntity().getDefName()));
+            gm.println(bundles.getPassage(SystemMessages.NO_TALK_TOPICS).getTextWithArgs(e.getDefName()));
         } else {
             Topic t;
             if (topics.size() == 1 && topics.get(0).getId().equals(TopicMap.GREETING_TOPIC_ID))
@@ -74,7 +75,9 @@ public class TalkSupport
                 if (topicChosen(t))
                     return;  // it was handled by the talker or script
                 // Now the normal conversation cycle.
+                GameUtils.pushBinding("entity", e);
                 gm.println(t.getText());
+                GameUtils.popBinding("entity");
                 for (String topicId : t.getAddTopics())
                     addTopic(topicId);
                 for (String topicId : t.getRemoveTopics())

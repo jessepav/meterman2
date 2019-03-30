@@ -287,4 +287,23 @@ public final class GameUtils
     public static void registerActions(Element el) {
         registerActions(el, false, true);
     }
+
+    /**
+     * Pushes a binding to both the script game namespace and template data model.
+     * @param name variable name
+     * @param value new value; if null, the binding will be removed.
+     */
+    public static void pushBinding(String name, Object value) {
+        Meterman2.script.pushBinding(name, value);
+        Meterman2.template.pushBinding(name, value);
+    }
+
+    /**
+     * Restores the previously saved value of a variable in the script game namespace and template data model.
+     * @param name variable name
+     */
+    public static void popBinding(String name) {
+        Meterman2.script.popBinding(name);
+        Meterman2.template.popBinding(name);
+    }
 }
