@@ -1,5 +1,6 @@
 package com.illcode.meterman2.model;
 
+import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.SystemMessages;
@@ -7,6 +8,7 @@ import com.illcode.meterman2.text.TextSource;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A room that can be, though is not necessarily, dark.
@@ -20,6 +22,8 @@ public class DarkRoom extends Room
     protected String darkName;
     protected String darkExitName;
     protected TextSource darkDescription;
+
+    protected MMScript.ScriptedMethod getDarkEntitiesMethod;
 
     private boolean wasDark;  // used to detect changes in darkness
     private boolean firstDarkCheck;  // is this the first time we're checking if we're dark?
@@ -77,11 +81,16 @@ public class DarkRoom extends Room
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Entity> getEntities() {
-        if (isDark())
-            return Collections.emptyList();
-        else
+        if (isDark()) {
+            if (getDarkEntitiesMethod != null)
+                return getDarkEntitiesMethod.invokeWithResultOrError(List.class, Collections.emptyList(), this);
+            else
+                return Collections.emptyList();
+        } else {
             return super.getEntities();
+        }
     }
 
     public boolean isDark() {
@@ -128,6 +137,26 @@ public class DarkRoom extends Room
 
     public static boolean isDark(Room r) {
         return r instanceof DarkRoom && ((DarkRoom)r).isDark();
+    }
+
+    /**
+     * Set scripted methods to be used by this dark room.
+     * <p/>
+     * It looks for methods with these names (and implicit signatures) in the passed method map:
+     * <dl>
+     *     <dt>{@code List getDarkEntities(DarkRoom r)}</dt>
+     *     <dd>called to return the list of entities found in the room when it's dark,
+     *         in place of the normal Room.getEntities()</dd>
+     * </dl>
+     * @param methodMap map from method name to scripted method. If null, all of our scripted methods
+     * will be cleared
+     */
+    public void setScriptedMethods(Map<String,MMScript.ScriptedMethod> methodMap) {
+        if (methodMap != null) {
+            getDarkEntitiesMethod = methodMap.get("getDarkEntities");
+        } else {
+            getDarkEntitiesMethod = null;
+        }
     }
 
     private static boolean isLightSource(Entity e) {

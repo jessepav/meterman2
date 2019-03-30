@@ -150,5 +150,6 @@ public class BaseRoomLoader implements RoomLoader
         final Element darkDescription = el.getChild("darkDescription");
         if (darkDescription != null)
             dr.setDarkDescription(bundle.elementTextSource(darkDescription));
+        dr.setScriptedMethods(methodMap);
     }
 }
