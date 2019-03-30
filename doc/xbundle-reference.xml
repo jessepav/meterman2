@@ -99,6 +99,19 @@
         attributes="dark">
     <description>A rough cave whose walls are decorated with rude carvings.</description>
     <darkDescription>The faintest hints of carvings are visible in the shadows.</darkDescription>
+    <script>
+      <![CDATA[
+      // A scripted getDarkEntities() method will be called to return the list of entities found
+      // in the room when it's dark, in place of the normal Room.getEntities().
+
+      List getDarkEntities(DarkRoom r) {
+          List entityList = new ArrayList(2);
+          entityList.add(entities.get("vague-mound"));
+          entityList.add(entities.get("dark-drawers"));
+          return entityList;
+      }
+      ]]>
+    </script>
     <exits>
       <exit room="cave-passage" pos="S"/>
     </exits>
@@ -202,3 +215,4 @@
     </topics>
   </entity>
 </xbundle>
+</script>
