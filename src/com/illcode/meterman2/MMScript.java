@@ -16,6 +16,9 @@ import static com.illcode.meterman2.MMLogging.logger;
  */
 public final class MMScript
 {
+    /** A marker singleton to indicate that a method had a void return type. */
+    public static final Object VOID_RETURN = new Object();
+
     /**
      * The global BeanShell interpreter that is created once upon construction and used
      * for all script evaluation.
@@ -306,14 +309,19 @@ public final class MMScript
         /**
          * Invoke the method, passing a list of arguments.
          * @param args arguments to the method
-         * @return the return value of the method
+         * @return the return value of the method. Returns {@code MMScript.VOID_RETURN} for a void
+         *          return-type method.
          */
         public Object invoke(Object... args) {
             Object result;
             try {
                 result = bshMethod.invoke(getBshArgs(args), intr);
-                if (result instanceof Primitive)
-                    result = ((Primitive)result).getValue();
+                if (result instanceof Primitive) {
+                    if (result == Primitive.VOID)
+                        result = VOID_RETURN;
+                    else
+                        result = ((Primitive)result).getValue();
+                }
             } catch (Throwable t) {
                 logger.log(Level.WARNING, "MMScript error:", t);
                 result = null;
