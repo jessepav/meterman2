@@ -1,9 +1,6 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMScript;
-import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.SystemAttributes;
-import com.illcode.meterman2.SystemMessages;
+import com.illcode.meterman2.*;
 import com.illcode.meterman2.text.TextSource;
 
 import java.util.Collections;
@@ -73,11 +70,15 @@ public class DarkRoom extends Room
 
     @Override
     public String getDescription() {
-        if (isDark())
-            return darkDescription != null ? darkDescription.getText() :
+        if (isDark()) {
+            GameUtils.pushBinding("room", this);
+            final String desc = darkDescription != null ? darkDescription.getText() :
                 Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
-        else
+            GameUtils.popBinding("room");
+            return desc;
+        } else {
             return super.getDescription();
+        }
     }
 
     @Override
@@ -85,15 +86,22 @@ public class DarkRoom extends Room
         if (isDark())
             return getDarkEntities();
         else
-            return super.getEntities();
+            return getRealEntities();
     }
 
+    /** Returns the list of entities found in this room when it's dark. */
     @SuppressWarnings("unchecked")
-    protected List<Entity> getDarkEntities() {
+    public List<Entity> getDarkEntities() {
         if (getDarkEntitiesMethod != null)
             return getDarkEntitiesMethod.invokeWithResultOrError(List.class, Collections.emptyList(), this);
         else
             return Collections.emptyList();
+    }
+
+    /** Returns a list of the entities actually contained in this dark room, as though
+     *  it were not dark. */
+    public List<Entity> getRealEntities() {
+        return super.getEntities();
     }
 
     public boolean isDark() {
@@ -108,7 +116,7 @@ public class DarkRoom extends Room
                 break checkDark;
 
             // Otherwise, let us see if something in the room is a light source.
-            for (Entity e : getEntities()) {
+            for (Entity e : getRealEntities()) {
                 if (isLightSource(e)) {
                     break checkDark;
                 } else if (e instanceof EntityContainer) {
@@ -122,9 +130,10 @@ public class DarkRoom extends Room
                 }
             }
             // In player inventory, we do not check for containment: a lamp in a bag doesn't light the room.
-            for (Entity e : Meterman2.gm.getPlayer().getEntities())
-                if (isLightSource(e))
-                    break checkDark;
+            if (Meterman2.gm.getCurrentRoom() == this)
+                for (Entity e : Meterman2.gm.getPlayer().getEntities())
+                    if (isLightSource(e))
+                        break checkDark;
 
             nowDark = true;  // DARKNESS! Charley Murphy!
         }
