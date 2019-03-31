@@ -99,6 +99,38 @@
     </description>
   </room>
 
+  <entity id="mike" type="talking" name="Mike" attributes="proper-name" topics="GREETING">
+    <inRoom>playroom</inRoom>
+    <description>It's your old bud Mike!</description>
+    <topicmap>
+      <topic id="GREETING" addTopics="plumbing, dungeon" removeTopics="GREETING">
+        <label>Hey man</label>
+        <text>Hey man!@p What's going on?</text>
+      </topic>
+      <topic id="plumbing" label="How's your plumbing?">
+        <text script="bsh">
+          if (Utils.randInt(0, 1) == 0)
+            out("The plumbing is good.");
+          else
+            out("It's not so good at all, leaks everywhere.");
+        </text>
+      </topic>
+      <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING">
+        <text>That is one scary dungeon!</text>
+      </topic>
+    </topicmap>
+
+    <script>
+      String getOtherTopicLabel(Talker talker) {
+          return "Something else, actually...";
+      }
+
+      void talkOther(Talker talker, String topic) {
+          println("I don't know much about '" + topic + "'");
+      }
+    </script>
+  </entity>
+
   <player id="player" inRoom="starting-room">
     <inventory>
       <item equipped="true">stick</item>

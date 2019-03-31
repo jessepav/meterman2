@@ -172,6 +172,10 @@
   Topic maps can be used within talking entity definitions or, to enable sharing among multiple
   entities and reloading, can appear at the top-level and referenced via 'topicmapRef', in
   which case they must have an 'id' attribute.
+
+  There is a special value of removeTopics, "all", which will cause all current topics to be cleared.
+  removeTopics is processed before addTopics, so you can use that to clear the slate before adding
+  new topics.
   -->
   <topicmap id="farmer-topics">
     <!-- If a topic has an ID of "GREETING" and is the only topic in a talker's current topics,
