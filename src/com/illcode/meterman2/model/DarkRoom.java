@@ -107,8 +107,9 @@ public class DarkRoom extends Room
     public boolean isDark() {
         final int turn = Meterman2.gm.getNumTurns();
         // TODO: strange behavior when loading games if the below lines are uncommented.
-        //if (darkCheckTurn == turn)
-        //    return wasDark;
+        // Actually (maybe?) it seems the debugger just doesn't work properly.
+        if (darkCheckTurn == turn)
+            return wasDark;
 
         boolean nowDark = false;
         checkDark: {
