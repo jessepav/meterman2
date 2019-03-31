@@ -48,6 +48,7 @@ public class TalkSupport
      */
     public void setTopicMap(TopicMap topicMap) {
         this.topicMap = topicMap;
+        checkOtherTopic = true;  // the situation has changed: recheck if we have an "other topic".
     }
 
     /**
@@ -79,10 +80,16 @@ public class TalkSupport
                 GameUtils.pushBinding("entity", e);
                 gm.println(t.getText());
                 GameUtils.popBinding("entity");
+                for (String topicId : t.getRemoveTopics()) {
+                    if (topicId.equals("all")) {
+                        clearTopics();
+                        break;
+                    } else {
+                        removeTopic(topicId);
+                    }
+                }
                 for (String topicId : t.getAddTopics())
                     addTopic(topicId);
-                for (String topicId : t.getRemoveTopics())
-                    removeTopic(topicId);
             }
         }
     }
