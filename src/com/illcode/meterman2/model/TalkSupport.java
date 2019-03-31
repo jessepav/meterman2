@@ -23,7 +23,7 @@ public class TalkSupport
 
     protected List<Topic> assembledTopics; // for use with assembleTopicList() to avoid allocation
 
-    protected MMScript.ScriptedMethod topicChosenMethod, otherTopicLabelMethod, talkOtherMethod;
+    protected MMScript.ScriptedMethod beginTalkMethod, topicChosenMethod, otherTopicLabelMethod, talkOtherMethod;
 
     /**
      * Create a talk-support instance for the given talker.
@@ -55,6 +55,7 @@ public class TalkSupport
      * selects the Talk action on this entity.
      */
     public void talk() {
+        beginTalk();
         final List<Topic> topics = assembleTopicList();
         final Entity e = talker.getTalkerEntity();
         if (topics.isEmpty()) {
@@ -122,6 +123,7 @@ public class TalkSupport
      * <p/>
      * It looks for methods with these names (and implicit signatures) in the passed method map:
      * <pre>{@code
+     *    void beginTalk(Talker talker)
      *    boolean topicChosen(Talker talker, TopicMap.Topic t)
      *    String getOtherTopicLabel(Talker talker)
      *    void talkOther(Talker talker, String topic)
@@ -133,10 +135,12 @@ public class TalkSupport
      */
     public void setScriptedMethods(Map<String,MMScript.ScriptedMethod> methodMap) {
         if (methodMap != null) {
+            beginTalkMethod = methodMap.get("beginTalk");
             topicChosenMethod = methodMap.get("topicChosen");
             otherTopicLabelMethod = methodMap.get("getOtherTopicLabel");
             talkOtherMethod = methodMap.get("talkOther");
         } else {
+            beginTalkMethod = null;
             topicChosenMethod = null;
             otherTopicLabelMethod = null;
             talkOtherMethod = null;
@@ -188,6 +192,13 @@ public class TalkSupport
         if (otherTopic != null)
             assembledTopics.add(otherTopic);
         return assembledTopics;
+    }
+
+    protected void beginTalk() {
+        if (beginTalkMethod != null)
+            beginTalkMethod.invoke(talker);
+        else
+            talker.beginTalk();
     }
 
     protected boolean topicChosen(Topic t) {

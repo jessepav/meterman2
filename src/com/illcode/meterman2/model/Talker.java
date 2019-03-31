@@ -13,6 +13,11 @@ public interface Talker
     /** Return the talk-support instance being used by this Talker. */
     TalkSupport getTalkSupport();
 
+    /** Called at the beginning of the talk action process, before choice lists are
+     *  constructed. A Talker can override this to, say, add or remove topics based
+     *  on global game state.*/
+    void beginTalk();
+
     /**
      * Called when the user has selected one of the active topics.
      * @param t topic chosen

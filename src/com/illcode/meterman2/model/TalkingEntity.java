@@ -43,6 +43,10 @@ public class TalkingEntity extends Entity implements Talker
         return talkSupport;
     }
 
+    public void beginTalk() {
+        // empty
+    }
+
     public boolean topicChosen(TopicMap.Topic t) {
         return false;
     }
