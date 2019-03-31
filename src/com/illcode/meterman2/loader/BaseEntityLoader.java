@@ -25,6 +25,8 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link DoorImpl}</dd>
  *     <dt>"talking"</dt>
  *     <dd>{@link com.illcode.meterman2.model.TalkingEntity}</dd>
+ *     <dt>"switchable"</dt>
+ *     <dd>{@link com.illcode.meterman2.model.SwitchableEntityImpl}</dd>
  * </dl>
  * By default we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
  * <p/>
@@ -67,6 +69,9 @@ public class BaseEntityLoader implements EntityLoader
             break;
         case "talking":
             e = TalkingEntity.create(id);
+            break;
+        case "switchable":
+            e = Entity.create(id, new SwitchableEntityImpl());
             break;
         default:
             e = Entity.create(id);
@@ -118,6 +123,9 @@ public class BaseEntityLoader implements EntityLoader
             if (e instanceof TalkingEntity)
                 loadTalkingEntityProperties((TalkingEntity) e);
             break;
+        case "switchable":
+            if (e.getImpl() instanceof SwitchableEntityImpl)
+                loadSwitchableEntityProperties((SwitchableEntityImpl) e.getImpl());
         }
         // So we don't accidentally see stale values.
         this.bundle = null;
@@ -220,4 +228,7 @@ public class BaseEntityLoader implements EntityLoader
         talkSupport.setScriptedMethods(methodMap);
     }
 
+    protected void loadSwitchableEntityProperties(SwitchableEntityImpl impl) {
+        impl.setScriptedMethods(methodMap);
+    }
 }

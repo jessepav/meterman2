@@ -99,41 +99,23 @@
     </description>
   </room>
 
-  <entity id="flashlight" name="Flashlight (off)" attributes="takeable" inContainer="chest">
+  <entity id="flashlight" type="switchable" name="Flashlight (off)" attributes="takeable" inContainer="chest">
+    <description script="bsh">
+      out("A small rechargeable flashlight. It is ");
+      out(entity.getAttributes().get(SystemAttributes.ON) ? "on" : "off");
+      out(".");
+    </description>
     <script>
       <![CDATA[
-List actions = new ArrayList(2);
-boolean on = false;
-StringBuilder b = new StringBuilder(64);
-
-public List getActions(Entity e) {
-    actions.clear();
-    if (on)
-        actions.add(SystemActions.SWITCH_OFF);
-    else
-        actions.add(SystemActions.SWITCH_ON);
-    return actions;
-}
-
-public boolean processAction(Entity e, Action action) {
-    if (action.equals(SystemActions.SWITCH_ON) || action.equals(SystemActions.SWITCH_OFF)) {
-        on = !on;
-        e.getAttributes().set(SystemAttributes.LIGHTSOURCE, on);
-        String onOff = on ? "on" : "off";
-        println("You turn the flashlight " + onOff + ".");
-        e.setName("Flashlight (" + onOff + ")");
-        gm.entityChanged(e);
-        return true;
-    } else {
-        return false;
-    }
-}
-
-public String getDescription(Entity e) {
-    b.append("A small rechargeable flashlight. It is ").append(on ? "on" : "off").append('.');
-    String s = b.toString();
-    b.setLength(0);
-    return s;
+boolean switchedAction(Entity e, boolean on) {
+    on = !on;
+    e.getAttributes().set(SystemAttributes.ON, on);
+    e.getAttributes().set(SystemAttributes.LIGHTSOURCE, on);
+    String onOff = on ? "on" : "off";
+    println("You turn the flashlight " + onOff + ".");
+    e.setName("Flashlight (" + onOff + ")");
+    gm.entityChanged(e);
+    return true;
 }
       ]]>
     </script>
