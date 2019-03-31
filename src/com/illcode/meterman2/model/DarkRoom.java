@@ -24,6 +24,7 @@ public class DarkRoom extends Room
 
     private boolean wasDark;  // used to detect changes in darkness
     private int darkCheckTurn;  // the turn on which we last checked if it was dark
+    private boolean needTurnCheck;  // if true, we force a darkness check even on the same turn
 
     protected DarkRoom(String id, RoomImpl impl) {
         super(id, impl);
@@ -104,10 +105,20 @@ public class DarkRoom extends Room
         return super.getEntities();
     }
 
+    @Override
+    public void restoreState(Object state) {
+        super.restoreState(state);
+        needTurnCheck = true;  // when loaded, we force an end-of-turn darkness check
+    }
+
+    /**
+     * Returns true if the room is dark.
+     * <p/>
+     * We keep track of the last turn on which we checked for darkness, and update only
+     * once per turn.
+     */
     public boolean isDark() {
         final int turn = Meterman2.gm.getNumTurns();
-        // TODO: strange behavior when loading games if the below lines are uncommented.
-        // Actually (maybe?) it seems the debugger just doesn't work properly.
         if (darkCheckTurn == turn)
             return wasDark;
 
@@ -182,6 +193,10 @@ public class DarkRoom extends Room
 
     @Override
     public void eachTurn() {
+        if (needTurnCheck) {
+            darkCheckTurn = -1;
+            needTurnCheck = false;
+        }
         isDark();  // this will queue a room refresh if needed
         super.eachTurn();
     }
