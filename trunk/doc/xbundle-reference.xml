@@ -95,14 +95,14 @@
 
   <room id="dark-cave" type="dark"
         name="Rough Cave" darkName="Dark Rough Cave"
-        exitName="Cave" darkExitName="Dark Cave"
+        exitName="Cave"
         attributes="dark">
     <description>A rough cave whose walls are decorated with rude carvings.</description>
     <darkDescription>The faintest hints of carvings are visible in the shadows.</darkDescription>
     <script>
       <![CDATA[
       // A scripted getDarkEntities() method will be called to return the list of entities found
-      // in the room when it's dark, in place of the normal Room.getEntities().
+      // in the room when it's dark.
 
       List getDarkEntities(DarkRoom r) {
           List entityList = new ArrayList(2);
