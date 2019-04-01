@@ -794,8 +794,11 @@ public final class GameManager
             List<? extends GameEventHandler> handlerList = entry.getValue();
             String[] handlerIds = new String[handlerList.size()];
             int idx = 0;
-            for (GameEventHandler handler : handlerList)
-                handlerIds[idx++] = handler.getHandlerId();
+            for (GameEventHandler handler : handlerList) {
+                final String handlerId = handler.getHandlerId();
+                if (!handlerId.startsWith("#"))
+                    handlerIds[idx++] = handlerId;
+            }
             state.gameHandlers.put(listName, handlerIds);
         }
         state.currentRoomId = currentRoom.getId();

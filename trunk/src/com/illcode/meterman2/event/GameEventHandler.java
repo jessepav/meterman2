@@ -9,7 +9,8 @@ public interface GameEventHandler
 {
     /**
      * Return the ID of this GameEventHandler. The ID is used to persist the active listeners when a game is
-     * saved and subsequently loaded, without needing to serialize the actual handler objects.
+     * saved and subsequently loaded, without needing to serialize the actual handler objects. If the ID
+     * starts with a '#', then the corresponding handler will not be persisted.
      */
     String getHandlerId();
 }
