@@ -251,6 +251,18 @@ public class Room implements EntityContainer
             impl.restoreState(this, state);
     }
 
+    /**
+     * Called immediately before {@link Game#start} for both new and loaded games.
+     * This is a good place to do things like register oneself as a game-event handler
+     * with the game manager.
+     */
+    public void gameStarting() {
+        if (delegate != null && delegateMethods.contains(GAME_STARTING))
+            delegate.gameStarting(this);
+        else
+            impl.gameStarting(this);
+    }
+
     //region -- implement EntityContainer
     public int getContainerType() { return CONTAINER_ROOM; }
     public String getContainerId() { return getId(); }

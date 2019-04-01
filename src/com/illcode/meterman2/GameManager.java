@@ -120,6 +120,10 @@ public final class GameManager
         ui.setGlobalActionButtonText();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
+        for (Entity e : entityIdMap.values())
+            e.gameStarting();
+        for (Room r : roomIdMap.values())
+            r.gameStarting();
         game.start(true);
         currentRoom.entered(null);
         lookCommand();
@@ -165,6 +169,10 @@ public final class GameManager
         ui.setGlobalActionButtonText();
         ui.setFrameImage(UIConstants.DEFAULT_FRAME_IMAGE);
         ui.hideWaitDialog();
+        for (Entity e : entityIdMap.values())
+            e.gameStarting();
+        for (Room r : roomIdMap.values())
+            r.gameStarting();
         game.start(false);
         outputText();  // since no nextTurn() is called, we update the text area...
         refreshUI();   // ...and UI ourselves.

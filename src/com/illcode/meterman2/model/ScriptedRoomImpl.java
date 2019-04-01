@@ -68,6 +68,10 @@ public final class ScriptedRoomImpl implements RoomImpl
         invokeMethod(RoomMethod.RESTORE_STATE, r, state);
     }
 
+    public void gameStarting(Room r) {
+        invokeMethod(RoomMethod.GAME_STARTING, r);
+    }
+
     // Invoke a method with no return value.
     private void invokeMethod(RoomMethod method, Object... args) {
         ScriptedMethod m = scriptedRoomMethods.get(method);

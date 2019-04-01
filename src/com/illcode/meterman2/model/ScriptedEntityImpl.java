@@ -94,6 +94,10 @@ public final class ScriptedEntityImpl implements EntityImpl
         invokeMethod(EntityMethod.RESTORE_STATE, e, state);
     }
 
+    public void gameStarting(Entity e) {
+        invokeMethod(EntityMethod.GAME_STARTING, e);
+    }
+
     // Invoke a method with no return value.
     private void invokeMethod(EntityMethod method, Object... args) {
         ScriptedMethod m = scriptedEntityMethods.get(method);
