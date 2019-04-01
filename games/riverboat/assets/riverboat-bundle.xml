@@ -95,7 +95,7 @@
   <room id="dungeon" type="dark" name="Dungeon" darkName="Dark Dungeon" attributes="dark">
     <description format="ftl">
       Oh my, this is one scary ${room.name?lower_case}!@n
-      But yet you can see scribbled drawings on the walls.
+      You can see scribbled drawings on the walls.
     </description>
   </room>
 
@@ -121,26 +121,30 @@ boolean switchedAction(Entity e, boolean on) {
     </script>
   </entity>
 
+  <topicmap id="mike-topicmap">
+    <topic id="GREETING" addTopics="plumbing, dungeon" removeTopics="GREETING">
+      <label>Dude, what's up!</label>
+      <text>Yo!@p What's going on?</text>
+    </topic>
+    <topic id="plumbing" label="How's your plumbing?">
+      <text script="bsh">
+        <![CDATA[
+        if (Utils.randInt(0, 1) == 0)
+            out("The plumbing is good as raisins.");
+        else
+            out("It's not so good at all, leaks everywhere.");
+        ]]>
+      </text>
+    </topic>
+    <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING">
+      <text>That is one scary dungeon!</text>
+    </topic>
+  </topicmap>
+
   <entity id="mike" type="talking" name="Mike" attributes="proper-name" topics="GREETING">
     <inRoom>playroom</inRoom>
     <description>It's your old bud Mike!</description>
-    <topicmap>
-      <topic id="GREETING" addTopics="plumbing, dungeon" removeTopics="GREETING">
-        <label>Hey man</label>
-        <text>Hey man!@p What's going on?</text>
-      </topic>
-      <topic id="plumbing" label="How's your plumbing?">
-        <text script="bsh">
-          if (Utils.randInt(0, 1) == 0)
-            out("The plumbing is good.");
-          else
-            out("It's not so good at all, leaks everywhere.");
-        </text>
-      </topic>
-      <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING">
-        <text>That is one scary dungeon!</text>
-      </topic>
-    </topicmap>
+    <topicmap topicmapRef="mike-topicmap" />
 
     <script>
       String getOtherTopicLabel(Talker talker) {

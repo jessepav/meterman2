@@ -147,10 +147,7 @@ public final class WorldLoader implements GameObjectResolver
             return null;
         if (!eli.bundle.reloadElement(id))
             return null;
-        Element e = eli.bundle.getElement(id);
-        if (e == null)
-            return null;
-        eli.element = e;
+        eli.element = eli.bundle.getElement(id);
         eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this, false);
         return eli.gameObject;
     }
@@ -166,10 +163,7 @@ public final class WorldLoader implements GameObjectResolver
             return null;
         if (!rli.bundle.reloadElement(id))
             return null;
-        Element e = rli.bundle.getElement(id);
-        if (e == null)
-            return null;
-        rli.element = e;
+        rli.element = rli.bundle.getElement(id);
         rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this, false);
         return rli.gameObject;
     }
@@ -187,9 +181,10 @@ public final class WorldLoader implements GameObjectResolver
         final Pair<Element,XBundle> pair = group.getElementAndBundle(id);
         if (pair == null)
             return null;
-        final Element el = pair.getLeft();
         final XBundle b = pair.getRight();
-        tm.loadFrom(el, b);
+        if (!b.reloadElement(id))
+            return null;
+        tm.loadFrom(b.getElement(id), b);
         return tm;
     }
 
