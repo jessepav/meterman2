@@ -48,9 +48,12 @@ public final class GameManager
     private List<Entity> entityProcessingList;
     private Set<Room> changedRooms;
     private List<Room> roomProcessingList;
+
+    // To update our UI at the transition of turns
     private boolean roomRefreshNeeded;
     private boolean entityRefreshNeeded;
     private boolean inventoryRefreshNeeded;
+    private boolean lookNeeded;
 
     GameManager() {
         handlerManager = new EventHandlerManager();
@@ -281,7 +284,7 @@ public final class GameManager
         handlerManager.firePlayerMovement(fromRoom, toRoom, false);
         ui.clearEntitySelection();  // this in turn will call entitySelected(null) if needed
         if (alwaysLook || !hasAttr(toRoom, SystemAttributes.VISITED))
-            performLook();
+            lookNeeded = true;
         setAttr(toRoom, SystemAttributes.VISITED);
         queueRoomUIRefresh();
     }
@@ -553,6 +556,10 @@ public final class GameManager
     private void nextTurn() {
         handlerManager.fireTurn();
         currentRoom.eachTurn();
+        if (lookNeeded) {  // set when we're moving rooms
+            performLook();
+            lookNeeded = false;
+        }
         outputText();  // send any buffered text to the UI
         refreshUI();
         numTurns++;

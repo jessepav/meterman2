@@ -289,12 +289,12 @@ public class Entity
      * @param capitalize whether to capitalize the definite article
      */
     public final String getDefName(boolean capitalize) {
-        String name = getName();
+        final String name = getName();
         if (name.isEmpty())
             return "";
         if (getAttributes().get(SystemAttributes.PROPER_NAME))
             return name;
-        String defArt = capitalize ? "The " : "the ";
+        final String defArt = capitalize ? "The " : "the ";
         return defArt + name;
     }
 
@@ -313,7 +313,7 @@ public class Entity
      * @param capitalize whether to capitalize the indefinite article
      */
     public final String getIndefName(boolean capitalize) {
-        String name = getName();
+        final String name = getName();
         if (name.isEmpty())
             return "";
         if (getAttributes().get(SystemAttributes.PROPER_NAME))

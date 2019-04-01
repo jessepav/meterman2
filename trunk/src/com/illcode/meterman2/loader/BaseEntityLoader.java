@@ -27,6 +27,8 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link com.illcode.meterman2.model.TalkingEntity}</dd>
  *     <dt>"switchable"</dt>
  *     <dd>{@link com.illcode.meterman2.model.SwitchableEntityImpl}</dd>
+ *     <dt>"lamp"</dt>
+ *     <dd>{@link com.illcode.meterman2.model.LampImpl}</dd>
  * </dl>
  * By default we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
  * <p/>
@@ -72,6 +74,9 @@ public class BaseEntityLoader implements EntityLoader
             break;
         case "switchable":
             e = Entity.create(id, new SwitchableEntityImpl());
+            break;
+        case "lamp":
+            e = Entity.create(id, new LampImpl());
             break;
         default:
             e = Entity.create(id);
@@ -126,6 +131,11 @@ public class BaseEntityLoader implements EntityLoader
         case "switchable":
             if (e.getImpl() instanceof SwitchableEntityImpl)
                 loadSwitchableEntityProperties((SwitchableEntityImpl) e.getImpl());
+            break;
+        case "lamp":
+            if (e.getImpl() instanceof LampImpl)
+                loadLampProperties((LampImpl) e.getImpl());
+            break;
         }
         // So we don't accidentally see stale values.
         this.bundle = null;
@@ -230,5 +240,16 @@ public class BaseEntityLoader implements EntityLoader
 
     protected void loadSwitchableEntityProperties(SwitchableEntityImpl impl) {
         impl.setScriptedMethods(methodMap);
+    }
+
+    protected void loadLampProperties(LampImpl lamp) {
+        lamp.setBurnsFuel(Utils.parseBoolean(el.getAttributeValue("burnsFuel")));
+        lamp.setFuelRemaining(Utils.parseInt(el.getAttributeValue("fuelRemaining")));
+        lamp.setLowFuelAmount(Utils.parseInt(el.getAttributeValue("lowFuelAmount")));
+        lamp.setOnText(el.getAttributeValue("onText"));
+        lamp.setOffText(el.getAttributeValue("offText"));
+        lamp.setLightActionName(el.getAttributeValue("lightAction"));
+        lamp.setDouseActionName(el.getAttributeValue("douseAction"));
+        lamp.setBaseName(e.getName());
     }
 }

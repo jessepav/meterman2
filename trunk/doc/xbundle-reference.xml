@@ -218,4 +218,10 @@
       <topic>GREETING</topic>
     </topics>
   </entity>
+
+  <entity id="oil-lamp" type="lamp" name="Oil Lamp" attributes="takeable"
+          burnsFuel="true" fuelRemaining="20" lowFuelAmount="5"
+          onText="lit" offText="doused" lightAction="Light" douseAction="Douse">
+    <description>An old oil lamp.</description>
+  </entity>
 </xbundle>

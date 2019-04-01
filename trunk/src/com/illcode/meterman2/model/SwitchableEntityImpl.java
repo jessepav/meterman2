@@ -23,21 +23,31 @@ public class SwitchableEntityImpl extends BaseEntityImpl
         actions = new ArrayList<>(4);
     }
 
+    /** Subclasses can override this to provide a customized switch-on action. */
+    protected MMActions.Action getSwitchOnAction() {
+        return SystemActions.SWITCH_ON;
+    }
+
+    /** Subclasses can override this to provide a customized switch-off action. */
+    protected MMActions.Action getSwitchOffAction() {
+        return SystemActions.SWITCH_OFF;
+    }
+
     @Override
     public List<MMActions.Action> getActions(Entity e) {
         actions.clear();
         actions.addAll(super.getActions(e));
         if (e.getAttributes().get(SystemAttributes.ON))
-            actions.add(SystemActions.SWITCH_OFF);
+            actions.add(getSwitchOffAction());
         else
-            actions.add(SystemActions.SWITCH_ON);
+            actions.add(getSwitchOnAction());
         return actions;
     }
 
     @Override
     public boolean processAction(Entity e, MMActions.Action action) {
         final AttributeSet attr = e.getAttributes();
-        if (action.equals(SystemActions.SWITCH_ON) || action.equals(SystemActions.SWITCH_OFF)) {
+        if (action.equals(getSwitchOnAction()) || action.equals(getSwitchOffAction())) {
             final boolean on = attr.get(SystemAttributes.ON);
             if (switchedMethod != null)
                 return switchedMethod.invokeWithResultOrError(Boolean.class, false, e, on);

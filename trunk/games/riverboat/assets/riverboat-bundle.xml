@@ -99,26 +99,14 @@
     </description>
   </room>
 
-  <entity id="flashlight" type="switchable" name="Flashlight (off)" attributes="takeable" inContainer="chest">
-    <description script="bsh">
-      out("A small rechargeable flashlight. It is ");
-      out(entity.getAttributes().get(SystemAttributes.ON) ? "on" : "off");
-      out(".");
-    </description>
-    <script>
-      <![CDATA[
-boolean switchedAction(Entity e, boolean on) {
-    on = !on;
-    e.getAttributes().set(SystemAttributes.ON, on);
-    e.getAttributes().set(SystemAttributes.LIGHTSOURCE, on);
-    String onOff = on ? "on" : "off";
-    println("You turn the flashlight " + onOff + ".");
-    e.setName("Flashlight (" + onOff + ")");
-    gm.entityChanged(e);
-    return true;
-}
-      ]]>
-    </script>
+  <entity id="flashlight" type="lamp" name="Flashlight" attributes="takeable" inContainer="chest">
+    <description>A small rechargeable flashlight.</description>
+  </entity>
+
+  <entity id="oil-lamp" type="lamp" name="Oil Lamp" attributes="takeable"
+          burnsFuel="true" fuelRemaining="10" lowFuelAmount="5"
+          onText="lit" offText="doused" lightAction="Light" douseAction="Douse">
+    <description>An old oil lamp.</description>
   </entity>
 
   <topicmap id="mike-topicmap">
@@ -161,6 +149,7 @@ boolean switchedAction(Entity e, boolean on) {
     <inventory>
       <item equipped="true">stick</item>
       <item>mirror</item>
+      <item>oil-lamp</item>
     </inventory>
   </player>
 
