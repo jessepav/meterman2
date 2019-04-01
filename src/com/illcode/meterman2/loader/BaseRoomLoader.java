@@ -146,7 +146,6 @@ public class BaseRoomLoader implements RoomLoader
 
     private void loadDarkRoomProperties(DarkRoom dr) {
         dr.setDarkName(helper.getValue("darkName"));
-        dr.setDarkExitName(helper.getValue("darkExitName"));
         final Element darkDescription = el.getChild("darkDescription");
         if (darkDescription != null)
             dr.setDarkDescription(bundle.elementTextSource(darkDescription));

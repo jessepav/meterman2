@@ -8,27 +8,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A room that can be, though is not necessarily, dark.
- * <p/>
- * If the room has the attribute {@link SystemAttributes#DARK} and there is no lightsource
- * in the room, then we return a different "dark name" and "dark exit name", and hide the
- * contents of the room (or allow a scripted method to return a list of contents).
+ * A room that is naturally dark, unless a light source is found within.
  */
-public class DarkRoom extends Room
+public class DarkRoom extends Room implements DarkAwareRoom
 {
     protected String darkName;
-    protected String darkExitName;
     protected TextSource darkDescription;
 
     protected MMScript.ScriptedMethod getDarkEntitiesMethod;
 
-    private boolean wasDark;  // used to detect changes in darkness
-    private int darkCheckTurn;  // the turn on which we last checked if it was dark
-    private boolean needTurnCheck;  // if true, we force a darkness check even on the same turn
-
     protected DarkRoom(String id, RoomImpl impl) {
         super(id, impl);
-        darkCheckTurn = -1;  // force a dark check
     }
 
     /** Create a dark room with the given ID and a dark room implemention. */
@@ -45,91 +35,45 @@ public class DarkRoom extends Room
         this.darkName = darkName;
     }
 
-    public void setDarkExitName(String darkExitName) {
-        this.darkExitName = darkExitName;
-    }
-
     public void setDarkDescription(TextSource darkDescription) {
         this.darkDescription = darkDescription;
     }
 
-    @Override
-    public String getName() {
-        if (darkName != null && isDark())
-            return darkName;
-        else
-            return super.getName();
+    public String getDarkName() {
+        return darkName != null ? darkName : getName();
     }
 
-    @Override
-    public String getExitName() {
-        if (darkExitName != null && isDark())
-            return darkExitName;
-        else
-            return super.getExitName();
+    public String getDarkDescription() {
+        GameUtils.pushBinding("room", this);
+        final String desc = darkDescription != null ? darkDescription.getText() :
+            Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
+        GameUtils.popBinding("room");
+        return desc;
     }
 
-    @Override
-    public String getDescription() {
-        if (isDark()) {
-            GameUtils.pushBinding("room", this);
-            final String desc = darkDescription != null ? darkDescription.getText() :
-                Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
-            GameUtils.popBinding("room");
-            return desc;
-        } else {
-            return super.getDescription();
-        }
-    }
-
-    @Override
-    public List<Entity> getEntities() {
-        if (isDark())
-            return getDarkEntities();
-        else
-            return getRealEntities();
-    }
-
-    /** Returns the list of entities found in this room when it's dark. */
     @SuppressWarnings("unchecked")
     public List<Entity> getDarkEntities() {
         if (getDarkEntitiesMethod != null)
             return getDarkEntitiesMethod.invokeWithResultOrError(List.class, Collections.emptyList(), this);
         else
-            return Collections.emptyList();
-    }
-
-    /** Returns a list of the entities actually contained in this dark room, as though
-     *  it were not dark. */
-    public List<Entity> getRealEntities() {
-        return super.getEntities();
-    }
-
-    @Override
-    public void restoreState(Object state) {
-        super.restoreState(state);
-        needTurnCheck = true;  // when loaded, we force an end-of-turn darkness check
+            return getDarkEntitiesImpl();
     }
 
     /**
-     * Returns true if the room is dark.
-     * <p/>
-     * We keep track of the last turn on which we checked for darkness, and update only
-     * once per turn.
+     * Subclasses may override this method to return something other than an empty list
+     * when the room is dark.
+     * @return list of entities found here when dark
      */
-    public boolean isDark() {
-        final int turn = Meterman2.gm.getNumTurns();
-        if (darkCheckTurn == turn)
-            return wasDark;
+    protected List<Entity> getDarkEntitiesImpl() {
+        return Collections.emptyList();
+    }
 
+    protected void checkDarkness() {
+        boolean wasDark = getAttributes().get(SystemAttributes.DARK);
         boolean nowDark = false;
         checkDark: {
-            // if we're not naturally dark, then we're definite not dark now.
-            if (!getAttributes().get(SystemAttributes.DARK))
-                break checkDark;
-
-            // Otherwise, let us see if something in the room is a light source.
-            for (Entity e : getRealEntities()) {
+            // Let us see if something in the room is a light source.
+            for (Entity e : getEntities()) {
                 if (isLightSource(e)) {
                     break checkDark;
                 } else if (e instanceof EntityContainer) {
@@ -150,21 +94,14 @@ public class DarkRoom extends Room
 
             nowDark = true;  // DARKNESS! Charley Murphy!
         }
-        boolean needRefresh = false;
-        if (darkCheckTurn == -1)  // first time we've checked for darkness
-            needRefresh = true;
-        else if (wasDark != nowDark)
-            needRefresh = true;
-        darkCheckTurn = turn;
-        if (needRefresh) {
-            wasDark = nowDark;
+        if (wasDark != nowDark) {
+            getAttributes().set(SystemAttributes.DARK, nowDark);
             Meterman2.gm.roomChanged(this);
         }
-        return nowDark;
     }
 
-    public static boolean isDark(Room r) {
-        return r instanceof DarkRoom && ((DarkRoom)r).isDark();
+    private static boolean isLightSource(Entity e) {
+        return e.getAttributes().get(SystemAttributes.LIGHTSOURCE);
     }
 
     /**
@@ -187,17 +124,9 @@ public class DarkRoom extends Room
         }
     }
 
-    private static boolean isLightSource(Entity e) {
-        return e.getAttributes().get(SystemAttributes.LIGHTSOURCE);
-    }
-
     @Override
     public void eachTurn() {
-        if (needTurnCheck) {
-            darkCheckTurn = -1;
-            needTurnCheck = false;
-        }
-        isDark();  // this will queue a room refresh if needed
+        checkDarkness();
         super.eachTurn();
     }
 }

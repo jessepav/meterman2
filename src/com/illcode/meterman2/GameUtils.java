@@ -1,14 +1,12 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.model.DarkAwareRoom;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Room;
 import org.jdom2.Element;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Utility methods that apply to the game world or interface.
@@ -305,5 +303,58 @@ public final class GameUtils
     public static void popBinding(String name) {
         Meterman2.script.popBinding(name);
         Meterman2.template.popBinding(name);
+    }
+
+    /**
+     * Get the name of a room, taking into account darkness and dark-aware rooms.
+     * @param r room
+     * @return appropriate room name
+     */
+    public static String getRoomName(Room r) {
+        String name;
+        if (r.getAttributes().get(SystemAttributes.DARK) && r instanceof DarkAwareRoom)
+            name = ((DarkAwareRoom) r).getDarkName();
+        else
+            name = r.getName();
+        return name;
+    }
+
+    /**
+     * Get the description of a room, taking into account darkness and dark-aware rooms.
+     * @param r room
+     * @return appropriate room description
+     */
+    public static String getRoomDescription(Room r) {
+        String description;
+        if (r.getAttributes().get(SystemAttributes.DARK)) {
+            if (r instanceof DarkAwareRoom) {
+                description = ((DarkAwareRoom) r).getDarkDescription();
+            } else {
+                GameUtils.pushBinding("room", r);
+                description = Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
+                GameUtils.popBinding("room");
+            }
+        } else {
+            description = r.getDescription();
+        }
+        return description;
+    }
+
+    /**
+     * Get the entities in a room, taking into account darkness and dark-aware rooms.
+     * @param r room
+     * @return appropriate list of room entities
+     */
+    public static List<Entity> getRoomEntities(Room r) {
+        List<Entity> entities;
+        if (r.getAttributes().get(SystemAttributes.DARK)) {
+            if (r instanceof DarkAwareRoom)
+                entities = ((DarkAwareRoom) r).getDarkEntities();
+            else
+                entities = Collections.emptyList();
+        } else {
+            entities = r.getEntities();
+        }
+        return entities;
     }
 }

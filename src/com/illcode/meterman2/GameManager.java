@@ -376,12 +376,12 @@ public final class GameManager
     }
 
     private void refreshRoomUI() {
-        ui.setRoomName(currentRoom.getName());
+        ui.setRoomName(GameUtils.getRoomName(currentRoom));
         for (int pos = 0; pos < UIConstants.NUM_EXIT_BUTTONS; pos++)
             ui.setExitLabel(pos, currentRoom.getExitLabel(pos));
         Entity savedSE = selectedEntity;
         ui.clearRoomEntities();
-        for (Entity e : currentRoom.getEntities())
+        for (Entity e : GameUtils.getRoomEntities(currentRoom))
             if (!e.getAttributes().get(SystemAttributes.CONCEALED))
                 ui.addRoomEntity(e.getId(), e.getName());
         if (savedSE != null)
@@ -421,9 +421,9 @@ public final class GameManager
      * Actually performs the look command, but does not output buffered text.
      */
     private void performLook() {
-        outputBuilder.append(currentRoom.getDescription());
+        outputBuilder.append(GameUtils.getRoomDescription(currentRoom));
         outputBuilder.append("\n");
-        for (Entity e : currentRoom.getEntities())
+        for (Entity e : GameUtils.getRoomEntities(currentRoom))
             e.lookInRoom();
         if (commonTextBuilder.length() != 0) {
             outputBuilder.append('\n').append(commonTextBuilder).append('\n');
