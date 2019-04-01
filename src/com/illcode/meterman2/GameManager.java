@@ -802,7 +802,7 @@ public final class GameManager
             final ArrayList<String> handlerIds = new ArrayList<>(handlerList.size());
             for (GameEventHandler handler : handlerList) {
                 final String handlerId = handler.getHandlerId();
-                if (!handlerId.startsWith("#"))
+                if (handlerId != null && !handlerId.startsWith("#"))
                     handlerIds.add(handlerId);
             }
             state.gameHandlers.put(listName, handlerIds.toArray(new String[0]));
