@@ -799,14 +799,13 @@ public final class GameManager
                 entry : handlerManager.getEventHandlerMap().entrySet()) {
             String listName = entry.getKey();
             List<? extends GameEventHandler> handlerList = entry.getValue();
-            String[] handlerIds = new String[handlerList.size()];
-            int idx = 0;
+            final ArrayList<String> handlerIds = new ArrayList<>(handlerList.size());
             for (GameEventHandler handler : handlerList) {
                 final String handlerId = handler.getHandlerId();
                 if (!handlerId.startsWith("#"))
-                    handlerIds[idx++] = handlerId;
+                    handlerIds.add(handlerId);
             }
-            state.gameHandlers.put(listName, handlerIds);
+            state.gameHandlers.put(listName, handlerIds.toArray(new String[0]));
         }
         state.currentRoomId = currentRoom.getId();
         state.numTurns = numTurns;
