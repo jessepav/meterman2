@@ -77,6 +77,23 @@
     What do you want to talk about?
   </passage>
 
+  <!-- Used by lamps -->
+  <passage id="lamp-status" format="printf"> <!-- args: status text-->
+    It is %s.
+  </passage>
+  <passage id="lamp-switched" format="printf"> <!-- args: action text, defName -->
+    You %s %s.
+  </passage>
+  <passage id="lamp-no-fuel" format="printf"> <!-- args: defName (capitalized), switch-on action text -->
+    %s will not %s.
+  </passage>
+  <passage id="lamp-low" format="printf"> <!-- args: defName (capitalized)-->
+    %s is beginning to dim.
+  </passage>
+  <passage id="lamp-out" format="printf"> <!-- args: defName (capitalized) -->
+    %s goes dark!
+  </passage>
+
   <actions id="system-actions">
     <action name="LOOK" templateText="Look" shortcut="shift L" />
     <action name="WAIT" templateText="Wait" shortcut="shift W" />

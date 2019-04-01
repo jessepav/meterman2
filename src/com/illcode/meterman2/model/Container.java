@@ -17,14 +17,14 @@ public class Container extends Entity implements EntityContainer
         containerSupport = new ContainerSupport(this);
     }
 
-    /** Create a container with the given ID and a container implemention. */
-    public static Container create(String id) {
-        return create(id, new ContainerImpl());
-    }
-
     /** Create a container with the given ID and implemention. */
     public static Container create(String id, EntityImpl impl) {
         return new Container(id, impl);
+    }
+
+    /** Create a container with the given ID and a container implemention. */
+    public static Container create(String id) {
+        return create(id, new ContainerImpl());
     }
 
     //region -- implement EntityContainer
