@@ -52,6 +52,9 @@ public interface EntityImpl
     /** See {@link Entity#restoreState(Object)} */
     void restoreState(Entity e, Object state);
 
+    /** See {@link com.illcode.meterman2.model.Entity#gameStarting()} */
+    void gameStarting(Entity e);
+
     /**
      * Used to indicate which methods of an Entity will be delegated.
      */
@@ -60,7 +63,7 @@ public interface EntityImpl
         GET_DESCRIPTION("getDescription"), LOOK_IN_ROOM("lookInRoom"),
         ENTER_SCOPE("enterScope"), EXITING_SCOPE("exitingScope"), TAKEN("taken"), DROPPED("dropped"),
         GET_ACTIONS("getActions"), PROCESS_ACTION("processAction"), OBJECT_ACTION("objectAction"),
-        GET_STATE("getState"), RESTORE_STATE("restoreState");
+        GET_STATE("getState"), RESTORE_STATE("restoreState"), GAME_STARTING("gameStarting");
 
         private final String methodName;
 

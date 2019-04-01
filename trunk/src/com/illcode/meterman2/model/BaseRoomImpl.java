@@ -37,4 +37,8 @@ public class BaseRoomImpl implements RoomImpl
     public void restoreState(Room r, Object state) {
         // empty
     }
+
+    public void gameStarting(Room r) {
+        // empty
+    }
 }

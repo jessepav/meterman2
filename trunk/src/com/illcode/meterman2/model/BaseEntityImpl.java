@@ -62,4 +62,8 @@ public class BaseEntityImpl implements EntityImpl
     public void restoreState(Entity e, Object state) {
         // empty
     }
+
+    public void gameStarting(Entity e) {
+        // empty
+    }
 }

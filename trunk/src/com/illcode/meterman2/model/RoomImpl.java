@@ -34,10 +34,13 @@ public interface RoomImpl
     /** See {@link Room#restoreState(Object)} */
     void restoreState(Room r, Object state);
 
+    /** See {@link com.illcode.meterman2.model.Room#gameStarting()} */
+    void gameStarting(Room r);
+
     enum RoomMethod
     {
-        GET_DESCRIPTION("getDescription"), ENTERED("entered"), EXITING("exiting"),
-        EACH_TURN("eachTurn"), GET_STATE("getState"), RESTORE_STATE("restoreState");
+        GET_DESCRIPTION("getDescription"), ENTERED("entered"), EXITING("exiting"), EACH_TURN("eachTurn"),
+        GET_STATE("getState"), RESTORE_STATE("restoreState"), GAME_STARTING("gameStarting");
 
         private final String methodName;
 

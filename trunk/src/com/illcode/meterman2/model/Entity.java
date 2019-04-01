@@ -272,11 +272,23 @@ public class Entity
     }
 
     /**
+     * Called immediately before {@link Game#start} for both new and loaded games.
+     * This is a good place to do things like register oneself as a game-event handler
+     * with the game manager.
+     */
+    public void gameStarting() {
+        if (delegate != null && delegateMethods.contains(GAME_STARTING))
+            delegate.gameStarting(this);
+        else
+            impl.gameStarting(this);
+    }
+
+    /**
      * Return the name of the entity prefixed by the definite article ("the"), taking into
      * account proper names.
      * @param capitalize whether to capitalize the definite article
      */
-    public String getDefName(boolean capitalize) {
+    public final String getDefName(boolean capitalize) {
         String name = getName();
         if (name.isEmpty())
             return "";
@@ -290,7 +302,7 @@ public class Entity
      * Return the name of the entity prefixed by the definite article ("the") in lowercase,
      * taking into account proper names.
      */
-    public String getDefName() {
+    public final String getDefName() {
         return getDefName(false);
     }
 
@@ -300,7 +312,7 @@ public class Entity
      * a vowel, and "a" otherwise.
      * @param capitalize whether to capitalize the indefinite article
      */
-    public String getIndefName(boolean capitalize) {
+    public final String getIndefName(boolean capitalize) {
         String name = getName();
         if (name.isEmpty())
             return "";
@@ -322,7 +334,7 @@ public class Entity
     /**
      * Return the name of the entity prefixed by the indefinite article ("a/an/other") in lowercase.
      */
-    public String getIndefName() {
+    public final String getIndefName() {
         return getIndefName(false);
     }
 
