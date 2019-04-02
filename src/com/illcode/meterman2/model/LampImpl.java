@@ -198,8 +198,10 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
             fuelRemaining--;
             if (fuelRemaining <= 0) {
                 douse();
+                gm.newPar();
                 gm.println(Meterman2.bundles.getPassage("lamp-out").getTextWithArgs(getDefBaseName(true)));
             } else if (fuelRemaining == lowFuelAmount) {
+                gm.newPar();
                 gm.println(Meterman2.bundles.getPassage("lamp-low").getTextWithArgs(getDefBaseName(true)));
             }
         }

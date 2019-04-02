@@ -637,13 +637,6 @@ public final class GameManager
         outputBuilder.append(text).append('\n');
     }
 
-    /**
-     * Print a newline to the main text area.
-     */
-    public void println() {
-        outputBuilder.append('\n');
-    }
-
     /** Prints the text of a text-source. */
     public void print(TextSource source) {
         print(source.getText());
@@ -652,6 +645,17 @@ public final class GameManager
     /** Prints the text of a text-source, followed by a newline. */
     public void println(TextSource source) {
         println(source.getText());
+    }
+
+    /** If, on this turn, there is any text queued for output, inserts a blank line so that the
+     *  next thing printed will appear as a new paragraph. */
+    public void newPar() {
+        final int len = outputBuilder.length();
+        if (len != 0) {
+            if (outputBuilder.charAt(len-1) != '\n')
+                outputBuilder.append('\n');
+            outputBuilder.append('\n');
+        }
     }
 
     /**
