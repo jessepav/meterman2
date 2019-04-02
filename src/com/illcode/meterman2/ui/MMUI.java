@@ -28,11 +28,6 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMUI
 {
-    private static final String SPACES = "    ";
-    private static final String SPACES2 = "        ";
-    private static final String NL = "\n";
-    private static final String NL2 = "\n\n";
-
     MainFrame mainFrame;
     TextDialog textDialog;
     PromptDialog promptDialog;
@@ -562,8 +557,11 @@ public final class MMUI
      *         was closed without selecting a button.
      */
     public int showTextDialog(String header, String text, String... buttonLabels) {
-        handler.transcribe(text).transcribe(NL);
-        return showTextDialogImpl(header, text, buttonLabels);
+        handler.transcribe(text, true).transcribe(Utils.NL);
+        int r = showTextDialogImpl(header, text, buttonLabels);
+        if (r != -1 && r < buttonLabels.length)
+            handler.transcribe(">").transcribe(buttonLabels[r]).transcribe(Utils.NL);
+        return r;
     }
 
     /** Like {@link #showTextDialog} but without transcribing. Intended for use by the game system. */
@@ -582,8 +580,11 @@ public final class MMUI
      *         was closed without selecting a button.
      */
     public int showImageDialog(String header, String imageName, int scale, String text, String... buttonLabels) {
-        handler.transcribe(text).transcribe(NL);
-        return showImageDialogImpl(header, imageName, scale, text, buttonLabels);
+        handler.transcribe(text, true).transcribe(Utils.NL);
+        int r = showImageDialogImpl(header, imageName, scale, text, buttonLabels);
+        if (r != -1 && r < buttonLabels.length)
+            handler.transcribe(">").transcribe(buttonLabels[r]).transcribe(Utils.NL);
+        return r;
     }
 
     /** Like {@link #showImageDialog} but without transcribing. Intended for use by the game system. */
@@ -604,10 +605,10 @@ public final class MMUI
      * @return the item selected, or null if no item selected.
      */
     public <T> T showListDialog(String header, String text, List<T> items, boolean showCancelButton) {
-        handler.transcribe(text).transcribe(NL);
+        handler.transcribe(text, true).transcribe(Utils.NL);
         final T choice = showListDialogImpl(header, text, items, showCancelButton);
         if (choice != null)
-            handler.transcribe("> ").transcribe(choice.toString()).transcribe(NL);
+            handler.transcribe("> ").transcribe(choice.toString()).transcribe(Utils.NL);
         return choice;
     }
 
@@ -626,10 +627,10 @@ public final class MMUI
      * @return the text entered by the user
      */
     public String showPromptDialog(String header, String text, String prompt, String initialText) {
-        handler.transcribe(text).transcribe(NL);
+        handler.transcribe(text, true).transcribe(Utils.NL);
         final String s = showPromptDialogImpl(header, text, prompt, initialText);
         if (!s.isEmpty())
-            handler.transcribe(prompt).transcribe(" >").transcribe(s).transcribe(NL);
+            handler.transcribe(prompt).transcribe(" >").transcribe(s).transcribe(Utils.NL);
         return s;
     }
 

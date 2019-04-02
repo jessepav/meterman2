@@ -16,6 +16,12 @@ import java.util.Random;
 public final class Utils
 {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public static final String DASHES = "----";
+    public static final String DASHES2 = "--------";
+    public static final String SPACES = "    ";
+    public static final String SPACES2 = "        ";
+    public static final String NL = "\n";
+    public static final String NL2 = "\n\n";
 
     private static Random random;
 

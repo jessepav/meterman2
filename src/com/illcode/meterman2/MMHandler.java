@@ -145,4 +145,13 @@ public class MMHandler implements UIHandler
             gm.print(text);
         return this;
     }
+
+    public UIHandler transcribe(String text, boolean newPar) {
+        if (isGameActive()) {
+            if (newPar)
+                gm.newPar();
+            gm.print(text);
+        }
+        return this;
+    }
 }

@@ -361,16 +361,33 @@ public final class GameUtils
     }
 
     /**
-     * Get a passage from the system bundle group.
+     * Get passage text from the system bundle group.
      * @param id passage ID
-     * @return text contained in the passage, or <tt>"{@value XBundle#MISSING_TEXT_STRING}"</tt>
-     *         if no such passage is found.
+     * @return text contained in the passage, or {@link XBundle#MISSING_TEXT_STRING} if no such passage is found.
      */
     public static String getPassage(String id) {
         return Meterman2.bundles.getPassage(id).getText();
     }
-    
-    // TODO: getPassageWithArgs() getPassageWithBindings()
+
+    /**
+     * Get passage text from the system bundle group, with arguments.
+     * @param id passage ID
+     * @param args arguments for {@code TextSource.getTextWithArgs()}
+     * @return text contained in the passage, or {@link XBundle#MISSING_TEXT_STRING} if no such passage is found.
+     */
+    public static String getPassageWithArgs(String id, Object... args) {
+        return Meterman2.bundles.getPassage(id).getTextWithArgs(args);
+    }
+
+    /**
+     * Get passage text from the system bundle group, with bindings.
+     * @param id passage ID
+     * @param bindings arguments for {@code TextSource.getTextWithBindings()}
+     * @return text contained in the passage, or {@link XBundle#MISSING_TEXT_STRING} if no such passage is found.
+     */
+    public static String getPassageWithBindings(String id, String... bindings) {
+        return Meterman2.bundles.getPassage(id).getTextWithBindings(bindings);
+    }
 
     /** Print a passage. */
     public static void printPassage(String id) {
@@ -389,7 +406,7 @@ public final class GameUtils
     /**
      * Print a passage, with bindings.
      * @param id passage ID
-     * @param bindings arguments for {@code TextSource.getTextWithArgs()}
+     * @param bindings arguments for {@code TextSource.getTextWithBindings()}
      */
     public static void printPassageWithBindings(String id, String... bindings) {
         Meterman2.gm.println(Meterman2.bundles.getPassage(id).getTextWithBindings(bindings));

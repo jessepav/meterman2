@@ -2,6 +2,7 @@ package com.illcode.riverboat;
 
 import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.handler.BasicWorldHandler;
@@ -97,6 +98,7 @@ public class RiverboatGame implements Game
 
     public void about() {
         GameUtils.showPassage("about");
+        Meterman2.gm.outputText();
     }
 
     public Entity reloadEntity(String id) {
