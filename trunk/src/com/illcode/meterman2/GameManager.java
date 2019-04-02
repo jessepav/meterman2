@@ -69,7 +69,7 @@ public final class GameManager
         changedRooms = new HashSet<>();
         roomProcessingList = new ArrayList<>();
 
-        outputSeparator = bundles.getPassage(SystemMessages.OUTPUT_SEPARATOR).getText() + "\n";
+        outputSeparator = bundles.getPassage("output-separator").getText() + "\n";
         alwaysLook = Utils.booleanPref("always-look", true);
     }
 
@@ -461,7 +461,7 @@ public final class GameManager
 
     /** Called by when the user clicks "Wait" */
     public void waitCommand() {
-        println(bundles.getPassage(SystemMessages.WAIT));
+        println(bundles.getPassage("wait-message"));
         nextTurn();
     }
 
@@ -573,7 +573,7 @@ public final class GameManager
         } else {
             // This can occur if there is an exit label on a room, but not an exit,
             // for instance if a closed door is in the way.
-            println(bundles.getPassage(SystemMessages.EXIT_BLOCKED));
+            println(bundles.getPassage("exit-blocked-message"));
         }
         nextTurn();
     }
@@ -592,7 +592,7 @@ public final class GameManager
                 break actionChain;
         }
         if (handlerManager.firePostAction(action, selectedEntity, actionHandled) == false && !actionHandled)
-            println(bundles.getPassage(SystemMessages.ACTION_NOT_HANDLED));
+            println(bundles.getPassage("action-not-handled-message"));
         nextTurn();
     }
 

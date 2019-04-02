@@ -3,7 +3,6 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.SystemActions;
-import com.illcode.meterman2.SystemMessages;
 import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -101,7 +100,7 @@ public class DoorImpl extends BaseEntityImpl
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
             return description + " " +
-                bundles.getPassage(SystemMessages.LOCKED).getTextWithArgs(e.getDefName());
+                bundles.getPassage("locked-message").getTextWithArgs(e.getDefName());
         else
             return description;
     }
@@ -135,17 +134,17 @@ public class DoorImpl extends BaseEntityImpl
             // key should not be null (LOCK and UNLOCK shouldn't have been added),
             // but if it is, we act as though you don't have the key
             if (key == null || !gm.isInInventory(key)) {
-                gm.println(bundles.getPassage(SystemMessages.NOKEY).getTextWithArgs(e.getDefName()));
+                gm.println(bundles.getPassage("nokey-message").getTextWithArgs(e.getDefName()));
             } else {
                 attr.toggle(LOCKED);
-                final String message = attr.get(LOCKED) ? SystemMessages.LOCK : SystemMessages.UNLOCK;
+                final String message = attr.get(LOCKED) ? "lock-message" : "unlock-message";
                 gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName(), key.getDefName()));
                 gm.entityChanged(e);
             }
             return true;
         } else if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE)) {
             attr.toggle(CLOSED);
-            final String message = attr.get(CLOSED) ? SystemMessages.CLOSE : SystemMessages.OPEN;
+            final String message = attr.get(CLOSED) ? "close-message" : "open-message";
             gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName()));
             updateRoomConnections(e);
             gm.entityChanged(e);
