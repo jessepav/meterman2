@@ -87,6 +87,7 @@ public interface UIHandler
     /** Return true if the game system indicates we should always "Look" when entering a room. */
     boolean isAlwaysLook();
 
-    /** Adds text to the game transcript. */
-    void transcribe(String text);
+    /** Adds text to the game transcript. Returns the same UIHandler instance so you can chain calls to
+     *  this method. */
+    UIHandler transcribe(String text);
 }

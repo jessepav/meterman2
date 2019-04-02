@@ -73,8 +73,8 @@
   <passage id="no-talk-topics-message" format="printf">  <!-- args: entity.defName -->
     It seems %s has nothing to talk about.
   </passage>
-  <passage id="talk-prompt-message">
-    What do you want to talk about?
+  <passage id="talk-prompt-message" format="printf">  <!-- args: entity.defName -->
+    What do you want to talk to %s about?
   </passage>
 
   <!-- Used by lamps -->

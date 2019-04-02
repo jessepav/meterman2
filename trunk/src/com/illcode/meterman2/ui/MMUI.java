@@ -28,9 +28,10 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMUI
 {
-    private static final String DASHES1 = "--------";
-    private static final String DASHES2 = "----------------";
     private static final String SPACES = "    ";
+    private static final String SPACES2 = "        ";
+    private static final String NL = "\n";
+    private static final String NL2 = "\n\n";
 
     MainFrame mainFrame;
     TextDialog textDialog;
@@ -47,8 +48,6 @@ public final class MMUI
     private BufferedImage defaultFrameImage;
     private String currentFrameImage, currentEntityImage;
 
-    private StringBuilder sb;
-
     int maxBufferSize;
     int dialogTextColumns;
 
@@ -61,7 +60,6 @@ public final class MMUI
         final int cacheSize = Utils.intPref("image-cache-size", 32);
         imageMap = new HashMap<>(cacheSize * 2);
         loadedImages = new LRUImageCacheMap(cacheSize);
-        sb = new StringBuilder(512);
     }
 
     /**
@@ -136,7 +134,6 @@ public final class MMUI
                 logger.log(Level.WARNING, "MMUI.dispose()", e);
             }
         }
-        sb = null;
         loadedImages = null;
         inventoryEntityIds = null;
         roomEntityIds = null;
@@ -566,48 +563,8 @@ public final class MMUI
      *         was closed without selecting a button.
      */
     public int showTextDialog(String header, String text, String... buttonLabels) {
-        transcribeDialogText(header, text);
+        handler.transcribe(text).transcribe(NL);
         return textDialog.show(header, wrapDialogText(text), buttonLabels);
-    }
-
-    /**
-     * Displays a modal dialog showing a passage of text and a field for the user to
-     * enter a line of text.
-     * @param header header surmounted above the text passage
-     * @param text text passage
-     * @param prompt prompt displayed in front of the field
-     * @param initialText the text initially set in the text field
-     * @return the text entered by the user
-     */
-    public String showPromptDialog(String header, String text, String prompt, String initialText) {
-        transcribeDialogText(header, text);
-        final String s = promptDialog.show(header, wrapDialogText(text), prompt, initialText);
-        if (!s.isEmpty()) {
-            sb.append('\n').append(prompt).append(" > ").append(s);
-            handler.transcribe(sb.toString());
-            sb.setLength(0);
-        }
-        return s;
-    }
-
-    /**
-     * Shows a dialog allowing the user to select one of a list of items.
-     * @param header header surmounted above the text passage
-     * @param text text passage
-     * @param items items from which the user can select one
-     * @param showCancelButton if true, a cancel button will be shown; if clicked,
-     *          this method will return null
-     * @return the item selected, or null if no item selected.
-     */
-    public <T> T showListDialog(String header, String text, List<T> items, boolean showCancelButton) {
-        transcribeDialogText(header, text);
-        final T choice = listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
-        if (choice != null) {
-            sb.append("\n> ").append(choice.toString());
-            handler.transcribe(sb.toString());
-            sb.setLength(0);
-        }
-        return choice;
     }
 
     /**
@@ -621,19 +578,45 @@ public final class MMUI
      *         was closed without selecting a button.
      */
     public int showImageDialog(String header, String imageName, int scale, String text, String... buttonLabels) {
-        transcribeDialogText(header, text);
+        handler.transcribe(text).transcribe(NL);
         BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : loadImage(imageName);
         if (image != null && scale > 1)
             image = GuiUtils.getScaledImage(image, scale);
         return imageDialog.show(header, image, wrapDialogText(text), buttonLabels);
     }
 
-    private void transcribeDialogText(String header, String text) {
-        sb.append(DASHES1).append(' ').append(header).append(' ').append(DASHES1).append('\n');
-        sb.append(text).append('\n');
-        sb.append(SPACES).append(DASHES2);
-        handler.transcribe(sb.toString());
-        sb.setLength(0);
+    /**
+     * Shows a dialog allowing the user to select one of a list of items.
+     * @param header header surmounted above the text passage
+     * @param text text passage
+     * @param items items from which the user can select one
+     * @param showCancelButton if true, a cancel button will be shown; if clicked,
+     *          this method will return null
+     * @return the item selected, or null if no item selected.
+     */
+    public <T> T showListDialog(String header, String text, List<T> items, boolean showCancelButton) {
+        handler.transcribe(text).transcribe(NL);
+        final T choice = listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
+        if (choice != null)
+            handler.transcribe("> ").transcribe(choice.toString()).transcribe(NL);
+        return choice;
+    }
+
+    /**
+     * Displays a modal dialog showing a passage of text and a field for the user to
+     * enter a line of text.
+     * @param header header surmounted above the text passage
+     * @param text text passage
+     * @param prompt prompt displayed in front of the field
+     * @param initialText the text initially set in the text field
+     * @return the text entered by the user
+     */
+    public String showPromptDialog(String header, String text, String prompt, String initialText) {
+        handler.transcribe(text).transcribe(NL);
+        final String s = promptDialog.show(header, wrapDialogText(text), prompt, initialText);
+        if (!s.isEmpty())
+            handler.transcribe(prompt).transcribe(" >").transcribe(s).transcribe(NL);
+        return s;
     }
 
     /**

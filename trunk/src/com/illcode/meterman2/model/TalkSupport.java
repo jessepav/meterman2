@@ -67,7 +67,7 @@ public class TalkSupport
                 t = topics.get(0);
             else
                 t = ui.showListDialog(SystemActions.TALK.getText(),
-                            bundles.getPassage(SystemMessages.TALK_PROMPT).getText(), topics, true);
+                        bundles.getPassage(SystemMessages.TALK_PROMPT).getTextWithArgs(e.getDefName()), topics, true);
             if (t == null)
                 return;
             if (t.getId() == TopicMap.OTHER_TOPIC_ID) {
