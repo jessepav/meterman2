@@ -138,4 +138,9 @@ public class MMHandler implements UIHandler
     public boolean isAlwaysLook() {
         return gm.isAlwaysLook();
     }
+
+    public void transcribe(String text) {
+        if (isGameActive())
+            gm.println(text);
+    }
 }
