@@ -35,8 +35,11 @@ public final class XBundle
     /** Returned as an error value from methods with a String return type. */
     public static final String ERROR_TEXT_STRING = "[error]";
 
+    /** The string value of {@link #MISSING_TEXT_SOURCE} .*/
+    public static final String MISSING_TEXT_STRING = "[missing]";
+
     /** Returned if a passage is requested that doesn't exist.*/
-    public static final TextSource MISSING_TEXT_SOURCE = new StringSource("[missing]");
+    public static final TextSource MISSING_TEXT_SOURCE = new StringSource(MISSING_TEXT_STRING);
 
     /** Returned if a passage has some sort of error. */
     public static final TextSource ERROR_TEXT_SOURCE = new StringSource(ERROR_TEXT_STRING);
