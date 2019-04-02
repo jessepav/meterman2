@@ -13,6 +13,7 @@ import java.util.List;
 import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.GameUtils.hasAttr;
+import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
 
 /**
  * A handler (global listener for various game events) that manages basic
@@ -113,15 +114,20 @@ public class BasicWorldHandler
             gm.println(e.getDescription());
         } else if (action.equals(SystemActions.DROP)) {
             gm.moveEntity(e, gm.getCurrentRoom());
+            printPassageWithArgs("drop-message", e.getDefName());
         } else if (action.equals(SystemActions.TAKE)) {
-            if (gm.getPlayer().getEntities().size() < maxInventoryItems)
+            if (gm.getPlayer().getEntities().size() < maxInventoryItems) {
                 gm.moveEntity(e, gm.getPlayer());
-            else
+                printPassageWithArgs("take-message", e.getDefName());
+            } else {
                 gm.println(Meterman2.bundles.getPassage("max-inventory-message"));
+            }
         } else if (action.equals(SystemActions.EQUIP)) {
             gm.setEquipped(e, true);
+            printPassageWithArgs("equip-message", e.getDefName());
         } else if (action.equals(SystemActions.UNEQUIP)) {
             gm.setEquipped(e, false);
+            printPassageWithArgs("unequip-message", e.getDefName());
         } else if (action.equals(SystemActions.TALK) && e instanceof Talker) {
             // since we're processing this outside of the usual Entity.processAction(),
             // we need to set bindings ourselves.

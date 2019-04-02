@@ -14,6 +14,18 @@
   <passage id="exit-blocked-message">
     The exit in that direction is blocked.
   </passage>
+  <passage id="drop-message" format="printf"> <!-- args: defName -->
+    You drop %s.
+  </passage>
+  <passage id="take-message" format="printf"> <!-- args: defName -->
+    You take %s.
+  </passage>
+  <passage id="equip-message" format="printf"> <!-- args: defName -->
+    You equip %s.
+  </passage>
+  <passage id="unequip-message" format="printf"> <!-- args: defName -->
+    You unequip %s.
+  </passage>
   <passage id="max-inventory-message">
     You can't tote any more items around with you.
   </passage>

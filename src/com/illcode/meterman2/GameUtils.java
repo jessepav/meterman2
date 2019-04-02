@@ -4,7 +4,10 @@ import com.illcode.meterman2.model.DarkAwareRoom;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.text.TextSource;
 import org.jdom2.Element;
+
+import com.illcode.meterman2.bundle.XBundle;
 
 import java.util.*;
 
@@ -356,4 +359,40 @@ public final class GameUtils
         }
         return entities;
     }
+
+    /**
+     * Get a passage from the system bundle group.
+     * @param id passage ID
+     * @return text contained in the passage, or <tt>"{@value XBundle#MISSING_TEXT_STRING}"</tt>
+     *         if no such passage is found.
+     */
+    public static String getPassage(String id) {
+        return Meterman2.bundles.getPassage(id).getText();
+    }
+    
+    // TODO: getPassageWithArgs() getPassageWithBindings()
+
+    /** Print a passage. */
+    public static void printPassage(String id) {
+        Meterman2.gm.println(Meterman2.bundles.getPassage(id).getText());
+    }
+
+    /**
+     * Print a passage, with arguments.
+     * @param id passage ID
+     * @param args arguments for {@code TextSource.getTextWithArgs()}
+     */
+    public static void printPassageWithArgs(String id, Object... args) {
+        Meterman2.gm.println(Meterman2.bundles.getPassage(id).getTextWithArgs(args));
+    }
+
+    /**
+     * Print a passage, with bindings.
+     * @param id passage ID
+     * @param bindings arguments for {@code TextSource.getTextWithArgs()}
+     */
+    public static void printPassageWithBindings(String id, String... bindings) {
+        Meterman2.gm.println(Meterman2.bundles.getPassage(id).getTextWithBindings(bindings));
+    }
+
 }

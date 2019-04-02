@@ -73,15 +73,17 @@ public class RiverboatGame implements Game
     }
 
     public void registerInitialGameHandlers() {
-        basicWorldHandler = new BasicWorldHandler(RIVERBOAT_BASIC_HANDLER_ID);
+        basicWorldHandler = (BasicWorldHandler) getEventHandler(RIVERBOAT_BASIC_HANDLER_ID);
         basicWorldHandler.register();
     }
 
     public GameEventHandler getEventHandler(String id) {
         switch (id) {
         case RIVERBOAT_BASIC_HANDLER_ID:
-            if (basicWorldHandler == null)
+            if (basicWorldHandler == null) {
                 basicWorldHandler = new BasicWorldHandler(RIVERBOAT_BASIC_HANDLER_ID);
+                basicWorldHandler.setMaxInventoryItems(4);
+            }
             return basicWorldHandler;
         default:
             return null;

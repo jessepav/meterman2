@@ -8,6 +8,7 @@
     <binding name="again-action" shortcut="shift G" />
     <binding name="debug-command" shortcut="ctrl alt D" />
     <movement>
+      <!-- Main keyboard -->
       <binding name="NW" shortcut="Q" />
       <binding name="N" shortcut="W" />
       <binding name="NE" shortcut="E" />
@@ -20,6 +21,17 @@
       <binding name="S" shortcut="X" />
       <binding name="SE" shortcut="C" />
       <binding name="X3" shortcut="V" />
+
+      <!-- Numpad, for compass directions and MID -->
+      <binding name="NW" shortcut="NUMPAD7" />
+      <binding name="N" shortcut="NUMPAD8" />
+      <binding name="NE" shortcut="NUMPAD9" />
+      <binding name="W" shortcut="NUMPAD4" />
+      <binding name="MID" shortcut="NUMPAD5" />
+      <binding name="E" shortcut="NUMPAD6" />
+      <binding name="SW" shortcut="NUMPAD1" />
+      <binding name="S" shortcut="NUMPAD2" />
+      <binding name="SE" shortcut="NUMPAD3" />
     </movement>
   </keybindings>
 

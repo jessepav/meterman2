@@ -5,6 +5,12 @@
     The Riverboat on the River Effluvious.
   </passage>
 
+  <!-- System message overrides -->
+  <passage id="max-inventory-message">
+    You're too wimpy to carry any more items.
+  </passage>
+
+
   <room id="starting-room" name="Hillock">
     <description>
       You are standing on a grassy hillock.
