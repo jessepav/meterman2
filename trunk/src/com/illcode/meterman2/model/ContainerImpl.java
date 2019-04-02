@@ -12,6 +12,10 @@ import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.LOCKED;
 import static com.illcode.meterman2.SystemAttributes.TAKEABLE;
 
+import static com.illcode.meterman2.GameUtils.getPassage;
+import static com.illcode.meterman2.GameUtils.getPassageWithArgs;
+import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
+
 /**
  * Implementation for container entities.
  */
@@ -68,8 +72,7 @@ public class ContainerImpl extends BaseEntityImpl
     public String getDescription(Entity e) {
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
-            return description + " " +
-                bundles.getPassage("locked-message").getTextWithArgs(e.getDefName());
+            return description + " " + getPassageWithArgs("locked-message", e.getDefName());
         else
             return description;
     }
@@ -109,21 +112,20 @@ public class ContainerImpl extends BaseEntityImpl
             // key should not be null (LOCK and UNLOCK shouldn't have been added),
             // but if it is, we act as though you don't have the key
             if (key == null || !gm.isInInventory(key)) {
-                gm.println(bundles.getPassage("nokey-message").getTextWithArgs(e.getDefName()));
+                printPassageWithArgs("nokey-message", e.getDefName());
             } else {
                 attr.toggle(LOCKED);
                 final String message = attr.get(LOCKED) ? "lock-message" : "unlock-message";
-                gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName(), key.getDefName()));
+                printPassageWithArgs(message, e.getDefName(), key.getDefName());
                 gm.entityChanged(e);
             }
             return true;
         } else if (action.equals(SystemActions.CONTAINER_LOOK_IN)) {
             List<Entity> contents = c.getEntities();
             if (contents.isEmpty()) {
-                gm.println(bundles.getPassage("container-empty-message").getTextWithArgs(getInPrep(), c.getDefName()));
+                printPassageWithArgs("container-empty-message", getInPrep(), c.getDefName());
             } else {
-                Entity item = ui.showListDialog(c.getName(),
-                    bundles.getPassage("container-examine-message").getText(), contents, true);
+                Entity item = ui.showListDialog(c.getName(), getPassage("container-examine-message"), contents, true);
                 if (item != null)
                     gm.println(item.getDescription());
             }
@@ -134,15 +136,14 @@ public class ContainerImpl extends BaseEntityImpl
             if (attr.get(TAKEABLE))
                 takeables.remove(c);
             if (takeables.isEmpty()) {
-                gm.println(bundles.getPassage("container-no-contents-put-message").getTextWithArgs(getInPrep(), c.getDefName()));
+                printPassageWithArgs("container-no-contents-put-message", getInPrep(), c.getDefName());
             } else {
                 Entity item = ui.showListDialog(c.getName(),
-                    bundles.getPassage("container-put-prompt-message").getTextWithArgs(getInPrep(), c.getDefName()),
+                    getPassageWithArgs("container-put-prompt-message", getInPrep(), c.getDefName()),
                     takeables, true);
                 if (item != null && !gm.objectAction(action, item)) {
                     gm.moveEntity(item, c);
-                    gm.println(bundles.getPassage("container-put-message").
-                        getTextWithArgs(item.getDefName(), getInPrep(), c.getDefName()));
+                    printPassageWithArgs("container-put-message", item.getDefName(), getInPrep(), c.getDefName());
                 }
             }
             return true;
@@ -150,15 +151,14 @@ public class ContainerImpl extends BaseEntityImpl
             List<Entity> takeables = new ArrayList<>();
             GameUtils.filterByAttribute(c.getEntities(), SystemAttributes.TAKEABLE, true, takeables);
             if (takeables.isEmpty()) {
-                gm.println(bundles.getPassage("container-no-contents-take-message").getTextWithArgs(getInPrep(), c.getDefName()));
+                printPassageWithArgs("container-no-contents-take-message", getInPrep(), c.getDefName());
             } else {
                 Entity item = ui.showListDialog(c.getName(),
-                    bundles.getPassage("container-take-prompt-message").getTextWithArgs(getOutPrep(), c.getDefName()),
+                    getPassageWithArgs("container-take-prompt-message", getOutPrep(), c.getDefName()),
                     takeables, true);
                 if (item != null && !gm.objectAction(action, item)) {
                     gm.moveEntity(item, gm.getPlayer());
-                    gm.println(bundles.getPassage("container-take-message").
-                        getTextWithArgs(item.getDefName(), getOutPrep(), c.getDefName()));
+                    printPassageWithArgs("container-take-message", item.getDefName(), getOutPrep(), c.getDefName());
                 }
             }
             return true;

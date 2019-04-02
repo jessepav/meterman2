@@ -5,7 +5,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 
-import com.illcode.meterman2.Utils;
 import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
@@ -20,6 +19,8 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 class TextDialog implements ActionListener
 {
+    protected static String[] CLOSE_BUTTON_ARRAY = new String[] {"Close"};
+
     Window owner;
 
     JDialog dialog;
@@ -66,8 +67,8 @@ class TextDialog implements ActionListener
     }
 
     void setButtonsText(String... labels) {
-        if (labels == null)
-            labels = Utils.EMPTY_STRING_ARRAY;
+        if (labels == null || labels.length == 0)
+            labels = CLOSE_BUTTON_ARRAY;
         for (int i = 0; i < buttons.length; i++) {
             String label = labels.length > i ? labels[i] : null;
             if (label != null) {

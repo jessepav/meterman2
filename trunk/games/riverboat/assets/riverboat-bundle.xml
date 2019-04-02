@@ -100,10 +100,18 @@
 
   <room id="dungeon" type="dark" name="Dungeon" darkName="Dark Dungeon" attributes="dark">
     <description format="ftl">
-      Oh my, this is one scary ${room.name?lower_case}!@n
-      You can see scribbled drawings on the walls.
+      Oh my, this is one scary ${room.name?lower_case}!
     </description>
   </room>
+
+  <entity id="drawings" name="Scribbed Drawings" inRoom="dungeon">
+    <description>Crude drawings of water buffaloes adorn the walls.</description>
+    <script>
+      void lookInRoom(Entity e) {
+          gm.queueLookText("You can see scribbled drawings on the walls.", true);
+      }
+    </script>
+  </entity>
 
   <entity id="flashlight" type="lamp" name="Flashlight" attributes="takeable" inContainer="chest">
     <description>A small rechargeable flashlight.</description>

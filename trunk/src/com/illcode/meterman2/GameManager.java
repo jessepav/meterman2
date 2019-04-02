@@ -662,7 +662,7 @@ public final class GameManager
      * Sends any text queued in {@code outputBuilder} to the UI, after allowing
      * {@code OutputTextProcessor}S a chance to modify it.
      */
-    private void outputText() {
+    public void outputText() {
         if (outputBuilder.length() != 0) {
             handlerManager.fireOutputTextReady(outputBuilder);
             ui.appendText(outputSeparator);
@@ -691,6 +691,8 @@ public final class GameManager
             String id = entry.getKey();
             Entity e = entry.getValue();
             GameState.EntityState entityState = state.entityStateMap.get(id);
+            if (entityState == null)
+                continue;
             e.setName(entityState.name);
             e.setIndefiniteArticle(entityState.indefiniteArticle);
             e.getAttributes().setTo(entityState.attributes);
@@ -705,6 +707,8 @@ public final class GameManager
             String id = entry.getKey();
             Room r = entry.getValue();
             GameState.RoomState roomState = state.roomStateMap.get(id);
+            if (roomState == null)
+                continue;
             r.setName(roomState.name);
             r.setExitName(roomState.exitName);
             r.getAttributes().setTo(roomState.attributes);

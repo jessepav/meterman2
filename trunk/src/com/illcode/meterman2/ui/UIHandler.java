@@ -90,4 +90,10 @@ public interface UIHandler
     /** Adds text to the game transcript.
      *  Returns the same UIHandler instance so you can chain calls to this method. */
     UIHandler transcribe(String text);
+
+    /** Adds text to the game transcript.
+     *  Returns the same UIHandler instance so you can chain calls to this method.
+     *  @param newPar true if the transcript should begin on a new paragraph
+     */
+    UIHandler transcribe(String text, boolean newPar);
 }
