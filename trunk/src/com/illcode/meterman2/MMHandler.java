@@ -17,7 +17,7 @@ import static com.illcode.meterman2.Meterman2.ui;
 public class MMHandler implements UIHandler
 {
     public void uiInitialized() {
-        GameUtils.setActionShortcuts(Meterman2.bundles.getElement("system-actions"));
+        GameUtils.setActionShortcuts(Meterman2.bundles.getElement("system-action-shortcuts"));
     }
 
     public boolean isGameActive() {

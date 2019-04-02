@@ -84,8 +84,9 @@ public final class Meterman2
         assets.setSystemAssetsPath(Utils.pref("system-assets-path", "meterman2"));
 
         bundles = new BundleGroup();
-        XBundle sysBundle = XBundle.loadFromPath(assets.pathForSystemAsset("system-bundle.xml"));
-        bundles.setSystemBundles(sysBundle);
+        final XBundle sysBundle = XBundle.loadFromPath(assets.pathForSystemAsset("system-bundle.xml"));
+        final XBundle keybindings = XBundle.loadFromPath(assets.pathForSystemAsset("keybindings.xml"));
+        bundles.setSystemBundles(sysBundle, keybindings);
 
         actions = new MMActions();
         SystemActions.init();

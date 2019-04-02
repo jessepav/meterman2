@@ -8,6 +8,7 @@ import com.jformdesigner.model.FormModel;
 import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 import org.apache.commons.lang3.ArrayUtils;
+import org.jdom2.Element;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -26,17 +27,6 @@ final class MainFrame implements ActionListener, ListSelectionListener
 {
     static final int NUM_EXIT_BUTTONS = 12;
     static final int NUM_ACTION_BUTTONS = 8;
-
-    private static final KeyStroke DEBUG_KEYSTROKE =
-        KeyStroke.getKeyStroke(KeyEvent.VK_D, InputEvent.ALT_MASK | InputEvent.CTRL_MASK);
-
-    private static final KeyStroke SELECT_ROOM_ENTITY_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_R, InputEvent.CTRL_MASK);
-    private static final KeyStroke SELECT_INVENTORY_ENTITY_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_I, InputEvent.CTRL_MASK);
-    private static final KeyStroke SELECT_ACTION_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_A, InputEvent.CTRL_MASK);
-    private static final KeyStroke LOOK_KEYSTROKE = KeyStroke.getKeyStroke("shift L");
-    private static final KeyStroke WAIT_KEYSTROKE = KeyStroke.getKeyStroke("shift W");
-    private static final KeyStroke EXAMINE_KEYSTROKE = KeyStroke.getKeyStroke("shift X");
-    private static final KeyStroke AGAIN_KEYSTROKE = KeyStroke.getKeyStroke("shift G");
 
     private MMUI ui;
 
@@ -168,40 +158,76 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
 
     private void installKeyBindings() {
-        final KeyStroke[] exitButtonKeystrokes = new KeyStroke[NUM_EXIT_BUTTONS];
-        exitButtonKeystrokes[UIConstants.NW_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0);
-        exitButtonKeystrokes[UIConstants.N_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_W, 0);
-        exitButtonKeystrokes[UIConstants.NE_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_E, 0);
-        exitButtonKeystrokes[UIConstants.X1_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_R, 0);
-        exitButtonKeystrokes[UIConstants.W_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_A, 0);
-        exitButtonKeystrokes[UIConstants.MID_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_S, 0);
-        exitButtonKeystrokes[UIConstants.E_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_D, 0);
-        exitButtonKeystrokes[UIConstants.X2_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_F, 0);
-        exitButtonKeystrokes[UIConstants.SW_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_Z, 0);
-        exitButtonKeystrokes[UIConstants.S_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_X, 0);
-        exitButtonKeystrokes[UIConstants.SE_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_C, 0);
-        exitButtonKeystrokes[UIConstants.X3_BUTTON] = KeyStroke.getKeyStroke(KeyEvent.VK_V, 0);
-
-        for (int i = 0; i < NUM_EXIT_BUTTONS; i++) {
-            final String actionMapKey = "exitButton:" + UIConstants.buttonPositionToText(i);
-            inputMap.put(exitButtonKeystrokes[i], actionMapKey);
-            actionMap.put(actionMapKey, new ButtonAction(exitButtons[i]));
+        final Element keybindingsEl = Meterman2.bundles.getElement("ui-shortcuts");
+        if (keybindingsEl == null)
+            return;
+        for (Element binding : keybindingsEl.getChildren("binding")) {
+            final String name = binding.getAttributeValue("name");
+            final String shortcut = binding.getAttributeValue("shortcut");
+            if (name == null || shortcut == null)
+                continue;
+            final KeyStroke k = KeyStroke.getKeyStroke(shortcut);
+            if (k == null)
+                continue;
+            Object actionKey = name;
+            javax.swing.Action action = actionMap.get(actionKey);
+            final boolean needAction = action == null;
+            switch (name) {
+            case "select-room-entity":
+                if (needAction)
+                    action = new SelectItemAction(roomList, roomListModel,
+                        "Select an object in the room", "Object:");
+                break;
+            case "select-inventory-entity":
+                if (needAction)
+                    action = new SelectItemAction(inventoryList, inventoryListModel,
+                        "Select an item in your inventory", "Item:");
+                break;
+            case "select-action":
+                if (needAction)
+                    action = new SelectItemAction(actions, "Select an action", "Action:");
+                break;
+            case "again-action":
+                if (needAction)
+                    action = new SpecialAction(SpecialAction.AGAIN);
+                break;
+            case "debug-command":
+                if (needAction)
+                    action = new SpecialAction(SpecialAction.DEBUG);
+                break;
+            default:
+                actionKey = null;
+                break;
+            }
+            if (actionKey != null) {
+                inputMap.put(k, actionKey);
+                if (needAction)
+                    actionMap.put(actionKey, action);
+            }
         }
 
-        inputMap.put(SELECT_ROOM_ENTITY_KEYSTROKE, "selectRoomEntity");
-        actionMap.put("selectRoomEntity",
-            new SelectItemAction(roomList, roomListModel, "Select an object in the room", "Object:"));
-        inputMap.put(SELECT_INVENTORY_ENTITY_KEYSTROKE, "selectInventoryEntity");
-        actionMap.put("selectInventoryEntity",
-            new SelectItemAction(inventoryList, inventoryListModel, "Select an item in your inventory", "Item:"));
-        inputMap.put(SELECT_ACTION_KEYSTROKE, "selectAction");
-        actionMap.put("selectAction",
-            new SelectItemAction(actions, "Select an action", "Action:"));
-
-        inputMap.put(AGAIN_KEYSTROKE, "againAction");
-        actionMap.put("againAction", new SpecialAction(SpecialAction.AGAIN));
-        inputMap.put(DEBUG_KEYSTROKE, "debugCommand");
-        actionMap.put("debugCommand", new SpecialAction(SpecialAction.DEBUG));
+        final Element movementEl = keybindingsEl.getChild("movement");
+        if (movementEl == null)
+            return;
+        for (Element binding : movementEl.getChildren("binding")) {
+            final String name = binding.getAttributeValue("name");
+            final String shortcut = binding.getAttributeValue("shortcut");
+            if (name == null || shortcut == null)
+                continue;
+            final int buttonPos = UIConstants.buttonTextToPosition(name);
+            if (buttonPos == -1)
+                continue;
+            final KeyStroke k = KeyStroke.getKeyStroke(shortcut);
+            if (k == null)
+                continue;
+            final Object actionKey = "selectExit:" + name;
+            javax.swing.Action action = actionMap.get(actionKey);
+            inputMap.put(k, actionKey);
+            if (action == null) {
+                action = new ButtonAction(exitButtons[buttonPos]);
+                actionMap.put(actionKey, action);
+            }
+        }
     }
 
     void putActionBinding(Action a, String keystroke) {

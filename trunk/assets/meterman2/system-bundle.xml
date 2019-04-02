@@ -95,23 +95,23 @@
   </passage>
 
   <actions id="system-actions">
-    <action name="LOOK" templateText="Look" shortcut="shift L" />
-    <action name="WAIT" templateText="Wait" shortcut="shift W" />
-    <action name="EXAMINE" templateText="Examine" shortcut="shift X" />
-    <action name="READ" templateText="Read" shortcut="shift R" />
-    <action name="TAKE" templateText="Take" shortcut="shift T" />
-    <action name="DROP" templateText="Drop" shortcut="shift D" />
-    <action name="EQUIP" templateText="Equip" shortcut="shift Q" />
-    <action name="UNEQUIP" templateText="Unequip" shortcut="shift P" />
-    <action name="OPEN" templateText="Open" shortcut="shift O" />
-    <action name="CLOSE" templateText="Close" shortcut="shift C" />
-    <action name="LOCK" templateText="Lock" shortcut="shift K" />
-    <action name="UNLOCK" templateText="Unlock" shortcut="shift U" />
-    <action name="TALK" templateText="Talk" shortcut="ctrl shift T" />
-    <action name="SWITCH_ON" templateText="Switch On" shortcut="shift N" />
-    <action name="SWITCH_OFF" templateText="Switch Off" shortcut="shift F" />
-    <action name="CONTAINER_PUT" templateText="Put Item %s" shortcut="ctrl shift I" />
-    <action name="CONTAINER_TAKE" templateText="Take Item %s" shortcut="ctrl shift O" />
-    <action name="CONTAINER_LOOK_IN" templateText="Look %s" shortcut="ctrl shift X" />
+    <action name="LOOK" templateText="Look" />
+    <action name="WAIT" templateText="Wait" />
+    <action name="EXAMINE" templateText="Examine" />
+    <action name="READ" templateText="Read" />
+    <action name="TAKE" templateText="Take" />
+    <action name="DROP" templateText="Drop" />
+    <action name="EQUIP" templateText="Equip" />
+    <action name="UNEQUIP" templateText="Unequip" />
+    <action name="OPEN" templateText="Open" />
+    <action name="CLOSE" templateText="Close" />
+    <action name="LOCK" templateText="Lock" />
+    <action name="UNLOCK" templateText="Unlock" />
+    <action name="TALK" templateText="Talk" />
+    <action name="SWITCH_ON" templateText="Switch On" />
+    <action name="SWITCH_OFF" templateText="Switch Off" />
+    <action name="CONTAINER_PUT" templateText="Put Item %s" />
+    <action name="CONTAINER_TAKE" templateText="Take Item %s" />
+    <action name="CONTAINER_LOOK_IN" templateText="Look %s" />
   </actions>
 </xbundle>
