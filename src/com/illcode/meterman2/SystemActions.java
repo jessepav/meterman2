@@ -26,7 +26,7 @@ public final class SystemActions
 
     public static void init() {
         // Don't set shortcuts yet because the UI doesn't exist
-        GameUtils.registerActions(Meterman2.bundles.getElement("system-actions"), true, false);
+        GameUtils.registerActions(Meterman2.bundles.getElement("system-actions"), true);
 
         LOOK = actions.getAction("LOOK");
         WAIT = actions.getAction("WAIT");

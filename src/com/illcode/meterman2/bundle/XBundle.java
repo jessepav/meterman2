@@ -140,7 +140,7 @@ public final class XBundle
     }
 
     /** Set whether this is a system bundle. This affects how templates are stored. */
-    public void setSystemBundle(boolean systemBundle) {
+    void setSystemBundle(boolean systemBundle) {
         this.systemBundle = systemBundle;
     }
 

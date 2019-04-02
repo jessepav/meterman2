@@ -238,9 +238,8 @@ public final class GameUtils
      * Register actions and keyboard shortcuts found in an XML definition.
      * @param el XML definition element
      * @param system true if these are system actions
-     * @param putShortcuts true if the shortcuts should be installed in the UI
      */
-    static void registerActions(Element el, boolean system, boolean putShortcuts) {
+    static void registerActions(Element el, boolean system) {
         for (Element actionEl : el.getChildren("action")) {
             final String name = actionEl.getAttributeValue("name");
             final String templateText = actionEl.getAttributeValue("templateText");
@@ -258,7 +257,7 @@ public final class GameUtils
                 a.setFixedText(null);
             }
             // Don't let games override bindings for system actions
-            if (putShortcuts && shortcut != null && system == Meterman2.actions.isSystemAction(a))
+            if (shortcut != null && Meterman2.ui != null && system == Meterman2.actions.isSystemAction(a))
                 Meterman2.ui.putActionBinding(a, shortcut);
         }
     }
@@ -271,7 +270,7 @@ public final class GameUtils
             final String shortcut = actionEl.getAttributeValue("shortcut");
             if (name == null || shortcut == null)
                 continue;
-            MMActions.Action a = Meterman2.actions.getAction(name);
+            final MMActions.Action a = Meterman2.actions.getAction(name);
             if (a == null)
                 continue;
             Meterman2.ui.putActionBinding(a, shortcut);
@@ -283,7 +282,7 @@ public final class GameUtils
      * @param el XML definition element
      */
     public static void registerActions(Element el) {
-        registerActions(el, false, true);
+        registerActions(el, false);
     }
 
     /**
