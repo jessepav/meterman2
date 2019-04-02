@@ -86,4 +86,7 @@ public interface UIHandler
 
     /** Return true if the game system indicates we should always "Look" when entering a room. */
     boolean isAlwaysLook();
+
+    /** Adds text to the game transcript. */
+    void transcribe(String text);
 }

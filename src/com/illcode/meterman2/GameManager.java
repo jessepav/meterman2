@@ -637,6 +637,13 @@ public final class GameManager
         outputBuilder.append(text).append('\n');
     }
 
+    /**
+     * Print a newline to the main text area.
+     */
+    public void println() {
+        outputBuilder.append('\n');
+    }
+
     /** Prints the text of a text-source. */
     public void print(TextSource source) {
         print(source.getText());

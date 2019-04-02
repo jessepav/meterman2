@@ -28,6 +28,10 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMUI
 {
+    private static final String DASHES1 = "--------";
+    private static final String DASHES2 = "----------------";
+    private static final String SPACES = "    ";
+
     MainFrame mainFrame;
     TextDialog textDialog;
     PromptDialog promptDialog;
@@ -43,6 +47,8 @@ public final class MMUI
     private BufferedImage defaultFrameImage;
     private String currentFrameImage, currentEntityImage;
 
+    private StringBuilder sb;
+
     int maxBufferSize;
     int dialogTextColumns;
 
@@ -55,6 +61,7 @@ public final class MMUI
         final int cacheSize = Utils.intPref("image-cache-size", 32);
         imageMap = new HashMap<>(cacheSize * 2);
         loadedImages = new LRUImageCacheMap(cacheSize);
+        sb = new StringBuilder(512);
     }
 
     /**
@@ -129,6 +136,7 @@ public final class MMUI
                 logger.log(Level.WARNING, "MMUI.dispose()", e);
             }
         }
+        sb = null;
         loadedImages = null;
         inventoryEntityIds = null;
         roomEntityIds = null;
@@ -558,6 +566,7 @@ public final class MMUI
      *         was closed without selecting a button.
      */
     public int showTextDialog(String header, String text, String... buttonLabels) {
+        transcribeDialogText(header, text);
         return textDialog.show(header, wrapDialogText(text), buttonLabels);
     }
 
@@ -571,7 +580,14 @@ public final class MMUI
      * @return the text entered by the user
      */
     public String showPromptDialog(String header, String text, String prompt, String initialText) {
-        return promptDialog.show(header, wrapDialogText(text), prompt, initialText);
+        transcribeDialogText(header, text);
+        final String s = promptDialog.show(header, wrapDialogText(text), prompt, initialText);
+        if (!s.isEmpty()) {
+            sb.append('\n').append(prompt).append(" > ").append(s);
+            handler.transcribe(sb.toString());
+            sb.setLength(0);
+        }
+        return s;
     }
 
     /**
@@ -584,7 +600,14 @@ public final class MMUI
      * @return the item selected, or null if no item selected.
      */
     public <T> T showListDialog(String header, String text, List<T> items, boolean showCancelButton) {
-        return listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
+        transcribeDialogText(header, text);
+        final T choice = listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
+        if (choice != null) {
+            sb.append("\n> ").append(choice.toString());
+            handler.transcribe(sb.toString());
+            sb.setLength(0);
+        }
+        return choice;
     }
 
     /**
@@ -598,10 +621,19 @@ public final class MMUI
      *         was closed without selecting a button.
      */
     public int showImageDialog(String header, String imageName, int scale, String text, String... buttonLabels) {
+        transcribeDialogText(header, text);
         BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : loadImage(imageName);
         if (image != null && scale > 1)
             image = GuiUtils.getScaledImage(image, scale);
         return imageDialog.show(header, image, wrapDialogText(text), buttonLabels);
+    }
+
+    private void transcribeDialogText(String header, String text) {
+        sb.append(DASHES1).append(' ').append(header).append(' ').append(DASHES1).append('\n');
+        sb.append(text).append('\n');
+        sb.append(SPACES).append(DASHES2);
+        handler.transcribe(sb.toString());
+        sb.setLength(0);
     }
 
     /**
