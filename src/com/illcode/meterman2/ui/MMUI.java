@@ -553,7 +553,6 @@ public final class MMUI
         setStatusLabel(UIConstants.RIGHT_LABEL, "");
     }
 
-
     /**
      * Displays a modal dialog showing a passage of text, with multiple button choices.
      * @param header header surmounted above the text passage
@@ -564,6 +563,11 @@ public final class MMUI
      */
     public int showTextDialog(String header, String text, String... buttonLabels) {
         handler.transcribe(text).transcribe(NL);
+        return showTextDialogImpl(header, text, buttonLabels);
+    }
+
+    /** Like {@link #showTextDialog} but without transcribing. Intended for use by the game system. */
+    public int showTextDialogImpl(String header, String text, String... buttonLabels) {
         return textDialog.show(header, wrapDialogText(text), buttonLabels);
     }
 
@@ -579,6 +583,11 @@ public final class MMUI
      */
     public int showImageDialog(String header, String imageName, int scale, String text, String... buttonLabels) {
         handler.transcribe(text).transcribe(NL);
+        return showImageDialogImpl(header, imageName, scale, text, buttonLabels);
+    }
+
+    /** Like {@link #showImageDialog} but without transcribing. Intended for use by the game system. */
+    public int showImageDialogImpl(String header, String imageName, int scale, String text, String... buttonLabels) {
         BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : loadImage(imageName);
         if (image != null && scale > 1)
             image = GuiUtils.getScaledImage(image, scale);
@@ -596,10 +605,15 @@ public final class MMUI
      */
     public <T> T showListDialog(String header, String text, List<T> items, boolean showCancelButton) {
         handler.transcribe(text).transcribe(NL);
-        final T choice = listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
+        final T choice = showListDialogImpl(header, text, items, showCancelButton);
         if (choice != null)
             handler.transcribe("> ").transcribe(choice.toString()).transcribe(NL);
         return choice;
+    }
+
+    /** Like {@link #showListDialog} but without transcribing. Intended for use by the game system. */
+    public <T> T showListDialogImpl(String header, String text, List<T> items, boolean showCancelButton) {
+        return listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
     }
 
     /**
@@ -613,10 +627,15 @@ public final class MMUI
      */
     public String showPromptDialog(String header, String text, String prompt, String initialText) {
         handler.transcribe(text).transcribe(NL);
-        final String s = promptDialog.show(header, wrapDialogText(text), prompt, initialText);
+        final String s = showPromptDialogImpl(header, text, prompt, initialText);
         if (!s.isEmpty())
             handler.transcribe(prompt).transcribe(" >").transcribe(s).transcribe(NL);
         return s;
+    }
+
+    /** Like {@link #showPromptDialog} but without transcribing. Intended for use by the game system. */
+    public String showPromptDialogImpl(String header, String text, String prompt, String initialText) {
+        return promptDialog.show(header, wrapDialogText(text), prompt, initialText);
     }
 
     /**

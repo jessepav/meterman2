@@ -281,7 +281,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         do {       // successfully started or loaded
             String choice;
             do {  // don't let the user avoid making a choice
-                choice = ui.showListDialog("Meterman2", "Select an option",
+                choice = ui.showListDialogImpl("Meterman2", "Select an option",
                     Arrays.asList("New Game", "Load Game", "Quit"), false);
             } while (choice == null);
             switch (choice) {
@@ -386,7 +386,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         } else if (source == newMenuItem) {
             String gameName = Utils.getPref("single-game-name");
             if (gameName == null)
-                gameName = ui.showListDialog("New Game", "Choose a game:", ui.handler.getGameNames(), true);
+                gameName = ui.showListDialogImpl("New Game", "Choose a game:", ui.handler.getGameNames(), true);
             if (gameName != null)
                 ui.handler.newGame(gameName);
         } else if (source == loadMenuItem) {
@@ -397,7 +397,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
                     ui.handler.loadGameState(in);
                 } catch (Exception ex) {
                     logger.log(Level.WARNING, "MainFrame loadMenuItem", ex);
-                    ui.showTextDialog("Load Error", ex.getMessage(), "OK");
+                    ui.showTextDialogImpl("Load Error", ex.getMessage(), "OK");
                 }
             }
         } else if (source == saveMenuItem) {
@@ -409,7 +409,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
                 ui.handler.saveGameState(out);
             } catch (Exception ex) {
                 logger.log(Level.WARNING, "MainFrame saveMenuItem", ex);
-                ui.showTextDialog("Save Error", ex.getMessage(), "OK");
+                ui.showTextDialogImpl("Save Error", ex.getMessage(), "OK");
             }
         } else if (source == saveAsMenuItem) {
             int r = fc.showSaveDialog(frame);
@@ -434,10 +434,10 @@ final class MainFrame implements ActionListener, ListSelectionListener
         } else if (source == promptToQuitCheckBoxMenuItem) {
             Utils.setPref("prompt-to-quit", Boolean.toString(promptToQuitCheckBoxMenuItem.isSelected()));
         } else if (source == scrollbackMenuItem) {
-            int newval = Utils.parseInt(ui.showPromptDialog("Scrollback",
+            int newval = Utils.parseInt(ui.showPromptDialogImpl("Scrollback",
                 "Scrollback buffer size, in characters:", "Size:", Integer.toString(ui.maxBufferSize)));
             if (newval == 0) {
-                ui.showTextDialog("Scrollback", "That's not a valid size!", "Sorry, I'll try again");
+                ui.showTextDialogImpl("Scrollback", "That's not a valid size!", "Sorry, I'll try again");
             } else {
                 ui.maxBufferSize = newval;
                 Utils.setPref("max-text-buffer-size", Integer.toString(newval));
@@ -588,7 +588,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             case DEBUG:
                 try {
                     if (ui.handler.isGameActive()) {
-                        debugCommand = ui.showPromptDialog("Debug Command",
+                        debugCommand = ui.showPromptDialogImpl("Debug Command",
                             "What is your debug command, oh Implementer?", "Command", debugCommand);
                         ui.handler.debugCommand(debugCommand);
                     }

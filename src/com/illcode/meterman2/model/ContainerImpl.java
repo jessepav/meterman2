@@ -122,8 +122,8 @@ public class ContainerImpl extends BaseEntityImpl
             if (contents.isEmpty()) {
                 gm.println(bundles.getPassage("container-empty-message").getTextWithArgs(getInPrep(), c.getDefName()));
             } else {
-                Entity item = ui.showListDialog(
-                    c.getName(), bundles.getPassage("container-examine-message").getText(), contents, true);
+                Entity item = ui.showListDialog(c.getName(),
+                    bundles.getPassage("container-examine-message").getText(), contents, true);
                 if (item != null)
                     gm.println(item.getDescription());
             }

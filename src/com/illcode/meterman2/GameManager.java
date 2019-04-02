@@ -138,7 +138,7 @@ public final class GameManager
         game = Meterman2.gamesList.createGame(state.gameName);
         if (game == null) {
             ui.hideWaitDialog();
-            ui.showTextDialog("Error", "Error loading game!", "OK");
+            ui.showTextDialogImpl("Error", "Error loading game!", "OK");
             return;
         }
         String gameName = game.getName();

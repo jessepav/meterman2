@@ -44,27 +44,28 @@ public class MMHandler implements UIHandler
                     case "r":
                         Room r = g.reloadRoom(args[2]);
                         if (r != null) {
-                            Meterman2.gm.roomChanged(r);
-                            Meterman2.gm.refreshUI();
+                            gm.roomChanged(r);
+                            gm.refreshUI();
                         } else {
-                            Meterman2.ui.showTextDialog("Reload", "Reloading room ID " + args[2] + " failed!", "Rats");
+                            ui.showTextDialogImpl("Reload", "Reloading room ID " + args[2] + " failed!", "Rats");
                         }
                         break;
                     case "entity":
                     case "e":
                         Entity e = g.reloadEntity(args[2]);
                         if (e != null) {
-                            Meterman2.gm.entityChanged(e);
-                            Meterman2.gm.refreshUI();
+                            gm.entityChanged(e);
+                            gm.refreshUI();
                         } else {
-                            Meterman2.ui.showTextDialog("Reload", "Reloading entity ID " + args[2] + " failed!", "Rats");
+                            ui.showTextDialogImpl("Reload", "Reloading entity ID " + args[2] + " failed!", "Rats");
                         }
                         break;
                     case "topicmap":
                     case "tm":
                         TopicMap tm = g.reloadTopicMap(args[2]);
                         if (tm == null)
-                            Meterman2.ui.showTextDialog("Reload", "Reloading topic map ID " + args[2] + " failed!", "Rats");
+                            ui.showTextDialogImpl("Reload", "Reloading topic map ID " + args[2] + " failed!", "Rats");
+                        break;
                     }
                 }
                 break;
@@ -82,7 +83,7 @@ public class MMHandler implements UIHandler
     public void newGame(String gameName) {
         Game game = Meterman2.gamesList.createGame(gameName);
         if (game == null)
-            ui.showTextDialog("Error", "Error creating game!", "OK");
+            ui.showTextDialogImpl("Error", "Error creating game!", "OK");
         else
             gm.newGame(game);
     }
