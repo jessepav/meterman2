@@ -46,7 +46,7 @@ public class DarkRoom extends Room implements DarkAwareRoom
     public String getDarkDescription() {
         GameUtils.pushBinding("room", this);
         final String desc = darkDescription != null ? darkDescription.getText() :
-            Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
+            Meterman2.bundles.getPassage("darkroom-description").getText();
         GameUtils.popBinding("room");
         return desc;
     }

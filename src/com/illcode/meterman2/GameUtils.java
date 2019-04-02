@@ -331,7 +331,7 @@ public final class GameUtils
                 description = ((DarkAwareRoom) r).getDarkDescription();
             } else {
                 GameUtils.pushBinding("room", r);
-                description = Meterman2.bundles.getPassage(SystemMessages.DARKROOM_DESCRIPTION).getText();
+                description = Meterman2.bundles.getPassage("darkroom-description").getText();
                 GameUtils.popBinding("room");
             }
         } else {

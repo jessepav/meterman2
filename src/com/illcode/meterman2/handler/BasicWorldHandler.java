@@ -117,7 +117,7 @@ public class BasicWorldHandler
             if (gm.getPlayer().getEntities().size() < maxInventoryItems)
                 gm.moveEntity(e, gm.getPlayer());
             else
-                gm.println(Meterman2.bundles.getPassage(SystemMessages.MAX_INVENTORY));
+                gm.println(Meterman2.bundles.getPassage("max-inventory-message"));
         } else if (action.equals(SystemActions.EQUIP)) {
             gm.setEquipped(e, true);
         } else if (action.equals(SystemActions.UNEQUIP)) {

@@ -3,7 +3,6 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.SystemActions;
-import com.illcode.meterman2.SystemMessages;
 import com.illcode.meterman2.model.TopicMap.Topic;
 
 import java.util.*;
@@ -60,14 +59,14 @@ public class TalkSupport
         final List<Topic> topics = assembleTopicList();
         final Entity e = talker.getTalkerEntity();
         if (topics.isEmpty()) {
-            gm.println(bundles.getPassage(SystemMessages.NO_TALK_TOPICS).getTextWithArgs(e.getDefName()));
+            gm.println(bundles.getPassage("no-talk-topics-message").getTextWithArgs(e.getDefName()));
         } else {
             Topic t;
             if (topics.size() == 1 && topics.get(0).getId().equals(TopicMap.GREETING_TOPIC_ID))
                 t = topics.get(0);
             else
                 t = ui.showListDialog(SystemActions.TALK.getText(),
-                        bundles.getPassage(SystemMessages.TALK_PROMPT).getTextWithArgs(e.getDefName()), topics, true);
+                        bundles.getPassage("talk-prompt-message").getTextWithArgs(e.getDefName()), topics, true);
             if (t == null)
                 return;
             if (t.getId() == TopicMap.OTHER_TOPIC_ID) {
