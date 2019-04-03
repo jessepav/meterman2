@@ -129,7 +129,6 @@ public final class MMActions
 
     /** Clear all game actions, and reset system actions to their original state. */
     void clearGameActions() {
-        // First clear all the game actions.
         final int size = actionNumSet.size();
         for (int i = 0; i < size; i++) {
             if (actionNumSet.get(i)) {

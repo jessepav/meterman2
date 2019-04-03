@@ -63,7 +63,7 @@
   </entity>
 
   <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
-          attributes="closed, locked">
+          capacity="10" attributes="closed, locked">
     <inRoom>small-hut</inRoom>
     <description>A doughty iron chest.</description>
     <key>brass-key</key>
@@ -164,7 +164,7 @@
     <action name="EAT" templateText="Eat" shortcut="shift E" />
     <action name="JUMP_IN_OUT" templateText="Jump %s" shortcut="ctrl J" />
 
-    <!-- System action text can be changed as well.-->
+    <!-- System action text can be changed as well, though you cannot change their shortcuts.-->
     <action name="WAIT" templateText="Abide" />
   </actions>
 

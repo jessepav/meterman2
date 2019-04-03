@@ -6,7 +6,6 @@ import org.apache.commons.lang3.text.WordUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.LOCKED;
@@ -21,15 +20,19 @@ import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
  */
 public class ContainerImpl extends BaseEntityImpl
 {
+    public static final int DEFAULT_CAPACITY = 128;
+
     protected String inPrep;
     protected String outPrep;
     protected Entity key;
+    protected int capacity;
 
     private List<MMActions.Action> actions;
     private MMActions.Action lookInAction, putInAction, takeOutAction;
 
     public ContainerImpl() {
         super();
+        capacity = DEFAULT_CAPACITY;
     }
 
     /**
@@ -66,6 +69,16 @@ public class ContainerImpl extends BaseEntityImpl
     /** Set the key used to lock/unlock this container. Null means no key is needed. */
     public final void setKey(Entity key) {
         this.key = key;
+    }
+
+    /** Return the capacity of this container. */
+    public int getCapacity() {
+        return capacity;
+    }
+
+    /** Set the capacity (i.e. maximum number of items that can be put in) of this container. */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     @Override
@@ -131,6 +144,10 @@ public class ContainerImpl extends BaseEntityImpl
             }
             return true;
         } else if (action.equals(SystemActions.CONTAINER_PUT)) {
+            if (c.getEntities().size() >= capacity) {
+                printPassageWithArgs("container-full-message", getInPrep(), c.getDefName());
+                return true;
+            }
             List<Entity> takeables = new ArrayList<>();
             GameUtils.getCurrentTakeableEntities(takeables);
             if (attr.get(TAKEABLE))
@@ -162,7 +179,8 @@ public class ContainerImpl extends BaseEntityImpl
                 }
             }
             return true;
+        } else {
+            return false;
         }
-        return false;
     }
 }
