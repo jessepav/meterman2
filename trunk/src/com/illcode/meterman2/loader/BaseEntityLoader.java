@@ -198,6 +198,7 @@ public class BaseEntityLoader implements EntityLoader
         containerImpl.setInPrep(helper.getValue("inPrep"));
         containerImpl.setOutPrep(helper.getValue("outPrep"));
         containerImpl.setKey(resolver.getEntity(helper.getValue("key")));
+        containerImpl.setCapacity(Utils.parseInt(helper.getValue("capacity"), ContainerImpl.DEFAULT_CAPACITY));
     }
 
     // Returns true if the door was loaded successfully.

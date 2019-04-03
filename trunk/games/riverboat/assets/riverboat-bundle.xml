@@ -38,7 +38,7 @@
     </description>
   </entity>
 
-  <entity id="chest" name="Teak Chest" type="container" inRoom="starting-room">
+  <entity id="chest" name="Teak Chest" type="container" inRoom="starting-room" capacity="5">
     <attributes>
     </attributes>
     <description format="ftl">

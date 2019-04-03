@@ -75,6 +75,9 @@
   <passage id="container-take-message" format="printf"> <!-- args: item.defName, outPrep, defName -->
     You take %s %s %s.
   </passage>
+  <passage id="container-full-message" format="printf"> <!-- args: inPrep, defName -->
+    You cannot put any more items %s %s.
+  </passage>
 
   <!-- Used by dark rooms. -->
   <passage id="darkroom-description">
