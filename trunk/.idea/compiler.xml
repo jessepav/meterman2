@@ -3,9 +3,6 @@
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
     <addNotNullAssertions enabled="false" />
-    <excludeFromCompile>
-      <directory url="file://$PROJECT_DIR$/src/com/illcode/meterman2/bsh" includeSubdirectories="true" />
-    </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
