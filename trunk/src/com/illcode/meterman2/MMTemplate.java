@@ -42,7 +42,8 @@ public class MMTemplate
         b.setForceLegacyNonListCollections(false);
         b.setIterableSupport(true);
         b.setExposeFields(true);
-        cfg.setObjectWrapper(b.build());
+        final DefaultObjectWrapper wrapper = b.build();
+        cfg.setObjectWrapper(wrapper);
         strLoader = new StringTemplateLoader();
         cfg.setTemplateLoader(strLoader);
         cfg.setTemplateUpdateDelayMilliseconds(10000);
@@ -57,7 +58,7 @@ public class MMTemplate
         systemHash = new HashMap<>();
         savedBindings = new HashMap<>();
 
-        initSystemHash();
+        initSystemHash(wrapper);
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -74,11 +75,10 @@ public class MMTemplate
         cfg = null;
     }
 
-    private void initSystemHash() {
+    private void initSystemHash(DefaultObjectWrapper wrapper) {
         putSystemBinding("utils", new TemplateUtils());
-        BeansWrapper bw = new BeansWrapperBuilder(Configuration.VERSION_2_3_28).build();;
-        TemplateHashModel staticModels = bw.getStaticModels();
         try {
+            TemplateHashModel staticModels = wrapper.getStaticModels();
             putSystemBinding("attributes", staticModels.get("com.illcode.meterman2.SystemAttributes"));
         } catch (TemplateModelException ex) {
             logger.log(Level.WARNING, "MMTemplate.initRootHash()", ex);
