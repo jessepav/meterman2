@@ -20,6 +20,7 @@ public final class EventHandlerManager
     private LinkedList<EntityActionsProcessor> entityActionsProcessors;
     private LinkedList<EntitySelectionListener> entitySelectionListeners;
     private LinkedList<OutputTextProcessor> outputTextProcessors;
+    private LinkedList<LookListener> lookListeners;
 
     public EventHandlerManager() {
         gameActionListeners = new LinkedList<>();
@@ -28,6 +29,7 @@ public final class EventHandlerManager
         entityActionsProcessors = new LinkedList<>();
         entitySelectionListeners = new LinkedList<>();
         outputTextProcessors = new LinkedList<>();
+        lookListeners = new LinkedList<>();
     }
 
     /**
@@ -40,6 +42,7 @@ public final class EventHandlerManager
         entityActionsProcessors.clear();
         entitySelectionListeners.clear();
         outputTextProcessors.clear();
+        lookListeners.clear();
     }
 
     /**
@@ -55,6 +58,7 @@ public final class EventHandlerManager
         map.put("entityActionsProcessors", entityActionsProcessors);
         map.put("entitySelectionListeners", entitySelectionListeners);
         map.put("outputTextProcessors", outputTextProcessors);
+        map.put("lookListeners", lookListeners);
         return map;
     }
 
@@ -275,5 +279,25 @@ public final class EventHandlerManager
     public void fireOutputTextReady(StringBuilder sb) {
         for (OutputTextProcessor l : outputTextProcessors)
             l.outputTextReady(sb);
+    }
+
+    /** Add a look-listener to the front of our notification list. */
+    public void addLookListener(LookListener l) {
+        if (l != null && !lookListeners.contains(l))
+            lookListeners.addFirst(l);
+    }
+
+    /** Remove a look-listener from our notification list. */
+    public void removeLookListener(LookListener l) {
+        lookListeners.remove(l);
+    }
+
+    /**
+     * Notifies registered look-listeners that a Look command has been performed.
+     * @param currentRoom the room where the player is looking
+     */
+    public void fireLookPerformed(Room currentRoom) {
+        for (LookListener l : lookListeners)
+            l.lookInRoom(currentRoom);
     }
 }

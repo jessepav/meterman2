@@ -436,6 +436,7 @@ public final class GameManager
         outputBuilder.append("\n");
         for (Entity e : GameUtils.getRoomEntities(currentRoom))
             e.lookInRoom();
+        handlerManager.fireLookPerformed(currentRoom);
         if (commonTextBuilder.length() != 0) {
             outputBuilder.append('\n').append(commonTextBuilder).append('\n');
             commonTextBuilder.setLength(0);
@@ -453,6 +454,8 @@ public final class GameManager
      *          be shown along with any other text that didn't request a separate paragraph
      */
     public void queueLookText(String text, boolean paragraph) {
+        if (text.isEmpty())
+            return;
         if (paragraph)
             paragraphBuilder.append('\n').append(text).append('\n');
         else
@@ -762,6 +765,8 @@ public final class GameManager
             addEntitySelectionListener((EntitySelectionListener) g.getEventHandler(id));
         for (String id : state.gameHandlers.get("outputTextProcessors"))
             addOutputTextProcessor((OutputTextProcessor) g.getEventHandler(id));
+        for (String id : state.gameHandlers.get("lookListeners"))
+            addLookListener((LookListener) g.getEventHandler(id));
     }
 
     /** Called by the UI when it's time to save a game. */
@@ -863,6 +868,9 @@ public final class GameManager
 
     public void addOutputTextProcessor(OutputTextProcessor p) {handlerManager.addOutputTextProcessor(p);}
     public void removeOutputTextProcessor(OutputTextProcessor p) {handlerManager.removeOutputTextProcessor(p);}
+
+    public void addLookListener(LookListener l) {handlerManager.addLookListener(l);}
+    public void removeLookListener(LookListener l) {handlerManager.removeLookListener(l);}
     //endregion
 
     /**

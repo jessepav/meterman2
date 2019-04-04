@@ -171,4 +171,30 @@
     <action name="LOOK" templateText="Survey Scene" />
     <action name="WAIT" templateText="Bide Time" />
   </actions>
+
+  <lookHandler id="riverlooker">
+    <roomGroup roomIds="starting-room, playroom">
+      <text paragraph="true">
+        Overhead the clouds shift against the cerulean sky.
+      </text>
+    </roomGroup>
+    <roomGroup>
+      <roomIds>
+        <r>dungeon</r>
+      </roomIds>
+      <text script="bsh">
+        if (hasAttr(currentRoom, DARK))
+            out("In the darkness you hear something scuttle.");
+      </text>
+      <!--
+      <text format="ftl">
+        [#if utils.hasAttr(currentRoom, attributes.DARK)]
+          In the shadows you hear something scuttle.
+        [#else]
+          The light pushes back the darkness, tenuously.
+        [/#if]
+      </text>
+      -->
+    </roomGroup>
+  </lookHandler>
 </xbundle>
