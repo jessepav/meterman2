@@ -2,10 +2,10 @@ package com.illcode.riverboat;
 
 import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.Meterman2;
-import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.handler.BasicWorldHandler;
+import com.illcode.meterman2.handler.LookHandler;
 import com.illcode.meterman2.loader.WorldLoader;
 import com.illcode.meterman2.model.*;
 
@@ -17,9 +17,13 @@ public class RiverboatGame implements Game
     static final String RIVERBOAT_NAME = "The Riverboat";
 
     static final String RIVERBOAT_BASIC_HANDLER_ID = "riverboat-basic-handler";
+    static final String RIVERBOAT_LOOK_HANDLER_ID = "riverboat-looker";
 
+    XBundle b;
     WorldLoader worldLoader;
     BasicWorldHandler basicWorldHandler;
+    LookHandler lookHandler;
+
     Map<String,Room> roomIdMap;
     Map<String,Entity> entityIdMap;
     Map<String,Object> gameStateMap;
@@ -29,7 +33,7 @@ public class RiverboatGame implements Game
     }
 
     public void init() {
-        XBundle b = XBundle.loadFromPath(Meterman2.assets.pathForGameAsset("riverboat-bundle.xml"));
+        b = XBundle.loadFromPath(Meterman2.assets.pathForGameAsset("riverboat-bundle.xml"));
         Meterman2.bundles.addFirst(b);
         GameUtils.registerActions(b.getElement("riverboat-actions"));
     }
@@ -76,6 +80,8 @@ public class RiverboatGame implements Game
     public void registerInitialGameHandlers() {
         basicWorldHandler = (BasicWorldHandler) getEventHandler(RIVERBOAT_BASIC_HANDLER_ID);
         basicWorldHandler.register();
+        lookHandler = (LookHandler) getEventHandler(RIVERBOAT_LOOK_HANDLER_ID);
+        lookHandler.register();
     }
 
     public GameEventHandler getEventHandler(String id) {
@@ -86,6 +92,12 @@ public class RiverboatGame implements Game
                 basicWorldHandler.setMaxInventoryItems(4);
             }
             return basicWorldHandler;
+        case RIVERBOAT_LOOK_HANDLER_ID:
+            if (lookHandler == null) {
+                lookHandler = new LookHandler(RIVERBOAT_LOOK_HANDLER_ID);
+                lookHandler.loadFromElement(b, "riverlooker");
+            }
+            return lookHandler;
         default:
             return null;
         }

@@ -224,4 +224,24 @@
           onText="lit" offText="doused" lightAction="Light" douseAction="Douse">
     <description>An old oil lamp.</description>
   </entity>
+
+  <!-- For use with LookHandler.loadFromElement() -->
+  <lookHandler id="outdoor-listener">
+    <roomGroup roomIds="grassy-field, baseball-diamond, beach">
+      <!-- If paragraph="true" the text will be output in its own paragraph. -->
+      <text format="ftl" paragraph="true">
+        Over ${currentRoom.defName} you see gulls wheeling in endless circles.
+      </text>
+    </roomGroup>
+    <roomGroup>
+      <roomIds>
+        <r>dungeon</r>
+        <r>cave</r>
+        <r>oubliette</r>
+      </roomIds>
+      <text>
+        A crushing sense of claustrophobia attends the close walls.
+      </text>
+    </roomGroup>
+  </lookHandler>
 </xbundle>
