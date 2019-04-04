@@ -1,17 +1,21 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.Room;
 import freemarker.cache.MruCacheStorage;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.Environment;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.*;
-
-import static com.illcode.meterman2.MMLogging.logger;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.*;
 import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 /**
  * This class handles Meterman's interaction with a scripting engine, in our case FreeMarker.
@@ -52,6 +56,8 @@ public class MMTemplate
         rootHash = new HashMap<>();
         systemHash = new HashMap<>();
         savedBindings = new HashMap<>();
+
+        initSystemHash();
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -59,7 +65,6 @@ public class MMTemplate
         clearTemplateCache();
         clearGameTemplates();
         clearSystemTemplates();
-        clearBindings();
         savedBindings = null;
         systemHash = null;
         rootHash = null;
@@ -67,6 +72,17 @@ public class MMTemplate
         systemTemplates = null;
         strLoader = null;
         cfg = null;
+    }
+
+    private void initSystemHash() {
+        putSystemBinding("utils", new TemplateUtils());
+        BeansWrapper bw = new BeansWrapperBuilder(Configuration.VERSION_2_3_28).build();;
+        TemplateHashModel staticModels = bw.getStaticModels();
+        try {
+            putSystemBinding("attributes", staticModels.get("com.illcode.meterman2.SystemAttributes"));
+        } catch (TemplateModelException ex) {
+            logger.log(Level.WARNING, "MMTemplate.initRootHash()", ex);
+        }
     }
 
     /**
@@ -264,5 +280,24 @@ public class MMTemplate
                 logger.log(Level.WARNING, "Could not write TemplateException: ", te);
             }
         }
+    }
+
+    /**
+     * Used to inject useful methods into template data models.
+     */
+    public final static class TemplateUtils
+    {
+        public int randInt(int min, int max) {
+            return Utils.randInt(min, max);
+        }
+
+        public boolean hasAttr(Entity e, int attrNum) {
+            return GameUtils.hasAttr(e, attrNum);
+        }
+
+        public boolean hasAttr(Room r, int attrNum) {
+            return GameUtils.hasAttr(r, attrNum);
+        }
+
     }
 }

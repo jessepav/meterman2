@@ -24,9 +24,6 @@ public class SystemAttributes
     /** This entity is a light source. */
     public static int LIGHTSOURCE;
 
-    /** This entity has a proper name and doesn't require the definite article. */
-    public static int PROPER_NAME;
-
     /** Something that can be pulled or pushed. */
     public static int MOVEABLE;
 
@@ -49,12 +46,18 @@ public class SystemAttributes
     /** This room is naturally dark. */
     public static int DARK;
 
+    //
+    // Applicable to both
+    //
+
+    /** This entity or room has a proper name and doesn't require the definite article. */
+    public static int PROPER_NAME;
+
     public static void init() {
         CONCEALED = Meterman2.attributes.registerAttribute("concealed");
         TAKEABLE = Meterman2.attributes.registerAttribute("takeable");
         EQUIPPABLE = Meterman2.attributes.registerAttribute("equippable");
         LIGHTSOURCE = Meterman2.attributes.registerAttribute("lightsource");
-        PROPER_NAME = Meterman2.attributes.registerAttribute("proper-name");
         MOVEABLE = Meterman2.attributes.registerAttribute("moveable");
         CLOSED = Meterman2.attributes.registerAttribute("closed");
         LOCKED = Meterman2.attributes.registerAttribute("locked");
@@ -62,6 +65,8 @@ public class SystemAttributes
 
         VISITED = Meterman2.attributes.registerAttribute("visited");
         DARK = Meterman2.attributes.registerAttribute("dark");
+
+        PROPER_NAME = Meterman2.attributes.registerAttribute("proper-name");
 
         Meterman2.attributes.markSystemAttributesDone();
     }
