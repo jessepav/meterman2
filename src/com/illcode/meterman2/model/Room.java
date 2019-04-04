@@ -3,6 +3,7 @@ package com.illcode.meterman2.model;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.model.RoomImpl.RoomMethod;
 import com.illcode.meterman2.ui.UIConstants;
 
@@ -261,6 +262,29 @@ public class Room implements EntityContainer
             delegate.gameStarting(this);
         else
             impl.gameStarting(this);
+    }
+
+    /**
+     * Return the name of the room prefixed by the definite article ("the"), taking into
+     * account proper names.
+     * @param capitalize whether to capitalize the definite article
+     */
+    public final String getDefName(boolean capitalize) {
+        final String name = getName();
+        if (name.isEmpty())
+            return "";
+        if (getAttributes().get(SystemAttributes.PROPER_NAME))
+            return name;
+        final String defArt = capitalize ? "The " : "the ";
+        return defArt + name;
+    }
+
+    /**
+     * Return the name of the room prefixed by the definite article ("the") in lowercase,
+     * taking into account proper names.
+     */
+    public final String getDefName() {
+        return getDefName(false);
     }
 
     //region -- implement EntityContainer
