@@ -182,19 +182,19 @@
       <roomIds>
         <r>dungeon</r>
       </roomIds>
+      <!--
       <text script="bsh">
         if (hasAttr(currentRoom, DARK))
             out("In the darkness you hear something scuttle.");
       </text>
-      <!--
+      -->
       <text format="ftl">
         [#if utils.hasAttr(currentRoom, attributes.DARK)]
-          In the shadows you hear something scuttle.
+          In the shadows you hear something with ${utils.randInt(8, 16)} legs scuttle.
         [#else]
           The light pushes back the darkness, tenuously.
         [/#if]
       </text>
-      -->
     </roomGroup>
   </lookHandler>
 </xbundle>
