@@ -18,6 +18,9 @@ import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -32,7 +35,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     JFrame frame;
     JMenu gameMenu, settingsMenu, helpMenu;
-    JMenuItem newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem,
+    JMenuItem newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem, saveTranscriptMenuItem,
         quitMenuItem, aboutMenuItem, webSiteMenuItem, onlineManualMenuItem, scrollbackMenuItem;
     JCheckBoxMenuItem alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem, soundCheckBoxMenuItem,
         promptToQuitCheckBoxMenuItem;
@@ -78,6 +81,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             saveMenuItem = cr.getMenuItem("saveMenuItem");
             saveAsMenuItem = cr.getMenuItem("saveAsMenuItem");
             loadMenuItem = cr.getMenuItem("loadMenuItem");
+            saveTranscriptMenuItem = cr.getMenuItem("saveTranscriptMenuItem");
             quitMenuItem = cr.getMenuItem("quitMenuItem");
             aboutMenuItem = cr.getMenuItem("aboutMenuItem");
             webSiteMenuItem = cr.getMenuItem("webSiteMenuItem");
@@ -117,7 +121,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             inventoryList.setModel(inventoryListModel);
 
             for (AbstractButton b : new AbstractButton[] {newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem,
-                    quitMenuItem, aboutMenuItem, alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem,
+                    saveTranscriptMenuItem, quitMenuItem, aboutMenuItem, alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem,
                     soundCheckBoxMenuItem, promptToQuitCheckBoxMenuItem, webSiteMenuItem, scrollbackMenuItem,
                     onlineManualMenuItem, lookButton, waitButton})
                 b.addActionListener(this);
@@ -416,6 +420,21 @@ final class MainFrame implements ActionListener, ListSelectionListener
             if (r == JFileChooser.APPROVE_OPTION) {
                 lastSaveFile = fc.getSelectedFile();
                 saveMenuItem.doClick();
+            }
+        } else if (source == saveTranscriptMenuItem) {
+            int r = fc.showSaveDialog(frame);
+            if (r == JFileChooser.APPROVE_OPTION) {
+                String text = ui.handler.getTranscript();
+                if (text == null)
+                    return;
+                try {
+                    final Path p = fc.getSelectedFile().toPath();
+                    Files.write(p, text.getBytes(StandardCharsets.UTF_8));
+                    ui.showTextDialogImpl("Saved", "Transcript saved to " + p.getFileName().toString(), "OK");
+                } catch (IOException ex) {
+                    logger.log(Level.WARNING, "MainFrame saveTranscript", ex);
+                    ui.showTextDialogImpl("Save Error", ex.getMessage(), "OK");
+                }
             }
         } else if (source == quitMenuItem) {
             close();

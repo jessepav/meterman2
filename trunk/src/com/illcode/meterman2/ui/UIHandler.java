@@ -96,4 +96,7 @@ public interface UIHandler
      *  @param newPar true if the transcript should begin on a new paragraph
      */
     UIHandler transcribe(String text, boolean newPar);
+
+    /** Return the text of the current game transcript. */
+    String getTranscript();
 }

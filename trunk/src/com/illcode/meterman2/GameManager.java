@@ -36,8 +36,9 @@ public final class GameManager
 
     private EventHandlerManager handlerManager;
 
-    // To be used in composing text before sending it off to the UI.
-    private StringBuilder outputBuilder;
+
+    private StringBuilder outputBuilder;  // To be used in composing text before sending it off to the UI.
+    private StringBuilder transcript;  // the game transcript
 
     private StringBuilder commonTextBuilder, paragraphBuilder; // See queueLookText()
     private List<Action> actions; // Used for composing UI actions - reuse same list to avoid allocation
@@ -59,6 +60,7 @@ public final class GameManager
         handlerManager = new EventHandlerManager();
 
         outputBuilder = new StringBuilder(2048);
+        transcript = new StringBuilder(262144);
         commonTextBuilder = new StringBuilder(1024);
         paragraphBuilder = new StringBuilder(1024);
 
@@ -82,6 +84,7 @@ public final class GameManager
         outputBuilder = null;
         commonTextBuilder = null;
         paragraphBuilder = null;
+        transcript = null;
 
         actions = null;
     }
@@ -193,6 +196,8 @@ public final class GameManager
         roomRefreshNeeded = false;
         entityRefreshNeeded = false;
         inventoryRefreshNeeded = false;
+        outputBuilder.setLength(0);
+        transcript.setLength(0);
 
         if (game != null) {
             game.dispose();
@@ -670,8 +675,15 @@ public final class GameManager
             handlerManager.fireOutputTextReady(outputBuilder);
             ui.appendText(outputSeparator);
             ui.appendText(outputBuilder.toString());
+            transcript.append(outputSeparator);
+            transcript.append(outputBuilder);
             outputBuilder.setLength(0);
         }
+    }
+
+    /** Return the text of the current game transcript. */
+    String getTranscript() {
+        return transcript.toString();
     }
 
     /** Called by the when it's time to load a saved game. */
