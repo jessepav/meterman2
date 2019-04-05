@@ -110,13 +110,15 @@ public final class XBundle
         if (indent != -1)
             setIndentLength(indent);
         attrVal = root.getAttributeValue("paragraphStyle");
-        switch (attrVal) {
-        case "blank-line":
-            setParagraphStyle(PARAGRAPH_BLANK_LINE);
-            break;
-        case "indented":
-            setParagraphStyle(PARAGRAPH_INDENTED);
-            break;
+        if (attrVal != null) {
+            switch (attrVal) {
+            case "blank-line":
+                setParagraphStyle(PARAGRAPH_BLANK_LINE);
+                break;
+            case "indented":
+                setParagraphStyle(PARAGRAPH_INDENTED);
+                break;
+            }
         }
 
         // And load up elements and passages
