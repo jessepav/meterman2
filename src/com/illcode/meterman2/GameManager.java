@@ -12,6 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.logging.Level;
 
 import static com.illcode.meterman2.GameUtils.hasAttr;
 import static com.illcode.meterman2.GameUtils.setAttr;
@@ -19,6 +20,7 @@ import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 import static com.illcode.meterman2.SystemAttributes.VISITED;
+import static com.illcode.meterman2.MMLogging.logger;
 
 public final class GameManager
 {
@@ -137,14 +139,9 @@ public final class GameManager
         setAttr(currentRoom, VISITED);
     }
 
-    void loadGame(GameState state) {
+    void loadGame(final Game game, final GameState state) {
         closeGame();
-        game = Meterman2.gamesList.createGame(state.gameName);
-        if (game == null) {
-            ui.hideWaitDialog();
-            ui.showTextDialogImpl("Error", "Error loading game!", "OK");
-            return;
-        }
+        this.game = game;
         String gameName = game.getName();
         ui.setGameName(gameName);
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
@@ -691,9 +688,23 @@ public final class GameManager
     /** Called by the when it's time to load a saved game. */
     void loadGameState(InputStream in) {
         ui.showWaitDialog("Loading game...");
-        final GameState state = Meterman2.persistence.loadGameState(in);
-        loadGame(state);  // in turn calls restoreGameState() below
-        ui.appendText("\n   ------- Game Loaded -------\n\n");
+        GameState state = null;
+        try {
+            state = Meterman2.persistence.loadGameState(in);
+        } catch (Exception ex) {
+            ui.hideWaitDialog();
+            ui.showTextDialogImpl("Load Error", "Invalid save game file!", "Ayaa");
+        }
+        if (state != null) {
+            final Game g = Meterman2.gamesList.createGame(state.gameName);
+            if (g == null) {
+                ui.hideWaitDialog();
+                ui.showTextDialogImpl("Invalid Game", "The game in the save file doesn't exist anymore!", "Ayaa");
+            } else {
+                loadGame(g, state);  // in turn calls restoreGameState() below, and hides the wait dialog
+                ui.appendText("\n   ------- Game Loaded -------\n\n");
+            }
+        }
     }
     
     // Patch up the properties of entities, rooms, and the player from saved values in game-state.
