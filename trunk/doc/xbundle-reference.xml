@@ -3,7 +3,11 @@
 <!-- For for information, see the source for these classes:
       XBundle, WorldLoader, BaseEntityLoader, BaseRoomLoader, GameUtils -->
 
-<xbundle name="reference-bundle">
+<!-- You can set the formatting properties of the XBundle by including certain attributes
+     in its root element. These correspond to the setXxx() methods of the XBundle class.
+     Valid values for paragraphStyle are "blank-line" and "indented". -->
+<xbundle name="reference-bundle"
+         escapeChar="@" spaceChar="¬" indentLength="4" paragraphStyle="blank-line">
   <passage id="simple-passage">
     Untemplated text.
   </passage>
