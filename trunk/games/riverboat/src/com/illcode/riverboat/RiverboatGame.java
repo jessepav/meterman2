@@ -17,10 +17,10 @@ public class RiverboatGame implements Game
 {
     static final String RIVERBOAT_NAME = "The Riverboat";
 
-    static final String RIVERBOAT_BASIC_HANDLER_ID = "riverboat-basic-handler";
-    static final String RIVERBOAT_LOOK_HANDLER_ID = "riverboat-looker";
-    static final String RIVERBOAT_FRAME_IMAGE_HANDLER_ID = "riverboat-frame-imager";
-    static final String RIVERBOAT_ENTITY_IMAGE_HANDLER_ID = "riverboat-entity-imager";
+    static final String BASIC_HANDLER_ID = "basic-handler";
+    static final String LOOK_HANDLER_ID = "looker";
+    static final String FRAME_IMAGE_HANDLER_ID = "frame-imager";
+    static final String ENTITY_IMAGE_HANDLER_ID = "entity-imager";
 
     XBundle b;
     WorldLoader worldLoader;
@@ -84,39 +84,39 @@ public class RiverboatGame implements Game
     }
 
     public void registerInitialGameHandlers() {
-        basicWorldHandler = (BasicWorldHandler) getEventHandler(RIVERBOAT_BASIC_HANDLER_ID);
+        basicWorldHandler = (BasicWorldHandler) getEventHandler(BASIC_HANDLER_ID);
         basicWorldHandler.register();
-        lookHandler = (LookHandler) getEventHandler(RIVERBOAT_LOOK_HANDLER_ID);
+        lookHandler = (LookHandler) getEventHandler(LOOK_HANDLER_ID);
         lookHandler.register();
-        frameImageHandler = (UiImageHandler) getEventHandler(RIVERBOAT_FRAME_IMAGE_HANDLER_ID);
+        frameImageHandler = (UiImageHandler) getEventHandler(FRAME_IMAGE_HANDLER_ID);
         frameImageHandler.register();
-        entityImageHandler = (UiImageHandler) getEventHandler(RIVERBOAT_ENTITY_IMAGE_HANDLER_ID);
+        entityImageHandler = (UiImageHandler) getEventHandler(ENTITY_IMAGE_HANDLER_ID);
         entityImageHandler.register();
     }
 
     public GameEventHandler getEventHandler(String id) {
         switch (id) {
-        case RIVERBOAT_BASIC_HANDLER_ID:
+        case BASIC_HANDLER_ID:
             if (basicWorldHandler == null) {
-                basicWorldHandler = new BasicWorldHandler(RIVERBOAT_BASIC_HANDLER_ID);
+                basicWorldHandler = new BasicWorldHandler(BASIC_HANDLER_ID);
                 basicWorldHandler.setMaxInventoryItems(4);
             }
             return basicWorldHandler;
-        case RIVERBOAT_LOOK_HANDLER_ID:
+        case LOOK_HANDLER_ID:
             if (lookHandler == null) {
-                lookHandler = new LookHandler(RIVERBOAT_LOOK_HANDLER_ID);
+                lookHandler = new LookHandler(LOOK_HANDLER_ID);
                 lookHandler.loadFromElement(b, "riverlooker");
             }
             return lookHandler;
-        case RIVERBOAT_FRAME_IMAGE_HANDLER_ID:
+        case FRAME_IMAGE_HANDLER_ID:
             if (frameImageHandler == null) {
-                frameImageHandler = UiImageHandler.getFrameImageHandler(RIVERBOAT_FRAME_IMAGE_HANDLER_ID);
+                frameImageHandler = UiImageHandler.createFrameImageHandler(FRAME_IMAGE_HANDLER_ID);
                 frameImageHandler.loadFromElement(b, "riverboat-frame-images");
             }
             return frameImageHandler;
-        case RIVERBOAT_ENTITY_IMAGE_HANDLER_ID:
+        case ENTITY_IMAGE_HANDLER_ID:
             if (entityImageHandler == null) {
-                entityImageHandler = UiImageHandler.getEntityImageHandler(RIVERBOAT_ENTITY_IMAGE_HANDLER_ID);
+                entityImageHandler = UiImageHandler.createEntityImageHandler(ENTITY_IMAGE_HANDLER_ID);
                 entityImageHandler.loadFromElement(b, "riverboat-entity-images");
             }
             return entityImageHandler;
