@@ -154,4 +154,11 @@ public class MMHandler implements UIHandler
         }
         return this;
     }
+
+    public String getTranscript() {
+        if (isGameActive())
+            return gm.getTranscript();
+        else
+            return null;
+    }
 }

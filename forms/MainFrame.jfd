@@ -473,17 +473,24 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "saveAsMenuItem"
 						"text": "Save Game As..."
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 83, 195, false )
 						"mnemonic": 65
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "loadMenuItem"
-						"text": "Load Saved Game"
-						"accelerator": static javax.swing.KeyStroke getKeyStroke( 76, 195, false )
+						"text": "Load Saved Game..."
+						"accelerator": static javax.swing.KeyStroke getKeyStroke( 76, 130, false )
 						"mnemonic": 76
 					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator1"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "saveTranscriptMenuItem"
+						"text": "Save Transcript..."
+						"mnemonic": 84
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "separator10"
 					} )
 					add( new FormComponent( "javax.swing.JMenuItem" ) {
 						name: "quitMenuItem"
