@@ -13,4 +13,11 @@ public interface GameEventHandler
      * starts with a '#', then the corresponding handler will not be persisted.
      */
     String getHandlerId();
+
+    /**
+     * Called immediately before {@link com.illcode.meterman2.model.Game#start(boolean)}. The handler can
+     * update itself or the UI as necessary.
+     * @param newGame true if this is a new game, false if we're resuming a saved game.
+     */
+    void gameStarting(boolean newGame);
 }

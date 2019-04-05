@@ -169,4 +169,9 @@ public class BasicWorldHandler
     public String getHandlerId() {
         return handlerId;
     }
+
+    public void gameStarting(boolean newGame) {
+        if (!newGame)
+            refreshStatusBar();  // since no turn occurs at the start of a loaded game
+    }
 }

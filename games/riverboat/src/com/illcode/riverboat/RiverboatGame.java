@@ -104,8 +104,7 @@ public class RiverboatGame implements Game
     }
 
     public void start(boolean newGame) {
-        if (!newGame)
-            basicWorldHandler.refreshStatusBar();  // since no turn occurs
+        // empty
     }
 
     public void about() {
