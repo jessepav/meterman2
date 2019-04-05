@@ -12,7 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
-import java.util.logging.Level;
 
 import static com.illcode.meterman2.GameUtils.hasAttr;
 import static com.illcode.meterman2.GameUtils.setAttr;
@@ -20,7 +19,6 @@ import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.ui;
 import static com.illcode.meterman2.SystemAttributes.EQUIPPABLE;
 import static com.illcode.meterman2.SystemAttributes.VISITED;
-import static com.illcode.meterman2.MMLogging.logger;
 
 public final class GameManager
 {

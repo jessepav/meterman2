@@ -248,4 +248,29 @@
       </text>
     </roomGroup>
   </lookHandler>
+
+  <!-- For use with UiImageHandler.loadFromElement()
+       If a room is not listed in the image entries, then 'defaultImage' will be used. If no defaultImage
+       is given, then we show no image (as though defaultImage="none").
+       There are two special image names: "none", for no image, and "default" for the default frame image. -->
+  <frame-images id="frame-images-region1" defaultImage="game-logo">
+    <image name="outdoor-region" roomIds="grassy-field, baseball-diamond" />
+    <image name="waterside">
+      <roomIds>
+        <r>beach</r>
+        <r>riverside</r>
+        <r>lakefront</r>
+      </roomIds>
+    </image>
+    <image name="none" roomIds="void" />
+  </frame-images>
+
+  <!-- For use with UiImageHandler.loadFromElement()
+       If an entity is not listed in the image entries, then 'defaultImage' will be used. If no defaultImage
+       is given, then we show no image (as though defaultImage="none").
+       There is one special image names: "none", for no image. -->
+  <entity-images id="entity-images-region1" defaultImage="none">
+    <image name="mike-portrait" entityIds="mike" />
+    <image name="cup" entityIds="iron-cup, brass-mug, coffee-cup" />
+  </entity-images>
 </xbundle>

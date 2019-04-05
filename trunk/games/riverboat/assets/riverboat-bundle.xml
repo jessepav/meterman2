@@ -197,4 +197,23 @@
       </text>
     </roomGroup>
   </lookHandler>
+
+  <imageMap id="riverboat-images">
+    <image name="mike" path="mike.png" />
+    <image name="chest" path="chest.png" />
+    <image name="other" path="other-entity.png" />
+    <image name="grassy-field" path="grassy-field.png" />
+    <image name="dark-cave" path="dark-cave.png" />
+  </imageMap>
+
+  <frame-images id="riverboat-frame-images" defaultImage="default">
+    <image name="grassy-field" roomIds="starting-room" />
+    <image name="dark-cave" roomIds="dungeon" />
+  </frame-images>
+
+  <entity-images id="riverboat-entity-images" defaultImage="none">
+    <image name="mike" entityIds="mike" />
+    <image name="chest" entityIds="chest" />
+    <image name="other" entityIds="oil-lamp, iron-door, wood-key" />
+  </entity-images>
 </xbundle>
