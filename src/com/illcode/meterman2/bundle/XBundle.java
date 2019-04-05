@@ -1,5 +1,6 @@
 package com.illcode.meterman2.bundle;
 
+import com.illcode.meterman2.Utils;
 import com.illcode.meterman2.text.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -97,6 +98,28 @@ public final class XBundle
             return;
         root = pair.getLeft();
         name = pair.getRight();
+
+        // Set the various formatting properties, if given.
+        String attrVal = root.getAttributeValue("escapeChar");
+        if (attrVal != null && !attrVal.isEmpty())
+            setEscapeChar(attrVal.charAt(0));
+        attrVal = root.getAttributeValue("spaceChar");
+        if (attrVal != null && !attrVal.isEmpty())
+            setSpaceChar(attrVal.charAt(0));
+        int indent = Utils.parseInt(root.getAttributeValue("indentLength"), -1);
+        if (indent != -1)
+            setIndentLength(indent);
+        attrVal = root.getAttributeValue("paragraphStyle");
+        switch (attrVal) {
+        case "blank-line":
+            setParagraphStyle(PARAGRAPH_BLANK_LINE);
+            break;
+        case "indented":
+            setParagraphStyle(PARAGRAPH_INDENTED);
+            break;
+        }
+
+        // And load up elements and passages
         elementMap.clear();
         passageMap.clear();
         for (Element e : root.getChildren()) {
