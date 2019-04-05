@@ -22,6 +22,8 @@ public final class EventHandlerManager
     private LinkedList<OutputTextProcessor> outputTextProcessors;
     private LinkedList<LookListener> lookListeners;
 
+    private Map<String,List<? extends GameEventHandler>> eventHandlerMap;
+
     public EventHandlerManager() {
         gameActionListeners = new LinkedList<>();
         playerMovementListeners = new LinkedList<>();
@@ -51,15 +53,27 @@ public final class EventHandlerManager
      * @return handler map
      */
     public Map<String, List<? extends GameEventHandler>> getEventHandlerMap() {
-        Map<String, List<? extends GameEventHandler>> map = new HashMap<>();
-        map.put("gameActionListeners", gameActionListeners);
-        map.put("playerMovementListeners", playerMovementListeners);
-        map.put("turnListeners", turnListeners);
-        map.put("entityActionsProcessors", entityActionsProcessors);
-        map.put("entitySelectionListeners", entitySelectionListeners);
-        map.put("outputTextProcessors", outputTextProcessors);
-        map.put("lookListeners", lookListeners);
-        return map;
+        if (eventHandlerMap == null) {
+            eventHandlerMap = new HashMap<>();
+            eventHandlerMap.put("gameActionListeners", gameActionListeners);
+            eventHandlerMap.put("playerMovementListeners", playerMovementListeners);
+            eventHandlerMap.put("turnListeners", turnListeners);
+            eventHandlerMap.put("entityActionsProcessors", entityActionsProcessors);
+            eventHandlerMap.put("entitySelectionListeners", entitySelectionListeners);
+            eventHandlerMap.put("outputTextProcessors", outputTextProcessors);
+            eventHandlerMap.put("lookListeners", lookListeners);
+        }
+        return eventHandlerMap;
+    }
+
+    /**
+     * Fire a game starting event.
+     * @param newGame true if this is a new game, false if we're resuming a saved game.
+     */
+    public void fireGameStarting(boolean newGame) {
+        for (List<? extends GameEventHandler> handlerList : getEventHandlerMap().values())
+            for (GameEventHandler handler : handlerList)
+                handler.gameStarting(newGame);
     }
 
     /**

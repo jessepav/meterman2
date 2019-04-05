@@ -14,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A handler that can add additional text to room descriptions when a player looks in
+ * a given set of rooms.
+ */
 public class LookHandler implements LookListener
 {
     private String handlerId;
@@ -90,5 +94,9 @@ public class LookHandler implements LookListener
 
     public String getHandlerId() {
         return handlerId;
+    }
+
+    public void gameStarting(boolean newGame) {
+        // empty
     }
 }

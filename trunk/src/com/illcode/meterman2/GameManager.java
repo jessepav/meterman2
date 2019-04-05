@@ -130,6 +130,7 @@ public final class GameManager
             e.gameStarting();
         for (Room r : roomIdMap.values())
             r.gameStarting();
+        handlerManager.fireGameStarting(true);
         game.start(true);
         currentRoom.entered(null);
         lookCommand();
@@ -179,6 +180,7 @@ public final class GameManager
             e.gameStarting();
         for (Room r : roomIdMap.values())
             r.gameStarting();
+        handlerManager.fireGameStarting(false);
         game.start(false);
         outputText();  // since no nextTurn() is called, we update the text area...
         refreshUI();   // ...and UI ourselves.
