@@ -6,7 +6,6 @@ import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.Utils;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
-import org.apache.commons.lang3.text.WordUtils;
 import org.jdom2.Element;
 
 import javax.swing.JTextArea;
