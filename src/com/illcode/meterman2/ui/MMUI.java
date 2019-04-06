@@ -4,6 +4,7 @@ import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.Utils;
+import com.illcode.meterman2.text.TextUtils;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
 import org.jdom2.Element;
@@ -656,7 +657,7 @@ public final class MMUI
 
     /** Wraps text according to the current "dialog-text-columns" config property. */
     String wrapDialogText(String text) {
-        return Utils.wrapText(text, dialogTextColumns);
+        return TextUtils.wrapText(text, dialogTextColumns);
     }
 
     private class LRUImageCacheMap extends LRUMap<String,BufferedImage>
