@@ -70,7 +70,6 @@ new FormModel {
 							"text": "This is the main text flow"
 							"font": new java.awt.Font( "Serif", 0, 15 )
 							"border": sfield com.jgoodies.forms.factories.Borders DLU2_BORDER
-							"focusable": false
 						} )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 1
