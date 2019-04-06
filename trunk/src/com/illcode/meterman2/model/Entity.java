@@ -203,7 +203,8 @@ public class Entity
     }
 
     /**
-     * Returns a list of extra actions to be shown in the UI. Never returns null.
+     * Returns a list of extra actions to be shown in the UI. The list should be non-null
+     * and modifiable, so callers and subclasses can add and remove actions.
      */
     public List<Action> getActions() {
         if (delegate != null && delegateMethods.contains(GET_ACTIONS))

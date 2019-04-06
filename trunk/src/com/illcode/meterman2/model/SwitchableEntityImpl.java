@@ -16,11 +16,8 @@ public class SwitchableEntityImpl extends BaseEntityImpl
 {
     protected MMScript.ScriptedMethod switchedMethod;
 
-    private List<MMActions.Action> actions;
-
     public SwitchableEntityImpl() {
         super();
-        actions = new ArrayList<>(4);
     }
 
     /** Subclasses can override this to provide a customized switch-on action. */
@@ -35,8 +32,7 @@ public class SwitchableEntityImpl extends BaseEntityImpl
 
     @Override
     public List<MMActions.Action> getActions(Entity e) {
-        actions.clear();
-        actions.addAll(super.getActions(e));
+        List<MMActions.Action> actions = super.getActions(e);
         if (e.getAttributes().get(SystemAttributes.ON))
             actions.add(getSwitchOffAction());
         else

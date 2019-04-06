@@ -27,7 +27,6 @@ public class ContainerImpl extends BaseEntityImpl
     protected Entity key;
     protected int capacity;
 
-    private List<MMActions.Action> actions;
     private MMActions.Action lookInAction, putInAction, takeOutAction;
 
     public ContainerImpl() {
@@ -95,13 +94,12 @@ public class ContainerImpl extends BaseEntityImpl
         if (!(e instanceof Container))
             return super.getActions(e);
         Container c = (Container) e;
-        if (actions == null) {
-            actions = new ArrayList<>(6);
+        if (lookInAction == null) {
             lookInAction = SystemActions.CONTAINER_LOOK_IN.formattedTextCopy(WordUtils.capitalize(getInPrep()));
             putInAction = SystemActions.CONTAINER_PUT.formattedTextCopy(WordUtils.capitalize(getInPrep()));
             takeOutAction = SystemActions.CONTAINER_TAKE.formattedTextCopy(WordUtils.capitalize(getOutPrep()));
         }
-        actions.clear();
+        List<MMActions.Action> actions = super.getActions(e);
         if (c.getAttributes().get(LOCKED)) {
             if (key != null)
                 actions.add(SystemActions.UNLOCK);

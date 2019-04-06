@@ -1,18 +1,18 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.text.TextSource;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BaseEntityImpl implements EntityImpl
 {
     protected TextSource description;
+    protected List<Action> actionList;
 
     public BaseEntityImpl() {
-        // empty
+        actionList = new ArrayList<>(8);
     }
 
     public String getDescription(Entity e) {
@@ -44,7 +44,8 @@ public class BaseEntityImpl implements EntityImpl
     }
 
     public List<Action> getActions(Entity e) {
-        return Collections.emptyList();
+        actionList.clear();
+        return actionList;
     }
 
     public boolean processAction(Entity e, Action action) {

@@ -10,6 +10,7 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class ScriptedEntityImpl implements EntityImpl
 {
+    private List<MMActions.Action> actionList;
     private final EnumMap<EntityMethod,ScriptedMethod> scriptedEntityMethods;
 
     /**
@@ -18,6 +19,7 @@ public final class ScriptedEntityImpl implements EntityImpl
      * @param methodMap map from method name to scripted method
      */
     public ScriptedEntityImpl(String id, Map<String,ScriptedMethod> methodMap) {
+        actionList = new ArrayList<>(8);
         scriptedEntityMethods = new EnumMap<>(EntityMethod.class);
         for (EntityMethod em : EntityMethod.values()) {
             ScriptedMethod sm = methodMap.get(em.getMethodName());
@@ -73,8 +75,11 @@ public final class ScriptedEntityImpl implements EntityImpl
 
     @SuppressWarnings("unchecked")
     public List<MMActions.Action> getActions(Entity e) {
-        return invokeWithResultOrError(EntityMethod.GET_ACTIONS, List.class,
-                                       Collections.<MMActions.Action>emptyList(), e);
+        // we use our own actionList here to ensure that it's modifiable, for callers of this method.
+        actionList.clear();
+        actionList.addAll(invokeWithResultOrError(EntityMethod.GET_ACTIONS, List.class,
+                                                  Collections.<MMActions.Action>emptyList(), e));
+        return actionList;
     }
 
     public boolean processAction(Entity e, MMActions.Action action) {
