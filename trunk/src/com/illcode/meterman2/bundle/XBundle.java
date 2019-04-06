@@ -201,16 +201,14 @@ public final class XBundle
             source = MISSING_TEXT_SOURCE;
         } else if (source == PLACEHOLDER_TEXT_SOURCE) {
             // We only construct the actual source the first time the passage is requested.
-            source = elementTextSource(elementMap.get(id));
+            source = elementTextSourceImpl(elementMap.get(id));
             passageMap.put(id, source);  // and save it for next time
         }
         return source;
     }
 
     /**
-     * Return an appropriate {@link TextSource} implementation for a given element. If an element
-     * tries to be both a template and a script (by including both attributes), it will
-     * be treated as a template.
+     * Return an appropriate {@link TextSource} implementation for a given element.
      * <p/>
      * If the element has a <em>passageId</em> attribute, then the TextSource of the referenced passage
      * will be returned in its place.
@@ -221,11 +219,24 @@ public final class XBundle
     public TextSource elementTextSource(final Element e) {
         if (e == null)
             return ERROR_TEXT_SOURCE;
+        if (e.getParent() == root && e.getName().equals("passage")) {
+            // If the caller is requesting the source from a top-level passage, return the
+            // value of getPassage() to avoid creating duplicate sources.
+            final String id = e.getAttributeValue("id");
+            if (id != null)
+                return getPassage(id);
+        } else {  // if this isn't a top-level passage, allow references to other passages.
+            final String passageId = e.getAttributeValue("passageId");
+            if (passageId != null)
+                return getPassage(passageId);
+        }
+        // Otherwise generate a new source for the element
+        return elementTextSourceImpl(e);
+    }
 
-        final String passageId = e.getAttributeValue("passageId");
-        if (passageId != null)
-            return getPassage(passageId);
-
+    private TextSource elementTextSourceImpl(final Element e) {
+        if (e == null)
+            return ERROR_TEXT_SOURCE;
         if (isTemplateElement(e)) {
             final String id = getElementIdAttribute(e);
             if (id == null) return ERROR_TEXT_SOURCE;
