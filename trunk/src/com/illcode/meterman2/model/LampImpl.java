@@ -21,16 +21,16 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
     private AttributeSet attr;
     private MMActions.Action lightAction, douseAction;
 
-    public LampImpl() {
+    public LampImpl(Entity e) {
         super();
+        this.e = e;
+        attr = e.getAttributes();
         lightAction = SystemActions.SWITCH_ON;
         douseAction = SystemActions.SWITCH_OFF;
     }
 
     public void gameStarting(Entity e) {
         super.gameStarting(e);
-        this.e = e;
-        attr = e.getAttributes();
         attr.set(LIGHTSOURCE, attr.get(ON));  // synchronize LIGHTSOURCE and ON
         setLampName();
         if (isLit())

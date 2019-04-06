@@ -23,10 +23,10 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link Container} + {@link ContainerImpl}</dd>
  *     <dt>"door"</dt>
  *     <dd>{@link DoorImpl}</dd>
- *     <dt>"talking"</dt>
- *     <dd>{@link com.illcode.meterman2.model.TalkingEntity}</dd>
+ *     <dt>"interacting"</dt>
+ *     <dd>{@link InteractingEntityImpl}</dd>
  *     <dt>"switchable"</dt>
- *     <dd>{@link com.illcode.meterman2.model.SwitchableEntityImpl}</dd>
+ *     <dd>{@link SwitchableEntityImpl}</dd>
  *     <dt>"lamp"</dt>
  *     <dd>{@link com.illcode.meterman2.model.LampImpl}</dd>
  * </dl>
@@ -69,14 +69,16 @@ public class BaseEntityLoader implements EntityLoader
         case "door":
             e = Entity.create(id, new DoorImpl());
             break;
-        case "talking":
-            e = TalkingEntity.create(id);
+        case "interacting":
+            e = Entity.create(id, null);
+            e.setImpl(new InteractingEntityImpl(e));
             break;
         case "switchable":
             e = Entity.create(id, new SwitchableEntityImpl());
             break;
         case "lamp":
-            e = Entity.create(id, new LampImpl());
+            e = Entity.create(id, null);
+            e.setImpl(new LampImpl(e));
             break;
         default:
             e = Entity.create(id);
@@ -124,9 +126,9 @@ public class BaseEntityLoader implements EntityLoader
                 }
             }
             break;
-        case "talking":
-            if (e instanceof TalkingEntity)
-                loadTalkingEntityProperties((TalkingEntity) e);
+        case "interacting":
+            if (e.getImpl() instanceof InteractingEntityImpl)
+                loadInteractingEntityProperties((InteractingEntityImpl) e.getImpl());
             break;
         case "switchable":
             if (e.getImpl() instanceof SwitchableEntityImpl)
@@ -219,8 +221,8 @@ public class BaseEntityLoader implements EntityLoader
         return true;
     }
 
-    protected void loadTalkingEntityProperties(TalkingEntity te) {
-        final TalkSupport talkSupport = te.getTalkSupport();
+    protected void loadInteractingEntityProperties(InteractingEntityImpl impl) {
+        final InteractSupport interactSupport = impl.getInteractSupport();
         final Element topicmapEl = el.getChild("topicmap");
         TopicMap tm = null;
         if (topicmapEl != null) {
@@ -232,11 +234,19 @@ public class BaseEntityLoader implements EntityLoader
                 tm.loadFrom(topicmapEl, bundle);
             }
         }
-        talkSupport.setTopicMap(tm);
-        talkSupport.clearTopics();
+        interactSupport.setTopicMap(tm);
+        interactSupport.clearTopics();
         for (String topicId : helper.getListValue("topics"))
-            talkSupport.addTopic(topicId);
-        talkSupport.setScriptedMethods(methodMap);
+            interactSupport.addTopic(topicId);
+        interactSupport.setOtherTopicLabel(helper.getValue("otherTopic"));
+        interactSupport.setInteractActionText(helper.getValue("interactActionText"));
+        interactSupport.setScriptedMethods(methodMap);
+        final Element promptMessage = el.getChild("promptMessage");
+        if (promptMessage != null)
+            interactSupport.setPromptMessage(bundle.elementTextSource(promptMessage));
+        final Element noTopicsMessage = el.getChild("noTopicsMessage");
+        if (noTopicsMessage != null)
+            interactSupport.setNoTopicsMessage(bundle.elementTextSource(noTopicsMessage));
     }
 
     protected void loadSwitchableEntityProperties(SwitchableEntityImpl impl) {

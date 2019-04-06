@@ -84,12 +84,12 @@
     It is too dark here for you to see anything.
   </passage>
 
-  <!-- Used by talkers. -->
-  <passage id="no-talk-topics-message" format="printf">  <!-- args: entity.defName -->
-    It seems %s has nothing to talk about.
+  <!-- Used by interacting entities. -->
+  <passage id="no-interact-topics-message" format="printf">  <!-- args: entity.defName -->
+    It seems %s is uninterested in interacting.
   </passage>
-  <passage id="talk-prompt-message" format="printf">  <!-- args: entity.defName -->
-    What do you want to talk to %s about?
+  <passage id="interact-prompt-message" format="printf">  <!-- args: entity.defName -->
+    What do you want to interact with %s about?
   </passage>
 
   <!-- Used by lamps -->
@@ -122,7 +122,7 @@
     <action name="CLOSE" templateText="Close" />
     <action name="LOCK" templateText="Lock" />
     <action name="UNLOCK" templateText="Unlock" />
-    <action name="TALK" templateText="Talk" />
+    <action name="INTERACT" templateText="Interact" />
     <action name="SWITCH_ON" templateText="Switch On" />
     <action name="SWITCH_OFF" templateText="Switch Off" />
     <action name="CONTAINER_PUT" templateText="Put Item %s" />

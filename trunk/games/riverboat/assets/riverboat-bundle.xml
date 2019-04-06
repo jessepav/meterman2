@@ -143,17 +143,15 @@
     </topic>
   </topicmap>
 
-  <entity id="mike" type="talking" name="Mike" attributes="proper-name" topics="GREETING">
+  <entity id="mike" type="interacting" name="Mike" attributes="proper-name" topics="GREETING"
+          interactActionText="Talk">
     <inRoom>playroom</inRoom>
     <description>It's your old bud Mike!</description>
     <topicmap topicmapRef="mike-topicmap" />
-
+    <promptMessage>Mike lounges around and looks at you. What do you want to ask him about?</promptMessage>
+    <otherTopic>Something else, actually...</otherTopic>
     <script>
-      String getOtherTopicLabel(Talker talker) {
-          return "Something else, actually...";
-      }
-
-      void talkOther(Talker talker, String topic) {
+      void interactOther(Entity e, String topic) {
           println("I don't know much about '" + topic + "'");
       }
     </script>
