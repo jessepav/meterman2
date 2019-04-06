@@ -149,10 +149,8 @@
     <description>It's your old bud Mike!</description>
     <topicmap topicmapRef="mike-topicmap" />
     <promptMessage>
-      Mike lounges around and looks at you.
-      @p
-      @tWhat do you want to ask him about? What do you want to ask him about? What do you want to ask him about?
-      What do you want to ask him about? What do you want to ask him about? What do you want to ask him about?
+      Mike lounges around and looks at you.@n
+      What do you want to ask him about?
     </promptMessage>
     <otherTopic>Something else, actually...</otherTopic>
     <script>
