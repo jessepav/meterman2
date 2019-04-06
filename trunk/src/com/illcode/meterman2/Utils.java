@@ -261,4 +261,20 @@ public final class Utils
     public static <T,S> HashMap<T,S> createSizedHashMap(Map<?,?> m) {
         return new HashMap<T,S>((int) (m.size() * 1.4f), 0.75f);
     }
+
+    /**
+     * Wraps text to a maximum column width, respective line breaks and leading spaces.
+     * @param text text to wrap
+     * @param columns number of columns
+     * @return wrapped text
+     */
+    public static String wrapText(String text, int columns) {
+        final int inputLength = text.length();
+        final StringBuilder sb = new StringBuilder(inputLength + (inputLength/columns) + 10);
+        int offset = 0;
+        while (offset < inputLength) {
+            // TODO: Utils.wrapText()
+        }
+        return sb.toString();
+    }
 }

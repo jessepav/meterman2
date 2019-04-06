@@ -657,7 +657,7 @@ public final class MMUI
 
     /** Wraps text according to the current "dialog-text-columns" config property. */
     String wrapDialogText(String text) {
-        return WordUtils.wrap(text, dialogTextColumns, "\n", true);
+        return Utils.wrapText(text, dialogTextColumns);
     }
 
     private class LRUImageCacheMap extends LRUMap<String,BufferedImage>
