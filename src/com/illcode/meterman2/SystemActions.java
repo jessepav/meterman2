@@ -17,7 +17,7 @@ public final class SystemActions
     public static Action CLOSE;
     public static Action LOCK;
     public static Action UNLOCK;
-    public static Action TALK;
+    public static Action INTERACT;
     public static Action SWITCH_ON;
     public static Action SWITCH_OFF;
     public static Action CONTAINER_PUT;
@@ -40,7 +40,7 @@ public final class SystemActions
         CLOSE = actions.getAction("CLOSE");
         LOCK = actions.getAction("LOCK");
         UNLOCK = actions.getAction("UNLOCK");
-        TALK = actions.getAction("TALK");
+        INTERACT = actions.getAction("INTERACT");
         SWITCH_ON = actions.getAction("SWITCH_ON");
         SWITCH_OFF = actions.getAction("SWITCH_OFF");
         CONTAINER_PUT = actions.getAction("CONTAINER_PUT");

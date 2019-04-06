@@ -13,11 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Used by {@code Talker}S to store topics for discussion.
+ * Used to store topics for interactive discussion.
  */
 public final class TopicMap
 {
-    /** If a topic has an ID of "{@value}" and is the only topic in a talker's current topics,
+    /** If a topic has an ID of "{@value}" and is the only topic in an interactor's current topics,
      * then it will be chosen without prompting the user to select a topic. */
     public static final String GREETING_TOPIC_ID = "GREETING";
 

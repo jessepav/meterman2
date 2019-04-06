@@ -173,7 +173,7 @@
   </actions>
 
   <!--
-  Topic maps can be used within talking entity definitions or, to enable sharing among multiple
+  Topic maps can be used within interacting entity definitions or, to enable sharing among multiple
   entities and reloading, can appear at the top-level and referenced via 'topicmapRef', in
   which case they must have an 'id' attribute.
 
@@ -182,7 +182,7 @@
   new topics.
   -->
   <topicmap id="farmer-topics">
-    <!-- If a topic has an ID of "GREETING" and is the only topic in a talker's current topics,
+    <!-- If a topic has an ID of "GREETING" and is the only topic in an interactor's current topics,
          then it will be chosen without prompting the user to select a topic. -->
     <topic id="GREETING" label="Hello" addTopics="weather, tractor" removeTopics="GREETING">
       <text>Hello there, neighbor! How'd like the farming life?</text>
@@ -211,8 +211,13 @@
     </topic>
   </topicmap>
 
-  <entity id="johnson" type="talking" name="Johnson the Farmer" attributes="proper-name"
-          inRoom="grassy-field">
+  <!--
+    Interacting entities can be people, books, computers, etc. Anything that should handle topic maps.
+    If the 'interactActionText' attribute is given, the text will be used in place of "Interact"
+    in the entity's action list.
+  -->
+  <entity id="johnson" type="interacting" name="Johnson the Farmer" attributes="proper-name"
+          inRoom="grassy-field" interactActionText="Talk">
     <description>A farmer with a long beard.</description>
     <topicmap topicmapRef="farmer-topics" />
 
@@ -221,6 +226,18 @@
     <topics>
       <topic>GREETING</topic>
     </topics>
+
+    <!-- If otherTopic is present, it will be displayed at the end of the topic list,
+         and handling will be delegated to the scripted or subclassed interactOther() method.-->
+    <otherTopic>Actually, I was thinking about...</otherTopic>
+
+    <!-- If present, these text sources will be used in place of the corresponding system messages. -->
+    <promptMessage format="printf">  <!-- args: entity.defName -->
+      What to you want to talk to %s about?
+    </promptMessage>
+    <noTopicsMessage format="printf">  <!-- args: entity.defName -->
+      %s really has nothing to say to you.
+    </noTopicsMessage>
   </entity>
 
   <entity id="oil-lamp" type="lamp" name="Oil Lamp" attributes="takeable"

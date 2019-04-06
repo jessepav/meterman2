@@ -49,7 +49,7 @@
     <action name="CLOSE" shortcut="shift C" />
     <action name="LOCK" shortcut="shift K" />
     <action name="UNLOCK" shortcut="shift U" />
-    <action name="TALK" shortcut="ctrl shift T" />
+    <action name="INTERACT" shortcut="shift I" />
     <action name="SWITCH_ON" shortcut="shift N" />
     <action name="SWITCH_OFF" shortcut="shift F" />
     <action name="CONTAINER_PUT" shortcut="ctrl shift I" />
