@@ -8,12 +8,10 @@ import java.util.List;
 public class InteractingEntityImpl extends BaseEntityImpl
 {
     private InteractSupport interactSupport;
-    private List<MMActions.Action> actions;
 
     public InteractingEntityImpl(Entity e) {
         super();
         interactSupport = new InteractSupport(e);
-        actions = new ArrayList<>(4);
     }
 
     public InteractSupport getInteractSupport() {
@@ -22,8 +20,7 @@ public class InteractingEntityImpl extends BaseEntityImpl
 
     @Override
     public List<MMActions.Action> getActions(Entity e) {
-        actions.clear();
-        actions.addAll(super.getActions(e));
+        List<MMActions.Action> actions = super.getActions(e);
         actions.add(interactSupport.getInteractAction());
         return actions;
     }

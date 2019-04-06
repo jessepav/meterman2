@@ -24,14 +24,11 @@ public class DoorImpl extends BaseEntityImpl
     protected String closedExitLabel;
     protected Entity key;
 
-    protected List<MMActions.Action> actions;
-
     /**
      * Create a new door implementation.
      */
     public DoorImpl() {
         super();
-        actions = new ArrayList<>(4);
     }
 
     /** Set the two rooms connected by this door. */
@@ -108,7 +105,7 @@ public class DoorImpl extends BaseEntityImpl
     @Override
     public List<MMActions.Action> getActions(Entity e) {
         AttributeSet attr = e.getAttributes();
-        actions.clear();
+        List<MMActions.Action> actions = super.getActions(e);
         if (attr.get(LOCKED)) {
             if (key != null)
                 actions.add(SystemActions.UNLOCK);
