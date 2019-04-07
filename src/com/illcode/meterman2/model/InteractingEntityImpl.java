@@ -5,6 +5,10 @@ import com.illcode.meterman2.MMActions;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An entity that the user can interact with, like a person to talk to, or book to read,
+ * or a computer system to look stuff up in.
+ */
 public class InteractingEntityImpl extends BaseEntityImpl
 {
     private InteractSupport interactSupport;

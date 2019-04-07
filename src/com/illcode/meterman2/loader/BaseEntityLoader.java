@@ -29,8 +29,10 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link SwitchableEntityImpl}</dd>
  *     <dt>"lamp"</dt>
  *     <dd>{@link com.illcode.meterman2.model.LampImpl}</dd>
- *     <dt>"eachturn"</dt>
+ *     <dt>"each-turn"</dt>
  *     <dd>{@link com.illcode.meterman2.model.EachTurnEntityImpl}</dd>
+ *     <dt>"walker-talker"</dt>
+ *     <dd>{@link WalkerTalkerImpl}</dd>
  * </dl>
  * By default we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
  * <p/>
@@ -82,9 +84,13 @@ public class BaseEntityLoader implements EntityLoader
             e = Entity.create(id, null);
             e.setImpl(new LampImpl(e));
             break;
-        case "eachturn":
+        case "each-turn":
             e = Entity.create(id, null);
             e.setImpl(new EachTurnEntityImpl(e));
+            break;
+        case "walker-talker":
+            e = Entity.create(id, null);
+            e.setImpl(new WalkerTalkerImpl(e));
             break;
         default:
             e = Entity.create(id);
@@ -144,9 +150,16 @@ public class BaseEntityLoader implements EntityLoader
             if (e.getImpl() instanceof LampImpl)
                 loadLampProperties((LampImpl) e.getImpl());
             break;
-        case "eachturn":
+        case "each-turn":
             if (e.getImpl() instanceof EachTurnEntityImpl)
                 loadEachTurnProperties((EachTurnEntityImpl) e.getImpl());
+            break;
+        case "walker-talker":
+            if (e.getImpl() instanceof WalkerTalkerImpl) {
+                WalkerTalkerImpl wt = (WalkerTalkerImpl) e.getImpl();
+                loadInteractProperties(wt.getInteractSupport());
+                loadEachTurnProperties(wt.getEachTurnEntityImpl());
+            }
             break;
         }
         // So we don't accidentally see stale values.
