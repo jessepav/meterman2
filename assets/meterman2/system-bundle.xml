@@ -26,9 +26,6 @@
   <passage id="unequip-message" format="printf"> <!-- args: defName -->
     You unequip %s.
   </passage>
-  <passage id="max-inventory-message">
-    You can't tote any more items around with you.
-  </passage>
 
   <!-- Used by doors and containers. -->
   <passage id="nokey-message" format="printf"> <!-- args: defName -->

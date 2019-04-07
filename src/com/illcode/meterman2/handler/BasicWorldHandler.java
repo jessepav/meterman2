@@ -30,10 +30,7 @@ import static com.illcode.meterman2.Meterman2.ui;
 public class BasicWorldHandler
     implements StatusBarProvider, GameActionListener, EntityActionsProcessor, TurnListener
 {
-    public static final int DEFAULT_MAX_INVENTORY = 100;
-
     private String handlerId;
-    private int maxInventoryItems;
     private StatusBarProvider statusBarProvider;
 
     /**
@@ -42,7 +39,6 @@ public class BasicWorldHandler
      */
     public BasicWorldHandler(String handlerId) {
         this.handlerId = handlerId;
-        maxInventoryItems = DEFAULT_MAX_INVENTORY;
         statusBarProvider = this;
     }
 
@@ -58,16 +54,6 @@ public class BasicWorldHandler
         gm.removeGameActionListener(this);
         gm.removeEntityActionsProcessor(this);
         gm.removeTurnListener(this);
-    }
-
-    /** Returns the maximum # of inventory items the player can carry. */
-    public int getMaxInventoryItems() {
-        return maxInventoryItems;
-    }
-
-    /** Sets the maximum # of inventory items the player can carry. */
-    public void setMaxInventoryItems(int maxInventoryItems) {
-        this.maxInventoryItems = maxInventoryItems;
     }
 
     /** Set the provider that will determine which is displayed in the status bar labels.
@@ -115,12 +101,8 @@ public class BasicWorldHandler
             gm.moveEntity(e, gm.getCurrentRoom());
             printPassageWithArgs("drop-message", e.getDefName());
         } else if (action.equals(SystemActions.TAKE)) {
-            if (gm.getPlayer().getEntities().size() < maxInventoryItems) {
-                gm.moveEntity(e, gm.getPlayer());
-                printPassageWithArgs("take-message", e.getDefName());
-            } else {
-                gm.println(Meterman2.bundles.getPassage("max-inventory-message"));
-            }
+            gm.moveEntity(e, gm.getPlayer());
+            printPassageWithArgs("take-message", e.getDefName());
         } else if (action.equals(SystemActions.EQUIP)) {
             gm.setEquipped(e, true);
             printPassageWithArgs("equip-message", e.getDefName());
