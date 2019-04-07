@@ -42,6 +42,7 @@ final class ImageDialog extends TextDialog
 
             for (JButton b : buttons)
                 b.addActionListener(this);
+            GuiUtils.attachEscapeCloseOperation(dialog);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "ImageDialog()", ex);
         }

@@ -49,6 +49,7 @@ class TextDialog implements ActionListener
 
             for (JButton b : buttons)
                 b.addActionListener(this);
+            GuiUtils.attachEscapeCloseOperation(dialog);
         } catch (Exception ex) {
             logger.log(Level.WARNING, "TextDialog()", ex);
         }
