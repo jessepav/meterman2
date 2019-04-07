@@ -1,0 +1,6 @@
+void start(boolean newGame) {
+    DarkRoom dungeon = rooms.get("dungeon");
+    List stuff = new ArrayList(1);
+    stuff.add(entities.get("vague-stuff"));
+    dungeon.setDarkEntities(stuff);
+}

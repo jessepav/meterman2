@@ -453,6 +453,15 @@ public final class GameUtils
     }
 
     /**
+     * Reads all bytes from a game asset and convert them to a string, assuming a UTF-8 encoding.
+     * @param asset relative game asset path
+     * @return string thus read, or null on error
+     */
+    public static String readGameAsset(String asset) {
+        return Utils.readPath(Meterman2.assets.pathForGameAsset(asset));
+    }
+
+    /**
      * A passage that can be displayed in a UI dialog.
      */
     public static final class DialogPassage

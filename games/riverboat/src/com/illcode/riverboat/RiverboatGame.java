@@ -1,6 +1,7 @@
 package com.illcode.riverboat;
 
 import com.illcode.meterman2.GameUtils;
+import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.event.GameEventHandler;
@@ -11,6 +12,7 @@ import com.illcode.meterman2.loader.WorldLoader;
 import com.illcode.meterman2.model.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RiverboatGame implements Game
@@ -34,6 +36,7 @@ public class RiverboatGame implements Game
     Map<String,Object> gameStateMap;
 
     GameUtils.DialogPassage aboutDialogPassage;
+    MMScript.ScriptedMethod startMethod;
 
     public String getName() {
         return RIVERBOAT_NAME;
@@ -44,6 +47,11 @@ public class RiverboatGame implements Game
         Meterman2.bundles.addFirst(b);
         GameUtils.registerActions(b.getElement("riverboat-actions"));
         Meterman2.ui.loadImageMap(b.getElement("riverboat-images"));
+        List<MMScript.ScriptedMethod> methods = Meterman2.script.
+            getScriptedMethods("game-start-script", GameUtils.readGameAsset("game-start.bsh"));
+        if (!methods.isEmpty())
+            startMethod = methods.get(0);
+
     }
 
     public void dispose() {
@@ -126,7 +134,8 @@ public class RiverboatGame implements Game
     }
 
     public void start(boolean newGame) {
-        // empty
+        if (startMethod != null)
+            startMethod.invoke(newGame);
     }
 
     public void about() {
