@@ -434,6 +434,7 @@ public final class GameManager
      * Actually performs the look command, but does not output buffered text.
      */
     private void performLook() {
+        newPar();
         outputBuilder.append(GameUtils.getRoomDescription(currentRoom));
         outputBuilder.append("\n");
         for (Entity e : GameUtils.getRoomEntities(currentRoom))

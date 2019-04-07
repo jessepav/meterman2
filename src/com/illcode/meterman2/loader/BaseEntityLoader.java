@@ -29,6 +29,8 @@ import static com.illcode.meterman2.MMLogging.logger;
  *     <dd>{@link SwitchableEntityImpl}</dd>
  *     <dt>"lamp"</dt>
  *     <dd>{@link com.illcode.meterman2.model.LampImpl}</dd>
+ *     <dt>"eachturn"</dt>
+ *     <dd>{@link com.illcode.meterman2.model.EachTurnEntityImpl}</dd>
  * </dl>
  * By default we create an instance of {@link Entity} with a {@link BaseEntityImpl} implementation.
  * <p/>
@@ -79,6 +81,10 @@ public class BaseEntityLoader implements EntityLoader
         case "lamp":
             e = Entity.create(id, null);
             e.setImpl(new LampImpl(e));
+            break;
+        case "eachturn":
+            e = Entity.create(id, null);
+            e.setImpl(new EachTurnEntityImpl(e));
             break;
         default:
             e = Entity.create(id);
@@ -137,6 +143,10 @@ public class BaseEntityLoader implements EntityLoader
         case "lamp":
             if (e.getImpl() instanceof LampImpl)
                 loadLampProperties((LampImpl) e.getImpl());
+            break;
+        case "eachturn":
+            if (e.getImpl() instanceof EachTurnEntityImpl)
+                loadEachTurnProperties((EachTurnEntityImpl) e.getImpl());
             break;
         }
         // So we don't accidentally see stale values.
@@ -261,5 +271,9 @@ public class BaseEntityLoader implements EntityLoader
         lamp.setLightActionName(el.getAttributeValue("lightAction"));
         lamp.setDouseActionName(el.getAttributeValue("douseAction"));
         lamp.setBaseName(e.getName());
+    }
+
+    protected void loadEachTurnProperties(EachTurnEntityImpl impl) {
+        impl.setScriptedMethods(methodMap);
     }
 }
