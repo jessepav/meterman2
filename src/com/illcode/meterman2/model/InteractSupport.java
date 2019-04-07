@@ -118,7 +118,7 @@ public final class InteractSupport
 
     /**
      * Set the message to be displayed as a prompt for interaction.
-     * @param noTopicsMessage text source to display. Its {@link TextSource#getTextWithArgs(Object...)} will
+     * @param promptMessage text source to display. Its {@link TextSource#getTextWithArgs(Object...)} will
      * be called with the entity's defName as a parameter.
      */
     public void setPromptMessage(TextSource promptMessage) {
