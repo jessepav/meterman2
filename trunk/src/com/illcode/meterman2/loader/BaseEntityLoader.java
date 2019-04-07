@@ -128,7 +128,7 @@ public class BaseEntityLoader implements EntityLoader
             break;
         case "interacting":
             if (e.getImpl() instanceof InteractingEntityImpl)
-                loadInteractingEntityProperties((InteractingEntityImpl) e.getImpl());
+                loadInteractProperties(((InteractingEntityImpl) e.getImpl()).getInteractSupport());
             break;
         case "switchable":
             if (e.getImpl() instanceof SwitchableEntityImpl)
@@ -221,8 +221,7 @@ public class BaseEntityLoader implements EntityLoader
         return true;
     }
 
-    protected void loadInteractingEntityProperties(InteractingEntityImpl impl) {
-        final InteractSupport interactSupport = impl.getInteractSupport();
+    protected void loadInteractProperties(final InteractSupport interactSupport) {
         final Element topicmapEl = el.getChild("topicmap");
         TopicMap tm = null;
         if (topicmapEl != null) {
