@@ -99,10 +99,8 @@ public class RiverboatGame implements Game
     public GameEventHandler getEventHandler(String id) {
         switch (id) {
         case BASIC_HANDLER_ID:
-            if (basicWorldHandler == null) {
+            if (basicWorldHandler == null)
                 basicWorldHandler = new BasicWorldHandler(BASIC_HANDLER_ID);
-                basicWorldHandler.setMaxInventoryItems(4);
-            }
             return basicWorldHandler;
         case LOOK_HANDLER_ID:
             if (lookHandler == null) {
