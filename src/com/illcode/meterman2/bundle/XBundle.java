@@ -55,6 +55,10 @@ public final class XBundle
     private Map<String,Element> elementMap;
     private Map<String,TextSource> passageMap;
 
+    // These are used by getElementIdAttribute()
+    private int idCntr;
+    private StringBuilder idBuilder;
+
     private char escapeChar = '@';
     private char spaceChar = '\u00AC';
     private int paragraphStyle = PARAGRAPH_BLANK_LINE;
@@ -72,6 +76,7 @@ public final class XBundle
         this.path = path;
         elementMap = new HashMap<>(200);
         passageMap = new HashMap<>(100);
+        idBuilder = new StringBuilder(64);
     }
 
     /**
@@ -214,7 +219,6 @@ public final class XBundle
      * will be returned in its place.
      * @param e XML Element
      * @return an appropriate TextSource implementation, or {@link #ERROR_TEXT_SOURCE}.
-     * @see #getElementIdAttribute(Element)
      */
     public TextSource elementTextSource(final Element e) {
         if (e == null)
@@ -275,16 +279,22 @@ public final class XBundle
      * an 'id' attribute. If the given element does not itself have an 'id' attribute, then
      * the return value will be a synthesized ID of the form:
      * <blockquote>
-     *     {@code <parent id value>:<given element name>}
+     *     {@code <parent id value>:<given element name>:<id cntr>}
      * </blockquote>
-     * For instance, if we start the search at a <em>description</em> element that does not
-     * have an 'id' attribute, but its parent, an <em>entity</em> element, has an id of "farmer",
-     * the returned ID will be "farmer:description".
+     * The <em>id cntr</em> is a counter local to this bundle that provides a unique ID to
+     * multiple child elements of the same parent. As an example, each item in the sequence
+     * below will end up having a unique ID, for instance <tt>"sequence1:item:22"</tt>.
+     * <pre>{@code
+     *   <sequence id="sequence1">
+     *     <item>...</item>
+     *     <item>...</item>
+     *   </sequence>
+     * }</pre>
      * @param e element at which to start our search
      * @return the actual ID of <em>e</em>, a synthesized ID element as described above, or null
      *          if no element up through the root has an 'id' attribute.
      */
-    public static String getElementIdAttribute(Element e) {
+    public String getElementIdAttribute(Element e) {
         String id = e.getAttributeValue("id");
         if (id != null)
             return id;
@@ -292,8 +302,12 @@ public final class XBundle
         Element parent = e.getParentElement();
         while (parent != null) {
             id = parent.getAttributeValue("id");
-            if (id != null)
-                return id + ":" + e.getName();
+            if (id != null) {
+                idBuilder.append(id).append(':').append(e.getName()).append(':').append(idCntr++);
+                final String s = idBuilder.toString();
+                idBuilder.setLength(0);
+                return s;
+            }
             parent = parent.getParentElement();
         }
         return null;
