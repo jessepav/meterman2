@@ -4,10 +4,7 @@ import com.illcode.meterman2.MMActions;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Room;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Support class to handle registration and event firing for <tt>GameEventHandler</tt>S.
@@ -22,6 +19,8 @@ public final class EventHandlerManager
     private LinkedList<OutputTextProcessor> outputTextProcessors;
     private LinkedList<LookListener> lookListeners;
 
+    private ArrayList<GameEventHandler> fireList;
+
     private Map<String,List<? extends GameEventHandler>> eventHandlerMap;
 
     public EventHandlerManager() {
@@ -32,6 +31,8 @@ public final class EventHandlerManager
         entitySelectionListeners = new LinkedList<>();
         outputTextProcessors = new LinkedList<>();
         lookListeners = new LinkedList<>();
+
+        fireList = new ArrayList<>(16);
     }
 
     /**
@@ -71,9 +72,12 @@ public final class EventHandlerManager
      * @param newGame true if this is a new game, false if we're resuming a saved game.
      */
     public void fireGameStarting(boolean newGame) {
-        for (List<? extends GameEventHandler> handlerList : getEventHandlerMap().values())
-            for (GameEventHandler handler : handlerList)
+        for (List<? extends GameEventHandler> handlerList : getEventHandlerMap().values()) {
+            fireList.addAll(handlerList);
+            for (GameEventHandler handler : fireList)
                 handler.gameStarting(newGame);
+            fireList.clear();
+        }
     }
 
     /**
@@ -107,11 +111,16 @@ public final class EventHandlerManager
      *         and thus normal action processing should be skipped.
      */
     public boolean fireGameAction(MMActions.Action action, Entity e, boolean beforeAction) {
-        for (GameActionListener l : gameActionListeners) {
-            if (l.processAction(action, e, beforeAction))
-                return true;
+        boolean retVal = false;
+        fireList.addAll(gameActionListeners);
+        for (GameEventHandler h : fireList) {
+            if (((GameActionListener) h).processAction(action, e, beforeAction)) {
+                retVal = true;
+                break;
+            }
         }
-        return false;
+        fireList.clear();
+        return retVal;
     }
 
     /**
@@ -121,8 +130,10 @@ public final class EventHandlerManager
      */
     public boolean firePostAction(MMActions.Action action, Entity e, boolean actionHandled) {
         boolean suppressMessage = false;
-        for (GameActionListener l : gameActionListeners)
-            suppressMessage = l.postAction(action, e, actionHandled) || suppressMessage;
+        fireList.addAll(gameActionListeners);
+        for (GameEventHandler h : fireList)
+            suppressMessage = ((GameActionListener) h).postAction(action, e, actionHandled) || suppressMessage;
+        fireList.clear();
         return suppressMessage;
     }
 
@@ -135,10 +146,15 @@ public final class EventHandlerManager
      *      the action should be blocked.
      */
     public boolean fireObjectAction(Entity object, MMActions.Action action, Entity selectedEntity) {
-        for (GameActionListener l : gameActionListeners)
-            if (l.objectAction(object, action, selectedEntity))
-                return true;
-        return false;
+        boolean retVal = false;
+        fireList.addAll(gameActionListeners);
+        for (GameEventHandler h : fireList)
+            if (((GameActionListener) h).objectAction(object, action, selectedEntity)) {
+                retVal = true;
+                break;
+            }
+        fireList.clear();
+        return retVal;
     }
 
     /**
@@ -170,11 +186,16 @@ public final class EventHandlerManager
      * @return true if any PlayerMovementListener interrupted the chain by returning true.
      */
     public boolean firePlayerMovement(Room from, Room to, boolean beforeMove) {
-        for (PlayerMovementListener l : playerMovementListeners) {
-            if (l.playerMove(from, to, beforeMove))
-                return true;
+        boolean retVal = false;
+        fireList.addAll(playerMovementListeners);
+        for (GameEventHandler h : fireList) {
+            if (((PlayerMovementListener) h).playerMove(from, to, beforeMove)) {
+                retVal = true;
+                break;
+            }
         }
-        return false;
+        fireList.clear();
+        return retVal;
     }
 
     /**
@@ -199,8 +220,10 @@ public final class EventHandlerManager
 
     /** Notifies registered {@code TurnListener}S that we have reached the cycle of turns */
     public void fireTurn() {
-        for (TurnListener l : turnListeners)
-            l.turn();
+        fireList.addAll(turnListeners);
+        for (GameEventHandler h : fireList)
+            ((TurnListener) h).turn();
+        fireList.clear();
     }
 
     /**
@@ -231,8 +254,10 @@ public final class EventHandlerManager
      *                which each listener may modify.
      */
     public void fireProcessEntityActions(Entity e, List<MMActions.Action> actions) {
-        for (EntityActionsProcessor l : entityActionsProcessors)
-            l.processEntityActions(e, actions);
+        fireList.addAll(entityActionsProcessors);
+        for (GameEventHandler h : fireList)
+            ((EntityActionsProcessor) h).processEntityActions(e, actions);
+        fireList.clear();
     }
 
     /**
@@ -260,9 +285,11 @@ public final class EventHandlerManager
      * @param e selected entity
      */
     public void fireEntitySelected(Entity e) {
-        for (EntitySelectionListener l : entitySelectionListeners)
-            if (l.entitySelected(e))
+        fireList.addAll(entitySelectionListeners);
+        for (GameEventHandler h : fireList)
+            if (((EntitySelectionListener) h).entitySelected(e))
                 break;
+        fireList.clear();
     }
 
     /**
@@ -291,8 +318,10 @@ public final class EventHandlerManager
      * @param sb the StringBuilder containing the text to be shown
      */
     public void fireOutputTextReady(StringBuilder sb) {
-        for (OutputTextProcessor l : outputTextProcessors)
-            l.outputTextReady(sb);
+        fireList.addAll(outputTextProcessors);
+        for (GameEventHandler h : fireList)
+            ((OutputTextProcessor) h).outputTextReady(sb);
+        fireList.clear();
     }
 
     /** Add a look-listener to the front of our notification list. */
@@ -311,7 +340,9 @@ public final class EventHandlerManager
      * @param currentRoom the room where the player is looking
      */
     public void fireLookPerformed(Room currentRoom) {
-        for (LookListener l : lookListeners)
-            l.lookInRoom(currentRoom);
+        fireList.addAll(lookListeners);
+        for (GameEventHandler h : fireList)
+            ((LookListener) h).lookInRoom(currentRoom);
+        fireList.clear();
     }
 }
