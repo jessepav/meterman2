@@ -33,6 +33,8 @@ public class RiverboatGame implements Game
     Map<String,Entity> entityIdMap;
     Map<String,Object> gameStateMap;
 
+    GameUtils.DialogPassage aboutDialogPassage;
+
     public String getName() {
         return RIVERBOAT_NAME;
     }
@@ -130,7 +132,9 @@ public class RiverboatGame implements Game
     }
 
     public void about() {
-        GameUtils.showPassage("about");
+        if (aboutDialogPassage == null)
+            aboutDialogPassage = GameUtils.loadDialogPassage("about");
+        aboutDialogPassage.show();
         Meterman2.gm.outputText();
     }
 

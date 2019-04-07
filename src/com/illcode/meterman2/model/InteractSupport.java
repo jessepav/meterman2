@@ -185,7 +185,10 @@ public final class InteractSupport
                     return;  // it was handled by a script or InteractHandler
                 // Now the normal conversation cycle.
                 GameUtils.pushBinding("entity", e);
-                gm.println(t.getText());
+                if (t.isDialogTopic())
+                    t.showDialog();
+                else
+                    gm.println(t.getText());
                 GameUtils.popBinding("entity");
                 for (String topicId : t.getRemoveTopics()) {
                     if (topicId.equals("all")) {

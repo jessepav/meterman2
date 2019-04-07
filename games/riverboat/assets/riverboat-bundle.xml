@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xbundle name="riverboat">
-  <passage id="about" header="Riverboat" button="Boat Away">
+  <passage id="about" header="Riverboat" image="other" button="Boat Away">
     The Riverboat on the River Effluvious.
   </passage>
 
@@ -138,12 +138,27 @@
         ]]>
       </text>
     </topic>
-    <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING">
+    <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING, family, joe">
       <text>That is one scary dungeon!</text>
+    </topic>
+    <topic id="family" label="What about your family?">
+      <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3">
+        <item>My father was a farmer...</item>
+        <item>...my mother was a farmer...</item>
+        <item button="Done">...and I'm a farmer.</item>
+      </sequence>
+      <removeTopics>
+        <t>family</t>
+      </removeTopics>
+    </topic>
+    <topic id="joe" label="How about that guy Joe?" removeTopics="joe" addTopics="family">
+      <dialog header="Joe" button="Right!" image="mike" scale="3" format="ftl">
+        ${entity.defName} says, "Joe's an ass!".
+      </dialog>
     </topic>
   </topicmap>
 
-  <entity id="mike" type="interacting" name="Mike" attributes="proper-name" topics="GREETING"
+  <entity id="mike" type="interacting" name="Mike" attributes="proper-name" topics="GREETING, family, joe"
           interactActionText="Talk">
     <inRoom>playroom</inRoom>
     <description>It's your old bud Mike!</description>
@@ -155,7 +170,7 @@
     <otherTopic>Something else, actually...</otherTopic>
     <script>
       void interactOther(Entity e, String topic) {
-          println("I don't know much about '" + topic + "'");
+          ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
       }
     </script>
   </entity>

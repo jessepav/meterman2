@@ -5,6 +5,7 @@ import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityContainer;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.text.TextSource;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
 import com.illcode.meterman2.bundle.XBundle;
@@ -16,6 +17,8 @@ import java.util.*;
  */
 public final class GameUtils
 {
+    private static final int DIALOG_DELAY_MS = Math.max(0, Utils.intPref("dialog-delay-ms", 200));
+
     /** Convenience method to test if an entity has an attribute. */
     public static boolean hasAttr(Entity e, int attrNum) {
         return e.getAttributes().get(attrNum);
@@ -188,52 +191,89 @@ public final class GameUtils
     }
 
     /**
-     * Shows a passage, which may specify its own header string, button label, image, and scale.
-     * <p/>
-     * See <tt>xbundle-reference.xml</tt> for an example.
-     * @param id ID of the passage in the system bundle group
+     * Load a dialog passage, which may specify its own header string, button label, image, and scale.
+     * @param id ID of the dialog passage element in the system bundle group
+     * @return a DialogPassage instance, or null if it could not be loaded
      */
-    public static void showPassage(String id) {
-        final Element e = Meterman2.bundles.getElement(id);
-        if (e == null || !e.getName().equals("passage"))
-            return;
+    public static DialogPassage loadDialogPassage(String id) {
+        final Pair<Element, XBundle> pair = Meterman2.bundles.getElementAndBundle(id);
+        if (pair == null)
+            return null;
+        else
+            return loadDialogPassage(pair.getRight(), pair.getLeft());
+    }
+
+    /**
+     * Load a dialog passage, which may specify its own header string, button label, image, and scale.
+     * @param b the bundle containing the element
+     * @param e the element with the dialog passage definition
+     * @return a DialogPassage instance, or null if it could not be loaded
+     */
+    public static DialogPassage loadDialogPassage(XBundle b, Element e) {
+        if (b == null || e == null)
+            return null;
         final String header = e.getAttributeValue("header", "");
         final String button = e.getAttributeValue("button", "Okay");
         final String image = e.getAttributeValue("image");
         final int scale = Utils.parseInt(e.getAttributeValue("scale"), 1);
-        final String text = Meterman2.bundles.getPassage(id).getText();
-        if (image == null)
-            Meterman2.ui.showTextDialog(header, text, button);
-        else
-            Meterman2.ui.showImageDialog(header, image, scale, text, button);
+        return new DialogPassage(header, button, image, scale, b.elementTextSource(e));
     }
 
     /**
-     * Shows a sequence of passages, each of which may specify its own
+     * Load a sequence of dialog passages, each of which may specify its own
      * header string, button label, image, and scale.
-     * <p/>
-     * See <tt>xbundle-reference.xml</tt> for an example.
-     * @param id ID of the passage sequence element in the system bundle group.
+     * @param id ID of the dialog sequence element in the system bundle group.
+     * @return a list of DialogPassage instances, or null if the sequence could not be loaded
      */
-    public static void showPassageSequence(String id) {
-        final Element e = Meterman2.bundles.getElement(id);
-        if (e == null)
-            return;
-        String defaultHeader = e.getAttributeValue("defaultHeader", "");
-        String defaultButton = e.getAttributeValue("defaultButton", "Okay");
-        for (Element item : e.getChildren()) {
-            final String passageId = item.getAttributeValue("passageId");
-            if (passageId == null)
-                continue;
+    public static List<DialogPassage> loadDialogSequence(String id) {
+        final Pair<Element, XBundle> pair = Meterman2.bundles.getElementAndBundle(id);
+        if (pair == null)
+            return null;
+        else
+            return loadDialogSequence(pair.getRight(), pair.getLeft());
+    }
+
+    /**
+     * Load a sequence of dialog passages, each of which may specify its own
+     * header string, button label, image, and scale.
+     * @param b the bundle containing the element
+     * @param e the element with the sequence definition
+     * @return a list of DialogPassage instances, or null if the sequence could not be loaded
+     */
+    public static List<DialogPassage> loadDialogSequence(XBundle b, Element e) {
+        if (b == null || e == null)
+            return null;
+        final String defaultHeader = e.getAttributeValue("defaultHeader", "");
+        final String defaultButton = e.getAttributeValue("defaultButton", "Okay");
+        final String defaultImage = e.getAttributeValue("defaultImage");
+        final int defaultScale = Utils.parseInt(e.getAttributeValue("defaultScale"), 1);
+
+        final List<Element> entries = e.getChildren();
+        final List<DialogPassage> dialogs = new ArrayList<>(entries.size());
+        for (Element item : entries) {
             final String header = item.getAttributeValue("header", defaultHeader);
             final String button = item.getAttributeValue("button", defaultButton);
-            final String image = e.getAttributeValue("image");
-            final int scale = Utils.parseInt(e.getAttributeValue("scale"), 1);
-            final String text = Meterman2.bundles.getPassage(passageId).getText();
-            if (image == null)
-                Meterman2.ui.showTextDialog(header, text, button);
-            else
-                Meterman2.ui.showImageDialog(header, image, scale, text, button);
+            final String image = item.getAttributeValue("image", defaultImage);
+            final int scale = Utils.parseInt(item.getAttributeValue("scale"), defaultScale);
+            final TextSource text = b.elementTextSource(item);
+            dialogs.add(new DialogPassage(header, button, image, scale, text));
+        }
+        return dialogs;
+    }
+
+    /** Show a sequence of dialog passages. */
+    public static void showDialogSequence(List<DialogPassage> sequence) {
+        if (sequence == null)
+            return;
+        boolean first = true;
+        for (DialogPassage dialog : sequence) {
+            if (DIALOG_DELAY_MS != 0) {
+                // sleeping a little avoids a jarring flicker as each dialog transitions to the next
+                if (!first) Utils.sleep(DIALOG_DELAY_MS);
+                else first = false;
+            }
+            if (dialog.show() == -1)
+                break;  // allow the user to interrupt the sequence
         }
     }
 
@@ -412,4 +452,35 @@ public final class GameUtils
         Meterman2.gm.println(Meterman2.bundles.getPassage(id).getTextWithBindings(bindings));
     }
 
+    /**
+     * A passage that can be displayed in a UI dialog.
+     */
+    public static final class DialogPassage
+    {
+        final String header;
+        final String button;
+        final String image;
+        final int scale;
+        final TextSource text;
+
+        public DialogPassage(String header, String button, String image, int scale, TextSource text) {
+            this.header = header;
+            this.button = button;
+            this.image = image;
+            this.scale = scale;
+            this.text = text;
+        }
+
+        /**
+         * Shows the dialog passage.
+         * @return 0 if the user closed the dialog by clicking the button, or -1 if the dialog
+         *         was closed without selecting a button.
+         */
+        public int show() {
+            if (image == null || image.equals("none"))
+                return Meterman2.ui.showTextDialog(header, text.getText(), button);
+            else
+                return Meterman2.ui.showImageDialog(header, image, scale, text.getText(), button);
+        }
+    }
 }
