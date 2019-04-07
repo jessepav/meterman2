@@ -93,6 +93,15 @@
     </script>
   </entity>
 
+  <entity id="vague-stuff" name="Pile of Vague Stuff">
+    <script>
+void lookInRoom(Entity e) {
+    gm.queueLookText("A vague mound of stuff leers at you from the inky depths!", false);
+}
+    </script>
+    <description>A dark and menacing pile of vague stuff.</description>
+  </entity>
+
   <room id="dungeon" type="dark" name="Dungeon" darkName="Dark Dungeon" attributes="dark">
     <description format="ftl">
       Oh my, this is one scary ${room.name?lower_case}!
@@ -199,7 +208,7 @@
             out("In the darkness you hear something scuttle.");
       </text>
       -->
-      <text format="ftl">
+      <text format="ftl" paragraph="true">
         [#if utils.hasAttr(currentRoom, attributes.DARK)]
           In the shadows you hear something with ${utils.randInt(8, 16)} legs scuttle.
         [#else]

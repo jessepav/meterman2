@@ -15,6 +15,7 @@ public class DarkRoom extends Room implements DarkAwareRoom
     protected String darkName;
     protected TextSource darkDescription;
 
+    protected List<Entity> darkEntities;
     protected MMScript.ScriptedMethod getDarkEntitiesMethod;
 
     protected DarkRoom(String id, RoomImpl impl) {
@@ -60,12 +61,25 @@ public class DarkRoom extends Room implements DarkAwareRoom
     }
 
     /**
+     * Sets the list of entities that will be returned if the room is
+     * dark and no scripted <tt>getDarkEntities()</tt> method is defined.
+     * <p/>
+     * The items in this list should not be <tt>TAKEABLE</tt> or <tt>MOVEABLE</tt>, since this darkEntities
+     * list doesn't factor into the game's containment mechanism: after taking something, the user will see
+     * the entity both in the dark room's list and in his inventory.
+     * @param darkEntities list of entities; if null, our dark entities will be an empty list.
+     */
+    public void setDarkEntities(List<Entity> darkEntities) {
+        this.darkEntities = darkEntities;
+    }
+
+    /**
      * Subclasses may override this method to return something other than an empty list
-     * when the room is dark.
+     * or the <tt>darkEntities</tt> list when the room is dark.
      * @return list of entities found here when dark
      */
     protected List<Entity> getDarkEntitiesImpl() {
-        return Collections.emptyList();
+        return darkEntities != null ? darkEntities : Collections.<Entity>emptyList();
     }
 
     protected void checkDarkness() {

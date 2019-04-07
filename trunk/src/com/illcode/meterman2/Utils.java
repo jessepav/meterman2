@@ -5,11 +5,15 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
+import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 /**
  * General utility methods that do not depend on the game model.
@@ -242,6 +246,20 @@ public final class Utils
         if (in != null)
             val = Utils.slurpReaderText(new InputStreamReader(in, StandardCharsets.UTF_8), 512);
         return val != null ? val : "";
+    }
+
+    /**
+     * Reads all bytes from a path and convert them to a string, assuming a UTF-8 encoding.
+     * @param p path
+     * @return string thus read, or null on error
+     */
+    public static String readPath(Path p) {
+        try {
+            return new String(Files.readAllBytes(p), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Utils.readPathString()", e);
+            return null;
+        }
     }
 
     /**
