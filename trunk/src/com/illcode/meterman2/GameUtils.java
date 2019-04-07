@@ -1,16 +1,17 @@
 package com.illcode.meterman2;
 
-import com.illcode.meterman2.model.DarkAwareRoom;
-import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.EntityContainer;
-import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.text.TextSource;
+import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jdom2.Element;
 
 import com.illcode.meterman2.bundle.XBundle;
 
 import java.util.*;
+
+import static com.illcode.meterman2.SystemAttributes.CLOSED;
+import static com.illcode.meterman2.SystemAttributes.LOCKED;
 
 /**
  * Utility methods that apply to the game world or interface.
@@ -459,6 +460,46 @@ public final class GameUtils
      */
     public static String readGameAsset(String asset) {
         return Utils.readPath(Meterman2.assets.pathForGameAsset(asset));
+    }
+
+    /**
+     * Return the collection of rooms that may be reached by exiting a given room.
+     * @param r room
+     * @return collection of connected rooms
+     */
+    public static Collection<Room> getExitRooms(Room r) {
+        final List<Room> rooms = new ArrayList<>(6);
+        gatherExitRooms(r, rooms);
+        return rooms;
+    }
+
+    /**
+     * Gather the list of rooms that may be reached by exiting a given room, taking
+     * into account closed, unlocked doors.
+     * @param r room
+     * @param c collection into which we store our results
+     */
+    public static void gatherExitRooms(final Room r, final Collection<Room> c) {
+        c.clear();
+        // First add all the normal exit neighbors of the room
+        for (int direction = 0; direction < UIConstants.NUM_EXIT_BUTTONS; direction++) {
+            final Room neighbor = r.getExit(direction);
+            if (neighbor != null)
+                c.add(neighbor);
+        }
+        // Then check for closed, unlocked doors.
+        for (Entity e : r.getEntities()) {
+            EntityImpl impl = e.getImpl();
+            if (impl instanceof DoorImpl) {
+                DoorImpl d = (DoorImpl) impl;
+                AttributeSet attr = e.getAttributes();
+                if (attr.get(CLOSED) && !attr.get(LOCKED)) {
+                    final Room otherRoom = d.getOtherRoom(r);
+                    if (otherRoom != null)
+                        c.add(otherRoom);
+                }
+            }
+        }
     }
 
     /**
