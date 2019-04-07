@@ -128,20 +128,25 @@
     <description fileRef="ivory-watch-description.ftl" format="ftl" />
   </entity>
 
-  <!-- For use with GameUtils.showPassage()-->
-  <passage id="elephant-message" header="Elephant" button="Yes">
+  <!-- For use with GameUtils.loadDialogPassage()-->
+  <dialog id="elephant-message" header="Elephant" button="Yes">
     Do you like elephants?
-  </passage>
-  <passage id="dolphin-message" header="Dolphin" button="Sure" image="dolphin-1" scale="3">
+  </dialog>
+  <dialog id="dolphin-message" header="Dolphin" button="Sure" image="dolphin-1" scale="3">
     Do you like dolphins?
-  </passage>
+  </dialog>
 
-  <!-- For use with GameUtils.showPassageSequence(). Note that the element names of both the top-level element
-       and its children don't matter, so long as they have the correct attributes. -->
-  <sequence id="animal-sequence" defaultHeader="Animal" defaultButton="Okay">
+  <!-- For use with GameUtils.loadDialogSequence(). Note that the names of the child elements - in this
+       case 'dialog' - don't matter, so long as they have the correct attributes. -->
+  <sequence id="animal-sequence" defaultHeader="Animal" defaultButton="Okay"
+            defaultImage="generic-water-creature" defaultScale="2">
     <!-- the default header and button will be used if the item doesn't specify its own. -->
-    <item passageId="elephant-message" button="There's More" image="elephant-head" scale="2" />
-    <item passageId="dolphin-message" header="Aquatic" />
+    <dialog passageId="elephant-message" button="There's More" image="elephant-head" scale="2" />
+    <dialog passageId="dolphin-message" header="Aquatic" image="none" />
+    <!-- a sequence item can provide its own text, rather than referencing a passage -->
+    <dialog header="Mammoth Elephant" image="giant-da-xiang" scale="3">
+      The mammoth elephant roars like the primeval beast that it is!
+    </dialog>
   </sequence>
 
   <!-- For use with MMUI.loadImageMap() -->
@@ -203,11 +208,27 @@
       <text>Indeed, she's a real beaut.</text>
     </topic>
     <topic id="storm" label="What storm is that?" removeTopics="tractor, storm">
+      <!-- In topic-map text sources, the variable 'entity' will be set to the entity with which
+           the user is interacting. -->
       <text format="ftl">
         ${entity.defName} pauses for a moment, then says, "The giant cyclone
         of destruction is rumored to be in these parts. I can't think of nothing
         else no more."
       </text>
+    </topic>
+    <topic id="grain-elevator" label="Grain Elevator">
+      <!-- A dialog will be displayed if a <dialog> element is given. See GameUtils.loadDialogPassage() -->
+      <dialog header="Elevator" button="Whoa">
+        The grain elevator is outstanding.
+      </dialog>
+    </topic>
+    <topic id="family" label="Your family">
+      <!-- Multiple dialogs will be displayed if a <sequence> element is given. See GameUtils.loadDialogSequence() -->
+      <sequence defaultHeader="Family" defaultButton="And...">
+        <item>My father was a farmer...</item>
+        <item>...my mother was a farmer...</item>
+        <item button="Done">...and I'm a farmer.</item>
+      </sequence>
     </topic>
   </topicmap>
 
