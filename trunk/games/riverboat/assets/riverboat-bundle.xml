@@ -93,10 +93,17 @@
     </script>
   </entity>
 
-  <entity id="vague-stuff" name="Pile of Vague Stuff">
+  <entity id="vague-stuff" type="eachturn" name="Pile of Vague Stuff">
     <script>
 void lookInRoom(Entity e) {
     gm.queueLookText("A vague mound of stuff leers at you from the inky depths!", false);
+}
+
+void eachTurn(Entity e) {
+    if (currentRoom.getId().equals("playroom")) {
+        gm.newPar();
+        gm.println("From the east you sense the dark power of vague stuff.");
+    }
 }
     </script>
     <description>A dark and menacing pile of vague stuff.</description>
