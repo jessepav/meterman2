@@ -104,7 +104,7 @@ public class LookHandler implements LookListener
         // empty
     }
 
-    public void gameStarting(boolean newGame) {
+    public void gameHandlerStarting(boolean newGame) {
         // empty
     }
 }

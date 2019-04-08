@@ -219,7 +219,7 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
         // empty
     }
 
-    public void gameStarting(boolean newGame) {
+    public void gameHandlerStarting(boolean newGame) {
         // empty - our machinery is already handled by #gameStarting(Entity e)
     }
 }

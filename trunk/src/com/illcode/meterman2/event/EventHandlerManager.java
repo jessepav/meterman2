@@ -75,7 +75,7 @@ public final class EventHandlerManager
         for (List<? extends GameEventHandler> handlerList : getEventHandlerMap().values()) {
             fireList.addAll(handlerList);
             for (GameEventHandler handler : fireList)
-                handler.gameStarting(newGame);
+                handler.gameHandlerStarting(newGame);
             fireList.clear();
         }
     }

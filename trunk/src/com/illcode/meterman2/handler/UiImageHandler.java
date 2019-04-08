@@ -166,7 +166,7 @@ public class UiImageHandler implements PlayerMovementListener, EntitySelectionLi
         // empty
     }
 
-    public void gameStarting(boolean newGame) {
+    public void gameHandlerStarting(boolean newGame) {
         if (isFrameImageHandler)
             setFrameImage(Meterman2.gm.getCurrentRoom().getId());
         // Games always start with no entity selected, so we don't need to do anything.
