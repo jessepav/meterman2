@@ -6,10 +6,12 @@ import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.handler.BasicWorldHandler;
+import com.illcode.meterman2.handler.CompositeStatusBarProvider;
 import com.illcode.meterman2.handler.LookHandler;
 import com.illcode.meterman2.handler.UiImageHandler;
 import com.illcode.meterman2.loader.WorldLoader;
 import com.illcode.meterman2.model.*;
+import com.illcode.meterman2.ui.UIConstants;
 
 import java.util.HashMap;
 import java.util.List;
@@ -107,8 +109,14 @@ public class RiverboatGame implements Game
     public GameEventHandler getEventHandler(String id) {
         switch (id) {
         case BASIC_HANDLER_ID:
-            if (basicWorldHandler == null)
+            if (basicWorldHandler == null) {
                 basicWorldHandler = new BasicWorldHandler(BASIC_HANDLER_ID);
+                CompositeStatusBarProvider comp = new CompositeStatusBarProvider();
+                comp.setProvider(UIConstants.RIGHT_LABEL, basicWorldHandler);
+                comp.route(UIConstants.LEFT_LABEL, UIConstants.RIGHT_LABEL);
+                comp.route(UIConstants.RIGHT_LABEL, -1);
+                basicWorldHandler.setStatusBarProvider(comp);
+            }
             return basicWorldHandler;
         case LOOK_HANDLER_ID:
             if (lookHandler == null) {
