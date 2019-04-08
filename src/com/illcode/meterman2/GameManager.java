@@ -156,6 +156,9 @@ public final class GameManager
 
         restoreGameObjectProperties(entityIdMap, roomIdMap, player, state);
         restoreHandlers(state, game);
+        for (List<? extends GameEventHandler> handlerList : handlerManager.getEventHandlerMap().values())
+            for (GameEventHandler h : handlerList)
+                h.restoreHandlerState(state.handlerStateMap.get(h.getHandlerId()));
         currentRoom = roomIdMap.get(state.currentRoomId);
         numTurns = state.numTurns;
         selectedEntity = null;
@@ -839,6 +842,7 @@ public final class GameManager
         state.playerState = playerState;
 
         state.gameHandlers = new HashMap<>(10, 0.75f);
+        state.handlerStateMap = new HashMap<>();
         for (Map.Entry<String, List<? extends GameEventHandler>>
                 entry : handlerManager.getEventHandlerMap().entrySet()) {
             String listName = entry.getKey();
@@ -846,8 +850,12 @@ public final class GameManager
             final ArrayList<String> handlerIds = new ArrayList<>(handlerList.size());
             for (GameEventHandler handler : handlerList) {
                 final String handlerId = handler.getHandlerId();
-                if (handlerId != null && !handlerId.startsWith("#"))
+                if (handlerId != null && !handlerId.startsWith("#")) {
                     handlerIds.add(handlerId);
+                    final Object handlerState = handler.getHandlerState();
+                    if (handlerState != null)
+                        state.handlerStateMap.put(handlerId, handlerState);
+                }
             }
             state.gameHandlers.put(listName, handlerIds.toArray(new String[0]));
         }

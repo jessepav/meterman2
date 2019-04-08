@@ -1,6 +1,7 @@
 package com.illcode.meterman2.state;
 
 import com.illcode.meterman2.AttributeSet;
+import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Game;
 import com.illcode.meterman2.model.Room;
@@ -45,6 +46,9 @@ public final class GameState
      * with the value being an array of the IDs of the registered handlers of that type.
      */
     public HashMap<String,String[]> gameHandlers;
+
+    /** Persists the objects returned by {@link GameEventHandler#getHandlerState()}. */
+    public HashMap<String,Object> handlerStateMap;
 
     /** The ID of the room where the action left off. */
     public String currentRoomId;

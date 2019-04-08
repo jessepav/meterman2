@@ -96,6 +96,14 @@ public class LookHandler implements LookListener
         return handlerId;
     }
 
+    public Object getHandlerState() {
+        return null;
+    }
+
+    public void restoreHandlerState(Object state) {
+        // empty
+    }
+
     public void gameStarting(boolean newGame) {
         // empty
     }

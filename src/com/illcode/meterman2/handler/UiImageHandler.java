@@ -158,6 +158,14 @@ public class UiImageHandler implements PlayerMovementListener, EntitySelectionLi
         return handlerId;
     }
 
+    public Object getHandlerState() {
+        return null;
+    }
+
+    public void restoreHandlerState(Object state) {
+        // empty
+    }
+
     public void gameStarting(boolean newGame) {
         if (isFrameImageHandler)
             setFrameImage(Meterman2.gm.getCurrentRoom().getId());

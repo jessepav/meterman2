@@ -1,7 +1,6 @@
 package com.illcode.meterman2.handler;
 
 import com.illcode.meterman2.MMActions;
-import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.SystemAttributes;
 import com.illcode.meterman2.event.EntityActionsProcessor;
@@ -143,6 +142,14 @@ public class BasicWorldHandler
     @Override
     public String getHandlerId() {
         return handlerId;
+    }
+
+    public Object getHandlerState() {
+        return null;
+    }
+
+    public void restoreHandlerState(Object state) {
+        // empty
     }
 
     public void gameStarting(boolean newGame) {
