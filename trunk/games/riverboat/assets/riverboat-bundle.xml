@@ -204,6 +204,26 @@ void eachTurn(Entity e) {
     </script>
   </entity>
 
+  <entity id="ui-tester" name="UI Tester" inRoom="starting-room">
+    <description>An entity to poke the UI.</description>
+    <script><![CDATA[
+List actions = new ArrayList(20);
+
+for (int i = 0; i < 20; i++)
+    actions.add(SystemActions.EXAMINE.fixedTextCopy("Examine " + i));
+
+List getActions(Entity e) {
+    return actions;
+}
+
+boolean processAction(Entity e, Action action) {
+    println("Action: " + action.getText());
+    return false;
+}
+    ]]>
+    </script>
+  </entity>
+
   <player id="player" inRoom="starting-room">
     <inventory>
       <item equipped="true">stick</item>
