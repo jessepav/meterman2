@@ -216,15 +216,15 @@ void eachTurn(Entity e) {
   </actions>
 
   <lookHandler id="riverlooker">
-    <roomGroup roomIds="starting-room, playroom">
+    <roomGroup rooms="starting-room, playroom">
       <text paragraph="true">
         Overhead the clouds shift against the cerulean sky.
       </text>
     </roomGroup>
     <roomGroup>
-      <roomIds>
+      <rooms>
         <r>dungeon</r>
-      </roomIds>
+      </rooms>
       <!--
       <text script="bsh">
         if (hasAttr(currentRoom, DARK))
@@ -250,13 +250,13 @@ void eachTurn(Entity e) {
   </imageMap>
 
   <frame-images id="riverboat-frame-images" defaultImage="default">
-    <image name="grassy-field" roomIds="starting-room" />
-    <image name="dark-cave" roomIds="dungeon" />
+    <image name="grassy-field" rooms="starting-room" />
+    <image name="dark-cave" rooms="dungeon" />
   </frame-images>
 
   <entity-images id="riverboat-entity-images" defaultImage="none">
-    <image name="mike" entityIds="mike" />
-    <image name="chest" entityIds="chest" />
-    <image name="other" entityIds="oil-lamp, iron-door, wood-key" />
+    <image name="mike" entities="mike" />
+    <image name="chest" entities="chest" />
+    <image name="other" entities="oil-lamp, iron-door, wood-key" />
   </entity-images>
 </xbundle>

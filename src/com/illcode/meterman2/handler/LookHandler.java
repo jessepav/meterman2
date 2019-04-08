@@ -73,12 +73,12 @@ public class LookHandler implements LookListener
         LoaderHelper helper = LoaderHelper.wrap(el);
         for (Element group : el.getChildren("roomGroup")) {
             helper.setWrappedElement(group);
-            final List<String> roomIds = helper.getListValue("roomIds");
+            final List<String> rooms = helper.getListValue("rooms");
             final Element text = group.getChild("text");
             if (text == null)
                 continue;
             final boolean par = Utils.parseBoolean(text.getAttributeValue("paragraph"));
-            for (String rid : roomIds)
+            for (String rid : rooms)
                 putEntry(rid, b.elementTextSource(text), par);
         }
     }
