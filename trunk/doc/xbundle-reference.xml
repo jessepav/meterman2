@@ -43,7 +43,7 @@
        place it in another entity (which must be a container). -->
   <entity id="basic-entity-variant-2" name="New Tractor" indefiniteArticle="a"
           attributes="moveable, lightsource" inRoom="grassy-field">
-    <description passageId="equipment-description" />
+    <description passageRef="equipment-description" />
     <script>
       <![CDATA[
         void enterScope(Entity e) {
@@ -141,8 +141,8 @@
   <sequence id="animal-sequence" defaultHeader="Animal" defaultButton="Okay"
             defaultImage="generic-water-creature" defaultScale="2">
     <!-- the default header and button will be used if the item doesn't specify its own. -->
-    <dialog passageId="elephant-message" button="There's More" image="elephant-head" scale="2" />
-    <dialog passageId="dolphin-message" header="Aquatic" image="none" />
+    <dialog passageRef="elephant-message" button="There's More" image="elephant-head" scale="2" />
+    <dialog passageRef="dolphin-message" header="Aquatic" image="none" />
     <!-- a sequence item can provide its own text, rather than referencing a passage -->
     <dialog header="Mammoth Elephant" image="giant-da-xiang" scale="3">
       The mammoth elephant roars like the primeval beast that it is!
@@ -269,18 +269,18 @@
 
   <!-- For use with LookHandler.loadFromElement() -->
   <lookHandler id="outdoor-listener">
-    <roomGroup roomIds="grassy-field, baseball-diamond, beach">
+    <roomGroup rooms="grassy-field, baseball-diamond, beach">
       <!-- If paragraph="true" the text will be output in its own paragraph. -->
       <text format="ftl" paragraph="true">
         Over ${currentRoom.defName} you see gulls wheeling in endless circles.
       </text>
     </roomGroup>
     <roomGroup>
-      <roomIds>
+      <rooms>
         <r>dungeon</r>
         <r>cave</r>
         <r>oubliette</r>
-      </roomIds>
+      </rooms>
       <text>
         A crushing sense of claustrophobia attends the close walls.
       </text>
@@ -292,15 +292,15 @@
        is given, then we show no image (as though defaultImage="none").
        There are two special image names: "none", for no image, and "default" for the default frame image. -->
   <frame-images id="frame-images-region1" defaultImage="game-logo">
-    <image name="outdoor-region" roomIds="grassy-field, baseball-diamond" />
+    <image name="outdoor-region" rooms="grassy-field, baseball-diamond" />
     <image name="waterside">
-      <roomIds>
+      <rooms>
         <r>beach</r>
         <r>riverside</r>
         <r>lakefront</r>
-      </roomIds>
+      </rooms>
     </image>
-    <image name="none" roomIds="void" />
+    <image name="none" rooms="the-void" />
   </frame-images>
 
   <!-- For use with UiImageHandler.loadFromElement()
@@ -308,7 +308,7 @@
        is given, then we show no image (as though defaultImage="none").
        There is one special image names: "none", for no image. -->
   <entity-images id="entity-images-region1" defaultImage="none">
-    <image name="mike-portrait" entityIds="mike" />
-    <image name="cup" entityIds="iron-cup, brass-mug, coffee-cup" />
+    <image name="mike-portrait" entities="mike" />
+    <image name="cup" entities="iron-cup, brass-mug, coffee-cup" />
   </entity-images>
 </xbundle>

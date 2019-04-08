@@ -37,7 +37,7 @@ public class UiImageHandler implements PlayerMovementListener, EntitySelectionLi
     /** Create an image handler that will handle frame images. */
     public static UiImageHandler createFrameImageHandler(String handlerId) {
         UiImageHandler handler = new UiImageHandler(handlerId);
-        handler.idAttributeName = "roomIds";
+        handler.idAttributeName = "rooms";
         handler.isFrameImageHandler = true;
         return handler;
     }
@@ -45,7 +45,7 @@ public class UiImageHandler implements PlayerMovementListener, EntitySelectionLi
     /** Create an image handler that will handle entity images. */
     public static UiImageHandler createEntityImageHandler(String handlerId) {
         UiImageHandler handler = new UiImageHandler(handlerId);
-        handler.idAttributeName = "entityIds";
+        handler.idAttributeName = "entities";
         handler.isFrameImageHandler = false;
         return handler;
     }

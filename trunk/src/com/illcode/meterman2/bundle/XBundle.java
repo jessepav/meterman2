@@ -215,7 +215,7 @@ public final class XBundle
     /**
      * Return an appropriate {@link TextSource} implementation for a given element.
      * <p/>
-     * If the element has a <em>passageId</em> attribute, then the TextSource of the referenced passage
+     * If the element has a <em>passageRef</em> attribute, then the TextSource of the referenced passage
      * will be returned in its place.
      * @param e XML Element
      * @return an appropriate TextSource implementation, or {@link #ERROR_TEXT_SOURCE}.
@@ -230,9 +230,9 @@ public final class XBundle
             if (id != null)
                 return getPassage(id);
         } else {  // if this isn't a top-level passage, allow references to other passages.
-            final String passageId = e.getAttributeValue("passageId");
-            if (passageId != null)
-                return getPassage(passageId);
+            final String passageRef = e.getAttributeValue("passageRef");
+            if (passageRef != null)
+                return getPassage(passageRef);
         }
         // Otherwise generate a new source for the element
         return elementTextSourceImpl(e);
@@ -251,7 +251,7 @@ public final class XBundle
             return new ScriptSource(id, getElementTextTrim(e), this);
         } else if (isFormatStringElement(e)) {
             return new FormatStringSource(getElementTextTrim(e), this);
-        } else { // a normal text passage
+        } else {  // a regular text element
             return new StringSource(getElementTextNormalize(e), this);
         }
     }
@@ -320,7 +320,7 @@ public final class XBundle
      * @return element text, or {@link #ERROR_TEXT_STRING} if an IO exception occurs
      */
     public String getElementText(Element el) {
-        String fileRef = el.getAttributeValue("fileRef");
+        final String fileRef = el.getAttributeValue("fileRef");
         String text;
         if (fileRef != null) {
             try {
