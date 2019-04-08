@@ -154,8 +154,7 @@ public final class MMUI
     /** Set the text of the Look and Wait UI buttons to the text of the
      *  LOOK and WAIT system actions, respectively. */
     public void setGlobalActionButtonText() {
-        mainFrame.lookButton.setText(SystemActions.LOOK.getText());
-        mainFrame.waitButton.setText(SystemActions.WAIT.getText());
+        mainFrame.setGlobalActionButtonText(SystemActions.LOOK, SystemActions.WAIT);
     }
 
     /**

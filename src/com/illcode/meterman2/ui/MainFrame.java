@@ -15,6 +15,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -65,6 +66,10 @@ final class MainFrame implements ActionListener, ListSelectionListener
     private Action lastAction;
 
     private boolean suppressValueChanged;
+
+    // For our action popup menu
+    private JPopupMenu popupMenu;
+    private List<JMenuItem> popupItems;  // we maintain a pool of menu items and actions to avoid allocation
 
     @SuppressWarnings("unchecked")
     MainFrame(MMUI ui) {
@@ -269,6 +274,17 @@ final class MainFrame implements ActionListener, ListSelectionListener
         boundKeystrokes.clear();
     }
 
+    void setGlobalActionButtonText(Action lookAction, Action waitAction) {
+        lookButton.setText(lookAction.getText());
+        KeyStroke k = actionKeystrokeMap.get(lookAction);
+        if (k != null)
+            lookButton.setToolTipText(k.toString().replace("pressed", "+"));
+        waitButton.setText(waitAction.getText());
+        k = actionKeystrokeMap.get(waitAction);
+        if (k != null)
+            waitButton.setToolTipText(k.toString().replace("pressed", "+"));
+    }
+
     void setVisible(boolean visible) {
         frame.setVisible(visible);
     }
@@ -355,9 +371,12 @@ final class MainFrame implements ActionListener, ListSelectionListener
         actions.add(action);
         final int n = actions.size();
         if (n <= NUM_ACTION_BUTTONS) {
-            JButton b = actionButtons[n - 1];
+            final JButton b = actionButtons[n - 1];
             b.setText(action.getText());
             b.setVisible(true);
+            final KeyStroke k = actionKeystrokeMap.get(action);
+            if (k != null)
+                b.setToolTipText(k.toString().replace("pressed", "+"));
         } else {
             moreActionCombo.setVisible(true);
             moreActionCombo.addItem(action.getText());
@@ -533,19 +552,67 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     private class ListMouseListener extends MouseAdapter
     {
+        public void mousePressed(MouseEvent e) { checkPopup(e); }
+        public void mouseReleased(MouseEvent e) { checkPopup(e); }
+
         public void mouseClicked(MouseEvent e) {
-            //final JList list = (JList) e.getSource();
-            //if (e.getClickCount() == 2) {
-            //    int selectedIdx = list.getSelectedIndex();
-            //    if (selectedIdx != -1 && actionButtons[0].isVisible())
-            //        actionButtons[0].doClick();
-            //}
-            if (e.getClickCount() == 2) {
+            if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
                 if (actionButtons[0].isVisible())
                     actionButtons[0].doClick();
             }
         }
+
+        private void checkPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                JList list = (JList) e.getSource();
+                final Point p = e.getPoint();
+                int idx = list.locationToIndex(p);
+                if (idx == -1)
+                    return;
+                if (!list.getCellBounds(idx, idx).contains(p))
+                    return;
+                list.setSelectedIndex(idx);
+                showActionPopup(list, p);
+            }
+        }
+
+        private void showActionPopup(JList list, Point p) {
+            if (popupMenu == null) {
+                popupMenu = new JPopupMenu("Actions");
+                popupItems = new ArrayList<>(16);
+            }
+            // ensure we have enough menu items to cover our actions
+            for (int i = popupItems.size(); i < actions.size(); i++)
+                popupItems.add(new JMenuItem(new PopupAction(i)));
+            popupMenu.removeAll();
+            for (int i = 0; i < actions.size(); i++) {
+                final JMenuItem item = popupItems.get(i);
+                ((PopupAction) item.getAction()).updateName();
+                popupMenu.add(item);
+            }
+            popupMenu.show(list, p.x, p.y);
+        }
     }
+
+    private class PopupAction extends AbstractAction
+    {
+        private final int actionIdx;
+
+        private PopupAction(int actionIdx) {
+            this.actionIdx = actionIdx;
+        }
+
+        void updateName() {
+            if (actions.size() > actionIdx)
+                putValue(NAME, actions.get(actionIdx).getText());
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            if (actions.size() > actionIdx)
+                actionSelected(actions.get(actionIdx));
+        }
+    }
+
 
     // Activates a button when invoked (for keyboard shortcuts)
     private class ButtonAction extends AbstractAction

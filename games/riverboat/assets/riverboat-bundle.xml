@@ -184,10 +184,12 @@ void interactOther(Entity e, String topic) {
     ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
 }
 
+Collection rooms = new ArrayList(6);
+
 void eachTurn(Entity e) {
     // Only move 1/3 of the time.
     if (Utils.randInt(0, 2) == 0) {
-        Collection rooms = GameUtils.getExitRooms(GameUtils.getRoom(e));
+        GameUtils.gatherExitRooms(GameUtils.getRoom(e), rooms);
         if (rooms.isEmpty())
             return;
         int choice = Utils.randInt(0, rooms.size()-1);
