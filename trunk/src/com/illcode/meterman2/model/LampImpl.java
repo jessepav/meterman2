@@ -211,6 +211,14 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
         return "#e:" + e.getId();
     }
 
+    public Object getHandlerState() {
+        return null;
+    }
+
+    public void restoreHandlerState(Object state) {
+        // empty
+    }
+
     public void gameStarting(boolean newGame) {
         // empty - our machinery is already handled by #gameStarting(Entity e)
     }

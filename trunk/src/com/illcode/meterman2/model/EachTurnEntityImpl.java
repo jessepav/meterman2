@@ -53,6 +53,14 @@ public class EachTurnEntityImpl extends BaseEntityImpl implements TurnListener
         return "#e:" + e.getId();
     }
 
+    public Object getHandlerState() {
+        return null;
+    }
+
+    public void restoreHandlerState(Object state) {
+        // empty
+    }
+
     public void gameStarting(boolean newGame) {
         // empty
     }
