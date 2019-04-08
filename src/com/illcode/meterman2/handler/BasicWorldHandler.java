@@ -152,7 +152,7 @@ public class BasicWorldHandler
         // empty
     }
 
-    public void gameStarting(boolean newGame) {
+    public void gameHandlerStarting(boolean newGame) {
         if (!newGame)
             refreshStatusBar();  // since no turn occurs at the start of a loaded game
     }

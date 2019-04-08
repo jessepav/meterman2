@@ -32,5 +32,5 @@ public interface GameEventHandler
      * update itself or the UI as necessary.
      * @param newGame true if this is a new game, false if we're resuming a saved game.
      */
-    void gameStarting(boolean newGame);
+    void gameHandlerStarting(boolean newGame);
 }
