@@ -279,10 +279,14 @@ final class MainFrame implements ActionListener, ListSelectionListener
         KeyStroke k = actionKeystrokeMap.get(lookAction);
         if (k != null)
             lookButton.setToolTipText(k.toString().replace("pressed", "+"));
+        else
+            lookButton.setToolTipText(null);
         waitButton.setText(waitAction.getText());
         k = actionKeystrokeMap.get(waitAction);
         if (k != null)
             waitButton.setToolTipText(k.toString().replace("pressed", "+"));
+        else
+            waitButton.setToolTipText(null);
     }
 
     void setVisible(boolean visible) {
@@ -377,6 +381,8 @@ final class MainFrame implements ActionListener, ListSelectionListener
             final KeyStroke k = actionKeystrokeMap.get(action);
             if (k != null)
                 b.setToolTipText(k.toString().replace("pressed", "+"));
+            else
+                b.setToolTipText(null);
         } else {
             moreActionCombo.setVisible(true);
             moreActionCombo.addItem(action.getText());
