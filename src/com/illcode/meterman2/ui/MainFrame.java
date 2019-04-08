@@ -131,6 +131,9 @@ final class MainFrame implements ActionListener, ListSelectionListener
                 b.addActionListener(this);
             roomList.addListSelectionListener(this);
             inventoryList.addListSelectionListener(this);
+            ListMouseListener lml = new ListMouseListener();
+            roomList.addMouseListener(lml);
+            inventoryList.addMouseListener(lml);
             moreActionCombo.addActionListener(this);
             actions = new ArrayList<>(16);
 
@@ -339,7 +342,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         }
     }
 
-    public void clearActions() {
+    void clearActions() {
         actions.clear();
         for (JButton b : actionButtons)
             b.setVisible(false);
@@ -348,9 +351,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         moreActionCombo.addItem("More...");
     }
 
-    public void addAction(Action action) {
-        if (actions.contains(action))
-            return;
+    void addAction(Action action) {
         actions.add(action);
         final int n = actions.size();
         if (n <= NUM_ACTION_BUTTONS) {
@@ -363,7 +364,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         }
     }
 
-    public void removeAction(Action action) {
+    void removeAction(Action action) {
         if (actions.remove(action)) {
             clearActions();
             for (Action a : actions)
@@ -527,6 +528,22 @@ final class MainFrame implements ActionListener, ListSelectionListener
     {
         public void windowClosing(WindowEvent e) {
             close();
+        }
+    }
+
+    private class ListMouseListener extends MouseAdapter
+    {
+        public void mouseClicked(MouseEvent e) {
+            //final JList list = (JList) e.getSource();
+            //if (e.getClickCount() == 2) {
+            //    int selectedIdx = list.getSelectedIndex();
+            //    if (selectedIdx != -1 && actionButtons[0].isVisible())
+            //        actionButtons[0].doClick();
+            //}
+            if (e.getClickCount() == 2) {
+                if (actionButtons[0].isVisible())
+                    actionButtons[0].doClick();
+            }
         }
     }
 
