@@ -1,6 +1,7 @@
 package com.illcode.meterman2.model;
 
 import com.illcode.meterman2.MMScript;
+import com.illcode.meterman2.MMTemplate;
 import com.illcode.meterman2.event.GameEventHandler;
 
 import java.util.Map;
@@ -62,7 +63,9 @@ public interface Game
      *     <li>add image and sound mappings</li>
      *     <li>register game-specific actions and attributes</li>
      *     <li>change the text of system actions, if desired</li>
-     *     <li>import packages and classes and define any methods used by scripts</li>
+     *     <li>import packages and classes, define methods, and otherwise populate the script game namespace
+     *         (see {@link MMScript})</li>
+     *     <li>bind any utility objects it needs into the template data model (see {@link MMTemplate})</li>
      * </ul>
      */
     void init();
