@@ -47,6 +47,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
     JList<String> roomList, inventoryList;
     JButton[] exitButtons, actionButtons;
     JComboBox<String> moreActionCombo;
+    StringBuilder toolTipBuilder;
     JLabel leftStatusLabel, centerStatusLabel, rightStatusLabel;
     FrameImageComponent imageComponent;
 
@@ -140,6 +141,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             roomList.addMouseListener(lml);
             inventoryList.addMouseListener(lml);
             moreActionCombo.addActionListener(this);
+            toolTipBuilder = new StringBuilder(96);
             actions = new ArrayList<>(16);
 
             fc = new JFileChooser();
@@ -154,7 +156,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
             frame.setIconImage(GuiUtils.loadOpaqueImage(Meterman2.assets.pathForSystemAsset("frame-icon.png")));
 
-            GuiUtils.setBoundsFromPrefs(frame, "main-window-size");
+            GuiUtils.setBoundsFromPrefs(frame, "main-window-size", "900, 700");
         } catch (Exception ex) {
             logger.log(Level.WARNING, "MainFrame()", ex);
         }
@@ -276,17 +278,9 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     void setGlobalActionButtonText(Action lookAction, Action waitAction) {
         lookButton.setText(lookAction.getText());
-        KeyStroke k = actionKeystrokeMap.get(lookAction);
-        if (k != null)
-            lookButton.setToolTipText(k.toString().replace("pressed", "+"));
-        else
-            lookButton.setToolTipText(null);
+        lookButton.setToolTipText(getActionToolTipText(lookAction));
         waitButton.setText(waitAction.getText());
-        k = actionKeystrokeMap.get(waitAction);
-        if (k != null)
-            waitButton.setToolTipText(k.toString().replace("pressed", "+"));
-        else
-            waitButton.setToolTipText(null);
+        waitButton.setToolTipText(getActionToolTipText(waitAction));
     }
 
     void setVisible(boolean visible) {
@@ -364,11 +358,14 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     void clearActions() {
         actions.clear();
-        for (JButton b : actionButtons)
+        for (JButton b : actionButtons) {
             b.setVisible(false);
+            b.setToolTipText(null);
+        }
         moreActionCombo.setVisible(false);
         moreActionCombo.removeAllItems();
         moreActionCombo.addItem("More...");
+        moreActionCombo.setToolTipText(null);
     }
 
     void addAction(Action action) {
@@ -377,16 +374,39 @@ final class MainFrame implements ActionListener, ListSelectionListener
         if (n <= NUM_ACTION_BUTTONS) {
             final JButton b = actionButtons[n - 1];
             b.setText(action.getText());
+            b.setToolTipText(getActionToolTipText(action));
             b.setVisible(true);
-            final KeyStroke k = actionKeystrokeMap.get(action);
-            if (k != null)
-                b.setToolTipText(k.toString().replace("pressed", "+"));
-            else
-                b.setToolTipText(null);
         } else {
-            moreActionCombo.setVisible(true);
             moreActionCombo.addItem(action.getText());
+            moreActionCombo.setVisible(true);
+            // Construct a tooltip of all the actions in the combo box
+            toolTipBuilder.setLength(0);
+            for (int i = NUM_ACTION_BUTTONS; i < n; i++) {
+                final Action a = actions.get(i);
+                final String ttt = getActionToolTipText(a);
+                if (ttt != null) {
+                    if (toolTipBuilder.length() == 0)
+                        toolTipBuilder.append("<html>");
+                    else
+                        toolTipBuilder.append("<br/>");
+                    toolTipBuilder.append(a.getText()).append(" - ").append(ttt);
+                }
+            }
+            if (toolTipBuilder.length() != 0) {
+                toolTipBuilder.append("</html>");
+                moreActionCombo.setToolTipText(toolTipBuilder.toString());
+            } else {
+                moreActionCombo.setToolTipText(null);
+            }
         }
+    }
+
+    private String getActionToolTipText(Action action) {
+        String toolTipText = null;
+        final KeyStroke k = actionKeystrokeMap.get(action);
+        if (k != null)
+            toolTipText = k.toString().replace("pressed", "+");
+        return toolTipText;
     }
 
     void removeAction(Action action) {
@@ -488,9 +508,9 @@ final class MainFrame implements ActionListener, ListSelectionListener
                 Utils.setPref("max-text-buffer-size", Integer.toString(newval));
             }
         } else if (source == webSiteMenuItem) {
-            ui.openURL("https://jessepav.github.io/meterman/");
+            ui.openURL("https://jessepav.github.io/meterman2/");
         } else if (source == onlineManualMenuItem) {
-            ui.openURL("https://jessepav.github.io/meterman/manual.html");
+            ui.openURL("https://jessepav.github.io/meterman2/manual.html");
         } else if (source == aboutMenuItem) {
             ui.handler.aboutMenuClicked();
         }

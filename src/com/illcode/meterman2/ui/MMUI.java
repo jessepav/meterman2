@@ -9,10 +9,7 @@ import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
 import org.jdom2.Element;
 
-import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.awt.image.BufferedImage;
@@ -73,6 +70,10 @@ public final class MMUI
                 // This prevents JComboBox from firing an ActionEvent every time the selection
                 // changes when using keyboard navigation.
                 UIManager.getLookAndFeelDefaults().put("ComboBox.noActionOnKeyNavigation", Boolean.TRUE);
+
+                final ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+                toolTipManager.setInitialDelay(Utils.intPref("tooltip-initial-delay", 750));
+                toolTipManager.setDismissDelay(Utils.intPref("tooltip-dismiss-delay", 4000));
 
                 GuiUtils.initGraphics();
 
