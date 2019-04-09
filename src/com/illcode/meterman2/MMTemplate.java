@@ -158,7 +158,7 @@ public class MMTemplate
      * @param name key name to remove
      */
     public void removeBinding(String name) {
-        Object systemVal = systemHash.get(name);
+        final Object systemVal = systemHash.get(name);
         if (systemVal != null)
             rootHash.put(name, systemVal);
         else
@@ -216,7 +216,7 @@ public class MMTemplate
     /** Remove a binding from our system hash.
      *  The binding will still persist in the data model, however */
     void removeSystemBinding(String name) {
-        Object val = systemHash.remove(name);
+        systemHash.remove(name);
     }
 
     /** Clear all game-state bindings from our template data model, resetting it
