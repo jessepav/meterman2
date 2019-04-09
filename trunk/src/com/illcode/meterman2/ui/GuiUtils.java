@@ -217,9 +217,9 @@ public final class GuiUtils
     }
 
 
-    public static void setBoundsFromPrefs(Window w, String prefName) {
+    public static void setBoundsFromPrefs(Window w, String prefName, String defaultVal) {
         int x = -1, y = -1, width = -1, height = -1;
-        String val = Utils.getPref(prefName);
+        String val = Utils.pref(prefName, defaultVal);
         if (val != null && !val.isEmpty()) {
             String[] vals = StringUtils.split(val, ", ");
             if (vals.length == 4) {
@@ -232,9 +232,9 @@ public final class GuiUtils
                 height = Utils.parseInt(vals[1], 600);
             }
 
-            if (x >= 0) {
+            if (x != -1) {
                 w.setBounds(x, y, width, height);
-            } else if (width >= 0) {
+            } else if (width != -1) {
                 w.setSize(width, height);
                 w.setLocationRelativeTo(null);
             }
