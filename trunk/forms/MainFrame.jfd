@@ -86,7 +86,7 @@ new FormModel {
 					name: "listPanel"
 					"background": sfield java.awt.Color darkGray
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label1"
+						name: "roomListLabel"
 						"text": "Room Contains:"
 						"foreground": #Color0
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
@@ -111,7 +111,7 @@ new FormModel {
 						"gridY": 3
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "label2"
+						name: "inventoryListLabel"
 						"text": "Inventory:"
 						"foreground": #Color0
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
@@ -151,7 +151,7 @@ new FormModel {
 						name: "exitButtonPanel"
 						"opaque": false
 						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "exitLabel"
+							name: "exitsLabel"
 							"text": "Exits:"
 							"horizontalAlignment": 4
 							"foreground": &Color3 new java.awt.Color( 231, 231, 231, 255 )
@@ -312,7 +312,7 @@ new FormModel {
 						name: "actionButtonPanel"
 						"opaque": false
 						add( new FormComponent( "javax.swing.JLabel" ) {
-							name: "actionLabel"
+							name: "actionsLabel"
 							"text": "Actions:"
 							"horizontalAlignment": 4
 							"foreground": #Color3
@@ -430,6 +430,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "centerStatusLabel"
 						"text": "Center Status Label"
+						"horizontalAlignment": 0
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 4
 					} )

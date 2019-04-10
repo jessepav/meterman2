@@ -19,7 +19,7 @@ new FormModel {
 					name: "contentPanel"
 					"border": &EmptyBorder0 new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
 					add( new FormComponent( "javax.swing.JLabel" ) {
-						name: "headerLabel"
+						name: "selectLabel"
 						"text": "Select a <something>"
 						"font": new java.awt.Font( "SansSerif", 0, 14 )
 						"focusable": false

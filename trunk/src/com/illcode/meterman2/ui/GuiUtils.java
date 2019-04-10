@@ -10,8 +10,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.logging.Level;
+
+import static com.illcode.meterman2.MMLogging.logger;
 
 public final class GuiUtils
 {
@@ -186,6 +190,16 @@ public final class GuiUtils
 
     public static void repaintImmediately(JComponent component) {
         component.paintImmediately(0, 0, component.getWidth(), component.getHeight());
+    }
+
+    static void registerFont(Path fontFilePath) {
+        try {
+            final Font font = Font.createFont(Font.TRUETYPE_FONT, fontFilePath.toFile());
+            logger.config("Loaded Font: " + fontString(font));
+            graphicsEnvironment.registerFont(font);
+        } catch (FontFormatException|IOException e) {
+            logger.log(Level.WARNING, "registerGameFonts()", e);
+        }
     }
 
     /**
