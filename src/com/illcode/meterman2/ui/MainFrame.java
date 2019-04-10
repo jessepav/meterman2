@@ -13,6 +13,7 @@ import org.jdom2.Element;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -37,11 +38,12 @@ final class MainFrame implements ActionListener, ListSelectionListener
     JFrame frame;
     JMenu gameMenu, settingsMenu, helpMenu;
     JMenuItem newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem, saveTranscriptMenuItem,
-        quitMenuItem, aboutMenuItem, webSiteMenuItem, onlineManualMenuItem, scrollbackMenuItem;
+        quitMenuItem, aboutMenuItem, webSiteMenuItem, onlineManualMenuItem, scrollbackMenuItem,
+        chooseFontsMenuItem;
     JCheckBoxMenuItem alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem, soundCheckBoxMenuItem,
         promptToQuitCheckBoxMenuItem;
     JPanel imagePanel;
-    JLabel roomNameLabel;
+    JLabel roomNameLabel, roomListLabel, inventoryListLabel, exitsLabel, actionsLabel;
     JButton lookButton, waitButton;
     JTextArea textArea;
     JList<String> roomList, inventoryList;
@@ -50,6 +52,8 @@ final class MainFrame implements ActionListener, ListSelectionListener
     StringBuilder toolTipBuilder;
     JLabel leftStatusLabel, centerStatusLabel, rightStatusLabel;
     FrameImageComponent imageComponent;
+
+    ChooseFontsDialog chooseFontsDialog;
 
     JFileChooser fc;
     File lastSaveFile;
@@ -93,12 +97,17 @@ final class MainFrame implements ActionListener, ListSelectionListener
             webSiteMenuItem = cr.getMenuItem("webSiteMenuItem");
             onlineManualMenuItem = cr.getMenuItem("onlineManualMenuItem");
             scrollbackMenuItem = cr.getMenuItem("scrollbackMenuItem");
+            chooseFontsMenuItem = cr.getMenuItem("chooseFontsMenuItem");
             alwaysLookCheckBoxMenuItem = cr.getCheckBoxMenuItem("alwaysLookCheckBoxMenuItem");
             musicCheckBoxMenuItem = cr.getCheckBoxMenuItem("musicCheckBoxMenuItem");
             soundCheckBoxMenuItem = cr.getCheckBoxMenuItem("soundCheckBoxMenuItem");
             promptToQuitCheckBoxMenuItem = cr.getCheckBoxMenuItem("promptToQuitCheckBoxMenuItem");
             imagePanel = cr.getPanel("imagePanel");
             roomNameLabel = cr.getLabel("roomNameLabel");
+            roomListLabel = cr.getLabel("roomListLabel");
+            inventoryListLabel = cr.getLabel("inventoryListLabel");
+            exitsLabel = cr.getLabel("exitsLabel");
+            actionsLabel = cr.getLabel("actionsLabel");
             lookButton = cr.getButton("lookButton");
             waitButton = cr.getButton("waitButton");
             textArea = cr.getTextArea("textArea");
@@ -129,7 +138,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             for (AbstractButton b : new AbstractButton[] {newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem,
                     saveTranscriptMenuItem, quitMenuItem, aboutMenuItem, alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem,
                     soundCheckBoxMenuItem, promptToQuitCheckBoxMenuItem, webSiteMenuItem, scrollbackMenuItem,
-                    onlineManualMenuItem, lookButton, waitButton})
+                    chooseFontsMenuItem, onlineManualMenuItem, lookButton, waitButton})
                 b.addActionListener(this);
             for (JButton b : exitButtons)
                 b.addActionListener(this);
@@ -329,6 +338,27 @@ final class MainFrame implements ActionListener, ListSelectionListener
         Meterman2.shutdown();
     }
 
+    void setComponentFonts(Font mainTextFont, Font headerFont, Font listFont,
+                           Font labelFont, Font buttonFont, Font dialogTextFont) {
+        textArea.setFont(mainTextFont);
+        roomNameLabel.setFont(headerFont.deriveFont(headerFont.getSize2D() + 2.0f));
+        roomList.setFont(listFont);
+        inventoryList.setFont(listFont);
+        for (JLabel l : new JLabel[] {roomListLabel, inventoryListLabel, exitsLabel, actionsLabel})
+            l.setFont(labelFont);
+        final Font statusLabelFont = labelFont.deriveFont(labelFont.getSize2D() - 1.0f);
+        for (JLabel l : new JLabel[] {leftStatusLabel, centerStatusLabel, rightStatusLabel})
+            l.setFont(statusLabelFont);
+        lookButton.setFont(buttonFont);
+        waitButton.setFont(buttonFont);
+        final Font gridButtonFont = buttonFont.deriveFont(buttonFont.getSize2D() - 1.0f);
+        for (JButton b : exitButtons)
+            b.setFont(gridButtonFont);
+        for (JButton b : actionButtons)
+            b.setFont(gridButtonFont);
+        moreActionCombo.setFont(gridButtonFont);
+    }
+
     void setFrameImage(BufferedImage image) {
         frameImage = image;
         imageComponent.repaint();
@@ -507,6 +537,11 @@ final class MainFrame implements ActionListener, ListSelectionListener
                 ui.maxBufferSize = newval;
                 Utils.setPref("max-text-buffer-size", Integer.toString(newval));
             }
+        } else if (source == chooseFontsMenuItem) {
+            if (chooseFontsDialog == null)
+                chooseFontsDialog = new ChooseFontsDialog(frame);
+            if (chooseFontsDialog.show())
+                ui.updateComponentFonts();
         } else if (source == webSiteMenuItem) {
             ui.openURL("https://jessepav.github.io/meterman2/");
         } else if (source == onlineManualMenuItem) {

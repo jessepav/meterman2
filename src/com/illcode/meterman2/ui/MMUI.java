@@ -12,6 +12,7 @@ import org.jdom2.Element;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
@@ -86,6 +87,7 @@ public final class MMUI
                 waitDialog = new WaitDialog(mainFrame.frame);
 
                 GuiUtils.registerFontDir(Meterman2.fontPath);
+                updateComponentFonts();
 
                 clearStatusLabels();
 
@@ -103,6 +105,22 @@ public final class MMUI
                 mainFrame.startup();
             }
         });
+    }
+
+    void updateComponentFonts() {
+        final Font mainTextFont = Font.decode(Utils.pref("main-text-font", "Roboto Slab-PLAIN-14"));
+        final Font headerFont = Font.decode(Utils.pref("header-font", "Roboto Slab-PLAIN-18"));
+        final Font listFont = Font.decode(Utils.pref("list-font", "Roboto Medium-PLAIN-14"));
+        final Font labelFont = Font.decode(Utils.pref("label-font", "Roboto Medium-PLAIN-14"));
+        final Font buttonFont = Font.decode(Utils.pref("button-font", "Roboto Medium-PLAIN-14"));
+        final Font dialogTextFont = Font.decode(Utils.pref("dialog-text-font", "Roboto Mono Medium-PLAIN-14"));
+
+        mainFrame.setComponentFonts(mainTextFont, headerFont, listFont, labelFont, buttonFont, dialogTextFont);
+        textDialog.setComponentFonts(mainTextFont, headerFont, listFont, labelFont, buttonFont, dialogTextFont);
+        promptDialog.setComponentFonts(mainTextFont, headerFont, listFont, labelFont, buttonFont, dialogTextFont);
+        listDialog.setComponentFonts(mainTextFont, headerFont, listFont, labelFont, buttonFont, dialogTextFont);
+        imageDialog.setComponentFonts(mainTextFont, headerFont, listFont, labelFont, buttonFont, dialogTextFont);
+        selectItemDialog.setComponentFonts(mainTextFont, headerFont, listFont, labelFont, buttonFont, dialogTextFont);
     }
 
     /**

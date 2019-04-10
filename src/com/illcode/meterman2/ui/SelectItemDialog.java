@@ -5,6 +5,7 @@ import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 
 import javax.swing.*;
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -76,6 +77,16 @@ final class SelectItemDialog implements ActionListener
         dialog.setVisible(true);  // blocks until hidden
         return selectedIdx;
     }
+
+    void setComponentFonts(Font mainTextFont, Font headerFont, Font listFont,
+                           Font labelFont, Font buttonFont, Font dialogTextFont) {
+        selectLabel.setFont(labelFont);
+        promptLabel.setFont(labelFont.deriveFont(buttonFont.getSize2D() - 1.0f));
+        itemCombo.setFont(listFont);
+        okButton.setFont(buttonFont);
+        cancelButton.setFont(buttonFont);
+    }
+
 
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();

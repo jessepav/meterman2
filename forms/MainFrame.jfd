@@ -89,6 +89,7 @@ new FormModel {
 						name: "roomListLabel"
 						"text": "Room Contains:"
 						"foreground": #Color0
+						"font": &Font0 new java.awt.Font( "SansSerif", 0, 13 )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 1
 						"gridY": 1
@@ -101,7 +102,7 @@ new FormModel {
 							"prototypeCellValue": "01234567890123456789"
 							"background": #Color2
 							"selectionMode": 0
-							"font": new java.awt.Font( "Serif", 0, 16 )
+							"font": &Font1 new java.awt.Font( "SansSerif", 0, 13 )
 							"focusable": false
 							auxiliary() {
 								"JavaCodeGenerator.typeParameters": "String"
@@ -114,6 +115,7 @@ new FormModel {
 						name: "inventoryListLabel"
 						"text": "Inventory:"
 						"foreground": #Color0
+						"font": #Font0
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 1
 						"gridY": 5
@@ -123,10 +125,10 @@ new FormModel {
 						"focusable": false
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "inventoryList"
-							"prototypeCellValue": "Abraded Alligator Clips"
+							"prototypeCellValue": "01234567890123456789"
 							"background": #Color2
 							"selectionMode": 0
-							"font": new java.awt.Font( "Serif", 0, 16 )
+							"font": #Font1
 							"focusable": false
 							auxiliary() {
 								"JavaCodeGenerator.typeParameters": "String"
@@ -156,6 +158,7 @@ new FormModel {
 							"horizontalAlignment": 4
 							"foreground": &Color3 new java.awt.Color( 231, 231, 231, 255 )
 							"verticalAlignment": 1
+							"font": #Font0
 						}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "exitButton1"
@@ -317,6 +320,7 @@ new FormModel {
 							"horizontalAlignment": 4
 							"foreground": #Color3
 							"verticalAlignment": 1
+							"font": #Font0
 						}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
 						add( new FormComponent( "javax.swing.JButton" ) {
 							name: "actionButton1"
@@ -423,6 +427,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "leftStatusLabel"
 						"text": "Left Status Label"
+						"font": &Font2 new java.awt.Font( "SansSerif", 0, 13 )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 2
 						"gridY": 1
@@ -431,12 +436,14 @@ new FormModel {
 						name: "centerStatusLabel"
 						"text": "Center Status Label"
 						"horizontalAlignment": 0
+						"font": #Font2
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 4
 					} )
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "rightStatusLabel"
 						"text": "Right Status Label"
+						"font": #Font2
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 6
 					} )
@@ -538,6 +545,14 @@ new FormModel {
 						name: "scrollbackMenuItem"
 						"text": "Scrollback Buffer Size..."
 						"mnemonic": 66
+					} )
+					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
+						name: "separator12"
+					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "chooseFontsMenuItem"
+						"text": "Choose UI Fonts..."
+						"mnemonic": 70
 					} )
 				} )
 				add( new FormContainer( "javax.swing.JMenu", new FormLayoutManager( class javax.swing.JMenu ) ) {

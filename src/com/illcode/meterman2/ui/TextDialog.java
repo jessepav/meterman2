@@ -10,6 +10,7 @@ import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,6 +67,15 @@ class TextDialog implements ActionListener
         dialog.setVisible(true);  // blocks until hidden
         return selectedButtonIdx;
     }
+
+    void setComponentFonts(Font mainTextFont, Font headerFont, Font listFont,
+                           Font labelFont, Font buttonFont, Font dialogTextFont) {
+        headerLabel.setFont(headerFont);
+        textArea.setFont(dialogTextFont);
+        for (JButton b : buttons)
+            b.setFont(buttonFont);
+    }
+
 
     void setButtonsText(String... labels) {
         if (labels == null || labels.length == 0)

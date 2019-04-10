@@ -5,6 +5,7 @@ import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 
 import javax.swing.*;
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -75,6 +76,16 @@ final class ListDialog implements ActionListener, MouseListener
         }
     }
 
+    void setComponentFonts(Font mainTextFont, Font headerFont, Font listFont,
+                           Font labelFont, Font buttonFont, Font dialogTextFont) {
+        headerLabel.setFont(headerFont);
+        textArea.setFont(dialogTextFont);
+        list.setFont(listFont);
+        okButton.setFont(buttonFont);
+        cancelButton.setFont(buttonFont);
+    }
+
+
     public void actionPerformed(ActionEvent e) {
         Object source = e.getSource();
         if (source == okButton) {
@@ -104,5 +115,4 @@ final class ListDialog implements ActionListener, MouseListener
     public void mouseEntered(MouseEvent e) { }
     public void mouseExited(MouseEvent e) { }
     //endregion
-
 }
