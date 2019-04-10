@@ -22,7 +22,7 @@ final class SelectItemDialog implements ActionListener
     Window owner;
 
     JDialog dialog;
-    JLabel headerLabel;
+    JLabel selectLabel;
     JLabel promptLabel;
     JComboBox<String> itemCombo;
     JButton okButton, cancelButton;
@@ -37,7 +37,7 @@ final class SelectItemDialog implements ActionListener
             FormCreator cr = new FormCreator(formModel);
 
             dialog = (JDialog) cr.createWindow(owner);
-            headerLabel = cr.getLabel("headerLabel");
+            selectLabel = cr.getLabel("selectLabel");
             promptLabel = cr.getLabel("promptLabel");
             itemCombo = cr.getComboBox("itemCombo");
             okButton = cr.getButton("okButton");
@@ -62,7 +62,7 @@ final class SelectItemDialog implements ActionListener
      * @return the index of the item the user selected, or -1 if the dialog was closed or Cancel hit
      */
     public <T> int showSelectItemDialog(String header, String prompt, List<T> items, int initialSelectedIdx) {
-        headerLabel.setText(header);
+        selectLabel.setText(header);
         promptLabel.setText(prompt);
         itemCombo.removeAllItems();
         for (T item : items)
