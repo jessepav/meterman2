@@ -38,7 +38,7 @@ new FormModel {
 					add( new FormComponent( "javax.swing.JLabel" ) {
 						name: "promptLabel"
 						"text": "Prompt:"
-						"font": new java.awt.Font( "SansSerif", 0, 13 )
+						"font": new java.awt.Font( "SansSerif", 0, 14 )
 					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
 						"gridX": 1
 						"gridY": 1

@@ -5,6 +5,7 @@ import com.jformdesigner.runtime.FormCreator;
 import com.jformdesigner.runtime.FormLoader;
 
 import javax.swing.*;
+import java.awt.Font;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -60,6 +61,16 @@ final class PromptDialog implements ActionListener
         dialog.setVisible(true);  // blocks until hidden
         return textField.getText();
     }
+
+    void setComponentFonts(Font mainTextFont, Font headerFont, Font listFont,
+                           Font labelFont, Font buttonFont, Font dialogTextFont) {
+        headerLabel.setFont(headerFont);
+        textArea.setFont(dialogTextFont);
+        promptLabel.setFont(labelFont);
+        textField.setFont(labelFont);
+        okButton.setFont(buttonFont);
+    }
+
 
     public void dispose() {
         dialog.dispose();
