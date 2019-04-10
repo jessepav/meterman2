@@ -55,10 +55,8 @@ public final class MMSound
         if (soundPref == null) {  // we do auto-selection
             if (SoundSystem.libraryCompatible(LibraryJOAL.class))
                 libraryType = LibraryJOAL.class;
-            else if (SoundSystem.libraryCompatible(LibraryJavaSound.class))
-                libraryType = LibraryJavaSound.class;
             else
-                libraryType = Library.class;
+                libraryType = LibraryJavaSound.class;
         } else if (soundPref.equals("joal")) {
             libraryType = LibraryJOAL.class;
         } else if (soundPref.equals("javasound")) {
