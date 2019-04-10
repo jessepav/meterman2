@@ -10,8 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.logging.Level;
 
@@ -192,17 +193,37 @@ public final class GuiUtils
         component.paintImmediately(0, 0, component.getWidth(), component.getHeight());
     }
 
-    static void registerFont(Path fontFilePath) {
+    /**
+     * Register a TrueType font with the AWT graphics environment.
+     * @param fontPath path to the TrueType font file
+     */
+    static void registerFont(Path fontPath) {
         try {
-            final Font font = Font.createFont(Font.TRUETYPE_FONT, fontFilePath.toFile());
+            final Font font = Font.createFont(Font.TRUETYPE_FONT, fontPath.toFile());
             logger.config("Loaded Font: " + fontString(font));
             graphicsEnvironment.registerFont(font);
-        } catch (FontFormatException|IOException e) {
-            logger.log(Level.WARNING, "registerGameFonts()", e);
+        } catch (FontFormatException|IOException ex) {
+            logger.warning("registerFont(): " + ex.getMessage());
         }
     }
 
     /**
+     * Register all TrueType (ttf) fonts found in a given directory.
+     * @param fontDir directory
+     */
+    static void registerFontDir(Path fontDir) {
+        try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(fontDir)) {
+            for (Path p : dirStream) {
+                final String filename = p.getFileName().toString().toLowerCase();
+                if (filename.endsWith(".ttf"))
+                    registerFont(p);
+            }
+        } catch (IOException ex) {
+            logger.log(Level.WARNING, "registerFontDir()", ex);
+        }
+    }
+
+        /**
      * Returns a String representation of a font suitable to be parsed by {@link Font#decode(String)}.
      * <p/>
      * This is in the form of {@code "<fontname>-<style>-<pointsize>"}.
