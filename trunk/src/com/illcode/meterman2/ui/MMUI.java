@@ -85,6 +85,8 @@ public final class MMUI
                 selectItemDialog = new SelectItemDialog(mainFrame.frame);
                 waitDialog = new WaitDialog(mainFrame.frame);
 
+                GuiUtils.registerFontDir(Meterman2.fontPath);
+
                 clearStatusLabels();
 
                 setRoomName("");

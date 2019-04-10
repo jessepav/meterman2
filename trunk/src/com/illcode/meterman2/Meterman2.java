@@ -18,7 +18,7 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class Meterman2
 {
-    public static Path prefsPath, savesPath, assetsPath, gluePath;
+    public static Path prefsPath, savesPath, assetsPath, gluePath, fontPath;
     static Properties prefs;
 
     /** The MMAssets instance handling the game assets. */
@@ -66,6 +66,10 @@ public final class Meterman2
         savesPath = Paths.get(Utils.pref("saves-path", "saves"));
         if (Files.notExists(savesPath))
             Files.createDirectories(savesPath);
+
+        fontPath = Paths.get(Utils.pref("font-path", "fonts"));
+        if (Files.notExists(fontPath))
+            Files.createDirectories(fontPath);
 
         assetsPath = Paths.get(Utils.pref("assets-path", "assets"));
         if (Files.notExists(assetsPath)) {
