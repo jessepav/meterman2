@@ -545,7 +545,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         } else if (source == webSiteMenuItem) {
             ui.openURL("https://jessepav.github.io/meterman2/");
         } else if (source == onlineManualMenuItem) {
-            ui.openURL("https://jessepav.github.io/meterman2/manual.html");
+            ui.openURL("http://bit.ly/meterman-manual");
         } else if (source == aboutMenuItem) {
             ui.handler.aboutMenuClicked();
         }

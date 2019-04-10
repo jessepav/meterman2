@@ -18,7 +18,7 @@ import java.util.logging.Level;
 
 import static com.illcode.meterman2.MMLogging.logger;
 
-public class ChooseFontsDialog implements ActionListener
+final class ChooseFontsDialog implements ActionListener
 {
     Window owner;
 

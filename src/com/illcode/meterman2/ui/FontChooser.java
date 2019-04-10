@@ -36,7 +36,7 @@ import java.awt.event.*;
  * <pre>
  */
 
-public final class FontChooser extends JComponent
+final class FontChooser extends JComponent
 {
     // class variables
     /**
