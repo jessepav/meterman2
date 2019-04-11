@@ -419,7 +419,7 @@ new FormModel {
 					"gridWidth": 5
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-					"$columnSpecs": "relgap, default, glue, default, glue, default, relgap"
+					"$columnSpecs": "relgap, default, glue, center:default, glue, default, relgap"
 					"$rowSpecs": "max(default;10dlu)"
 				} ) {
 					name: "statusPanel"

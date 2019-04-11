@@ -5,10 +5,7 @@ import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.event.GameEventHandler;
-import com.illcode.meterman2.handler.BasicWorldHandler;
-import com.illcode.meterman2.handler.CompositeStatusBarProvider;
-import com.illcode.meterman2.handler.LookHandler;
-import com.illcode.meterman2.handler.UiImageHandler;
+import com.illcode.meterman2.handler.*;
 import com.illcode.meterman2.loader.WorldLoader;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
@@ -22,6 +19,7 @@ public class RiverboatGame implements Game
     static final String RIVERBOAT_NAME = "The Riverboat";
 
     static final String BASIC_HANDLER_ID = "basic-handler";
+    static final String TIME_HANDLER_ID = "time-handler";
     static final String LOOK_HANDLER_ID = "looker";
     static final String FRAME_IMAGE_HANDLER_ID = "frame-imager";
     static final String ENTITY_IMAGE_HANDLER_ID = "entity-imager";
@@ -29,6 +27,7 @@ public class RiverboatGame implements Game
     XBundle b;
     WorldLoader worldLoader;
     BasicWorldHandler basicWorldHandler;
+    TimeOfDayHandler timeHandler;
     LookHandler lookHandler;
     UiImageHandler frameImageHandler;
     UiImageHandler entityImageHandler;
@@ -98,6 +97,8 @@ public class RiverboatGame implements Game
     public void registerInitialGameHandlers() {
         basicWorldHandler = (BasicWorldHandler) getEventHandler(BASIC_HANDLER_ID);
         basicWorldHandler.register();
+        timeHandler = (TimeOfDayHandler) getEventHandler(TIME_HANDLER_ID);
+        timeHandler.register();
         lookHandler = (LookHandler) getEventHandler(LOOK_HANDLER_ID);
         lookHandler.register();
         frameImageHandler = (UiImageHandler) getEventHandler(FRAME_IMAGE_HANDLER_ID);
@@ -111,13 +112,17 @@ public class RiverboatGame implements Game
         case BASIC_HANDLER_ID:
             if (basicWorldHandler == null) {
                 basicWorldHandler = new BasicWorldHandler(BASIC_HANDLER_ID);
-                CompositeStatusBarProvider comp = new CompositeStatusBarProvider();
-                comp.setProvider(UIConstants.RIGHT_LABEL, basicWorldHandler);
-                comp.route(UIConstants.LEFT_LABEL, UIConstants.RIGHT_LABEL, UIConstants.RIGHT_LABEL);
-                comp.route(UIConstants.RIGHT_LABEL, -1, -1);
-                basicWorldHandler.setStatusBarProvider(comp);
+                basicWorldHandler.setStatusLabelPos(UIConstants.RIGHT_LABEL);
             }
             return basicWorldHandler;
+        case TIME_HANDLER_ID:
+            if (timeHandler == null) {
+                timeHandler = new TimeOfDayHandler(TIME_HANDLER_ID, 300);
+                timeHandler.setFormat24h(false);
+                timeHandler.setTime(11, 00, 00);
+                timeHandler.setStatusLabelPos(UIConstants.CENTER_LABEL);
+            }
+            return timeHandler;
         case LOOK_HANDLER_ID:
             if (lookHandler == null) {
                 lookHandler = new LookHandler(LOOK_HANDLER_ID);
@@ -142,6 +147,7 @@ public class RiverboatGame implements Game
     }
 
     public void start(boolean newGame) {
+        Meterman2.gm.setStatusBarProvider(new CompositeStatusBarProvider(null, timeHandler, basicWorldHandler));
         if (startMethod != null)
             startMethod.invoke(newGame);
     }
