@@ -15,6 +15,15 @@ import static com.illcode.meterman2.ui.UIConstants.NUM_LABELS;
 public final class CompositeStatusBarProvider implements StatusBarProvider
 {
     private StatusBarProvider[] providers;
+    
+    /**
+     * For each status bar position <em>pos</em>, the two entries in <tt>routeTable</tt> that determine
+     * what will be shown there are:
+     * <ul>
+     * <li>routeTable[<em>pos</em>*2] = which of our three composed providers will be used</li>
+     * <li>routeTable[<em>pos</em>*2 + 1] = which position in that provider will be used
+     * </ul>
+     */
     private int[] routeTable;
 
     /** Create a new composite status bar provider with no composed providers. */
