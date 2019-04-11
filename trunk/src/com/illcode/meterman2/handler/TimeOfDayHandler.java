@@ -56,6 +56,11 @@ public class TimeOfDayHandler implements TurnListener
         return secondsSinceMidnight;
     }
 
+    /** Returns the hour of day (0-23). */
+    public int getHourOfDay() {
+        return secondsSinceMidnight / 3600;
+    }
+
     /**
      * Set the current time.
      * @param hours hour of day (0-23)
@@ -81,11 +86,11 @@ public class TimeOfDayHandler implements TurnListener
     }
 
     public void turn() {
-
+        secondsSinceMidnight = (secondsSinceMidnight + secondsPerTurn) % SECONDS_PER_DAY;
     }
 
     public String getHandlerId() {
-        return null;
+        return handlerId;
     }
 
     public Object getHandlerState() {
