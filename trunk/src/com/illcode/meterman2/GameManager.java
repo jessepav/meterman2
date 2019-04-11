@@ -2,6 +2,7 @@ package com.illcode.meterman2;
 
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.event.*;
+import com.illcode.meterman2.handler.StatusBarProvider;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.state.AttributeSetPermuter;
 import com.illcode.meterman2.state.GameState;
@@ -55,6 +56,8 @@ public final class GameManager
     private boolean entityRefreshNeeded;
     private boolean inventoryRefreshNeeded;
     private boolean lookNeeded;
+
+    private StatusBarProvider statusBarProvider;
 
     GameManager() {
         handlerManager = new EventHandlerManager();
@@ -544,6 +547,16 @@ public final class GameManager
         }
     }
 
+    /** Get the status bar provider responsible for updating the status bar each turn. */
+    public StatusBarProvider getStatusBarProvider() {
+        return statusBarProvider;
+    }
+
+    /** Set the status bar provider responsible for updating the status bar each turn. */
+    public void setStatusBarProvider(StatusBarProvider statusBarProvider) {
+        this.statusBarProvider = statusBarProvider;
+    }
+
     /** Refresh the UI as necessary. */
     public void refreshUI() {
         processChangedObjects();
@@ -558,6 +571,10 @@ public final class GameManager
         if (inventoryRefreshNeeded) {
             refreshInventoryUI();
             inventoryRefreshNeeded = false;
+        }
+        if (statusBarProvider != null) {
+            for (int labelPos = 0; labelPos < UIConstants.NUM_LABELS; labelPos++)
+                ui.setStatusLabel(labelPos, statusBarProvider.getStatusText(labelPos));
         }
     }
 

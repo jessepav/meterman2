@@ -24,13 +24,13 @@ import static com.illcode.meterman2.Meterman2.ui;
  *     <li>Taking and dropping items.</li>
  *     <li>Equipping and unequipping equippables.</li>
  * </ul>
- * It also manages the display of information in the status bar.
+ * It also implements StatusBarProvider to show the # of turns.
  */
 public class BasicWorldHandler
-    implements StatusBarProvider, GameActionListener, EntityActionsProcessor, TurnListener
+    implements GameActionListener, EntityActionsProcessor, StatusBarProvider
 {
     private String handlerId;
-    private StatusBarProvider statusBarProvider;
+    private int statusLabelPos;
 
     /**
      * Create a basic world handler.
@@ -38,35 +38,36 @@ public class BasicWorldHandler
      */
     public BasicWorldHandler(String handlerId) {
         this.handlerId = handlerId;
-        statusBarProvider = this;
+        statusLabelPos = UIConstants.RIGHT_LABEL;
     }
 
     /** Registers this basic world handler with the game manager.  */
     public void register() {
         gm.addGameActionListener(this);
         gm.addEntityActionsProcessor(this);
-        gm.addTurnListener(this);
     }
 
     /** De-registers this basic world handler from the game manager. */
     public void deregister() {
         gm.removeGameActionListener(this);
         gm.removeEntityActionsProcessor(this);
-        gm.removeTurnListener(this);
-    }
-
-    /** Set the provider that will determine which is displayed in the status bar labels.
-     *  The default is to use the BasicWorldHandler's built-in provider. */
-    public void setStatusBarProvider(StatusBarProvider statusBarProvider) {
-        this.statusBarProvider = statusBarProvider;
     }
 
     // Implement StatusBarProvider
     public String getStatusText(int labelPos) {
-        if (labelPos == UIConstants.RIGHT_LABEL)
+        if (labelPos == statusLabelPos)
             return "Current Turn: " + (gm.getNumTurns() + 1);
         else
             return null;
+    }
+
+    /**
+     * Set the position for which we should return text indicating the number of turns elapsed.
+     * By default the value is {@code UIConstants.RIGHT_LABEL}.
+     * @param statusLabelPos one of the <tt>LABEL</tt> positions in {@code UIConstants}
+     */
+    public void setStatusLabelPos(int statusLabelPos) {
+        this.statusLabelPos = statusLabelPos;
     }
 
     // Implement EntityActionsProcessor
@@ -124,20 +125,6 @@ public class BasicWorldHandler
         return false;
     }
 
-    // Implement TurnListener
-    @Override
-    public void turn() {
-        refreshStatusBar();
-    }
-
-    /** Refreshes the status bar labels. */
-    public void refreshStatusBar() {
-        if (statusBarProvider != null) {
-            for (int pos = 0; pos < UIConstants.NUM_LABELS; pos++)
-                ui.setStatusLabel(pos, statusBarProvider.getStatusText(pos));
-        }
-    }
-
     // Implement GameActionHandler
     @Override
     public String getHandlerId() {
@@ -153,7 +140,6 @@ public class BasicWorldHandler
     }
 
     public void gameHandlerStarting(boolean newGame) {
-        if (!newGame)
-            refreshStatusBar();  // since no turn occurs at the start of a loaded game
+        // empty
     }
 }
