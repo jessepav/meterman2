@@ -2,11 +2,12 @@ package com.illcode.meterman2.handler;
 
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.event.TurnListener;
+import com.illcode.meterman2.ui.UIConstants;
 
 /**
  * A class that keeps track of the time of day.
  */
-public class TimeOfDayHandler implements TurnListener
+public class TimeOfDayHandler implements TurnListener, StatusBarProvider
 {
     public static final int SECONDS_PER_DAY = 86400;
 
@@ -16,6 +17,8 @@ public class TimeOfDayHandler implements TurnListener
     protected int secondsPerTurn;
     protected boolean format24h;
 
+    private int statusLabelPos;
+
     /**
      * Construct a new time-of-day handler, with the current time set to midnight.
      * @param handlerId handler ID
@@ -24,6 +27,7 @@ public class TimeOfDayHandler implements TurnListener
     public TimeOfDayHandler(String handlerId, int secondsPerTurn) {
         this.handlerId = handlerId;
         this.secondsPerTurn = secondsPerTurn;
+        statusLabelPos = UIConstants.RIGHT_LABEL;
     }
 
     /** Registers this time-of-day handler with the game manager.  */
@@ -82,7 +86,46 @@ public class TimeOfDayHandler implements TurnListener
      * @return current time as a string
      */
     public String getTimeString() {
-        return null;
+        StringBuilder sb = new StringBuilder(10);
+        final int hours = getHourOfDay();
+        final int minutes = (secondsSinceMidnight % 3600) / 60;
+        if (format24h) {
+            if (hours < 10)
+                sb.append('0');
+            sb.append(hours).append(':');
+            if (minutes < 10)
+                sb.append('0');
+            sb.append(minutes);
+        } else {
+            if (hours == 0)
+                sb.append("12");
+            else if (hours > 12)
+                sb.append(hours - 12);
+            else
+                sb.append(hours);
+            sb.append(':');
+            if (minutes < 10)
+                sb.append('0');
+            sb.append(minutes).append(' ');
+            sb.append(hours < 12 ? "AM" : "PM");
+        }
+        return sb.toString();
+    }
+
+    public String getStatusText(int labelPos) {
+        if (labelPos == statusLabelPos)
+            return getTimeString();
+        else
+            return null;
+    }
+
+    /**
+     * Set the position for which we should return text indicating the time of day.
+     * By default the value is {@code UIConstants.RIGHT_LABEL}.
+     * @param statusLabelPos one of the <tt>LABEL</tt> positions in {@code UIConstants}
+     */
+    public void setStatusLabelPos(int statusLabelPos) {
+        this.statusLabelPos = statusLabelPos;
     }
 
     public void turn() {
@@ -94,14 +137,14 @@ public class TimeOfDayHandler implements TurnListener
     }
 
     public Object getHandlerState() {
-        return null;
+        return Integer.valueOf(secondsSinceMidnight);
     }
 
     public void restoreHandlerState(Object state) {
-
+        secondsSinceMidnight = ((Integer) state).intValue();
     }
 
     public void gameHandlerStarting(boolean newGame) {
-
+        // empty
     }
 }
