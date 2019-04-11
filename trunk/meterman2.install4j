@@ -344,7 +344,7 @@ return true;
     </applications>
   </installerGui>
   <mediaSets>
-    <win32 name="Installer (Dynamic JRE)" id="44" mediaFileName="meterman2-${compiler:sys.version}-installer" installDir="meterman2" overridePrincipalLanguage="false" requires64bit="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="windows-x86-1.7.0_51" manualJREEntry="false" bundleType="2" jreURL="http://www.illcode.com/dist/windows-x86-1.7.0_51.tar.gz" jreFtpURL="" jreShared="false" directDownload="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="" runAsAdmin="false">
+    <win32 name="Installer (Dynamic JRE)" id="44" mediaFileName="meterman2-${compiler:sys.version}-installer" installDir="meterman2" overridePrincipalLanguage="false" requires64bit="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="windows-x86-1.7.0_u80" manualJREEntry="false" bundleType="2" jreURL="http://www.illcode.com/dist/windows-x86-1.7.0_u80.tar.gz" jreFtpURL="" jreShared="false" directDownload="false" customInstallBaseDir="" createUninstallIcon="true" contentFilesType="1" downloadURL="" runAsAdmin="false">
       <excludedLaunchers />
       <excludedComponents />
       <excludedBeans />
@@ -352,7 +352,7 @@ return true;
       <exclude />
       <variables />
     </win32>
-    <win32Archive name="ZIP (Bundled JRE)" id="92" mediaFileName="meterman2-${compiler:sys.version}-portable" installDir="meterman2" overridePrincipalLanguage="false" requires64bit="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="windows-x86-1.7.0_51" manualJREEntry="false">
+    <win32Archive name="ZIP (Bundled JRE)" id="92" mediaFileName="meterman2-${compiler:sys.version}-portable" installDir="meterman2" overridePrincipalLanguage="false" requires64bit="false" jreBitType="32" runPostProcessor="false" postProcessor="" failOnPostProcessorError="false" includedJRE="windows-x86-1.7.0_u80" manualJREEntry="false">
       <excludedLaunchers />
       <excludedComponents />
       <excludedBeans />
