@@ -29,7 +29,7 @@ public final class CompositeStatusBarProvider implements StatusBarProvider
     /** Create a new composite status bar provider with no composed providers. */
     public CompositeStatusBarProvider() {
         providers = new StatusBarProvider[NUM_LABELS];
-        routeTable = new int[NUM_LABELS];
+        routeTable = new int[NUM_LABELS*2];
         resetRouting();
     }
 
@@ -57,21 +57,27 @@ public final class CompositeStatusBarProvider implements StatusBarProvider
     /** Reset label position routing. */
     public void resetRouting() {
         for (int i = 0; i < NUM_LABELS; i++)
-            routeTable[i] = i;
+            routeTable[i*2] = routeTable[i*2+1] = i;
     }
 
     /**
      * Route a label position to a differnt provider.
+     * <p/>
+     * That is, the value of
+     * <blockquote>
+     * {@code providers[provider].getStatusText(providerPos)}
+     * </blockquote>
+     * will be used at <tt>labelPos</tt>.<br/>
+
      * @param labelPos label position
-     * @param providerPos the provider that will now supply the given label position. That is, the value of
-     *      <blockquote>
-     *      {@code providers[providerPos].getStatusText(providerPos)}
-     *      </blockquote>
-     *      will be used at <tt>labelPos</tt>.<br/>
-     *      If {@code providerPos} equals -1, the label at {@code labelPos} will be left blank.
+     * @param provider the provider that will be used to supply the given label position.
+     *                 If  -1, the label at {@code labelPos} will be left blank.
+     * @param providerPos the position in <em>provider</em> that will be used
+     *
      */
-    public void route(int labelPos, int providerPos) {
-        routeTable[labelPos] = providerPos;
+    public void route(int labelPos, int provider, int providerPos) {
+        routeTable[labelPos*2] = provider;
+        routeTable[labelPos*2 + 1] = providerPos;
     }
 
     /**
@@ -80,9 +86,10 @@ public final class CompositeStatusBarProvider implements StatusBarProvider
      * We do this by delegating the call to the appropriate composed provider, if present.
      */
     public String getStatusText(int labelPos) {
-        final int providerPos = routeTable[labelPos];
-        if (providerPos != -1) {
-            final StatusBarProvider sbp = providers[providerPos];
+        final int provider = routeTable[labelPos*2];
+        final int providerPos = routeTable[labelPos*2 + 1];
+        if (provider != -1) {
+            final StatusBarProvider sbp = providers[provider];
             if (sbp != null)
                 return sbp.getStatusText(providerPos);
         }

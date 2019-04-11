@@ -113,8 +113,8 @@ public class RiverboatGame implements Game
                 basicWorldHandler = new BasicWorldHandler(BASIC_HANDLER_ID);
                 CompositeStatusBarProvider comp = new CompositeStatusBarProvider();
                 comp.setProvider(UIConstants.RIGHT_LABEL, basicWorldHandler);
-                comp.route(UIConstants.LEFT_LABEL, UIConstants.RIGHT_LABEL);
-                comp.route(UIConstants.RIGHT_LABEL, -1);
+                comp.route(UIConstants.LEFT_LABEL, UIConstants.RIGHT_LABEL, UIConstants.RIGHT_LABEL);
+                comp.route(UIConstants.RIGHT_LABEL, -1, -1);
                 basicWorldHandler.setStatusBarProvider(comp);
             }
             return basicWorldHandler;
