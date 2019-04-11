@@ -1,0 +1,20 @@
+<component name="ArtifactManager">
+  <artifact name="riverboat-dist">
+    <output-path>$PROJECT_DIR$/build/artifacts/meterman2-dist</output-path>
+    <root id="root">
+      <element id="directory" name="assets">
+        <element id="archive" name="riverboat.zip">
+          <element id="dir-copy" path="$PROJECT_DIR$/games/riverboat/assets" />
+        </element>
+      </element>
+      <element id="directory" name="glue">
+        <element id="file-copy" path="$PROJECT_DIR$/games/riverboat/riverboat-glue.xml" />
+      </element>
+      <element id="directory" name="jars">
+        <element id="archive" name="riverboat.jar">
+          <element id="module-output" name="riverboat" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>
