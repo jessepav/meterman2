@@ -15,7 +15,7 @@ point-and-click adventures, and text-based RPGs.
 
 The game system manual is online here:
 
-- [https://jessepav.github.io/meterman/manual.html](https://jessepav.github.io/meterman/manual.html)
+* https://jessepav.github.io/meterman2/manual.html
 
 ## Source ##
 
@@ -26,4 +26,3 @@ The source is kept in an SVN repository
 And also mirrored at GitHub
 
 * https://github.com/jessepav/meterman2
-
