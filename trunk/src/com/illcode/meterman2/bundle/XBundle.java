@@ -89,7 +89,7 @@ public final class XBundle
     public static XBundle loadFromPath(Path p) {
         XBundle b = new XBundle(p);
         try {
-            Document doc = getSAXBuilder().build(b.path.toFile());
+            Document doc = getSAXBuilder().build(b.path.toUri().toURL());
             b.initBundle(doc);
         } catch (JDOMException|IOException ex) {
             logger.log(Level.WARNING, "Exception loading an XBundle from " + b.path.getFileName().toString(), ex);
@@ -323,10 +323,9 @@ public final class XBundle
         final String fileRef = el.getAttributeValue("fileRef");
         String text;
         if (fileRef != null) {
-            try {
-                text = FileUtils.readFileToString(path.resolveSibling(fileRef).toFile(), StandardCharsets.UTF_8);
-            } catch (IOException e) {
-                logger.log(Level.WARNING, "XBundle fileRef error: ", e);
+            text = Utils.readPath(path.resolveSibling(fileRef));
+            if (text == null) {
+                logger.warning("XBundle fileRef error: " + fileRef);
                 text = ERROR_TEXT_STRING;
             }
         } else {
@@ -359,7 +358,7 @@ public final class XBundle
             return false;  // we didn't have it in the first place
         Document doc;
         try {
-            doc = getSAXBuilder().build(path.toFile());
+            doc = getSAXBuilder().build(path.toUri().toURL());
         } catch (JDOMException|IOException ex) {
             logger.log(Level.WARNING, "Exception loading an XBundle from " + path.getFileName().toString(), ex);
             return false;
