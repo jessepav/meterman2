@@ -25,6 +25,8 @@ public class MMTemplate
     private Configuration cfg;
     private StringTemplateLoader strLoader;
 
+    private DefaultObjectWrapper wrapper;
+
     private Map<String,Object> rootHash;
     private Map<String,Object> systemHash;
 
@@ -42,7 +44,7 @@ public class MMTemplate
         b.setForceLegacyNonListCollections(false);
         b.setIterableSupport(true);
         b.setExposeFields(true);
-        final DefaultObjectWrapper wrapper = b.build();
+        wrapper = b.build();
         cfg.setObjectWrapper(wrapper);
         strLoader = new StringTemplateLoader();
         cfg.setTemplateLoader(strLoader);
@@ -58,7 +60,7 @@ public class MMTemplate
         systemHash = new HashMap<>();
         savedBindings = new HashMap<>();
 
-        initSystemHash(wrapper);
+        initSystemHash();
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -75,11 +77,10 @@ public class MMTemplate
         cfg = null;
     }
 
-    private void initSystemHash(DefaultObjectWrapper wrapper) {
+    private void initSystemHash() {
         putSystemBinding("utils", new TemplateUtils());
         try {
-            TemplateHashModel staticModels = wrapper.getStaticModels();
-            putSystemBinding("attributes", staticModels.get("com.illcode.meterman2.SystemAttributes"));
+            putSystemBinding("attributes", wrapper.getStaticModels().get("com.illcode.meterman2.SystemAttributes"));
         } catch (TemplateModelException ex) {
             logger.log(Level.WARNING, "MMTemplate.initRootHash()", ex);
         }
@@ -150,6 +151,19 @@ public class MMTemplate
             removeBinding(name);
         else
             rootHash.put(name, value);
+    }
+
+    /**
+     * Put the static fields of a class into the namespace as a hash.
+     * @param name name of the hash
+     * @param className name of the class whose static fields we are binding
+     */
+    public void putStaticBinding(String name, String className) {
+        try {
+            putBinding(name, wrapper.getStaticModels().get(className));
+        } catch (TemplateModelException ex) {
+            logger.log(Level.WARNING, "MMTemplate.putStaticBinding()", ex);
+        }
     }
 
     /**
