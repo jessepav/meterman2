@@ -28,8 +28,8 @@
   <entity id="stick" name="Stick" attributes="takeable, equippable" inRoom="starting-room">
     <script fileRef="stick-script.bsh" />
     <description>
-      A little stick that has so many divets that it's hard to see where one begins and the
-      rainbow ends. What rainbow? The one that flies from station to station!
+      A little stick that has so many divets that it's [em]hard[/em] to see where one begins and the
+      rainbow ends. What rainbow? The one that flies [em](quickly)[/em] from station to station!
     </description>
   </entity>
 
