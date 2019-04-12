@@ -98,6 +98,8 @@ public class RiverboatGame implements Game
         basicWorldHandler = (BasicWorldHandler) getEventHandler(BASIC_HANDLER_ID);
         basicWorldHandler.register();
         timeHandler = (TimeOfDayHandler) getEventHandler(TIME_HANDLER_ID);
+        timeHandler.setTime(11, 00, 00);
+        timeHandler.setTimePerTurn(0, 5, 45);
         timeHandler.register();
         lookHandler = (LookHandler) getEventHandler(LOOK_HANDLER_ID);
         lookHandler.register();
@@ -117,9 +119,9 @@ public class RiverboatGame implements Game
             return basicWorldHandler;
         case TIME_HANDLER_ID:
             if (timeHandler == null) {
-                timeHandler = new TimeOfDayHandler(TIME_HANDLER_ID, 300);
+                timeHandler = new TimeOfDayHandler(TIME_HANDLER_ID);
                 timeHandler.setFormat24h(false);
-                timeHandler.setTime(11, 00, 00);
+                timeHandler.setShowSeconds(true);
                 timeHandler.setStatusLabelPos(UIConstants.CENTER_LABEL);
             }
             return timeHandler;
