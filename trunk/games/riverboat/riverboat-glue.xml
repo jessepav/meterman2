@@ -7,6 +7,10 @@
   <!-- The name must be the same as returned by Game.getName() -->
   <name>The Riverboat</name>
 
+  <!-- The version of the game. If the user tries to load a save file from a different game version,
+       we display a warning that it might not work. -->
+  <version>0.1D</version>
+
   <!-- The assets-path should not have a file extension: the system will first search for a subdirectory
        in "assets" with the given path, and if not found, search for a ZIP file with the same base name.
        Thus you can use the same glue file for both development and distribution. -->

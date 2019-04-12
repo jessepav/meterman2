@@ -18,8 +18,14 @@ import java.util.HashMap;
  */
 public final class GameState
 {
+    /** The version of the Meterman2 engine used to save this file. */
+    public int engineVersion;
+
     /** The name of the game, as found in its definition file. */
     public String gameName;
+
+    /** The version of the game that was running when we saved this file. */
+    public String gameVersion;
 
     /** The game state map as returned by {@link Game#getInitialGameStateMap()} when the game
      *  was first started. */

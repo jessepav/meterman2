@@ -18,6 +18,8 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class Meterman2
 {
+    public static final int VERSION = 2;
+
     public static Path prefsPath, savesPath, assetsPath, gluePath, fontPath;
     static Properties prefs;
 
