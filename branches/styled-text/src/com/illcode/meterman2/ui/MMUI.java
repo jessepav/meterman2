@@ -11,6 +11,7 @@ import org.jdom2.Element;
 
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
@@ -372,7 +373,7 @@ public final class MMUI
      * Clears the main text area.
      */
     public void clearText() {
-        mainFrame.textArea.setText(null);
+        mainFrame.textPane.setText(null);
     }
 
     /**
@@ -380,19 +381,18 @@ public final class MMUI
      * @param text text to append
      */
     public void appendText(String text) {
-        JTextArea ta = mainFrame.textArea;
-        ta.append(text);
-        Document doc = ta.getDocument();
-        int len = doc.getLength();
-        if (len > maxBufferSize) {
-            try {
+        final DefaultStyledDocument doc = mainFrame.document;
+        try {
+            doc.insertString(doc.getLength(), text, null);
+            int len = doc.getLength();
+            if (len > maxBufferSize) {
                 doc.remove(0, len - maxBufferSize);
                 len = maxBufferSize;
-            } catch (BadLocationException e) {
-                logger.log(Level.WARNING, "SwingUI.appendText()", e);
             }
+            mainFrame.textPane.setCaretPosition(len); // scroll to the bottom of the text area
+        } catch (BadLocationException e) {
+            logger.log(Level.WARNING, "MMUI.appendText()", e);
         }
-        ta.setCaretPosition(len); // scroll to the bottom of the text area
     }
 
     /**
