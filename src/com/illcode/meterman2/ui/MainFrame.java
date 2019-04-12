@@ -331,8 +331,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
     private void close() {
         if (Utils.booleanPref("prompt-to-quit", true)) {
             if (ui.handler.isGameActive() &&
-                JOptionPane.showConfirmDialog(frame, "Quit Meterman2?", "Quit",
-                   JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION)
+                ui.showTextDialogImpl("Quit?", "Quit Meterman2?", "Quit", "Don't") != 0)
                 return;  // don't quit
         }
         Meterman2.shutdown();
