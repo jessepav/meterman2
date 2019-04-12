@@ -8,7 +8,7 @@ new FormModel {
 			"title": "Meterman"
 			"minimumSize": new java.awt.Dimension( 775, 610 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-				"$columnSpecs": "max(default;150px), unrelgap, default:grow(0.6), unrelgap, default:grow(0.1)"
+				"$columnSpecs": "max(default;150px), unrelgap, default:grow, unrelgap, default"
 				"$rowSpecs": "fill:default:grow, 9dlu, max(default;53dlu), unrelgap, default"
 			} ) {
 				name: "mainPanel"
@@ -76,7 +76,7 @@ new FormModel {
 					"gridX": 3
 				} )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-					"$columnSpecs": "default:grow"
+					"$columnSpecs": "105dlu:grow"
 					"$rowSpecs": "default, relgap, fill:default:grow, pargap, default, relgap, fill:default:grow"
 				} ) {
 					name: "listPanel"
@@ -95,7 +95,6 @@ new FormModel {
 						"focusable": false
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "roomList"
-							"prototypeCellValue": "01234567890123456789"
 							"background": #Color2
 							"selectionMode": 0
 							"font": &Font1 new java.awt.Font( "SansSerif", 0, 13 )
@@ -121,7 +120,6 @@ new FormModel {
 						"focusable": false
 						add( new FormComponent( "javax.swing.JList" ) {
 							name: "inventoryList"
-							"prototypeCellValue": "01234567890123456789"
 							"background": #Color2
 							"selectionMode": 0
 							"font": #Font1
