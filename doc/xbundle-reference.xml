@@ -9,7 +9,7 @@
 <xbundle name="reference-bundle"
          escapeChar="@" spaceChar="¬" indentLength="4" paragraphStyle="blank-line">
   <passage id="simple-passage">
-    Untemplated text.
+    Untemplated text. Every type of text element, however, can contain [em]emphasized[/em] text.
   </passage>
   <passage id="templated-passage" format="ftl">
     [#if stateobj.variable == 2]

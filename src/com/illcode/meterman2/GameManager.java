@@ -691,8 +691,8 @@ public final class GameManager
     public void outputText() {
         if (outputBuilder.length() != 0) {
             handlerManager.fireOutputTextReady(outputBuilder);
-            ui.appendText(outputSeparator);
-            ui.appendText(outputBuilder.toString());
+            ui.appendText(outputSeparator, false);
+            ui.appendMarkupText(outputBuilder.toString());
             transcript.append(outputSeparator);
             transcript.append(outputBuilder);
             outputBuilder.setLength(0);
@@ -733,7 +733,7 @@ public final class GameManager
                 ui.showTextDialogImpl("Invalid Game", "The game in the save file doesn't exist anymore!", "Ayaa");
             } else {
                 loadGame(g, state);  // in turn calls restoreGameState() below, and hides the wait dialog
-                ui.appendText("\n   ------- Game Loaded -------\n\n");
+                ui.appendText("\n   ------- Game Loaded -------\n\n", true);
             }
         }
     }
@@ -894,7 +894,7 @@ public final class GameManager
         state.numTurns = numTurns;
         Meterman2.persistence.saveGameState(state, out);
         ui.hideWaitDialog();
-        ui.appendText("\n   ------- Game Saved -------\n\n");
+        ui.appendText("\n   ------- Game Saved -------\n\n", true);
     }
 
     // Returns the content IDs of a container's contents, or null if no contents.
