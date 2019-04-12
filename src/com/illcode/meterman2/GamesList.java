@@ -46,13 +46,17 @@ public final class GamesList
         return gameNames;
     }
 
+    public String getGameVersion(String gameName) {
+        return gamesMap.get(gameName).version;
+    }
+
     /**
      * Return the string assets path of a game.
      * @param gameName game name
      * @return string assets path
      */
     public String getGameAssetsPath(String gameName) {
-        return gamesMap.get(gameName).getAssetsPath();
+        return gamesMap.get(gameName).assetsPath;
     }
 
     /**
@@ -81,10 +85,11 @@ public final class GamesList
                         if (!root.getName().equals("game"))
                             break parseGlue;
                         String name = root.getChildText("name");
+                        String version = root.getChildText("version");
                         String assetsPath = root.getChildText("assets-path");
                         String gameClassName = root.getChildText("class");
-                        if (name != null && assetsPath != null && gameClassName != null) {
-                            gamesMap.put(name, new PieceOfGlue(assetsPath, gameClassName));
+                        if (name != null && version != null && assetsPath != null && gameClassName != null) {
+                            gamesMap.put(name, new PieceOfGlue(version, assetsPath, gameClassName));
                             validGlue = true;
                         }
                     } catch (IOException|JDOMException e) {
@@ -102,16 +107,14 @@ public final class GamesList
     }
 
     private static final class PieceOfGlue {
-        private final String assetsPath;
-        private final String gameClassName;
+        final String version;
+        final String assetsPath;
+        final String gameClassName;
 
-        private PieceOfGlue(String assetsPath, String gameClassName) {
+        private PieceOfGlue(String version, String assetsPath, String gameClassName) {
+            this.version = version;
             this.assetsPath = assetsPath;
             this.gameClassName = gameClassName;
-        }
-
-        public String getAssetsPath() {
-            return assetsPath;
         }
 
         public String getGamePackageName() {

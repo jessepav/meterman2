@@ -475,7 +475,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
                 File f = fc.getSelectedFile();
                 try (InputStream in = new FileInputStream(f)) {
                     ui.handler.loadGameState(in);
-                } catch (IOException ex) {
+                } catch (Exception ex) {
                     logger.log(Level.WARNING, "MainFrame loadMenuItem", ex);
                     ui.showTextDialogImpl("Load Error", ex.getMessage(), "OK");
                 }

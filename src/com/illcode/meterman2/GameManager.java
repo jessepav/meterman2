@@ -715,6 +715,18 @@ public final class GameManager
             ui.showTextDialogImpl("Load Error", "Invalid save game file!", "Ayaa");
         }
         if (state != null) {
+            final String gameVersion = Meterman2.gamesList.getGameVersion(state.gameName);
+            if (state.engineVersion != Meterman2.VERSION || !state.gameVersion.equals(gameVersion)) {
+                ui.hideWaitDialog();
+                if (ui.showTextDialogImpl("Version Mismatch",
+                    "The version of the program or game used to save the file is different from the current version.\n\n" +
+                    "Current versions: Engine (" + Meterman2.VERSION + ") Game (" + gameVersion + ")\n" +
+                    "  Saved versions: Engine (" + state.engineVersion + ") Game (" + state.gameVersion + ")\n\n" +
+                    "This may cause internal chaos if loaded: do you want to try anyway?", "Try Anyway", "Abort") != 0)
+                    return;
+                else
+                    ui.showWaitDialog("Carrying on...");   // re-show the wait message and carry on
+            }
             final Game g = Meterman2.gamesList.createGame(state.gameName);
             if (g == null) {
                 ui.hideWaitDialog();
@@ -817,7 +829,9 @@ public final class GameManager
     void saveGameState(OutputStream out) {
         ui.showWaitDialog("Saving game...");
         GameState state = new GameState();
+        state.engineVersion = Meterman2.VERSION;
         state.gameName = game.getName();
+        state.gameVersion = Meterman2.gamesList.getGameVersion(state.gameName);
         state.gameStateMap = new HashMap<>(gameStateMap);
         state.attributeNames = Meterman2.attributes.getAttributeNames().toArray(new String[0]);
         state.entityStateMap = Utils.createSizedHashMap(entityIdMap);
