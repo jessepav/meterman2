@@ -155,8 +155,8 @@ public class MMTemplate
 
     /**
      * Put the static fields of a class into the namespace as a hash.
-     * @param name name of the hash
-     * @param className name of the class whose static fields we are binding
+     * @param name name under which the hash will be put into our data model
+     * @param className fully qualified name of the class whose static fields we are binding
      */
     public void putStaticBinding(String name, String className) {
         try {
