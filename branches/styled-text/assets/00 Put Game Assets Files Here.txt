@@ -1,1 +1,0 @@
-(and remember to put .glue files in "glue", and .jar files in "jars")
