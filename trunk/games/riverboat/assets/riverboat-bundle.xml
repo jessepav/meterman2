@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xbundle name="riverboat">
-  <passage id="about" header="Riverboat" image="other" button="Boat Away">
+  <passage id="about" header="Riverboat" image="other" scale="3" button="Boat Away">
     The Riverboat on the River Effluvious.
   </passage>
 
