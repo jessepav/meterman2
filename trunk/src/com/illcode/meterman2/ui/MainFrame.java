@@ -13,6 +13,7 @@ import org.jdom2.Element;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.text.DefaultStyledDocument;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -45,7 +46,8 @@ final class MainFrame implements ActionListener, ListSelectionListener
     JPanel imagePanel;
     JLabel roomNameLabel, roomListLabel, inventoryListLabel, exitsLabel, actionsLabel;
     JButton lookButton, waitButton;
-    JTextArea textArea;
+    JTextPane textPane;
+    DefaultStyledDocument document;
     JList<String> roomList, inventoryList;
     JButton[] exitButtons, actionButtons;
     JComboBox<String> moreActionCombo;
@@ -110,7 +112,9 @@ final class MainFrame implements ActionListener, ListSelectionListener
             actionsLabel = cr.getLabel("actionsLabel");
             lookButton = cr.getButton("lookButton");
             waitButton = cr.getButton("waitButton");
-            textArea = cr.getTextArea("textArea");
+            textPane = cr.getTextPane("textPane");
+            document = new DefaultStyledDocument();
+            textPane.setStyledDocument(document);
             roomList = cr.getList("roomList");
             inventoryList = cr.getList("inventoryList");
             exitButtons = new JButton[NUM_EXIT_BUTTONS];
@@ -339,7 +343,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     void setComponentFonts(Font mainTextFont, Font headerFont, Font listFont,
                            Font labelFont, Font buttonFont, Font dialogTextFont) {
-        textArea.setFont(mainTextFont);
+        textPane.setFont(mainTextFont);
         roomNameLabel.setFont(headerFont.deriveFont(headerFont.getSize2D() + 2.0f));
         roomList.setFont(listFont);
         inventoryList.setFont(listFont);

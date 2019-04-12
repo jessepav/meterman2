@@ -10,8 +10,7 @@ import org.apache.commons.collections4.map.LRUMap;
 import org.jdom2.Element;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
+import javax.swing.text.*;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
@@ -26,6 +25,9 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMUI
 {
+    public static final String EMPH_TAG = "[em]";
+    public static final String EMPH_CLOSE_TAG = "[/em]";
+
     MainFrame mainFrame;
     TextDialog textDialog;
     PromptDialog promptDialog;
@@ -33,6 +35,8 @@ public final class MMUI
     ImageDialog imageDialog;
     SelectItemDialog selectItemDialog;
     WaitDialog waitDialog;
+
+    private SimpleAttributeSet emphAttributeSet;
 
     List<String> roomEntityIds, inventoryEntityIds;
 
@@ -53,6 +57,8 @@ public final class MMUI
         final int cacheSize = Utils.intPref("image-cache-size", 32);
         imageMap = new HashMap<>(cacheSize * 2);
         loadedImages = new LRUImageCacheMap(cacheSize);
+        emphAttributeSet = new SimpleAttributeSet();
+        StyleConstants.setItalic(emphAttributeSet, true);
     }
 
     /**
@@ -372,27 +378,58 @@ public final class MMUI
      * Clears the main text area.
      */
     public void clearText() {
-        mainFrame.textArea.setText(null);
+        mainFrame.textPane.setText(null);
     }
+
 
     /**
      * Appends text to the main text area.
      * @param text text to append
+     * @param emph true if text should be emphasized (italic)
      */
-    public void appendText(String text) {
-        JTextArea ta = mainFrame.textArea;
-        ta.append(text);
-        Document doc = ta.getDocument();
-        int len = doc.getLength();
-        if (len > maxBufferSize) {
-            try {
+    public void appendText(String text, boolean emph) {
+        final DefaultStyledDocument doc = mainFrame.document;
+        try {
+            doc.insertString(doc.getLength(), text, emph ? emphAttributeSet : null);
+            int len = doc.getLength();
+            if (len > maxBufferSize) {
                 doc.remove(0, len - maxBufferSize);
                 len = maxBufferSize;
-            } catch (BadLocationException e) {
-                logger.log(Level.WARNING, "SwingUI.appendText()", e);
             }
+            mainFrame.textPane.setCaretPosition(len); // scroll to the bottom of the text area
+        } catch (BadLocationException e) {
+            logger.log(Level.WARNING, "MMUI.appendText()", e);
         }
-        ta.setCaretPosition(len); // scroll to the bottom of the text area
+    }
+
+    /**
+     * Append text with embedded markup.
+     * <p/>
+     * Supported markup:
+     * <table border="0">
+     *   <tr>
+     *     <td>{@code [em]...[/em]}</td><td>Emphasized (italic) text</td>
+     *   </tr>
+     * </table>
+     * @param text text with embedded markup
+     */
+    public void appendMarkupText(String text) {
+        final int len = text.length();
+        int offset = 0;
+        boolean inEmph = false;
+        String tag = EMPH_TAG;
+        while (offset < len) {
+            int tagIdx = text.indexOf(tag, offset);
+            if (tagIdx == -1)
+                tagIdx = len;
+            if (offset != tagIdx)  // don't write 0-length text
+                appendText(text.substring(offset, tagIdx), inEmph);
+            if (tagIdx == len)
+                break;
+            offset = tagIdx + tag.length();
+            inEmph = !inEmph;
+            tag = inEmph ? EMPH_CLOSE_TAG : EMPH_TAG;
+        }
     }
 
     /**
