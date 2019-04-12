@@ -1,0 +1,89 @@
+JFDML JFormDesigner: "5.2.5.0.333" Java: "1.7.0_80" encoding: "UTF-8"
+
+new FormModel {
+	contentType: "form/swing"
+	root: new FormRoot {
+		add( new FormWindow( "javax.swing.JDialog", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+			name: "this"
+			"modal": true
+			"resizable": false
+			"undecorated": true
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
+				name: "dialogPane"
+				"border": sfield com.jgoodies.forms.factories.Borders DIALOG
+				"background": new java.awt.Color( 150, 150, 169, 255 )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+					"$columnSpecs": "default, relgap, default"
+					"$rowSpecs": "default, relgap, default"
+				} ) {
+					name: "contentPanel"
+					"border": &EmptyBorder0 new javax.swing.border.EmptyBorder( 5, 5, 5, 5 )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "selectLabel"
+						"text": "Select a <something>"
+						"font": new java.awt.Font( "SansSerif", 0, 14 )
+						"focusable": false
+						"horizontalAlignment": 0
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridWidth": 3
+					} )
+					add( new FormComponent( "javax.swing.JLabel" ) {
+						name: "promptLabel"
+						"text": "prompt"
+						"font": new java.awt.Font( "SansSerif", 0, 14 )
+						"focusable": false
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 1
+						"gridY": 3
+					} )
+					add( new FormComponent( "javax.swing.JComboBox" ) {
+						name: "itemCombo"
+						"prototypeDisplayValue": "Arguably Atavistic Aardvark"
+						"font": new java.awt.Font( "Dialog", 1, 13 )
+						auxiliary() {
+							"JavaCodeGenerator.typeParameters": "String"
+						}
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 3
+						"gridY": 3
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "Center"
+				} )
+				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
+					"$columnSpecs": "glue, button, relgap, button"
+					"$rowSpecs": "pref"
+				} ) {
+					name: "buttonBar"
+					"border": #EmptyBorder0
+					"focusable": false
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "okButton"
+						"text": "OK"
+						"background": &Color0 new java.awt.Color( 204, 204, 204, 255 )
+						"border": &CompoundBorder0 new javax.swing.border.CompoundBorder( new javax.swing.border.LineBorder( new java.awt.Color( 104, 105, 119, 255 ), 2, false ), static com.jgoodies.forms.factories.Borders createEmptyBorder( "1dlu, 2dlu, 1dlu, 2dlu" ) )
+						"focusable": false
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 2
+					} )
+					add( new FormComponent( "javax.swing.JButton" ) {
+						name: "cancelButton"
+						"text": "Cancel"
+						"background": #Color0
+						"border": #CompoundBorder0
+						"focusable": false
+					}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) {
+						"gridX": 4
+					} )
+				}, new FormLayoutConstraints( class java.lang.String ) {
+					"value": "South"
+				} )
+			}, new FormLayoutConstraints( class java.lang.String ) {
+				"value": "Center"
+			} )
+		}, new FormLayoutConstraints( null ) {
+			"location": new java.awt.Point( 0, 0 )
+			"size": new java.awt.Dimension( 315, 160 )
+		} )
+	}
+}

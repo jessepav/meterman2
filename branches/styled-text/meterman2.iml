@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/forms" isTestSource="false" packagePrefix="com.illcode.meterman2.ui" />
+      <sourceFolder url="file://$MODULE_DIR$/classloader-resources" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/assets-src" />
+      <excludeFolder url="file://$MODULE_DIR$/assets/riverboat" />
+      <excludeFolder url="file://$MODULE_DIR$/docjars" />
+      <excludeFolder url="file://$MODULE_DIR$/expanded-javadoc" />
+      <excludeFolder url="file://$MODULE_DIR$/games" />
+      <excludeFolder url="file://$MODULE_DIR$/glue" />
+      <excludeFolder url="file://$MODULE_DIR$/jars" />
+      <excludeFolder url="file://$MODULE_DIR$/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/saves" />
+      <excludeFolder url="file://$MODULE_DIR$/srcjars" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="BeanShell2" level="project" />
+    <orderEntry type="library" exported="" name="commons-lang3" level="project" />
+    <orderEntry type="library" exported="" name="JDOM" level="project" />
+    <orderEntry type="library" name="jfd-loader" level="project" />
+    <orderEntry type="library" name="jgoodies-forms" level="project" />
+    <orderEntry type="library" name="commons-codec" level="project" />
+    <orderEntry type="library" name="kryo" level="project" />
+    <orderEntry type="library" name="PaulsCodeSoundSystem" level="project" />
+    <orderEntry type="library" name="JOAL" level="project" />
+    <orderEntry type="library" name="freemarker-2.3.28" level="project" />
+    <orderEntry type="library" name="commons-collections4" level="project" />
+    <orderEntry type="library" name="commons-io" level="project" />
+    <orderEntry type="library" name="gdx-collections" level="project" />
+  </component>
+</module>
+

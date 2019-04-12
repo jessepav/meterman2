@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xbundle name="system-bundle">
+  <!-- Used by the basic game system. -->
+  <passage id="output-separator">
+    @t@t~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
+  </passage>
+  <passage id="wait-message">
+    Time passes...
+  </passage>
+  <passage id="action-not-handled-message">
+    Nothing much happens.
+  </passage>
+  <passage id="exit-blocked-message">
+    The exit in that direction is blocked.
+  </passage>
+  <passage id="drop-message" format="printf"> <!-- args: defName -->
+    You drop %s.
+  </passage>
+  <passage id="take-message" format="printf"> <!-- args: defName -->
+    You take %s.
+  </passage>
+  <passage id="equip-message" format="printf"> <!-- args: defName -->
+    You equip %s.
+  </passage>
+  <passage id="unequip-message" format="printf"> <!-- args: defName -->
+    You unequip %s.
+  </passage>
+
+  <!-- Used by doors and containers. -->
+  <passage id="nokey-message" format="printf"> <!-- args: defName -->
+    You do not have the key for %s.
+  </passage>
+  <passage id="locked-message"> <!-- args: defName -->
+    It is locked.
+  </passage>
+  <passage id="unlock-message" format="printf"> <!-- args: defName, key.defName -->
+    You unlock %s with %s.
+  </passage>
+  <passage id="lock-message" format="printf"> <!-- args: defName, key.defName -->
+    You lock %s with %s.
+  </passage>
+  <passage id="open-message" format="printf"> <!-- args: defName -->
+    You open %s.
+  </passage>
+  <passage id="close-message" format="printf"> <!-- args: defName -->
+    You close %s.
+  </passage>
+
+  <!-- Used by containers. -->
+  <passage id="container-empty-message" format="printf"> <!-- args: inPrep, defName -->
+    There is nothing interesting %s %s.
+  </passage>
+  <passage id="container-examine-message">
+    What do you want to examine?
+  </passage>
+  <passage id="container-no-contents-put-message" format="printf"> <!-- args: inPrep, defName -->
+    There is nothing that you can put %s %s.
+  </passage>
+  <passage id="container-put-prompt-message" format="printf"> <!-- args: inPrep, defName -->
+    What do you want to put %s %s?
+  </passage>
+  <passage id="container-put-message" format="printf"> <!-- args: item.defName, inPrep, defName -->
+    You put %s %s %s.
+  </passage>
+  <passage id="container-no-contents-take-message" format="printf"> <!-- args: inPrep, defName -->
+    There is nothing %s %s that you can take.
+  </passage>
+  <passage id="container-take-prompt-message" format="printf"> <!-- args: outPrep, defName -->
+    What do you want to take %s %s?
+  </passage>
+  <passage id="container-take-message" format="printf"> <!-- args: item.defName, outPrep, defName -->
+    You take %s %s %s.
+  </passage>
+  <passage id="container-full-message" format="printf"> <!-- args: inPrep, defName -->
+    You cannot put any more items %s %s.
+  </passage>
+
+  <!-- Used by dark rooms. -->
+  <passage id="darkroom-description">
+    It is too dark here for you to see anything.
+  </passage>
+
+  <!-- Used by interacting entities. -->
+  <passage id="no-interact-topics-message" format="printf">  <!-- args: entity.defName -->
+    It seems %s is uninterested in interacting.
+  </passage>
+  <passage id="interact-prompt-message" format="printf">  <!-- args: entity.defName -->
+    What do you want to interact with %s about?
+  </passage>
+
+  <!-- Used by lamps -->
+  <passage id="lamp-status" format="printf"> <!-- args: status text-->
+    It is %s.
+  </passage>
+  <passage id="lamp-switched" format="printf"> <!-- args: action text, defName -->
+    You %s %s.
+  </passage>
+  <passage id="lamp-no-fuel" format="printf"> <!-- args: defName (capitalized), switch-on action text -->
+    %s will not %s.
+  </passage>
+  <passage id="lamp-low" format="printf"> <!-- args: defName (capitalized)-->
+    %s is beginning to dim.
+  </passage>
+  <passage id="lamp-out" format="printf"> <!-- args: defName (capitalized) -->
+    %s goes dark!
+  </passage>
+
+  <actions id="system-actions">
+    <action name="LOOK" templateText="Look" />
+    <action name="WAIT" templateText="Wait" />
+    <action name="EXAMINE" templateText="Examine" />
+    <action name="READ" templateText="Read" />
+    <action name="TAKE" templateText="Take" />
+    <action name="DROP" templateText="Drop" />
+    <action name="EQUIP" templateText="Equip" />
+    <action name="UNEQUIP" templateText="Unequip" />
+    <action name="OPEN" templateText="Open" />
+    <action name="CLOSE" templateText="Close" />
+    <action name="LOCK" templateText="Lock" />
+    <action name="UNLOCK" templateText="Unlock" />
+    <action name="INTERACT" templateText="Interact" />
+    <action name="SWITCH_ON" templateText="Switch On" />
+    <action name="SWITCH_OFF" templateText="Switch Off" />
+    <action name="CONTAINER_PUT" templateText="Put Item %s" />
+    <action name="CONTAINER_TAKE" templateText="Take Item %s" />
+    <action name="CONTAINER_LOOK_IN" templateText="Look %s" />
+  </actions>
+</xbundle>

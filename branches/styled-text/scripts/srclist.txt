@@ -1,0 +1,15 @@
+.idea
+assets\meterman2
+assets-src\meterman2
+classloader-resources
+config
+doc
+forms
+games
+scripts
+src
+meterman2.iml
+meterman2.install4j
+Meterman2.jfdproj
+meterman2-ant-build.*
+README.txt

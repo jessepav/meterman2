@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xbundle name="riverboat">
+  <passage id="about" header="Riverboat" image="other" scale="3" button="Boat Away">
+    The Riverboat on the River Effluvious.
+  </passage>
+
+  <room id="starting-room" name="Hillock">
+    <description>
+      You are standing on a grassy hillock.
+    </description>
+    <exits>
+      <exit room="playroom" pos="N" />
+    </exits>
+  </room>
+
+  <room id="playroom" name="Child's Playroom" exitName="Playroom">
+    <description script="bsh">
+      out("To the east is a " + rooms.get("dungeon").getName().toLowerCase());
+      out("@p");
+      out("After " + gm.getNumTurns() + " turns, it's pretty messy in the " + room.getName());
+    </description>
+    <exits>
+      <exit room="starting-room" pos="S"/>
+    </exits>
+  </room>
+
+  <entity id="stick" name="Stick" attributes="takeable, equippable" inRoom="starting-room">
+    <script fileRef="stick-script.bsh" />
+    <description>
+      A little stick.
+    </description>
+  </entity>
+
+  <entity id="chest" name="Teak Chest" type="container" inRoom="starting-room" capacity="3"
+          outPrep="out of" inPrep="into">
+    <attributes>
+    </attributes>
+    <description format="ftl">
+      ${entity.defName?cap_first} is a chest made of wood.
+    </description>
+    <key>wood-key</key>
+  </entity>
+
+  <entity id="mirror" name="Magic Mirror" attributes="takeable">
+    <description format="ftl">
+      First we look at the chest:
+      @p
+      ¬¬¬¬${entities["chest"].description}
+      @p
+      And then, in ${entity.defName}, you see that the door is [#if state.doorOpened]open[#else]closed[/#if].
+    </description>
+    <script><![CDATA[
+      Action frob = Meterman2.actions.registerAction("FROB", "Frobnicate");
+      List actions = new ArrayList(4);
+
+      List getActions(Entity e) {
+          actions.clear();
+          actions.addAll(e.getImpl().getActions(e));
+          actions.add(frob);
+          return actions;
+      }
+
+      boolean processAction(Entity e, Action action) {
+          if (action.equals(frob)) {
+              println("Frobnicate!");
+              Meterman2.actions.getAction("CONTAINER_PUT").setTemplateText("Frob %s");
+              return true;
+          } else {
+              return false;
+          }
+      }
+    ]]>
+    </script>
+  </entity>
+
+  <entity id="wood-key" name="Wood Key" inRoom="starting-room" attributes="takeable">
+    <description script="bsh">
+      out("You look at " + entity.getDefName() + " and feel a little strange");
+    </description>
+  </entity>
+
+  <entity id="iron-door" type="door" name="Iron Door" closedExitLabel="Closed Iron Door" attributes="closed">
+    <description>A stalwart iron door.</description>
+    <connects room1="playroom" pos1="E" room2="dungeon" pos2="W" />
+    <script><![CDATA[
+      boolean processAction(Entity e, Action action) {
+          boolean b = e.getImpl().processAction(e, action);
+          state.doorOpened = !e.getAttributes().get(SystemAttributes.CLOSED);
+          return b;
+      }
+    ]]>
+    </script>
+  </entity>
+
+  <entity id="vague-stuff" type="each-turn" name="Pile of Vague Stuff">
+    <script>
+void lookInRoom(Entity e) {
+    gm.queueLookText("A vague mound of stuff leers at you from the inky depths!", false);
+}
+
+void eachTurn(Entity e) {
+    if (currentRoom.getId().equals("playroom")) {
+        gm.newPar();
+        gm.println("From the east you sense the dark power of vague stuff.");
+    }
+}
+    </script>
+    <description>A dark and menacing pile of vague stuff.</description>
+  </entity>
+
+  <room id="dungeon" type="dark" name="Dungeon" darkName="Dark Dungeon" attributes="dark">
+    <description format="ftl">
+      Oh my, this is one scary ${room.name?lower_case}!
+    </description>
+  </room>
+
+  <entity id="drawings" name="Scribbed Drawings" inRoom="dungeon">
+    <description>Crude drawings of water buffaloes adorn the walls.</description>
+    <script>
+      void lookInRoom(Entity e) {
+          gm.queueLookText("You can see scribbled drawings on the walls.", true);
+      }
+    </script>
+  </entity>
+
+  <entity id="flashlight" type="lamp" name="Flashlight" attributes="takeable" inContainer="chest">
+    <description>A small rechargeable flashlight.</description>
+  </entity>
+
+  <entity id="oil-lamp" type="lamp" name="Oil Lamp" attributes="takeable"
+          burnsFuel="true" fuelRemaining="10" lowFuelAmount="5"
+          onText="lit" offText="doused" lightAction="Light" douseAction="Douse">
+    <description>An old oil lamp.</description>
+  </entity>
+
+  <topicmap id="mike-topicmap">
+    <topic id="GREETING" addTopics="plumbing, dungeon" removeTopics="GREETING">
+      <label>Dude, what's up!</label>
+      <text>Yo!@p What's going on?</text>
+    </topic>
+    <topic id="plumbing" label="How's your plumbing?">
+      <text script="bsh">
+        <![CDATA[
+        if (Utils.randInt(0, 1) == 0)
+            out("The plumbing is good as raisins.");
+        else
+            out("It's not so good at all, leaks everywhere.");
+        ]]>
+      </text>
+    </topic>
+    <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING, family, joe">
+      <text>That is one scary dungeon!</text>
+    </topic>
+    <topic id="family" label="What about your family?">
+      <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3">
+        <item>My father was a farmer...</item>
+        <item>...my mother was a farmer...</item>
+        <item button="Done">...and I'm a farmer.</item>
+      </sequence>
+      <removeTopics>
+        <t>family</t>
+      </removeTopics>
+    </topic>
+    <topic id="joe" label="How about that guy Joe?" removeTopics="joe" addTopics="family">
+      <dialog header="Joe" button="Right!" image="mike" scale="3" format="ftl">
+        ${entity.defName} says, "Joe's an ass!".
+      </dialog>
+    </topic>
+  </topicmap>
+
+  <entity id="mike" type="walker-talker" name="Mike" attributes="proper-name" topics="GREETING, family, joe"
+          interactActionText="Talk">
+    <inRoom>playroom</inRoom>
+    <description>It's your old bud Mike!</description>
+    <topicmap topicmapRef="mike-topicmap" />
+    <promptMessage>
+      Mike lounges around and looks at you.@n
+      What do you want to ask him about?
+    </promptMessage>
+    <otherTopic>Something else, actually...</otherTopic>
+    <script>
+void interactOther(Entity e, String topic) {
+    ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
+}
+
+Collection rooms = new ArrayList(6);
+
+void eachTurn(Entity e) {
+    // Only move 1/6 of the time.
+    if (Utils.randInt(0, 5) == 0) {
+        GameUtils.gatherExitRooms(GameUtils.getRoom(e), rooms);
+        if (rooms.isEmpty())
+            return;
+        int choice = Utils.randInt(0, rooms.size()-1);
+        for (Room r : rooms) {
+            if (choice-- == 0) {
+                gm.println("Mike decides to move to " + r.getDefName());
+                gm.moveEntity(e, r);
+            }
+        }
+    }
+}
+    </script>
+  </entity>
+
+  <entity id="ui-tester" name="UI Tester" inRoom="starting-room">
+    <description>An entity to poke the UI.</description>
+    <script><![CDATA[
+List actions = new ArrayList(20);
+
+for (int i = 0; i < 10; i++)
+    actions.add(SystemActions.EXAMINE.fixedTextCopy("Examine " + i));
+
+List getActions(Entity e) {
+    return actions;
+}
+
+boolean processAction(Entity e, Action action) {
+    println("Action: " + action.getText());
+    return false;
+}
+    ]]>
+    </script>
+  </entity>
+
+  <player id="player" inRoom="starting-room">
+    <inventory>
+      <item equipped="true">stick</item>
+      <item>mirror</item>
+      <item>oil-lamp</item>
+    </inventory>
+  </player>
+
+  <actions id="riverboat-actions">
+    <action name="LOOK" templateText="Survey Scene" />
+    <action name="WAIT" templateText="Bide Time" />
+  </actions>
+
+  <lookHandler id="riverlooker">
+    <roomGroup rooms="starting-room, playroom">
+      <text paragraph="true">
+        Overhead the clouds shift against the cerulean sky.
+      </text>
+    </roomGroup>
+    <roomGroup>
+      <rooms>
+        <r>dungeon</r>
+      </rooms>
+      <!--
+      <text script="bsh">
+        if (hasAttr(currentRoom, DARK))
+            out("In the darkness you hear something scuttle.");
+      </text>
+      -->
+      <text format="ftl" paragraph="true">
+        [#if utils.hasAttr(currentRoom, attributes.DARK)]
+          In the shadows you hear something with ${utils.randInt(8, 16)} legs scuttle.
+        [#else]
+          The light pushes back the darkness, tenuously.
+        [/#if]
+      </text>
+    </roomGroup>
+  </lookHandler>
+
+  <imageMap id="riverboat-images">
+    <image name="mike" path="mike.png" />
+    <image name="chest" path="chest.png" />
+    <image name="other" path="other-entity.png" />
+    <image name="grassy-field" path="grassy-field.png" />
+    <image name="dark-cave" path="dark-cave.png" />
+  </imageMap>
+
+  <frame-images id="riverboat-frame-images" defaultImage="default">
+    <image name="grassy-field" rooms="starting-room" />
+    <image name="dark-cave" rooms="dungeon" />
+  </frame-images>
+
+  <entity-images id="riverboat-entity-images" defaultImage="none">
+    <image name="mike" entities="mike" />
+    <image name="chest" entities="chest" />
+    <image name="other" entities="oil-lamp, iron-door, wood-key" />
+  </entity-images>
+</xbundle>

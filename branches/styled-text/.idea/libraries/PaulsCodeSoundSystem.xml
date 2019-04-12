@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="PaulsCodeSoundSystem">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/SoundSystem.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/CodecIBXM.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/CodecJOrbis.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/CodecWav.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/LibraryJOAL.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/LibraryJavaSound.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/docjars/paulscode-sound-javadoc.zip!/" />
+      <root url="file://$PROJECT_DIR$/expanded-javadoc/paulscode-sound-javadoc" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/srcjars/paulscode-src.zip!/" />
+    </SOURCES>
+  </library>
+</component>

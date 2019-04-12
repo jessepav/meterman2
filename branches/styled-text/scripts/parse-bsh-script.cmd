@@ -1,0 +1,12 @@
+@ECHO OFF
+SETLOCAL ENABLEEXTENSIONS ENABLEDELAYEDEXPANSION
+
+cd %~dp0..
+set BSHJAR=%~dp0..\lib\bsh-2.1.0-SNAPSHOT.jar
+
+java -cp "%BSHJAR%" bsh.Parser "%1"
+
+:END
+ENDLOCAL
+ECHO ON
+@EXIT /B 0

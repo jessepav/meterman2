@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xbundle name="system-keybindings">
+  <keybindings id="ui-shortcuts">
+    <binding name="select-room-entity" shortcut="ctrl R" />
+    <binding name="select-inventory-entity" shortcut="ctrl I" />
+    <binding name="select-action" shortcut="ctrl A" />
+    <binding name="again-action" shortcut="shift G" />
+    <binding name="debug-command" shortcut="ctrl alt D" />
+    <movement>
+      <!-- Main keyboard -->
+      <binding name="NW" shortcut="Q" />
+      <binding name="N" shortcut="W" />
+      <binding name="NE" shortcut="E" />
+      <binding name="X1" shortcut="R" />
+      <binding name="W" shortcut="A" />
+      <binding name="MID" shortcut="S" />
+      <binding name="E" shortcut="D" />
+      <binding name="X2" shortcut="F" />
+      <binding name="SW" shortcut="Z" />
+      <binding name="S" shortcut="X" />
+      <binding name="SE" shortcut="C" />
+      <binding name="X3" shortcut="V" />
+
+      <!-- Numpad, for compass directions and MID -->
+      <binding name="NW" shortcut="NUMPAD7" />
+      <binding name="N" shortcut="NUMPAD8" />
+      <binding name="NE" shortcut="NUMPAD9" />
+      <binding name="W" shortcut="NUMPAD4" />
+      <binding name="MID" shortcut="NUMPAD5" />
+      <binding name="E" shortcut="NUMPAD6" />
+      <binding name="SW" shortcut="NUMPAD1" />
+      <binding name="S" shortcut="NUMPAD2" />
+      <binding name="SE" shortcut="NUMPAD3" />
+    </movement>
+  </keybindings>
+
+  <!-- These actions are already defined in system-bundle.xml -->
+  <keybindings id="system-action-shortcuts">
+    <action name="LOOK" shortcut="shift L" />
+    <action name="WAIT" shortcut="shift W" />
+    <action name="EXAMINE" shortcut="shift X" />
+    <action name="READ" shortcut="shift R" />
+    <action name="TAKE" shortcut="shift T" />
+    <action name="DROP" shortcut="shift D" />
+    <action name="EQUIP" shortcut="shift Q" />
+    <action name="UNEQUIP" shortcut="shift P" />
+    <action name="OPEN" shortcut="shift O" />
+    <action name="CLOSE" shortcut="shift C" />
+    <action name="LOCK" shortcut="shift K" />
+    <action name="UNLOCK" shortcut="shift U" />
+    <action name="INTERACT" shortcut="shift I" />
+    <action name="SWITCH_ON" shortcut="shift N" />
+    <action name="SWITCH_OFF" shortcut="shift F" />
+    <action name="CONTAINER_PUT" shortcut="ctrl shift I" />
+    <action name="CONTAINER_TAKE" shortcut="ctrl shift O" />
+    <action name="CONTAINER_LOOK_IN" shortcut="ctrl shift X" />
+  </keybindings>
+</xbundle>

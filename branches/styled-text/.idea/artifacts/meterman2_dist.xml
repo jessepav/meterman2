@@ -1,0 +1,34 @@
+<component name="ArtifactManager">
+  <artifact name="meterman2-dist">
+    <output-path>$PROJECT_DIR$/build/artifacts/meterman2-dist</output-path>
+    <root id="root">
+      <element id="directory" name="assets">
+        <element id="file-copy" path="$PROJECT_DIR$/assets/00 Put Game Assets Files Here.txt" />
+        <element id="directory" name="meterman2">
+          <element id="dir-copy" path="$PROJECT_DIR$/assets/meterman2" />
+        </element>
+      </element>
+      <element id="directory" name="config">
+        <element id="file-copy" path="$PROJECT_DIR$/config/logging.properties" />
+        <element id="file-copy" path="$PROJECT_DIR$/config/meterman2-dist.properties" output-file-name="meterman2.properties" />
+      </element>
+      <element id="directory" name="glue">
+        <element id="file-copy" path="$PROJECT_DIR$/glue/00 Put Game Glue Files Here.txt" />
+      </element>
+      <element id="directory" name="jars">
+        <element id="file-copy" path="$PROJECT_DIR$/jars/00 Put Game Jar Files Here.txt" />
+      </element>
+      <element id="directory" name="lib">
+        <element id="dir-copy" path="$PROJECT_DIR$/lib" />
+      </element>
+      <element id="archive" name="meterman2.jar">
+        <element id="module-output" name="meterman2" />
+      </element>
+      <element id="file-copy" path="$PROJECT_DIR$/scripts/run-dist-jar.bat" output-file-name="run-meterman2.bat" />
+      <element id="file-copy" path="$PROJECT_DIR$/scripts/run-dist-jar.sh" output-file-name="run-meterman2.sh" />
+      <element id="directory" name="fonts">
+        <element id="dir-copy" path="$PROJECT_DIR$/fonts" />
+      </element>
+    </root>
+  </artifact>
+</component>
