@@ -9,7 +9,7 @@ new FormModel {
 			"undecorated": true
 			"alwaysOnTop": true
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-				"$columnSpecs": "center:default"
+				"$columnSpecs": "center:max(default;100dlu)"
 				"$rowSpecs": "default"
 			} ) {
 				name: "panel1"
@@ -28,7 +28,7 @@ new FormModel {
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 0, 0 )
-			"size": new java.awt.Dimension( 250, 125 )
+			"size": new java.awt.Dimension( 285, 125 )
 		} )
 	}
 }

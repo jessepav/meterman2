@@ -9,7 +9,7 @@ new FormModel {
 			"modal": true
 			"resizable": false
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-				"$columnSpecs": "center:default"
+				"$columnSpecs": "center:max(default;150dlu)"
 				"$rowSpecs": "default, relgap, default, unrelgap, default, pargap, default"
 			} ) {
 				name: "panel1"
