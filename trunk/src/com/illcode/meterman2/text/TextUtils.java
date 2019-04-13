@@ -1,5 +1,8 @@
 package com.illcode.meterman2.text;
 
+/**
+ * Collection of static text utility methods.
+ */
 public final class TextUtils
 {
     /**

@@ -4,13 +4,20 @@ import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.Utils;
+import com.illcode.meterman2.text.Markup;
 import com.illcode.meterman2.text.TextUtils;
 import org.apache.commons.collections4.MapIterator;
 import org.apache.commons.collections4.map.LRUMap;
 import org.jdom2.Element;
 
-import javax.swing.*;
-import javax.swing.text.*;
+import javax.swing.SwingUtilities;
+import javax.swing.ToolTipManager;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
@@ -25,9 +32,6 @@ import static com.illcode.meterman2.MMLogging.logger;
 
 public final class MMUI
 {
-    public static final String EMPH_TAG = "[em]";
-    public static final String EMPH_CLOSE_TAG = "[/em]";
-
     MainFrame mainFrame;
     TextDialog textDialog;
     PromptDialog promptDialog;
@@ -417,7 +421,7 @@ public final class MMUI
         final int len = text.length();
         int offset = 0;
         boolean inEmph = false;
-        String tag = EMPH_TAG;
+        String tag = Markup.EMPH_TAG;
         while (offset < len) {
             int tagIdx = text.indexOf(tag, offset);
             if (tagIdx == -1)
@@ -428,7 +432,7 @@ public final class MMUI
                 break;
             offset = tagIdx + tag.length();
             inEmph = !inEmph;
-            tag = inEmph ? EMPH_CLOSE_TAG : EMPH_TAG;
+            tag = inEmph ? Markup.EMPH_CLOSE_TAG : Markup.EMPH_TAG;
         }
     }
 
@@ -623,7 +627,7 @@ public final class MMUI
 
     /** Like {@link #showTextDialog} but without transcribing. Intended for use by the game system. */
     public int showTextDialogImpl(String header, String text, String... buttonLabels) {
-        return textDialog.show(header, wrapDialogText(text), buttonLabels);
+        return textDialog.show(header, formatDialogText(text), buttonLabels);
     }
 
     /**
@@ -649,7 +653,7 @@ public final class MMUI
         BufferedImage image = imageName == UIConstants.NO_IMAGE ? null : loadImage(imageName);
         if (image != null && scale > 1)
             image = GuiUtils.getScaledImage(image, scale);
-        return imageDialog.show(header, image, wrapDialogText(text), buttonLabels);
+        return imageDialog.show(header, image, formatDialogText(text), buttonLabels);
     }
 
     /**
@@ -671,7 +675,7 @@ public final class MMUI
 
     /** Like {@link #showListDialog} but without transcribing. Intended for use by the game system. */
     public <T> T showListDialogImpl(String header, String text, List<T> items, boolean showCancelButton) {
-        return listDialog.showListDialog(header, wrapDialogText(text), items, showCancelButton);
+        return listDialog.showListDialog(header, formatDialogText(text), items, showCancelButton);
     }
 
     /**
@@ -693,7 +697,7 @@ public final class MMUI
 
     /** Like {@link #showPromptDialog} but without transcribing. Intended for use by the game system. */
     public String showPromptDialogImpl(String header, String text, String prompt, String initialText) {
-        return promptDialog.show(header, wrapDialogText(text), prompt, initialText);
+        return promptDialog.show(header, formatDialogText(text), prompt, initialText);
     }
 
     /**
@@ -712,9 +716,15 @@ public final class MMUI
         waitDialog.hide();
     }
 
-    /** Wraps text according to the current "dialog-text-columns" config property. */
-    String wrapDialogText(String text) {
-        return TextUtils.wrapText(text, dialogTextColumns);
+    /**
+     * Formats text to be shown in dialogs. This includes:
+     * <ul>
+     *   <li>Wraps text according to the current "dialog-text-columns" config property.</li>
+     *   <li>Replaces markup tags with plain-text approximations.</li>
+     * </ul>
+     */
+    String formatDialogText(String text) {
+        return TextUtils.wrapText(Markup.plainTextMarkup(text), dialogTextColumns);
     }
 
     private class LRUImageCacheMap extends LRUMap<String,BufferedImage>

@@ -157,7 +157,7 @@ void eachTurn(Entity e) {
       <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3">
         <item>My father was a farmer...</item>
         <item>...my mother was a farmer...</item>
-        <item button="Done">...and I'm a farmer.</item>
+        <item button="Done">...and [em]I'm[/em] a farmer.</item>
       </sequence>
       <removeTopics>
         <t>family</t>
