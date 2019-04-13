@@ -6,6 +6,7 @@ import com.illcode.meterman2.handler.StatusBarProvider;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.state.AttributeSetPermuter;
 import com.illcode.meterman2.state.GameState;
+import com.illcode.meterman2.text.Markup;
 import com.illcode.meterman2.text.TextSource;
 import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.ArrayUtils;
@@ -689,13 +690,18 @@ public final class GameManager
      * {@code OutputTextProcessor}S a chance to modify it.
      */
     public void outputText() {
-        if (outputBuilder.length() != 0) {
+        final int len = outputBuilder.length();
+        if (len != 0) {
             handlerManager.fireOutputTextReady(outputBuilder);
-            ui.appendText(outputSeparator, false);
-            ui.appendMarkupText(outputBuilder.toString());
-            transcript.append(outputSeparator);
-            transcript.append(outputBuilder);
+            if (outputBuilder.charAt(len-1) != '\n')  // Ensure the text ends with a newline
+                outputBuilder.append('\n');
+            final String outputText = outputBuilder.toString();
             outputBuilder.setLength(0);
+
+            ui.appendText(outputSeparator, false);
+            ui.appendMarkupText(outputText);
+            transcript.append(outputSeparator);
+            transcript.append(Markup.plainTextMarkup(outputText));
         }
     }
 
