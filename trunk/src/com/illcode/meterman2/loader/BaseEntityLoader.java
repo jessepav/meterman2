@@ -262,6 +262,7 @@ public class BaseEntityLoader implements EntityLoader
             interactSupport.addTopic(topicId);
         interactSupport.setOtherTopicLabel(helper.getValue("otherTopic"));
         interactSupport.setInteractActionText(helper.getValue("interactActionText"));
+        interactSupport.setExitTopicId(helper.getValue("exitTopic"));
         interactSupport.setScriptedMethods(methodMap);
         final Element promptMessage = el.getChild("promptMessage");
         if (promptMessage != null)

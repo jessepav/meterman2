@@ -230,6 +230,9 @@
         <item button="Done">...and I'm a farmer.</item>
       </sequence>
     </topic>
+    <topic id="done" label="Nothing else, I guess">
+      <text>Be seein' ya.</text>
+    </topic>
   </topicmap>
 
   <!--
@@ -251,6 +254,10 @@
     <!-- If otherTopic is present, it will be displayed at the end of the topic list,
          and handling will be delegated to the scripted or subclassed interactOther() method.-->
     <otherTopic>Actually, I was thinking about...</otherTopic>
+
+    <!-- If an exitTopic is specified, the interaction cycle will repeat until the entity runs out of topics,
+         the user closes the topic selection dialog manually, or the topic with the given ID is chosen. -->
+    <exitTopic>done</exitTopic>
 
     <!-- If present, these text sources will be used in place of the corresponding system messages. -->
     <promptMessage format="printf">  <!-- args: entity.defName -->

@@ -6,6 +6,7 @@ import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.model.TopicMap.Topic;
 import com.illcode.meterman2.text.TextSource;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -22,6 +23,8 @@ public final class InteractSupport
     private TopicMap topicMap;
     private Collection<Topic> currentTopics;
     private Topic otherTopic;
+    private String exitTopicId;
+    private boolean shouldRepeatInteract;
     private MMScript.ScriptedMethod beginInteractMethod, topicChosenMethod, interactOtherMethod;
     private MMActions.Action interactAction;
     private TextSource promptMessage, noTopicsMessage;
@@ -162,46 +165,85 @@ public final class InteractSupport
         }
     }
 
+    /**
+     * Set the exit topic ID.
+     * <p/>
+     * By default, a call to <tt>interact()</tt> will process one topic and then return. However, if
+     * a non-null exit topic ID has been set, then <tt>interact()</tt> will continue processing topics
+     * until:
+     * <ol>
+     *     <li>the current topic list is empty</li>
+     *     <li>the user manually closes the topic list dialog or otherwise doesn't select an item</li>
+     *     <li>the topic whose id is the exit topic ID is selected.<br/>In this last case we run the
+     *         conversation cycle as usual, displaying any text, dialogs, etc. before exiting the loop.</li>
+     * </ol>
+     * If you set a non-null exit topic, then all topics whose output is text will be wrapped in dialogs
+     * because the user won't be able to see normal text until the interaction loop ends.
+     * @param exitTopicId exit topic ID, or null to disable interact looping
+     */
+    public void setExitTopicId(String exitTopicId) {
+        this.exitTopicId = exitTopicId;
+    }
+
+    /**
+     * If we are in an interact loop, and a handler (in its {@link InteractHandler#interactOther interactOther} or
+     * {@link InteractHandler#topicChosen topicChosen} methods) wants to exit the loop prematurely, it can
+     * call {@code breakInteractLoop()} to do so.
+     */
+    public void breakInteractLoop() {
+        shouldRepeatInteract = false;
+    }
+
     /** Entry point to the interaction system, called when the user selects
      *  the Interact action on the associated entity. */
     public void interact() {
         beginInteract();
-        final List<Topic> topics = assembleTopicList();
-        if (topics.isEmpty()) {
-            gm.println(getNoTopicsMessage());
-        } else {
+        shouldRepeatInteract = exitTopicId != null;
+        do {
+            final List<Topic> topics = assembleTopicList();
+            if (topics.isEmpty()) {
+                gm.println(getNoTopicsMessage());
+                break;
+            }
             Topic t;
             if (topics.size() == 1 && topics.get(0).getId().equals(TopicMap.GREETING_TOPIC_ID))
                 t = topics.get(0);
             else
                 t = ui.showListDialog(interactAction.getText(), getPromptMessage(), topics, true);
             if (t == null)
-                return;
-            if (t.getId() == TopicMap.OTHER_TOPIC_ID) {
+                break;
+            final String chosenTopicId = t.getId();
+            if (chosenTopicId == TopicMap.OTHER_TOPIC_ID) {
                 String s = ui.showPromptDialog(interactAction.getText(), t.getLabel(), "Topic:", "");
                 interactOther(s);
             } else {
-                if (topicChosen(t))
-                    return;  // it was handled by a script or InteractHandler
-                // Now the normal conversation cycle.
-                GameUtils.pushBinding("entity", e);
-                if (t.isDialogTopic())
-                    t.showDialog();
-                else
-                    gm.println(t.getText());
-                GameUtils.popBinding("entity");
-                for (String topicId : t.getRemoveTopics()) {
-                    if (topicId.equals("all")) {
-                        clearTopics();
-                        break;
+                if (StringUtils.equals(chosenTopicId, exitTopicId))
+                    shouldRepeatInteract = false;
+                if (!topicChosen(t)) {
+                    // if it was not handled by a script or InteractHandler, run the normal conversation cycle.
+                    GameUtils.pushBinding("entity", e);
+                    if (t.isDialogTopic()) {
+                        t.showDialog();
                     } else {
-                        removeTopic(topicId);
+                        if (shouldRepeatInteract)
+                            ui.showTextDialog(e.getName(), t.getText().getText(), "Okay");
+                        else
+                            gm.println(t.getText());
                     }
+                    GameUtils.popBinding("entity");
+                    for (String topicId : t.getRemoveTopics()) {
+                        if (topicId.equals("all")) {
+                            clearTopics();
+                            break;
+                        } else {
+                            removeTopic(topicId);
+                        }
+                    }
+                    for (String topicId : t.getAddTopics())
+                        addTopic(topicId);
                 }
-                for (String topicId : t.getAddTopics())
-                    addTopic(topicId);
             }
-        }
+        } while (shouldRepeatInteract);
     }
 
     private String getNoTopicsMessage() {
@@ -247,11 +289,27 @@ public final class InteractSupport
         }
     }
 
+    /*
+     * Assemble the topic list, adding the Other Topic if present, and taking
+     * care to put the exit topic last, if one has been set.
+     */
     private List<Topic> assembleTopicList() {
         assembledTopics.clear();
-        assembledTopics.addAll(currentTopics);
+        Topic exitTopic = null;
+        if (exitTopicId == null) {  // no need to rearrange currentTopics
+            assembledTopics.addAll(currentTopics);
+        } else { // put the exit topic last
+            for (Topic t : currentTopics) {
+                if (t.getId().equals(exitTopicId))
+                    exitTopic = t;
+                else
+                    assembledTopics.add(t);
+            }
+        }
         if (otherTopic != null)
             assembledTopics.add(otherTopic);
+        if (exitTopic != null)
+            assembledTopics.add(exitTopic);
         return assembledTopics;
     }
 
