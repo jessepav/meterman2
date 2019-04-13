@@ -225,10 +225,12 @@ public final class InteractSupport
                     if (t.isDialogTopic()) {
                         t.showDialog();
                     } else {
-                        if (shouldRepeatInteract)
-                            ui.showTextDialog(e.getName(), t.getText().getText(), "Okay");
-                        else
+                        if (shouldRepeatInteract) {
+                            ui.showTextDialog(e.getName(), t.getText().getText());
+                        } else {
+                            gm.newPar();
                             gm.println(t.getText());
+                        }
                     }
                     GameUtils.popBinding("entity");
                     for (String topicId : t.getRemoveTopics()) {
