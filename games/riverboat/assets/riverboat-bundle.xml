@@ -150,7 +150,7 @@ void eachTurn(Entity e) {
         ]]>
       </text>
     </topic>
-    <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING, family, joe">
+    <topic id="dungeon" label="What's up with that dungeon?" removeTopics="all" addTopics="GREETING, family, joe, done">
       <text>That is one scary dungeon!</text>
     </topic>
     <topic id="family" label="What about your family?">
@@ -168,10 +168,13 @@ void eachTurn(Entity e) {
         ${entity.defName} says, "Joe's an ass!".
       </dialog>
     </topic>
+    <topic id="done" label="That's it, my man.">
+      <text>Be seeing you, bro.</text>
+    </topic>
   </topicmap>
 
-  <entity id="mike" type="walker-talker" name="Mike" attributes="proper-name" topics="GREETING, family, joe"
-          interactActionText="Talk">
+  <entity id="mike" type="walker-talker" name="Mike" attributes="proper-name" topics="GREETING, family, joe, done"
+          interactActionText="Talk" exitTopic="done">
     <inRoom>playroom</inRoom>
     <description>It's your old bud Mike!</description>
     <topicmap topicmapRef="mike-topicmap" />
@@ -182,7 +185,12 @@ void eachTurn(Entity e) {
     <otherTopic>Something else, actually...</otherTopic>
     <script>
 void interactOther(Entity e, String topic) {
-    ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
+    if (topic.equals("done")) {
+        println("[em]Cool[/em], take it easy.");
+        e.getImpl().getInteractSupport().breakInteractLoop();
+    } else {
+        ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
+    }
 }
 
 Collection rooms = new ArrayList(6);
