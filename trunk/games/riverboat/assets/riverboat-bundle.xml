@@ -50,6 +50,8 @@
       ¬¬¬¬${entities["chest"].description}
       @p
       And then, in ${entity.defName}, you see that the door is [#if state.doorOpened]open[#else]closed[/#if].
+      @p
+      And then we see what you talked to mike about: "${hash.mikeTopic!"nothing"}".
     </description>
     <script><![CDATA[
       Action frob = Meterman2.actions.registerAction("FROB", "Frobnicate");
@@ -191,6 +193,7 @@ void interactOther(Entity e, String topic) {
     } else {
         ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
     }
+    hash{"mikeTopic"} = topic;
 }
 
 Collection rooms = new ArrayList(6);
@@ -290,4 +293,28 @@ boolean processAction(Entity e, Action action) {
     <image name="chest" entities="chest" />
     <image name="other" entities="oil-lamp, iron-door, wood-key" />
   </entity-images>
+
+  <handler id="scripted-handler">
+    <script>
+    <![CDATA[
+void turn() {
+    if (gm.getNumTurns() % 5 == 4) {
+        newPar();
+        println("It's the five-O!");
+    }
+}
+
+void lookInRoom(Room currentRoom) {
+    newPar();
+    println("I see you're looking around in " + currentRoom.getDefName());
+}
+
+boolean playerMove(Room fromRoom, Room toRoom, boolean beforeMove) {
+    if (beforeMove)
+        println("[em]Whoooosh![/em]   You're moving to " + toRoom.getDefName());
+    return false;
+}
+    ]]>
+    </script>
+  </handler>
 </xbundle>

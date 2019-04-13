@@ -32,6 +32,11 @@ public final class GamesList
         gameNames = null;
     }
 
+    /** Returns true if a game with the given name exists. */
+    public boolean gameExists(String gameName) {
+        return gamesMap.containsKey(gameName);
+    }
+
     /**
      * Create a new instance of a game.
      * @param gameName name of the game

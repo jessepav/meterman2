@@ -713,34 +713,38 @@ public final class GameManager
     /** Called by the when it's time to load a saved game. */
     void loadGameState(InputStream in) {
         ui.showWaitDialog("Loading game...");
-        GameState state = null;
+        GameState state;
         try {
             state = Meterman2.persistence.loadGameState(in);
         } catch (Exception ex) {
             ui.hideWaitDialog();
             ui.showTextDialogImpl("Load Error", "Invalid save game file!", "Ayaa");
+            return;
         }
-        if (state != null) {
-            final String gameVersion = Meterman2.gamesList.getGameVersion(state.gameName);
-            if (state.engineVersion != Meterman2.VERSION || !state.gameVersion.equals(gameVersion)) {
-                ui.hideWaitDialog();
-                if (ui.showTextDialogImpl("Version Mismatch",
-                    "The version of the program or game used to save the file is different from the current version.\n\n" +
-                    "Current versions: Engine (" + Meterman2.VERSION + ") Game (" + gameVersion + ")\n" +
-                    "  Saved versions: Engine (" + state.engineVersion + ") Game (" + state.gameVersion + ")\n\n" +
-                    "This may cause internal chaos if loaded: do you want to try anyway?", "Try Anyway", "Abort") != 0)
-                    return;
-                else
-                    ui.showWaitDialog("Carrying on...");   // re-show the wait message and carry on
-            }
-            final Game g = Meterman2.gamesList.createGame(state.gameName);
-            if (g == null) {
-                ui.hideWaitDialog();
-                ui.showTextDialogImpl("Invalid Game", "The game in the save file doesn't exist anymore!", "Ayaa");
-            } else {
-                loadGame(g, state);  // in turn calls restoreGameState() below, and hides the wait dialog
-                ui.appendText("\n   ------- Game Loaded -------\n\n", true);
-            }
+        if (!Meterman2.gamesList.gameExists(state.gameName)) {
+            ui.hideWaitDialog();
+            ui.showTextDialogImpl("Invalid Game", "The game in the save file doesn't exist anymore!", "Ayaa");
+            return;
+        }
+        final String gameVersion = Meterman2.gamesList.getGameVersion(state.gameName);
+        if (state.engineVersion != Meterman2.VERSION || !state.gameVersion.equals(gameVersion)) {
+            ui.hideWaitDialog();
+            if (ui.showTextDialogImpl("Version Mismatch",
+                "The version of the program or game used to save the file is different from the current version.\n\n" +
+                "Current versions: Engine (" + Meterman2.VERSION + ") Game (" + gameVersion + ")\n" +
+                "  Saved versions: Engine (" + state.engineVersion + ") Game (" + state.gameVersion + ")\n\n" +
+                "This may cause internal chaos if loaded: do you want to try anyway?", "Try Anyway", "Abort") != 0)
+                return;
+            else
+                ui.showWaitDialog("Carrying on...");   // re-show the wait message and carry on
+        }
+        final Game g = Meterman2.gamesList.createGame(state.gameName);
+        if (g == null) {
+            ui.hideWaitDialog();
+            ui.showTextDialogImpl("Game Error", "The game in the save file could not be created!", "Ayoo");
+        } else {
+            loadGame(g, state);  // in turn calls restoreGameState() below, and hides the wait dialog
+            ui.appendText("\n   ------- Game Loaded -------\n\n", true);
         }
     }
     
