@@ -75,6 +75,7 @@ public final class MMScript
         systemNameSpace.importPackage("com.illcode.meterman2");
         systemNameSpace.importPackage("com.illcode.meterman2.model");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
+        systemNameSpace.importClass("com.illcode.meterman2.model.TopicMap.Topic");
 
         outputBuilder = new StringBuilder(1024);
         try {

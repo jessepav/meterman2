@@ -16,13 +16,14 @@ import java.util.Map;
 
 public class RiverboatGame implements Game
 {
-    static final String RIVERBOAT_NAME = "The Riverboat";
+    static final String RIVERBOAT_NAME = "The Riverboat (test game)";
 
     static final String BASIC_HANDLER_ID = "basic-handler";
     static final String TIME_HANDLER_ID = "time-handler";
     static final String LOOK_HANDLER_ID = "looker";
     static final String FRAME_IMAGE_HANDLER_ID = "frame-imager";
     static final String ENTITY_IMAGE_HANDLER_ID = "entity-imager";
+    static final String SCRIPTED_HANDLER_ID = "scripted-handler";
 
     XBundle b;
     WorldLoader worldLoader;
@@ -31,6 +32,7 @@ public class RiverboatGame implements Game
     LookHandler lookHandler;
     UiImageHandler frameImageHandler;
     UiImageHandler entityImageHandler;
+    ScriptedHandler scriptedHandler;
 
     Map<String,Room> roomIdMap;
     Map<String,Entity> entityIdMap;
@@ -63,6 +65,7 @@ public class RiverboatGame implements Game
         if (gameStateMap == null) {
             gameStateMap = new HashMap<>();
             gameStateMap.put("state", new RiverboatState());
+            gameStateMap.put("hash", new HashMap());
         }
         return gameStateMap;
     }
@@ -107,6 +110,8 @@ public class RiverboatGame implements Game
         frameImageHandler.register();
         entityImageHandler = (UiImageHandler) getEventHandler(ENTITY_IMAGE_HANDLER_ID);
         entityImageHandler.register();
+        scriptedHandler = (ScriptedHandler) getEventHandler(SCRIPTED_HANDLER_ID);
+        scriptedHandler.register();
     }
 
     public GameEventHandler getEventHandler(String id) {
@@ -143,6 +148,12 @@ public class RiverboatGame implements Game
                 entityImageHandler.loadFromElement(b, "riverboat-entity-images");
             }
             return entityImageHandler;
+        case SCRIPTED_HANDLER_ID:
+            if (scriptedHandler == null) {
+                scriptedHandler = new ScriptedHandler(SCRIPTED_HANDLER_ID);
+                scriptedHandler.loadFromElement(b, "scripted-handler");
+            }
+            return scriptedHandler;
         default:
             return null;
         }
@@ -174,6 +185,9 @@ public class RiverboatGame implements Game
     }
 
     public void debugCommand(String[] args) {
-        // empty
+        if (args[0].equals("sh")) {
+            b.reloadElement("scripted-handler");
+            scriptedHandler.loadFromElement(b, "scripted-handler");
+        }
     }
 }
