@@ -67,10 +67,12 @@ List getActions(Entity e) {
     </description>
     <script><![CDATA[
 Action frob = Meterman2.actions.registerAction("FROB", "Frobnicate");
+Action lookIn = SystemActions.LOOK_PREP.formattedTextCopy("In");
 
 List getActions(Entity e) {
     List actions = e.getImpl().getActions(e);
     actions.add(frob);
+    actions.add(lookIn);
     return actions;
 }
 
@@ -78,6 +80,9 @@ boolean processAction(Entity e, Action action) {
     if (action.equals(frob)) {
         println("Frobnicate!");
         Meterman2.actions.getAction("CONTAINER_PUT").setTemplateText("Frob %s");
+        return true;
+    } else if (action.equals(lookIn)) {
+        println("You see the stunning reflection of someone better-looking than you.");
         return true;
     } else {
         return false;
