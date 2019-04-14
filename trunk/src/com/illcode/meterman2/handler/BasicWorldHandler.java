@@ -31,10 +31,10 @@ public class BasicWorldHandler
     implements GameActionListener, EntityActionsProcessor, StatusBarProvider
 {
     private String handlerId;
-    private int statusLabelPos;
 
-    private List<Room> roomList;  // temprary list to avoid allocation
-    private ActionSet actionSet;
+    protected int statusLabelPos;
+    protected List<Room> roomList;  // temprary list to avoid allocation
+    protected ActionSet actionSet;
 
     /**
      * Create a basic world handler.
@@ -72,7 +72,7 @@ public class BasicWorldHandler
      * By default the value is {@code UIConstants.RIGHT_LABEL}.
      * @param statusLabelPos one of the <tt>LABEL</tt> positions in {@code UIConstants}
      */
-    public void setStatusLabelPos(int statusLabelPos) {
+    public final void setStatusLabelPos(int statusLabelPos) {
         this.statusLabelPos = statusLabelPos;
     }
 
