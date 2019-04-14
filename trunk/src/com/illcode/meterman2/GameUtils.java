@@ -113,11 +113,24 @@ public final class GameUtils
     /**
      * Return a list of all the entities in a given container, and if any of those entities is itself
      * a container, its contents recursively.
+     * @param container the container
+     * @return list of all contents
      */
     public static List<Entity> getEntitiesRecursive(EntityContainer container) {
+        final List<Entity> entities = new ArrayList<>();
+        gatherEntitiesRecursive(container, entities);
+        return entities;
+    }
+
+    /**
+     * Gather a list of all the entities in a given container, and if any of those entities is itself
+     * a container, its contents recursively.
+     * @param container the container
+     * @param entities the collection into which we gather results
+     */
+    public static void gatherEntitiesRecursive(EntityContainer container, Collection<Entity> entities) {
         // I'm going to write this iteratively instead of recursively, just because.
-        List<Entity> entities = new ArrayList<>();
-        Queue<EntityContainer> pendingContainers = new LinkedList<>();
+        final Queue<EntityContainer> pendingContainers = new LinkedList<>();
         pendingContainers.add(container);
         while (!pendingContainers.isEmpty()) {
             EntityContainer c = pendingContainers.remove();
@@ -127,7 +140,6 @@ public final class GameUtils
                     pendingContainers.add((EntityContainer) e);
             }
         }
-        return entities;
     }
 
     /**
@@ -465,11 +477,12 @@ public final class GameUtils
     /**
      * Return the collection of rooms that may be reached by exiting a given room.
      * @param r room
+     * @param openDoors if true, return rooms accessible through closed but unlocked doors
      * @return collection of connected rooms
      */
-    public static Collection<Room> getExitRooms(Room r) {
+    public static Collection<Room> getExitRooms(Room r, boolean openDoors) {
         final List<Room> rooms = new ArrayList<>(6);
-        gatherExitRooms(r, rooms);
+        gatherExitRooms(r, openDoors, rooms);
         return rooms;
     }
 
@@ -477,26 +490,27 @@ public final class GameUtils
      * Gather the list of rooms that may be reached by exiting a given room, taking
      * into account closed, unlocked doors.
      * @param r room
+     * @param openDoors if true, gather rooms accessible through closed but unlocked doors
      * @param c collection into which we store our results
      */
-    public static void gatherExitRooms(final Room r, final Collection<Room> c) {
-        c.clear();
+    public static void gatherExitRooms(final Room r, boolean openDoors, final Collection<Room> c) {
         // First add all the normal exit neighbors of the room
         for (int direction = 0; direction < UIConstants.NUM_EXIT_BUTTONS; direction++) {
             final Room neighbor = r.getExit(direction);
             if (neighbor != null)
                 c.add(neighbor);
         }
-        // Then check for closed, unlocked doors.
-        for (Entity e : r.getEntities()) {
-            EntityImpl impl = e.getImpl();
-            if (impl instanceof DoorImpl) {
-                DoorImpl d = (DoorImpl) impl;
-                AttributeSet attr = e.getAttributes();
-                if (attr.get(CLOSED) && !attr.get(LOCKED)) {
-                    final Room otherRoom = d.getOtherRoom(r);
-                    if (otherRoom != null)
-                        c.add(otherRoom);
+        if (openDoors) {
+            for (Entity e : r.getEntities()) {
+                EntityImpl impl = e.getImpl();
+                if (impl instanceof DoorImpl) {
+                    DoorImpl d = (DoorImpl) impl;
+                    AttributeSet attr = e.getAttributes();
+                    if (attr.get(CLOSED) && !attr.get(LOCKED)) {
+                        final Room otherRoom = d.getOtherRoom(r);
+                        if (otherRoom != null)
+                            c.add(otherRoom);
+                    }
                 }
             }
         }
