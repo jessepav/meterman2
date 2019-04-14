@@ -1,5 +1,6 @@
 package com.illcode.meterman2.handler;
 
+import com.illcode.meterman2.StatusBarProvider;
 import com.illcode.meterman2.ui.UIConstants;
 import static com.illcode.meterman2.ui.UIConstants.NUM_LABELS;
 

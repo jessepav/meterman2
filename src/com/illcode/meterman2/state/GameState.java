@@ -3,7 +3,7 @@ package com.illcode.meterman2.state;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.model.Entity;
-import com.illcode.meterman2.model.Game;
+import com.illcode.meterman2.Game;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIConstants;
 

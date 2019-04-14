@@ -1,5 +1,6 @@
 package com.illcode.riverboat;
 
+import com.illcode.meterman2.Game;
 import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.Meterman2;

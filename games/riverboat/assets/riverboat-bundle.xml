@@ -36,11 +36,23 @@
   <entity id="chest" name="Teak Chest" type="container" inRoom="starting-room" capacity="3"
           outPrep="out of" inPrep="into">
     <attributes>
+      <attr>moveable</attr>
     </attributes>
     <description format="ftl">
       ${entity.defName?cap_first} is a chest made of wood.
     </description>
     <key>wood-key</key>
+    <script>
+      <![CDATA[
+Action push = SystemActions.MOVE.fixedTextCopy("Push");
+
+List getActions(Entity e) {
+    List actions = e.getImpl().getActions(e);
+    actions.add(push);
+    return actions;
+}
+      ]]>
+    </script>
   </entity>
 
   <entity id="mirror" name="Magic Mirror" attributes="takeable">
@@ -51,28 +63,36 @@
       @p
       And then, in ${entity.defName}, you see that the door is [#if state.doorOpened]open[#else]closed[/#if].
       @p
-      And then we see what you talked to mike about: "${hash.mikeTopic!"nothing"}".
+      And then we see what you talked to mike about: ${hash.mikeTopic!"nothing"}.
     </description>
     <script><![CDATA[
-      Action frob = Meterman2.actions.registerAction("FROB", "Frobnicate");
-      List actions = new ArrayList(4);
+Action frob = Meterman2.actions.registerAction("FROB", "Frobnicate");
 
-      List getActions(Entity e) {
-          actions.clear();
-          actions.addAll(e.getImpl().getActions(e));
-          actions.add(frob);
-          return actions;
-      }
+List getActions(Entity e) {
+    List actions = e.getImpl().getActions(e);
+    actions.add(frob);
+    return actions;
+}
 
-      boolean processAction(Entity e, Action action) {
-          if (action.equals(frob)) {
-              println("Frobnicate!");
-              Meterman2.actions.getAction("CONTAINER_PUT").setTemplateText("Frob %s");
-              return true;
-          } else {
-              return false;
-          }
-      }
+boolean processAction(Entity e, Action action) {
+    if (action.equals(frob)) {
+        println("Frobnicate!");
+        Meterman2.actions.getAction("CONTAINER_PUT").setTemplateText("Frob %s");
+        return true;
+    } else {
+        return false;
+    }
+}
+
+void enterScope(Entity e) {
+    newPar();
+    println("  [em]Mirror[/em]: I'm coming to join you!");
+}
+
+void exitingScope(Entity e) {
+    newPar();
+    println("  [em]Mirror[/em]: Zaijian, zaijian...");
+}
     ]]>
     </script>
   </entity>
@@ -175,8 +195,8 @@ void eachTurn(Entity e) {
     </topic>
   </topicmap>
 
-  <entity id="mike" type="walker-talker" name="Mike" attributes="proper-name" topics="GREETING, family, joe, done"
-          interactActionText="Talk" exitTopic="done">
+  <entity id="mike" type="walker-talker" name="Mike" attributes="moveable, proper-name"
+          topics="GREETING, family, joe, done" interactActionText="Talk" exitTopic="done">
     <inRoom>playroom</inRoom>
     <description>It's your old bud Mike!</description>
     <topicmap topicmapRef="mike-topicmap" />
@@ -201,7 +221,8 @@ Collection rooms = new ArrayList(6);
 void eachTurn(Entity e) {
     // Only move 1/6 of the time.
     if (Utils.randInt(0, 5) == 0) {
-        GameUtils.gatherExitRooms(GameUtils.getRoom(e), rooms);
+        rooms.clear();
+        GameUtils.gatherExitRooms(GameUtils.getRoom(e), false, rooms);
         if (rooms.isEmpty())
             return;
         int choice = Utils.randInt(0, rooms.size()-1);

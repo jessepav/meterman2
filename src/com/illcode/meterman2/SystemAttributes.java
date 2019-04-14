@@ -24,7 +24,7 @@ public class SystemAttributes
     /** This entity is a light source. */
     public static int LIGHTSOURCE;
 
-    /** Something that can be pulled or pushed. */
+    /** Something that can be moved around (usually a human-sized object too big to be taken). */
     public static int MOVEABLE;
 
     /** The entity (ex. door, container) is closed. */

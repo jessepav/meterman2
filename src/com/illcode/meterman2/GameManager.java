@@ -2,7 +2,6 @@ package com.illcode.meterman2;
 
 import com.illcode.meterman2.MMActions.Action;
 import com.illcode.meterman2.event.*;
-import com.illcode.meterman2.handler.StatusBarProvider;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.state.AttributeSetPermuter;
 import com.illcode.meterman2.state.GameState;

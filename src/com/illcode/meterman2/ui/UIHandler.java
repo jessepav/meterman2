@@ -1,7 +1,6 @@
 package com.illcode.meterman2.ui;
 
 import com.illcode.meterman2.MMActions.Action;
-import com.illcode.meterman2.model.Game;
 
 import java.io.InputStream;
 import java.io.OutputStream;
