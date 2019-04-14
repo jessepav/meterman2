@@ -38,7 +38,7 @@
   <!-- These actions are already defined in system-bundle.xml -->
   <keybindings id="system-action-shortcuts">
     <action name="LOOK" shortcut="shift L" />
-    <action name="WAIT" shortcut="shift W" />
+    <action name="WAIT" shortcut="shift Z" />
     <action name="EXAMINE" shortcut="shift X" />
     <action name="READ" shortcut="shift R" />
     <action name="TAKE" shortcut="shift T" />
