@@ -58,7 +58,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
     ChooseFontsDialog chooseFontsDialog;
 
     JFileChooser fc;
-    File lastSaveFile;
+    File currentSaveFile;
 
     DefaultListModel<String> roomListModel, inventoryListModel;
 
@@ -470,25 +470,28 @@ final class MainFrame implements ActionListener, ListSelectionListener
             String gameName = Utils.getPref("single-game-name");
             if (gameName == null)
                 gameName = ui.showListDialogImpl("New Game", "Choose a game:", ui.handler.getGameNames(), true);
-            if (gameName != null)
+            if (gameName != null) {
+                currentSaveFile = null;
                 ui.handler.newGame(gameName);
+            }
         } else if (source == loadMenuItem) {
             int r = fc.showOpenDialog(frame);
             if (r == JFileChooser.APPROVE_OPTION) {
-                File f = fc.getSelectedFile();
+                final File f = fc.getSelectedFile();
                 try (InputStream in = new FileInputStream(f)) {
                     ui.handler.loadGameState(in);
+                    currentSaveFile = f;
                 } catch (Exception ex) {
                     logger.log(Level.WARNING, "MainFrame loadMenuItem", ex);
                     ui.showTextDialogImpl("Load Error", ex.getMessage(), "OK");
                 }
             }
         } else if (source == saveMenuItem) {
-            if (lastSaveFile == null) {
+            if (currentSaveFile == null) {
                 saveAsMenuItem.doClick();
                 return;
             }
-            try (OutputStream out = new FileOutputStream(lastSaveFile)) {
+            try (OutputStream out = new FileOutputStream(currentSaveFile)) {
                 ui.handler.saveGameState(out);
             } catch (Exception ex) {
                 logger.log(Level.WARNING, "MainFrame saveMenuItem", ex);
@@ -497,7 +500,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
         } else if (source == saveAsMenuItem) {
             int r = fc.showSaveDialog(frame);
             if (r == JFileChooser.APPROVE_OPTION) {
-                lastSaveFile = fc.getSelectedFile();
+                currentSaveFile = fc.getSelectedFile();
                 saveMenuItem.doClick();
             }
         } else if (source == saveTranscriptMenuItem) {
