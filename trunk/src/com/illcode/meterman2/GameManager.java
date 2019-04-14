@@ -38,7 +38,6 @@ public final class GameManager
 
     private EventHandlerManager handlerManager;
 
-
     private StringBuilder outputBuilder;  // To be used in composing text before sending it off to the UI.
     private StringBuilder transcript;  // the game transcript
 
@@ -58,6 +57,8 @@ public final class GameManager
     private boolean inventoryRefreshNeeded;
     private boolean lookNeeded;
 
+    private List<Entity> entityList;  // temporary list to avoid allocation; always clear() after using
+
     private StatusBarProvider statusBarProvider;
 
     GameManager() {
@@ -74,6 +75,8 @@ public final class GameManager
         entityProcessingList = new ArrayList<>();
         changedRooms = new HashSet<>();
         roomProcessingList = new ArrayList<>();
+
+        entityList = new ArrayList<>();
 
         outputSeparator = bundles.getPassage("output-separator").getText() + "\n";
         alwaysLook = Utils.booleanPref("always-look", true);
@@ -283,13 +286,17 @@ public final class GameManager
             return; // we were blocked by a listener
         if (fromRoom.exiting(toRoom))
             return;  // blocked by the room itself
-        for (Entity e : GameUtils.getEntitiesRecursive(fromRoom))
+        GameUtils.gatherEntitiesRecursive(fromRoom, entityList);
+        for (Entity e : entityList)
             e.exitingScope();
+        entityList.clear();
         currentRoom = toRoom;  // we've moved!
         putBinding("currentRoom", currentRoom);
         toRoom.entered(fromRoom);
-        for (Entity e : GameUtils.getEntitiesRecursive(toRoom))
+        GameUtils.gatherEntitiesRecursive(toRoom, entityList);
+        for (Entity e : entityList)
             e.enterScope();
+        entityList.clear();
         handlerManager.firePlayerMovement(fromRoom, toRoom, false);
         ui.clearEntitySelection();  // this in turn will call entitySelected(null) if needed
         if (alwaysLook || !hasAttr(toRoom, SystemAttributes.VISITED))
@@ -318,13 +325,25 @@ public final class GameManager
         }
         final boolean inScopeBefore = GameUtils.getRoom(fromContainer) == currentRoom;
         final boolean inScopeAfter = GameUtils.getRoom(toContainer) == currentRoom;
-        if (inScopeBefore && !inScopeAfter)
-            e.exitingScope();
+        if (inScopeBefore && !inScopeAfter) {
+            entityList.add(e);
+            if (e instanceof EntityContainer)
+                GameUtils.gatherEntitiesRecursive((EntityContainer) e, entityList);
+            for (Entity _e : entityList)
+                _e.exitingScope();
+            entityList.clear();
+        }
         // Now move the entity.
         GameUtils.putInContainer(e, toContainer);
         // done moving!
-        if (!inScopeBefore && inScopeAfter)
-            e.enterScope();
+        if (!inScopeBefore && inScopeAfter) {
+            entityList.add(e);
+            if (e instanceof EntityContainer)
+                GameUtils.gatherEntitiesRecursive((EntityContainer) e, entityList);
+            for (Entity _e : entityList)
+                _e.enterScope();
+            entityList.clear();
+        }
         if (fromContainer == currentRoom || toContainer == currentRoom)
             queueRoomUIRefresh();
         if (e == selectedEntity)
