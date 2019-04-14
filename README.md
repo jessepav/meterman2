@@ -17,6 +17,10 @@ The game system manual is online here:
 
 * https://jessepav.github.io/meterman2/manual.html
 
+or
+
+* [gdoc.pub link](https://gdoc.pub/doc/e/2PACX-1vRdhXBfm0cZu6krXzmB4Ei0Sl1IJJnQP_6VQuDUCQUuVB9k0KQRNt_ynZsCpbM9b_3H6XmWcGVq1l8H)
+
 ## Source ##
 
 The source is kept in an SVN repository
@@ -26,3 +30,5 @@ The source is kept in an SVN repository
 And also mirrored at GitHub
 
 * https://github.com/jessepav/meterman2
+
+  (though [commits](https://jessepav.assembla.com/spaces/Meterman2/subversion/commits/list) aren't synchronized)
