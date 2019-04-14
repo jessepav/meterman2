@@ -50,10 +50,13 @@
     <action name="LOCK" shortcut="shift K" />
     <action name="UNLOCK" shortcut="shift U" />
     <action name="INTERACT" shortcut="shift I" />
+    <action name="USE" shortcut="shift S" />
     <action name="SWITCH_ON" shortcut="shift N" />
     <action name="SWITCH_OFF" shortcut="shift F" />
+    <action name="MOVE" shortcut="shift V" />
     <action name="CONTAINER_PUT" shortcut="ctrl shift I" />
     <action name="CONTAINER_TAKE" shortcut="ctrl shift O" />
     <action name="CONTAINER_LOOK_IN" shortcut="ctrl shift X" />
+    <action name="LOOK_PREP" shortcut="ctrl alt L" />
   </keybindings>
 </xbundle>

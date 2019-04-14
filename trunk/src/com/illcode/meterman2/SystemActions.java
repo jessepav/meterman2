@@ -18,11 +18,14 @@ public final class SystemActions
     public static Action LOCK;
     public static Action UNLOCK;
     public static Action INTERACT;
+    public static Action USE;
     public static Action SWITCH_ON;
     public static Action SWITCH_OFF;
+    public static Action MOVE;
     public static Action CONTAINER_PUT;
     public static Action CONTAINER_TAKE;
     public static Action CONTAINER_LOOK_IN;
+    public static Action LOOK_PREP;
 
     public static void init() {
         // Don't set shortcuts yet because the UI doesn't exist
@@ -41,10 +44,13 @@ public final class SystemActions
         LOCK = actions.getAction("LOCK");
         UNLOCK = actions.getAction("UNLOCK");
         INTERACT = actions.getAction("INTERACT");
+        USE = actions.getAction("USE");
         SWITCH_ON = actions.getAction("SWITCH_ON");
         SWITCH_OFF = actions.getAction("SWITCH_OFF");
+        MOVE = actions.getAction("MOVE");
         CONTAINER_PUT = actions.getAction("CONTAINER_PUT");
         CONTAINER_TAKE = actions.getAction("CONTAINER_TAKE");
         CONTAINER_LOOK_IN = actions.getAction("CONTAINER_LOOK_IN");
+        LOOK_PREP = actions.getAction("LOOK_PREP");
     }
 }

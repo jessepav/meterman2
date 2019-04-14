@@ -1,8 +1,12 @@
-package com.illcode.meterman2.model;
+package com.illcode.meterman2;
 
 import com.illcode.meterman2.MMScript;
 import com.illcode.meterman2.MMTemplate;
 import com.illcode.meterman2.event.GameEventHandler;
+import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.Player;
+import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.model.TopicMap;
 
 import java.util.Map;
 

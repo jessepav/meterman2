@@ -1,6 +1,7 @@
 package com.illcode.meterman2.handler;
 
 import com.illcode.meterman2.Meterman2;
+import com.illcode.meterman2.StatusBarProvider;
 import com.illcode.meterman2.event.TurnListener;
 import com.illcode.meterman2.ui.UIConstants;
 

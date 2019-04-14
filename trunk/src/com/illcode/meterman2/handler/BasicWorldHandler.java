@@ -1,18 +1,19 @@
 package com.illcode.meterman2.handler;
 
-import com.illcode.meterman2.MMActions;
-import com.illcode.meterman2.SystemActions;
-import com.illcode.meterman2.SystemAttributes;
+import com.illcode.meterman2.*;
 import com.illcode.meterman2.event.EntityActionsProcessor;
 import com.illcode.meterman2.event.GameActionListener;
-import com.illcode.meterman2.event.TurnListener;
 import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIConstants;
+import com.illcode.meterman2.util.ActionSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.illcode.meterman2.GameUtils.hasAttr;
 import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
+import static com.illcode.meterman2.GameUtils.getPassageWithArgs;
 import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.ui;
 
@@ -32,6 +33,9 @@ public class BasicWorldHandler
     private String handlerId;
     private int statusLabelPos;
 
+    private List<Room> roomList;  // temprary list to avoid allocation
+    private ActionSet actionSet;
+
     /**
      * Create a basic world handler.
      * @param handlerId handler ID
@@ -39,6 +43,8 @@ public class BasicWorldHandler
     public BasicWorldHandler(String handlerId) {
         this.handlerId = handlerId;
         statusLabelPos = UIConstants.RIGHT_LABEL;
+        roomList = new ArrayList<>(UIConstants.NUM_EXIT_BUTTONS);
+        actionSet = new ActionSet();
     }
 
     /** Registers this basic world handler with the game manager.  */
@@ -73,19 +79,23 @@ public class BasicWorldHandler
     // Implement EntityActionsProcessor
     @Override
     public void processEntityActions(Entity e, List<MMActions.Action> actions) {
-        actions.add(0, SystemActions.EXAMINE);  // Examine should always be first.
-        if (hasAttr(e, SystemAttributes.TAKEABLE)) {
+        actionSet.init(actions);
+        actionSet.checkAddAction(SystemActions.EXAMINE, actions, 0);  // Examine should always be first.
+        final AttributeSet attr = e.getAttributes();
+        if (attr.get(SystemAttributes.TAKEABLE)) {
             if (gm.isInInventory(e))
-                actions.add(SystemActions.DROP);
+                actionSet.checkAddAction(SystemActions.DROP, actions);
             else
-                actions.add(SystemActions.TAKE);
+                actionSet.checkAddAction(SystemActions.TAKE, actions);
         }
-        if (hasAttr(e, SystemAttributes.EQUIPPABLE) && gm.isInInventory(e)) {
+        if (attr.get(SystemAttributes.EQUIPPABLE) && gm.isInInventory(e)) {
             if (gm.isEquipped(e))
-                actions.add(SystemActions.UNEQUIP);
+                actionSet.checkAddAction(SystemActions.UNEQUIP, actions);
             else
-                actions.add(SystemActions.EQUIP);
+                actionSet.checkAddAction(SystemActions.EQUIP, actions);
         }
+        if (attr.get(SystemAttributes.MOVEABLE))
+            actionSet.checkAddAction(SystemActions.MOVE, actions);
     }
 
     // Implement GameActionListener
@@ -109,6 +119,20 @@ public class BasicWorldHandler
         } else if (action.equals(SystemActions.UNEQUIP)) {
             gm.setEquipped(e, false);
             printPassageWithArgs("unequip-message", e.getDefName());
+        } else if (action.equals(SystemActions.MOVE)) {
+            final String actionText = action.getText().toLowerCase();
+            GameUtils.gatherExitRooms(gm.getCurrentRoom(), false, roomList);
+            if (roomList.isEmpty()) {
+                printPassageWithArgs("move-no-rooms-message", actionText, e.getDefName());
+            } else {
+                final Room r = ui.showListDialog(action.getText(),
+                    getPassageWithArgs("move-prompt-message", actionText, e.getDefName()), roomList, true);
+                if (r != null) {
+                    gm.moveEntity(e, r);
+                    printPassageWithArgs("move-message", actionText, e.getDefName(), r.getDefName());
+                }
+                roomList.clear();
+            }
         } else {
             handled = false;
         }

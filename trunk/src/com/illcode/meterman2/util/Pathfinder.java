@@ -1,5 +1,6 @@
-package com.illcode.meterman2;
+package com.illcode.meterman2.util;
 
+import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.model.DoorImpl;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.EntityImpl;

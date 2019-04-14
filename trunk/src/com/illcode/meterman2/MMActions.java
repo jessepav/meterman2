@@ -218,6 +218,11 @@ public final class MMActions
             this.fixedText = fixedText;
         }
 
+        /** Returns the unique action number of this action. */
+        public int getActionNo() {
+            return actionNo;
+        }
+
         /**
          * Return the text represented by this Action.
          * @return if this Action's fixed-text is not null, then return the fixed-text;

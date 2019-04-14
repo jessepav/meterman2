@@ -1,6 +1,5 @@
 package com.illcode.meterman2;
 
-import com.illcode.meterman2.model.Game;
 import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;

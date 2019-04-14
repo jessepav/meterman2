@@ -1,4 +1,4 @@
-package com.illcode.meterman2.handler;
+package com.illcode.meterman2;
 
 /**
  * Classes that provide text to be shown in the status bar.

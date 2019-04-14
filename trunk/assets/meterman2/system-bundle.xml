@@ -26,6 +26,16 @@
   <passage id="unequip-message" format="printf"> <!-- args: defName -->
     You unequip %s.
   </passage>
+  <passage id="move-no-rooms-message" format="printf"> <!-- args: action text, defName-->
+    There is nowhere you can %s %s to.
+  </passage>
+  <passage id="move-prompt-message" format="printf"> <!-- args: action text, defName-->
+    Where do you want to %s %s to?
+  </passage>
+  <passage id="move-message" format="printf"> <!-- args: action text, defName, room defName-->
+    You %s %s to %s.
+  </passage>
+
 
   <!-- Used by doors and containers. -->
   <passage id="nokey-message" format="printf"> <!-- args: defName -->
@@ -120,10 +130,13 @@
     <action name="LOCK" templateText="Lock" />
     <action name="UNLOCK" templateText="Unlock" />
     <action name="INTERACT" templateText="Interact" />
+    <action name="USE" templateText="Use" />
     <action name="SWITCH_ON" templateText="Switch On" />
     <action name="SWITCH_OFF" templateText="Switch Off" />
+    <action name="MOVE" templateText="Move" />
     <action name="CONTAINER_PUT" templateText="Put Item %s" />
     <action name="CONTAINER_TAKE" templateText="Take Item %s" />
     <action name="CONTAINER_LOOK_IN" templateText="Look %s" />
+    <action name="LOOK_PREP" templateText="Look %s" />  <!-- Look In/Through/Out/etc.-->
   </actions>
 </xbundle>

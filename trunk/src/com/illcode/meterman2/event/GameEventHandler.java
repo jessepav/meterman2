@@ -1,6 +1,6 @@
 package com.illcode.meterman2.event;
 
-import com.illcode.meterman2.model.Game;
+import com.illcode.meterman2.Game;
 
 /**
  * The super-interface for all event listeners, processors, handlers etc.
@@ -28,7 +28,7 @@ public interface GameEventHandler
     void restoreHandlerState(Object state);
 
     /**
-     * Called immediately before {@link com.illcode.meterman2.model.Game#start(boolean)}. The handler can
+     * Called immediately before {@link Game#start(boolean)}. The handler can
      * update itself or the UI as necessary.
      * @param newGame true if this is a new game, false if we're resuming a saved game.
      */
