@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public final class Markup
 {
-    public static final String EMPH_TAG = "[em]";
+    public static final String EMPH_TAG = "@[em]";
     public static final String EMPH_CLOSE_TAG = "[/em]";
 
     private static final String[] TAGS = {EMPH_TAG, EMPH_CLOSE_TAG};
