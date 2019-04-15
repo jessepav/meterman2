@@ -98,10 +98,23 @@ public final class Utils
     }
 
     /**
-     * Equivalent to {@link #parseInt(String, int) parseInt(s, 0)}
+     * Parses a string of the form "int, int, int, ..." into an array of integers. The separators
+     * can be any combination of spaces and commas.
+     * @param s string
+     * @return an array of ints. If we encounter any parse errors, we return a 0-length array.
      */
-    public static int parseInt(String s) {
-        return parseInt(s, 0);
+    public static int[] parseIntList(String s) {
+        if (s == null || s.isEmpty())
+            return new int[0];
+        try {
+            String[] sa = StringUtils.split(s, ", ");
+            int[] ia = new int[sa.length];
+            for (int i = 0; i < ia.length; i++)
+                ia[i] = Integer.parseInt(s);
+            return ia;
+        } catch (NumberFormatException ex) {
+            return new int[0];
+        }
     }
 
     /**

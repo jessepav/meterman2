@@ -18,6 +18,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.InvocationTargetException;
@@ -75,7 +76,7 @@ public final class MMUI
                 try {
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                 } catch (ClassNotFoundException | UnsupportedLookAndFeelException |
-                         InstantiationException | IllegalAccessException | ClassCastException ex) {
+                    InstantiationException | IllegalAccessException | ClassCastException ex) {
                     logger.log(Level.WARNING, "UIManager.setLookAndFeel()", ex);
                 }
                 // This prevents JComboBox from firing an ActionEvent every time the selection
@@ -109,6 +110,13 @@ public final class MMUI
 
                 maxBufferSize = Utils.intPref("max-text-buffer-size", 50000);
                 dialogTextColumns = Utils.intPref("dialog-text-columns", 60);
+                final int[] dims = Utils.parseIntList(Utils.pref("image-panel-size", "150, 400"));
+                if (dims.length == 2) {
+                    final Dimension d = new Dimension(dims[0], dims[1]);
+                    mainFrame.imagePanel.setMinimumSize(d);
+                    mainFrame.imagePanel.setPreferredSize(d);
+                }
+
                 setGameName(null);
                 handler.uiInitialized();
                 mainFrame.setVisible(true);

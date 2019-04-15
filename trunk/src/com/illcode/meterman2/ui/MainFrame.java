@@ -538,8 +538,8 @@ final class MainFrame implements ActionListener, ListSelectionListener
             Utils.setPref("prompt-to-quit", Boolean.toString(promptToQuitCheckBoxMenuItem.isSelected()));
         } else if (source == scrollbackMenuItem) {
             int newval = Utils.parseInt(ui.showPromptDialogImpl("Scrollback",
-                "Scrollback buffer size, in characters:", "Size:", Integer.toString(ui.maxBufferSize)));
-            if (newval == 0) {
+                "Scrollback buffer size, in characters:", "Size (>= 1000):", Integer.toString(ui.maxBufferSize)), 0);
+            if (newval < 1000) {
                 ui.showTextDialogImpl("Scrollback", "That's not a valid size!", "Sorry, I'll try again");
             } else {
                 ui.maxBufferSize = newval;
