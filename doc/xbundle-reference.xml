@@ -233,6 +233,12 @@
     <topic id="done" label="Nothing else, I guess">
       <text>Be seein' ya.</text>
     </topic>
+    <!-- If a topic with an ID of "OTHER" is present, it will be displayed at the end of the topic list,
+         and handling will be delegated to the scripted or subclassed interactOther() method.-->
+    <topic id="OTHER" label="Actually, I was thinking about...">
+      <!-- The text of the OTHER topic will be used in the prompt dialog. -->
+      <text>What were you thinking about?</text>
+    </topic>
   </topicmap>
 
   <!--
@@ -250,10 +256,6 @@
     <topics>
       <topic>GREETING</topic>
     </topics>
-
-    <!-- If otherTopic is present, it will be displayed at the end of the topic list,
-         and handling will be delegated to the scripted or subclassed interactOther() method.-->
-    <otherTopic>Actually, I was thinking about...</otherTopic>
 
     <!-- If an exitTopic is specified, the interaction cycle will repeat until the entity runs out of topics,
          the user closes the topic selection dialog manually, or the topic with the given ID is chosen. -->
