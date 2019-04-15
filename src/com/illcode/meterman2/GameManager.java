@@ -102,9 +102,10 @@ public final class GameManager
     void newGame(Game game) {
         closeGame();
         this.game = game;
-        String gameName = game.getName();
+        final String gameName = game.getName();
         ui.showWaitDialog("Starting " + gameName + "...");
         ui.setGameName(gameName);
+        ui.setFrameImageVisible(Meterman2.gamesList.getGameFrameImageVisible(gameName));
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
         final String packageName = Meterman2.gamesList.getGamePackageName(gameName);
         if (!packageName.isEmpty())
@@ -146,8 +147,9 @@ public final class GameManager
     void loadGame(final Game game, final GameState state) {
         closeGame();
         this.game = game;
-        String gameName = game.getName();
+        final String gameName = game.getName();
         ui.setGameName(gameName);
+        ui.setFrameImageVisible(Meterman2.gamesList.getGameFrameImageVisible(gameName));
         Meterman2.assets.setGameAssetsPath(Meterman2.gamesList.getGameAssetsPath(gameName));
         final String packageName = Meterman2.gamesList.getGamePackageName(gameName);
         if (!packageName.isEmpty())
@@ -210,6 +212,7 @@ public final class GameManager
             game = null;
         }
         Meterman2.ui.clearImages();
+        Meterman2.ui.setFrameImageVisible(true);
         Meterman2.sound.clearAudio();
         Meterman2.script.clearBindings();
         Meterman2.template.clearBindings();

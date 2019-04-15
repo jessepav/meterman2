@@ -54,6 +54,10 @@ public final class GamesList
         return gamesMap.get(gameName).version;
     }
 
+    public boolean getGameFrameImageVisible(String gameName) {
+        return gamesMap.get(gameName).frameImageVisible;
+    }
+
     /**
      * Return the string assets path of a game.
      * @param gameName game name
@@ -72,7 +76,7 @@ public final class GamesList
         return gamesMap.get(gameName).getGamePackageName();
     }
 
-    private void loadGamesFromGlue() {
+    public void loadGamesFromGlue() {
         gamesMap = new HashMap<>();
         try (DirectoryStream<Path> dirStream = Files.newDirectoryStream(Meterman2.gluePath)) {
             SAXBuilder sax = new SAXBuilder();
@@ -92,8 +96,9 @@ public final class GamesList
                         String version = root.getChildText("version");
                         String assetsPath = root.getChildText("assets-path");
                         String gameClassName = root.getChildText("class");
+                        boolean frameImageVisible = Utils.parseBoolean(root.getChildText("frame-image-visible"));
                         if (name != null && version != null && assetsPath != null && gameClassName != null) {
-                            gamesMap.put(name, new PieceOfGlue(version, assetsPath, gameClassName));
+                            gamesMap.put(name, new PieceOfGlue(version, assetsPath, gameClassName, frameImageVisible));
                             validGlue = true;
                         }
                     } catch (IOException|JDOMException e) {
@@ -114,11 +119,13 @@ public final class GamesList
         final String version;
         final String assetsPath;
         final String gameClassName;
+        final boolean frameImageVisible;
 
-        private PieceOfGlue(String version, String assetsPath, String gameClassName) {
+        private PieceOfGlue(String version, String assetsPath, String gameClassName, boolean frameImageVisible) {
             this.version = version;
             this.assetsPath = assetsPath;
             this.gameClassName = gameClassName;
+            this.frameImageVisible = frameImageVisible;
         }
 
         public String getGamePackageName() {

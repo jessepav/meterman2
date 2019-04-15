@@ -364,12 +364,14 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     void setFrameImage(BufferedImage image) {
         frameImage = image;
-        imageComponent.repaint();
+        if (imagePanel.isVisible())
+            imageComponent.repaint();
     }
 
     void setEntityImage(BufferedImage image) {
         entityImage = image;
-        imageComponent.repaint();
+        if (imagePanel.isVisible())
+            imageComponent.repaint();
     }
 
     public void clearExits() {

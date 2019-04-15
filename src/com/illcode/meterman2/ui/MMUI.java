@@ -314,6 +314,11 @@ public final class MMUI
         imageMap.clear();
     }
 
+    /** Set whether the frame image panel is visible. */
+    public void setFrameImageVisible(boolean visible) {
+        mainFrame.imagePanel.setVisible(visible);
+    }
+
     /**
      * Sets the image displayed in the main UI frame. The recommended size for
      * frame images is 150x400 pixels, or an integer fraction of that, in which
