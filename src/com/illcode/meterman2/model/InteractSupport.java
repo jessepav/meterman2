@@ -7,8 +7,12 @@ import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.model.TopicMap.Topic;
 import com.illcode.meterman2.text.TextSource;
 import org.apache.commons.lang3.StringUtils;
+import org.mini2Dx.gdx.utils.Array;
+import org.mini2Dx.gdx.utils.OrderedSet;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static com.illcode.meterman2.Meterman2.bundles;
 import static com.illcode.meterman2.Meterman2.gm;
@@ -21,7 +25,7 @@ public final class InteractSupport
 {
     private Entity e;
     private TopicMap topicMap;
-    private Collection<String> currentTopics;
+    private OrderedSet<String> currentTopics;
     private String exitTopicId;
     private boolean repeatInteract;
     private MMScript.ScriptedMethod beginInteractMethod, topicChosenMethod, interactOtherMethod;
@@ -37,7 +41,7 @@ public final class InteractSupport
      */
     public InteractSupport(Entity e) {
         this.e = e;
-        currentTopics = new LinkedHashSet<>();
+        currentTopics = new OrderedSet<>(16);
         assembledTopics = new ArrayList<>();
         interactAction = SystemActions.INTERACT;
     }
@@ -246,10 +250,10 @@ public final class InteractSupport
      * The state of a interact-support instance comprises a collection of current topics IDs.
      */
     public Object getState() {
-        if (currentTopics.isEmpty())
+        if (currentTopics.size == 0)
             return null;
-        final String[] currentTopicIds = new String[currentTopics.size()];
-        currentTopics.toArray(currentTopicIds);
+        final Array<String> arr = currentTopics.orderedItems();
+        final String[] currentTopicIds = arr.toArray(String.class);
         return currentTopicIds;
     }
 
@@ -260,7 +264,7 @@ public final class InteractSupport
      * @param state state object, as returned by {@code getState()}.
      */
     public void restoreState(Object state) {
-        clearTopics();
+        currentTopics.clear();
         if (state == null)
             return;
         final String[] currentTopicIds = (String[]) state;
