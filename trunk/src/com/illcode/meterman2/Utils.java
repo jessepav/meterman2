@@ -110,7 +110,7 @@ public final class Utils
             String[] sa = StringUtils.split(s, ", ");
             int[] ia = new int[sa.length];
             for (int i = 0; i < ia.length; i++)
-                ia[i] = Integer.parseInt(s);
+                ia[i] = Integer.parseInt(sa[i]);
             return ia;
         } catch (NumberFormatException ex) {
             return new int[0];
