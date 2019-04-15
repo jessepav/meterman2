@@ -86,11 +86,15 @@ public class MMHandler implements UIHandler
     }
 
     public void newGame(String gameName) {
-        Game game = Meterman2.gamesList.createGame(gameName);
-        if (game == null)
-            ui.showTextDialogImpl("Error", "Error creating game!", "OK");
-        else
-            gm.newGame(game);
+        if (!Meterman2.gamesList.gameExists(gameName)) {
+            ui.showTextDialogImpl("Invalid Game", "\"" + gameName + "\"is not a valid game.", "Ayaa");
+        } else {
+            Game game = Meterman2.gamesList.createGame(gameName);
+            if (game == null)
+                ui.showTextDialogImpl("Error", "Error creating game!", "OK");
+            else
+                gm.newGame(game);
+        }
     }
 
     public void loadGameState(InputStream in) {
