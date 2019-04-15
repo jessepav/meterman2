@@ -18,4 +18,8 @@
 
   <!-- The full class name of the class implementing Game. -->
   <class>com.illcode.riverboat.RiverboatGame</class>
+
+  <!-- Some games may not want to display images to the side of the main text area, and can set this to
+       false to hide the frame image and have a larger text area. -->
+  <frame-image-visible>true</frame-image-visible>
 </game>

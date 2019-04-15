@@ -8,7 +8,7 @@ new FormModel {
 			"title": "Meterman"
 			"minimumSize": new java.awt.Dimension( 775, 610 )
 			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
-				"$columnSpecs": "max(default;150px), unrelgap, default:grow, unrelgap, default"
+				"$columnSpecs": "default, unrelgap, default:grow, unrelgap, default"
 				"$rowSpecs": "fill:default:grow, 9dlu, max(default;53dlu), unrelgap, default"
 			} ) {
 				name: "mainPanel"
@@ -17,6 +17,8 @@ new FormModel {
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.BorderLayout ) ) {
 					name: "imagePanel"
 					"background": sfield java.awt.Color darkGray
+					"minimumSize": new java.awt.Dimension( 150, 400 )
+					"preferredSize": new java.awt.Dimension( 150, 400 )
 				}, new FormLayoutConstraints( class com.jgoodies.forms.layout.CellConstraints ) )
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class com.jgoodies.forms.layout.FormLayout ) {
 					"$columnSpecs": "default:grow"
