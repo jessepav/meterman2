@@ -66,6 +66,12 @@ public class MMHandler implements UIHandler
                             ui.showTextDialogImpl("Reload", "Reloading topic map ID " + args[2] + " failed!", "Rats");
                         break;
                     }
+                } else if (args.length == 2) {
+                    switch (args[1]) {
+                    case "glue":
+                        Meterman2.gamesList.loadGamesFromGlue();
+                        break;
+                    }
                 }
                 break;
             default:
