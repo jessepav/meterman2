@@ -113,6 +113,8 @@ public final class GameManager
         ui.clearText();
         game.init();
         gameStateMap = game.getInitialGameStateMap();
+        putBindings(gameStateMap);
+        putBinding("game", game);
         game.constructWorld(true);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
@@ -122,7 +124,6 @@ public final class GameManager
         game.registerInitialGameHandlers();
         selectedEntity = null;
 
-        putBindings(gameStateMap);
         putBinding("currentRoom", currentRoom);
         putBinding("entities", entityIdMap);
         putBinding("rooms", roomIdMap);
@@ -158,6 +159,8 @@ public final class GameManager
         player = new Player();
         gameStateMap = state.gameStateMap;
         game.setGameStateMap(gameStateMap);
+        putBindings(gameStateMap);
+        putBinding("game", game);
         game.constructWorld(false);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
@@ -171,7 +174,6 @@ public final class GameManager
         numTurns = state.numTurns;
         selectedEntity = null;
 
-        putBindings(gameStateMap);
         putBinding("currentRoom", currentRoom);
         putBinding("entities", entityIdMap);
         putBinding("rooms", roomIdMap);

@@ -13,6 +13,18 @@ Certain variables are made available to scripts and templates by the system:
         <th>Name</th><th>Value</th><th>In Scripts</th><th>In Templates</th>
     </tr>
     <tr>
+        <td><tt>game</tt></td>
+        <td>The instance of the currently running game.<br/>
+            This is available when <tt>Game.constructWorld()</tt> is called.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
+        <td><em>all items in the<br/>game state map</em></td>
+        <td>All the game state objects returned by the current game.<br/>
+            These are available when <tt>Game.constructWorld()</tt> is called.</td>
+        <td>Y</td><td>Y</td>
+    </tr>
+    <tr>
         <td><tt>entities</tt></td>
         <td>A map from entity ID to Entity.</td>
         <td>Y</td><td>Y</td>
