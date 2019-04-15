@@ -15,6 +15,7 @@
       <excludeFolder url="file://$MODULE_DIR$/glue" />
       <excludeFolder url="file://$MODULE_DIR$/jars" />
       <excludeFolder url="file://$MODULE_DIR$/lib" />
+      <excludeFolder url="file://$MODULE_DIR$/local" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
       <excludeFolder url="file://$MODULE_DIR$/saves" />
       <excludeFolder url="file://$MODULE_DIR$/srcjars" />
