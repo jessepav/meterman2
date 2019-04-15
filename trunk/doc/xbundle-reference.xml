@@ -234,7 +234,8 @@
       <text>Be seein' ya.</text>
     </topic>
     <!-- If a topic with an ID of "OTHER" is present, it will be displayed at the end of the topic list,
-         and handling will be delegated to the scripted or subclassed interactOther() method.-->
+         and handling will be delegated to the scripted or subclassed interactOther() method. OTHER topics
+         have no add- or remove-topics lists. -->
     <topic id="OTHER" label="Actually, I was thinking about...">
       <!-- The text of the OTHER topic will be used in the prompt dialog. -->
       <text>What were you thinking about?</text>

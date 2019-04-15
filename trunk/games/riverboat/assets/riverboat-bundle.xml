@@ -184,7 +184,9 @@ void eachTurn(Entity e) {
       <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3">
         <item>My father was a farmer...</item>
         <item>...my mother was a farmer...</item>
-        <item button="Done">...and @[em]I'm[/em] a farmer.</item>
+        <item button="Done" format="ftl">
+          ...and I, @[em]${entity.defName}[/em], am a farmer.
+        </item>
       </sequence>
       <removeTopics>
         <t>family</t>
@@ -192,7 +194,7 @@ void eachTurn(Entity e) {
     </topic>
     <topic id="joe" label="How about that guy Joe?" removeTopics="joe" addTopics="family">
       <dialog header="Joe" button="Right!" image="mike" scale="3" format="ftl">
-        ${entity.defName} says, "Joe's an ass!".
+        ${entity.defName} says, "Joe's a scrub!".
       </dialog>
     </topic>
     <topic id="done" label="That's it, my man.">
