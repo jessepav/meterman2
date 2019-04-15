@@ -10,6 +10,7 @@ import org.mini2Dx.gdx.utils.ObjectMap;
 import java.util.*;
 
 import static com.illcode.meterman2.GameUtils.DialogPassage;
+import static com.illcode.meterman2.GameUtils.DialogSequence;
 
 /**
  * Used to store topics for interactive discussion.
@@ -87,7 +88,7 @@ public final class TopicMap
         // The three types of content a topic can have.
         private final TextSource text;
         private final DialogPassage dialog;
-        private final List<DialogPassage> sequence;
+        private final DialogSequence sequence;
 
         public Topic(String id, String label, Collection<String> addTopics,
                      Collection<String> removeTopics, TextSource text) {
@@ -112,7 +113,7 @@ public final class TopicMap
         }
 
         public Topic(String id, String label, Collection<String> addTopics,
-                     Collection<String> removeTopics, List<DialogPassage> sequence) {
+                     Collection<String> removeTopics, DialogSequence sequence) {
             this.id = id;
             this.label = label;
             this.addTopics = addTopics;

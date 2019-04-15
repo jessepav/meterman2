@@ -238,7 +238,7 @@ public final class GameUtils
      * @param id ID of the dialog sequence element in the system bundle group.
      * @return a list of DialogPassage instances, or null if the sequence could not be loaded
      */
-    public static List<DialogPassage> loadDialogSequence(String id) {
+    public static DialogSequence loadDialogSequence(String id) {
         final Pair<Element, XBundle> pair = Meterman2.bundles.getElementAndBundle(id);
         if (pair == null)
             return null;
@@ -253,13 +253,14 @@ public final class GameUtils
      * @param e the element with the sequence definition
      * @return a list of DialogPassage instances, or null if the sequence could not be loaded
      */
-    public static List<DialogPassage> loadDialogSequence(XBundle b, Element e) {
+    public static DialogSequence loadDialogSequence(XBundle b, Element e) {
         if (b == null || e == null)
             return null;
         final String defaultHeader = e.getAttributeValue("defaultHeader", "");
         final String defaultButton = e.getAttributeValue("defaultButton", "Okay");
         final String defaultImage = e.getAttributeValue("defaultImage");
         final int defaultScale = Utils.parseInt(e.getAttributeValue("defaultScale"), 1);
+        final boolean noEscape = Utils.parseBoolean(e.getAttributeValue("noEscape"));
 
         final List<Element> entries = e.getChildren();
         final List<DialogPassage> dialogs = new ArrayList<>(entries.size());
@@ -271,21 +272,21 @@ public final class GameUtils
             final TextSource text = b.elementTextSource(item);
             dialogs.add(new DialogPassage(header, button, image, scale, text));
         }
-        return dialogs;
+        return new DialogSequence(dialogs, noEscape);
     }
 
     /** Show a sequence of dialog passages. */
-    public static void showDialogSequence(List<DialogPassage> sequence) {
+    public static void showDialogSequence(DialogSequence sequence) {
         if (sequence == null)
             return;
         boolean first = true;
-        for (DialogPassage dialog : sequence) {
+        for (DialogPassage dialog : sequence.dialogs) {
             if (DIALOG_DELAY_MS != 0) {
                 // sleeping a little avoids a jarring flicker as each dialog transitions to the next
                 if (!first) Utils.sleep(DIALOG_DELAY_MS);
                 else first = false;
             }
-            if (dialog.show() == -1)
+            if (dialog.show() == -1 && !sequence.noEscape)
                 break;  // allow the user to interrupt the sequence
         }
     }
@@ -545,6 +546,17 @@ public final class GameUtils
                 return Meterman2.ui.showTextDialog(header, text.getText(), button);
             else
                 return Meterman2.ui.showImageDialog(header, image, scale, text.getText(), button);
+        }
+    }
+
+    public static final class DialogSequence
+    {
+        final List<DialogPassage> dialogs;
+        final boolean noEscape;
+
+        public DialogSequence(List<DialogPassage> dialogs, boolean noEscape) {
+            this.dialogs = dialogs;
+            this.noEscape = noEscape;
         }
     }
 }

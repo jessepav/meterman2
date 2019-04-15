@@ -181,7 +181,8 @@ void eachTurn(Entity e) {
       <text>That is one scary dungeon!</text>
     </topic>
     <topic id="family" label="What about your family?">
-      <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3">
+      <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3"
+                noEscape="false">
         <item>My father was a farmer...</item>
         <item>...my mother was a farmer...</item>
         <item button="Done" format="ftl">

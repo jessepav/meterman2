@@ -137,9 +137,11 @@
   </dialog>
 
   <!-- For use with GameUtils.loadDialogSequence(). Note that the names of the child elements - in this
-       case 'dialog' - don't matter, so long as they have the correct attributes. -->
+       case 'dialog' - don't matter, so long as they have the correct attributes.
+       If noEscape="true" the user won't be allowed to terminate the sequence early by hitting escape
+       or closing a dialog window. -->
   <sequence id="animal-sequence" defaultHeader="Animal" defaultButton="Okay"
-            defaultImage="generic-water-creature" defaultScale="2">
+            defaultImage="generic-water-creature" defaultScale="2" noEscape="true">
     <!-- the default header and button will be used if the item doesn't specify its own. -->
     <dialog passageRef="elephant-message" button="There's More" image="elephant-head" scale="2" />
     <dialog passageRef="dolphin-message" header="Aquatic" image="none" />
