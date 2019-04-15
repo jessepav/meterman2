@@ -163,7 +163,7 @@ void eachTurn(Entity e) {
   </entity>
 
   <topicmap id="mike-topicmap">
-    <topic id="GREETING" addTopics="plumbing, dungeon" removeTopics="GREETING">
+    <topic id="GREETING" addTopics="plumbing, dungeon, OTHER" removeTopics="GREETING">
       <label>Dude, what's up!</label>
       <text>Yo!@p What's going on?</text>
     </topic>
@@ -198,6 +198,9 @@ void eachTurn(Entity e) {
     <topic id="done" label="That's it, my man.">
       <text>Be seeing you, bro.</text>
     </topic>
+    <topic id="OTHER" label="Something else, actually...">
+      <text>What is it, man?</text>
+    </topic>
   </topicmap>
 
   <entity id="mike" type="walker-talker" name="Mike" attributes="moveable, proper-name"
@@ -209,7 +212,6 @@ void eachTurn(Entity e) {
       Mike lounges around and looks at you.@n
       What do you want to ask him about?
     </promptMessage>
-    <otherTopic>Something else, actually...</otherTopic>
     <script>
 void interactOther(Entity e, String topic) {
     if (topic.equals("done")) {

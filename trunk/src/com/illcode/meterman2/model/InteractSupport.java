@@ -21,8 +21,7 @@ public final class InteractSupport
 {
     private Entity e;
     private TopicMap topicMap;
-    private Collection<Topic> currentTopics;
-    private Topic otherTopic;
+    private Collection<String> currentTopics;
     private String exitTopicId;
     private boolean shouldRepeatInteract;
     private MMScript.ScriptedMethod beginInteractMethod, topicChosenMethod, interactOtherMethod;
@@ -62,11 +61,8 @@ public final class InteractSupport
      * @param id topic ID, as found in the topic map.
      */
     public void addTopic(String id) {
-        if (topicMap == null)
-            return;
-        final Topic t = topicMap.getTopic(id);
-        if (t != null)
-            currentTopics.add(t);
+        if (id != null)
+            currentTopics.add(id);
     }
 
     /**
@@ -74,11 +70,7 @@ public final class InteractSupport
      * @param id topic ID, as found in the topic map.
      */
     public void removeTopic(String id) {
-        if (topicMap == null)
-            return;
-        final Topic t = topicMap.getTopic(id);
-        if (t != null)
-            currentTopics.remove(t);
+        currentTopics.remove(id);
     }
 
     /**
@@ -86,17 +78,6 @@ public final class InteractSupport
      */
     public void clearTopics() {
         currentTopics.clear();
-    }
-
-    /**
-     * Set the label to be used to display the "Other Topic"
-     * @param label label for "Other Topic"; if null, no "Other Topic" will be shown.
-     */
-    public void setOtherTopicLabel(String label) {
-        if (label == null)
-            otherTopic = null;
-        else
-            otherTopic = new Topic(TopicMap.OTHER_TOPIC_ID, label);
     }
 
     /** Return the possibly customized interact action being used. */
@@ -213,8 +194,8 @@ public final class InteractSupport
             if (t == null)
                 break;
             final String chosenTopicId = t.getId();
-            if (chosenTopicId == TopicMap.OTHER_TOPIC_ID) {
-                String s = ui.showPromptDialog(interactAction.getText(), t.getLabel(), "Topic:", "");
+            if (chosenTopicId.equals(TopicMap.OTHER_TOPIC_ID)) {
+                String s = ui.showPromptDialog(interactAction.getText(), t.getText().getText(), "Topic:", "");
                 interactOther(s);
             } else {
                 if (StringUtils.equals(chosenTopicId, exitTopicId))
@@ -267,9 +248,7 @@ public final class InteractSupport
         if (currentTopics.isEmpty())
             return null;
         final String[] currentTopicIds = new String[currentTopics.size()];
-        int idx = 0;
-        for (Topic t : currentTopics)
-            currentTopicIds[idx++] = t.getId();
+        currentTopics.toArray(currentTopicIds);
         return currentTopicIds;
     }
 
@@ -281,14 +260,11 @@ public final class InteractSupport
      */
     public void restoreState(Object state) {
         clearTopics();
-        if (state == null || topicMap == null)
+        if (state == null)
             return;
         final String[] currentTopicIds = (String[]) state;
-        for (String id : currentTopicIds) {
-            final Topic t = topicMap.getTopic(id);
-            if (t != null)
-                currentTopics.add(t);
-        }
+        for (String id : currentTopicIds)
+            currentTopics.add(id);
     }
 
     /*
@@ -296,14 +272,16 @@ public final class InteractSupport
      * care to put the exit topic last, if one has been set.
      */
     private List<Topic> assembleTopicList() {
+        Topic exitTopic = null, otherTopic = null;
+
         assembledTopics.clear();
-        Topic exitTopic = null;
-        if (exitTopicId == null) {  // no need to rearrange currentTopics
-            assembledTopics.addAll(currentTopics);
-        } else { // put the exit topic last
-            for (Topic t : currentTopics) {
-                if (t.getId().equals(exitTopicId))
+        for (String id : currentTopics) {
+            final Topic t = topicMap.getTopic(id);
+            if (t != null) {
+                if (id.equals(exitTopicId))
                     exitTopic = t;
+                else if (id.equals(TopicMap.OTHER_TOPIC_ID))
+                    otherTopic = t;
                 else
                     assembledTopics.add(t);
             }

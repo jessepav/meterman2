@@ -20,8 +20,8 @@ public final class TopicMap
      * then it will be chosen without prompting the user to select a topic. */
     public static final String GREETING_TOPIC_ID = "GREETING";
 
-    /** Special topic ID that indicates an "Other Topic" topic. For game system use. */
-    static final String OTHER_TOPIC_ID = "__OTHER_TOPIC__";
+    /** Special topic ID that indicates an "Other Topic" topic. */
+    static final String OTHER_TOPIC_ID = "OTHER";
 
     private ObjectMap<String,Topic> topics;
 
@@ -120,17 +120,6 @@ public final class TopicMap
             text = null;
             dialog = null;
             this.sequence = sequence;
-        }
-
-        // Constructor for internal processing.
-        Topic(String id, String label) {
-            this.id = id;
-            this.label = label;
-            addTopics = Collections.emptyList();
-            removeTopics = Collections.emptyList();
-            text = null;
-            dialog = null;
-            sequence = null;
         }
 
         public String getId() {

@@ -260,7 +260,6 @@ public class BaseEntityLoader implements EntityLoader
         interactSupport.clearTopics();
         for (String topicId : helper.getListValue("topics"))
             interactSupport.addTopic(topicId);
-        interactSupport.setOtherTopicLabel(helper.getValue("otherTopic"));
         interactSupport.setInteractActionText(helper.getValue("interactActionText"));
         interactSupport.setExitTopicId(helper.getValue("exitTopic"));
         interactSupport.setScriptedMethods(methodMap);
