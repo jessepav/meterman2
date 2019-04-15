@@ -28,8 +28,8 @@
   <entity id="stick" name="Stick" attributes="takeable, equippable" inRoom="starting-room">
     <script fileRef="stick-script.bsh" />
     <description>
-      A little stick that has so many divets that it's [em]hard[/em] to see where one begins and the
-      rainbow ends. What rainbow? The one that flies [em](quickly)[/em] from station to station!
+      A little stick that has so many divets that it's @[em]hard[/em] to see where one begins and the
+      rainbow ends. What rainbow? The one that flies @[em](quickly)[/em] from station to station!
     </description>
   </entity>
 
@@ -91,12 +91,12 @@ boolean processAction(Entity e, Action action) {
 
 void enterScope(Entity e) {
     newPar();
-    println("  [em]Mirror[/em]: I'm coming to join you!");
+    println("  @[em]Mirror[/em]: I'm coming to join you!");
 }
 
 void exitingScope(Entity e) {
     newPar();
-    println("  [em]Mirror[/em]: Zaijian, zaijian...");
+    println("  @[em]Mirror[/em]: Zaijian, zaijian...");
 }
     ]]>
     </script>
@@ -184,7 +184,7 @@ void eachTurn(Entity e) {
       <sequence defaultHeader="Family" defaultButton="And..." defaultImage="mike" defaultScale="3">
         <item>My father was a farmer...</item>
         <item>...my mother was a farmer...</item>
-        <item button="Done">...and [em]I'm[/em] a farmer.</item>
+        <item button="Done">...and @[em]I'm[/em] a farmer.</item>
       </sequence>
       <removeTopics>
         <t>family</t>
@@ -213,7 +213,7 @@ void eachTurn(Entity e) {
     <script>
 void interactOther(Entity e, String topic) {
     if (topic.equals("done")) {
-        println("[em]Cool[/em], take it easy.");
+        println("@[em]Cool[/em], take it easy.");
         e.getImpl().getInteractSupport().breakInteractLoop();
     } else {
         ui.showTextDialog(topic, "I don't know much about '" + topic + "'", "All righty then");
@@ -337,7 +337,7 @@ void lookInRoom(Room currentRoom) {
 
 boolean playerMove(Room fromRoom, Room toRoom, boolean beforeMove) {
     if (beforeMove)
-        println("[em]Whoooosh![/em]   You're moving to " + toRoom.getDefName());
+        println("@[em]Whoooosh![/em]   You're moving to " + toRoom.getDefName());
     return false;
 }
     ]]>
