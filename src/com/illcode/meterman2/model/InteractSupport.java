@@ -23,7 +23,7 @@ public final class InteractSupport
     private TopicMap topicMap;
     private Collection<String> currentTopics;
     private String exitTopicId;
-    private boolean shouldRepeatInteract;
+    private boolean repeatInteract;
     private MMScript.ScriptedMethod beginInteractMethod, topicChosenMethod, interactOtherMethod;
     private MMActions.Action interactAction;
     private TextSource promptMessage, noTopicsMessage;
@@ -172,14 +172,15 @@ public final class InteractSupport
      * call {@code breakInteractLoop()} to do so.
      */
     public void breakInteractLoop() {
-        shouldRepeatInteract = false;
+        repeatInteract = false;
     }
 
     /** Entry point to the interaction system, called when the user selects
      *  the Interact action on the associated entity. */
     public void interact() {
         beginInteract();
-        shouldRepeatInteract = exitTopicId != null;
+        repeatInteract = exitTopicId != null;
+        boolean showTextInDialog = repeatInteract; // shall we show all text in dialogs?
         do {
             final List<Topic> topics = assembleTopicList();
             if (topics.isEmpty()) {
@@ -199,14 +200,14 @@ public final class InteractSupport
                 interactOther(s);
             } else {
                 if (StringUtils.equals(chosenTopicId, exitTopicId))
-                    shouldRepeatInteract = false;
+                    repeatInteract = false;
                 if (!topicChosen(t)) {
                     // if it was not handled by a script or InteractHandler, run the normal conversation cycle.
                     GameUtils.pushBinding("entity", e);
                     if (t.isDialogTopic()) {
                         t.showDialog();
                     } else {
-                        if (shouldRepeatInteract) {
+                        if (showTextInDialog) {
                             ui.showTextDialog(e.getName(), t.getText().getText());
                         } else {
                             gm.newPar();
@@ -226,7 +227,7 @@ public final class InteractSupport
                         addTopic(topicId);
                 }
             }
-        } while (shouldRepeatInteract);
+        } while (repeatInteract);
     }
 
     private String getNoTopicsMessage() {
