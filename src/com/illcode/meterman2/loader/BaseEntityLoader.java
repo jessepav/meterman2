@@ -278,8 +278,8 @@ public class BaseEntityLoader implements EntityLoader
 
     protected void loadLampProperties(LampImpl lamp) {
         lamp.setBurnsFuel(Utils.parseBoolean(el.getAttributeValue("burnsFuel")));
-        lamp.setFuelRemaining(Utils.parseInt(el.getAttributeValue("fuelRemaining")));
-        lamp.setLowFuelAmount(Utils.parseInt(el.getAttributeValue("lowFuelAmount")));
+        lamp.setFuelRemaining(Utils.parseInt(el.getAttributeValue("fuelRemaining"), 0));
+        lamp.setLowFuelAmount(Utils.parseInt(el.getAttributeValue("lowFuelAmount"), 0));
         lamp.setOnText(el.getAttributeValue("onText"));
         lamp.setOffText(el.getAttributeValue("offText"));
         lamp.setLightActionName(el.getAttributeValue("lightAction"));
