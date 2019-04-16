@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <install4j version="4.2.8" transformSequenceNumber="2">
   <directoryPresets config="./build/artifacts" />
-  <application name="Meterman2" distributionSourceDir="" applicationId="9290-6597-0220-6298" mediaDir="./build/install4j" mediaFilePattern="meterman2-${compiler:sys.version}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" keepModificationTimes="false" missingFilesStrategy="warn" shortName="meterman2" publisher="Jesse Pavel" publisherWeb="https://jessepav.github.io/meterman2/" version="2.0" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.7" javaMaxVersion="" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
+  <application name="Meterman2" distributionSourceDir="" applicationId="6489-9851-2686-5757" mediaDir="./build/install4j" mediaFilePattern="meterman2-${compiler:sys.version}" compression="6" lzmaCompression="false" pack200Compression="false" excludeSignedFromPacking="true" keepModificationTimes="true" missingFilesStrategy="warn" shortName="meterman2" publisher="Jesse Pavel" publisherWeb="https://jessepav.github.io/meterman2/" version="2.0" allPathsRelative="true" backupOnSave="false" autoSave="false" convertDotsToUnderscores="false" macSignature="????" installerName="" javaMinVersion="1.7_20" javaMaxVersion="1.8" allowBetaVM="false" jdkMode="runtimeJre" jdkName="">
     <languages skipLanguageSelection="false" languageSelectionInPrincipalLanguage="false">
       <principalLanguage id="en" customLocalizationFile="" />
       <additionalLanguages />
@@ -21,13 +21,15 @@
     </mountPoints>
     <entries>
       <dirEntry mountPoint="42" file="./build/artifacts/meterman2-dist" overwrite="4" shared="false" mode="644" uninstallMode="0" excludeSuffixes="" dirMode="755">
-        <exclude />
+        <exclude>
+          <entry location="assets/meterman2/frame-icon-128x128.png" fileType="regular" />
+        </exclude>
       </dirEntry>
     </entries>
     <components />
   </files>
   <launchers>
-    <launcher name="meterman" id="43" external="false" excludeFromMenu="false" menuName="" icnsFile="" pngIcon16File="./assets/meterman2/frame-icon-16x16.png" pngIcon32File="./assets/meterman2/frame-icon.png" macServiceDependencies="" swtApp="false" fileset="">
+    <launcher name="meterman" id="43" external="false" excludeFromMenu="false" menuName="" icnsFile="" pngIcon16File="./assets/meterman2/frame-icon-16x16.png" pngIcon32File="./assets/meterman2/frame-icon-32x32.png" macServiceDependencies="" swtApp="false" fileset="">
       <executable name="meterman2" type="1" iconSet="true" iconFile="" executableDir="" redirectStderr="true" stderrFile="error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="true" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false">
         <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" />
       </executable>
@@ -66,7 +68,7 @@
               </void>
               <void property="customPngIcon32File">
                 <object class="com.install4j.api.beans.ExternalFile">
-                  <string>./assets/meterman2/frame-icon.png</string>
+                  <string>./assets/meterman2/frame-icon-32x32.png</string>
                 </object>
               </void>
               <void property="useCustomIcon">
@@ -370,6 +372,7 @@ return true;
     </win32Archive>
   </mediaSets>
   <buildIds buildAll="false">
+    <mediaSet refId="44" />
     <mediaSet refId="127" />
   </buildIds>
 </install4j>
