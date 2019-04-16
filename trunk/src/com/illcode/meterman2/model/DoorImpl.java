@@ -6,12 +6,13 @@ import com.illcode.meterman2.SystemActions;
 import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.illcode.meterman2.Meterman2.bundles;
-import static com.illcode.meterman2.SystemAttributes.*;
+import static com.illcode.meterman2.GameUtils.getPassageWithArgs;
+import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
 import static com.illcode.meterman2.Meterman2.gm;
+import static com.illcode.meterman2.SystemAttributes.CLOSED;
+import static com.illcode.meterman2.SystemAttributes.LOCKED;
 
 /**
  * Implementation of door entities, is a special usage entity that can connect and disconnect two rooms,
@@ -96,8 +97,7 @@ public class DoorImpl extends BaseEntityImpl
     public String getDescription(Entity e) {
         String description = super.getDescription(e);
         if (e.getAttributes().get(LOCKED))
-            return description + " " +
-                bundles.getPassage("locked-message").getTextWithArgs(e.getDefName());
+            return description + " " + getPassageWithArgs("locked-message", e.getDefName());
         else
             return description;
     }
@@ -131,18 +131,18 @@ public class DoorImpl extends BaseEntityImpl
             // key should not be null (LOCK and UNLOCK shouldn't have been added),
             // but if it is, we act as though you don't have the key
             if (key == null || !gm.isInInventory(key)) {
-                gm.println(bundles.getPassage("nokey-message").getTextWithArgs(e.getDefName()));
+                printPassageWithArgs("nokey-message", e.getDefName());
             } else {
                 attr.toggle(LOCKED);
                 final String message = attr.get(LOCKED) ? "lock-message" : "unlock-message";
-                gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName(), key.getDefName()));
+                printPassageWithArgs(message, e.getDefName(), key.getDefName());
                 gm.entityChanged(e);
             }
             return true;
         } else if (action.equals(SystemActions.OPEN) || action.equals(SystemActions.CLOSE)) {
             attr.toggle(CLOSED);
             final String message = attr.get(CLOSED) ? "close-message" : "open-message";
-            gm.println(bundles.getPassage(message).getTextWithArgs(e.getDefName()));
+            printPassageWithArgs(message, e.getDefName());
             updateRoomConnections(e);
             gm.entityChanged(e);
             gm.roomChanged(room1);

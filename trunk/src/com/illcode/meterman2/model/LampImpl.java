@@ -6,6 +6,9 @@ import com.illcode.meterman2.event.TurnListener;
 import static com.illcode.meterman2.SystemAttributes.LIGHTSOURCE;
 import static com.illcode.meterman2.SystemAttributes.ON;
 import static com.illcode.meterman2.Meterman2.gm;
+import static com.illcode.meterman2.GameUtils.getPassageWithArgs;
+import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
+
 /**
  * A class for entities like flashlights, lamps, etc.
  */
@@ -125,8 +128,7 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
     }
 
     public String getDescription(Entity e) {
-        return super.getDescription(e) + " " +
-            Meterman2.bundles.getPassage("lamp-status").getTextWithArgs(getStatusText());
+        return super.getDescription(e) + " " + getPassageWithArgs("lamp-status", getStatusText());
     }
 
     /** Return true if the lamp is lit. */
@@ -166,15 +168,13 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
             douse();
         } else {
             if (!light()) {
-                gm.println(Meterman2.bundles.getPassage("lamp-no-fuel")
-                    .getTextWithArgs(getDefBaseName(true), lightAction.getText().toLowerCase()));
+                printPassageWithArgs("lamp-no-fuel", getDefBaseName(true), lightAction.getText().toLowerCase());
                 switched = false;
             }
         }
         if (switched) {
             final String actionText = on ? douseAction.getText() : lightAction.getText();
-            gm.println(Meterman2.bundles.getPassage("lamp-switched")
-                .getTextWithArgs(actionText.toLowerCase(), getDefBaseName(false)));
+            printPassageWithArgs("lamp-switched", actionText.toLowerCase(), getDefBaseName(false));
         }
         return true;
     }
@@ -199,10 +199,10 @@ public class LampImpl extends SwitchableEntityImpl implements TurnListener
             if (fuelRemaining <= 0) {
                 douse();
                 gm.newPar();
-                gm.println(Meterman2.bundles.getPassage("lamp-out").getTextWithArgs(getDefBaseName(true)));
+                printPassageWithArgs("lamp-out", getDefBaseName(true));
             } else if (fuelRemaining == lowFuelAmount) {
                 gm.newPar();
-                gm.println(Meterman2.bundles.getPassage("lamp-low").getTextWithArgs(getDefBaseName(true)));
+                printPassageWithArgs("lamp-low", getDefBaseName(true));
             }
         }
     }

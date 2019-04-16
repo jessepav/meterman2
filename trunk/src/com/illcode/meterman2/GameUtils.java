@@ -414,6 +414,16 @@ public final class GameUtils
         return entities;
     }
 
+
+    /**
+     * Get passage text-source from the system bundle group.
+     * @param id passage ID
+     * @return text-source of the passage, or {@link XBundle#MISSING_TEXT_SOURCE} if no such passage is found.
+     */
+    public static TextSource getPassageSource(String id) {
+        return Meterman2.bundles.getPassage(id);
+    }
+
     /**
      * Get passage text from the system bundle group.
      * @param id passage ID
