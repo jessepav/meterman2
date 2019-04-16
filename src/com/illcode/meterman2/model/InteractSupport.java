@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.illcode.meterman2.Meterman2.bundles;
+import static com.illcode.meterman2.GameUtils.getPassageSource;
 import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.ui;
 
@@ -235,12 +235,12 @@ public final class InteractSupport
     }
 
     private String getNoTopicsMessage() {
-        final TextSource ts = noTopicsMessage != null ? noTopicsMessage : bundles.getPassage("no-interact-topics-message");
+        final TextSource ts = noTopicsMessage != null ? noTopicsMessage : getPassageSource("no-interact-topics-message");
         return ts.getTextWithArgs(e.getDefName());
     }
 
     private String getPromptMessage() {
-        final TextSource ts = promptMessage != null ? promptMessage : bundles.getPassage("interact-prompt-message");
+        final TextSource ts = promptMessage != null ? promptMessage : getPassageSource("interact-prompt-message");
         return ts.getTextWithArgs(e.getDefName());
     }
 

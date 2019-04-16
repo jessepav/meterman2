@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static com.illcode.meterman2.GameUtils.getPassage;
+
 /**
  * A room that is naturally dark, unless a light source is found within.
  */
@@ -46,8 +48,7 @@ public class DarkRoom extends Room implements DarkAwareRoom
 
     public String getDarkDescription() {
         GameUtils.pushBinding("room", this);
-        final String desc = darkDescription != null ? darkDescription.getText() :
-            Meterman2.bundles.getPassage("darkroom-description").getText();
+        final String desc = darkDescription != null ? darkDescription.getText() : getPassage("darkroom-description");
         GameUtils.popBinding("room");
         return desc;
     }
