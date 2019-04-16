@@ -1,7 +1,9 @@
 package com.illcode.meterman2;
 
+import com.illcode.meterman2.bundle.BundleGroup;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Room;
+import com.illcode.meterman2.util.PassageHash;
 import freemarker.cache.MruCacheStorage;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.Environment;
@@ -59,8 +61,6 @@ public class MMTemplate
         rootHash = new HashMap<>();
         systemHash = new HashMap<>();
         savedBindings = new HashMap<>();
-
-        initSystemHash();
     }
 
     /** Free any resources allocated by this MMTemplate instance. */
@@ -77,8 +77,9 @@ public class MMTemplate
         cfg = null;
     }
 
-    private void initSystemHash() {
+    void initSystemHash(BundleGroup bundles) {
         putSystemBinding("utils", new TemplateUtils());
+        putSystemBinding("passages", new PassageHash(bundles));
         try {
             putSystemBinding("attributes", wrapper.getStaticModels().get("com.illcode.meterman2.SystemAttributes"));
         } catch (TemplateModelException ex) {
