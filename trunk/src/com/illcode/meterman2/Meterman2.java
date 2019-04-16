@@ -100,6 +100,7 @@ public final class Meterman2
         SystemAttributes.init();
 
         template = new MMTemplate();
+        template.initSystemHash(bundles);
         script = new MMScript();
         sound = new MMSound();
         persistence = new KryoPersistence();

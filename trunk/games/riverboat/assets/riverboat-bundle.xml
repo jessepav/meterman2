@@ -6,7 +6,8 @@
   </passage>
 
   <room id="starting-room" name="Hillock">
-    <description>
+    <description format="ftl">
+      [#if !utils.hasAttr(currentRoom, attributes.VISITED)]@n@t@t@t @[em]${passages.about}[/em]@p[/#if]
       You are standing on a grassy hillock.
     </description>
     <exits>

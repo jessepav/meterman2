@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <xbundle name="system-bundle">
+
+  <!-- BEGIN SYSTEM MESSAGES -->
+
   <!-- Used by the basic game system. -->
   <passage id="output-separator">
     @t@t~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~=~
@@ -35,7 +38,6 @@
   <passage id="move-message" format="printf"> <!-- args: action text, defName, room defName-->
     You %s %s to %s.
   </passage>
-
 
   <!-- Used by doors and containers. -->
   <passage id="nokey-message" format="printf"> <!-- args: defName -->
@@ -115,6 +117,8 @@
   <passage id="lamp-out" format="printf"> <!-- args: defName (capitalized) -->
     %s goes dark!
   </passage>
+
+  <!-- END SYSTEM MESSAGES -->
 
   <actions id="system-actions">
     <action name="LOOK" templateText="Look" />
