@@ -167,7 +167,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             boundKeystrokes = new HashSet<>(32);
             installKeyBindings();
 
-            frame.setIconImage(GuiUtils.loadOpaqueImage(Meterman2.assets.pathForSystemAsset("frame-icon.png")));
+            frame.setIconImage(GuiUtils.loadOpaqueImage(Meterman2.assets.pathForSystemAsset("frame-icon-32x32.png")));
 
             GuiUtils.setBoundsFromPrefs(frame, "main-window-size", "900, 700");
         } catch (Exception ex) {
