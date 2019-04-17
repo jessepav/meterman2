@@ -23,6 +23,7 @@
     </description>
     <exits>
       <exit room="starting-room" pos="S"/>
+      <exit room="canyon" pos="W" />
     </exits>
   </room>
 
@@ -277,8 +278,9 @@ boolean processAction(Entity e, Action action) {
   </player>
 
   <actions id="riverboat-actions">
-    <action name="LOOK" templateText="Survey Scene" />
+    <action name="LOOK" templateText="Look Around" />
     <action name="WAIT" templateText="Bide Time" />
+    <action name="JUMP" templateText="Jump" shortcut="shift J" />
   </actions>
 
   <lookHandler id="riverlooker">
@@ -349,4 +351,50 @@ boolean playerMove(Room fromRoom, Room toRoom, boolean beforeMove) {
     ]]>
     </script>
   </handler>
+
+  <room id="canyon" name="Grand Canyon" exitName="Canyon">
+    <description>
+      A vast canyon in the western desert of North America.
+    </description>
+    <exits>
+      <exit room="playroom" pos="E" />
+    </exits>
+  </room>
+
+  <entity id="canyon-entity" name="Grand Canyon" inRoom="canyon">
+    <description>
+      The canyon yawns out vast before you.
+    </description>
+    <script>
+      <![CDATA[
+Action jump = actions.getAction("JUMP");
+DialogPassage jumpPassage = null;
+
+List getActions(Entity e) {
+    List actions = e.getImpl().getActions(e);
+    actions.add(jump);
+    return actions;
+}
+
+boolean processAction(Entity e, Action action) {
+    if (action.equals(jump)) {
+        if (jumpPassage == null)
+            jumpPassage = GameUtils.loadDialogPassage("jump-passage");
+        jumpPassage.show();
+        gm.endGame();
+        return true;
+    } else {
+        return false;
+    }
+}
+    ]]>
+    </script>
+  </entity>
+
+  <dialog id="jump-passage" header="Bad Move" button="Whoops">
+    Like a meathead, you try to jump@n
+    over the Grand Canyon and die.
+    @p
+    @t@t GAME OVER
+  </dialog>
 </xbundle>

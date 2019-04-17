@@ -732,7 +732,12 @@ public final class MMUI
     /** Prompts the user to choose a new game, load a game, or quit, until a game is successfully
      *  running or the program exits. */
     public void noGameLoop() {
-        mainFrame.startup();
+        SwingUtilities.invokeLater(new Runnable()
+        {
+            public void run() {
+                mainFrame.startup();
+            }
+        });
     }
 
     /** Programmatically invokes the "Save Transcript" function of the UI. */

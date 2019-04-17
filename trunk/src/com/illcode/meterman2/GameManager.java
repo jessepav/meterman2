@@ -10,6 +10,7 @@ import com.illcode.meterman2.text.TextSource;
 import com.illcode.meterman2.ui.UIConstants;
 import org.apache.commons.lang3.ArrayUtils;
 
+import javax.swing.SwingUtilities;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
@@ -55,6 +56,8 @@ public final class GameManager
     private boolean entityRefreshNeeded;
     private boolean inventoryRefreshNeeded;
     private boolean lookNeeded;
+
+    private boolean endGameSignalled;
 
     private List<Entity> entityList;  // temporary list to avoid allocation; always clear() after using
 
@@ -604,16 +607,27 @@ public final class GameManager
     }
 
     /** Called as one turn is transitioning to the next. */
-    private void nextTurn() {
-        handlerManager.fireTurn();
-        currentRoom.eachTurn();
-        if (lookNeeded) {  // set when we're moving rooms
-            performLook();
-            lookNeeded = false;
+    void nextTurn() {
+        if (!endGameSignalled) {
+            handlerManager.fireTurn();
+            currentRoom.eachTurn();
+            if (lookNeeded) {  // set when we're moving rooms
+                lookNeeded = false;
+                performLook();
+            }
         }
         outputText();  // send any buffered text to the UI
         refreshUI();
         numTurns++;
+        if (endGameSignalled) {
+            endGameSignalled = false;
+            if (ui.showTextDialogImpl("Save Transcript",
+                "Do you want to save the transcript before ending the game?",
+                "Save", "Don't") == 0)
+                ui.doSaveTranscript();
+            closeGame();
+            ui.noGameLoop();
+        }
     }
 
     /** Called when the user clicks an exit button */
@@ -734,17 +748,14 @@ public final class GameManager
         return transcript.toString();
     }
 
-    /** Prompts the user to save the transcript, if applicable, and then closes the current game and
-     *  goes to the "new/load/quit" loop as seen on startup. */
+    /**
+     * Signals that the game should end at the end of the current turn.
+     * <p/>
+     * At that point, we prompt the user to save the transcript, if applicable, and
+     * then close the current game and go to the "new/load/quit" loop as seen on startup.
+     */
     public void endGame() {
-        if (game != null) {
-            int r = ui.showTextDialogImpl("Save Transcript",
-                "Do you want to save the transcript before ending the game?", "Save", "Don't");
-            if (r == 0)
-                ui.doSaveTranscript();
-        }
-        closeGame();
-        ui.noGameLoop();
+        endGameSignalled = true;
     }
 
     /** Called by the when it's time to load a saved game. */
