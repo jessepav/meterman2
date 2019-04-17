@@ -95,7 +95,7 @@ public final class GamesList
                         String name = root.getChildText("name");
                         String version = root.getChildText("version");
                         String assetsPath = root.getChildText("assets-path");
-                        String gameClassName = root.getChildText("class");
+                        String gameClassName = root.getChildText("class-name");
                         boolean frameImageVisible = Utils.parseBoolean(root.getChildText("frame-image-visible"));
                         if (name != null && version != null && assetsPath != null && gameClassName != null) {
                             gamesMap.put(name, new PieceOfGlue(version, assetsPath, gameClassName, frameImageVisible));
