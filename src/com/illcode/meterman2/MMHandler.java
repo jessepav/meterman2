@@ -105,6 +105,10 @@ public class MMHandler implements UIHandler
         gm.saveGameState(out);
     }
 
+    public void endGame() {
+        gm.endGame();
+    }
+
     public void lookCommand() {
         gm.lookCommand();
     }

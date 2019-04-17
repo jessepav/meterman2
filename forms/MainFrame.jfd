@@ -485,6 +485,11 @@ new FormModel {
 						"accelerator": static javax.swing.KeyStroke getKeyStroke( 76, 130, false )
 						"mnemonic": 76
 					} )
+					add( new FormComponent( "javax.swing.JMenuItem" ) {
+						name: "endMenuItem"
+						"text": "End Game"
+						"mnemonic": 69
+					} )
 					add( new FormComponent( "javax.swing.JPopupMenu$Separator" ) {
 						name: "separator1"
 					} )

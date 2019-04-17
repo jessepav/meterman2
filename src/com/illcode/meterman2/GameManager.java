@@ -213,8 +213,11 @@ public final class GameManager
             game.dispose();
             game = null;
         }
-        Meterman2.ui.clearImages();
-        Meterman2.ui.setFrameImageVisible(true);
+        ui.clearImages();
+        ui.setFrameImageVisible(true);
+        ui.setGameName(null);
+        ui.setRoomName("");
+        ui.clearStatusLabels();
         Meterman2.sound.clearAudio();
         Meterman2.script.clearBindings();
         Meterman2.template.clearBindings();
@@ -226,9 +229,7 @@ public final class GameManager
         Meterman2.actions.clearGameActions();
         Meterman2.bundles.clearGameBundles();
         Meterman2.assets.setGameAssetsPath(null);
-        ui.setGameName(null);
-        ui.clearStatusLabels();
-        ui.setGlobalActionButtonText();
+        ui.setGlobalActionButtonText();  // we need to do this last because system action text was reset
     }
 
     public Game getGame() {
@@ -731,6 +732,19 @@ public final class GameManager
     /** Return the text of the current game transcript. */
     String getTranscript() {
         return transcript.toString();
+    }
+
+    /** Prompts the user to save the transcript, if applicable, and then closes the current game and
+     *  goes to the "new/load/quit" loop as seen on startup. */
+    public void endGame() {
+        if (game != null) {
+            int r = ui.showTextDialogImpl("Save Transcript",
+                "Do you want to save the transcript before ending the game?", "Save", "Don't");
+            if (r == 0)
+                ui.doSaveTranscript();
+        }
+        closeGame();
+        ui.noGameLoop();
     }
 
     /** Called by the when it's time to load a saved game. */
