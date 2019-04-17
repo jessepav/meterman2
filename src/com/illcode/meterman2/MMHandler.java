@@ -107,6 +107,7 @@ public class MMHandler implements UIHandler
 
     public void endGame() {
         gm.endGame();
+        gm.nextTurn();
     }
 
     public void lookCommand() {
