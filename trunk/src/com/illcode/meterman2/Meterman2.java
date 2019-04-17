@@ -160,5 +160,6 @@ public final class Meterman2
         script.putSystemBinding("sound", sound);
         script.putSystemBinding("bundles", bundles);
         script.putSystemBinding("assets", assets);
+        script.putSystemBinding("actions", actions);
     }
 }
