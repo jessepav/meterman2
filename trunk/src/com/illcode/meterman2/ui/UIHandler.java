@@ -44,6 +44,9 @@ public interface UIHandler
      */
     void saveGameState(OutputStream out);
 
+    /** Ends the current game. */
+    void endGame();
+
     /** Called when the Look command is selected. */
     void lookCommand();
 

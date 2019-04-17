@@ -38,7 +38,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
 
     JFrame frame;
     JMenu gameMenu, settingsMenu, helpMenu;
-    JMenuItem newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem, saveTranscriptMenuItem,
+    JMenuItem newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem, endMenuItem, saveTranscriptMenuItem,
         quitMenuItem, aboutMenuItem, webSiteMenuItem, onlineManualMenuItem, scrollbackMenuItem,
         chooseFontsMenuItem;
     JCheckBoxMenuItem alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem, soundCheckBoxMenuItem,
@@ -93,6 +93,7 @@ final class MainFrame implements ActionListener, ListSelectionListener
             saveMenuItem = cr.getMenuItem("saveMenuItem");
             saveAsMenuItem = cr.getMenuItem("saveAsMenuItem");
             loadMenuItem = cr.getMenuItem("loadMenuItem");
+            endMenuItem = cr.getMenuItem("endMenuItem");
             saveTranscriptMenuItem = cr.getMenuItem("saveTranscriptMenuItem");
             quitMenuItem = cr.getMenuItem("quitMenuItem");
             aboutMenuItem = cr.getMenuItem("aboutMenuItem");
@@ -139,8 +140,9 @@ final class MainFrame implements ActionListener, ListSelectionListener
             roomList.setModel(roomListModel);
             inventoryList.setModel(inventoryListModel);
 
-            for (AbstractButton b : new AbstractButton[] {newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem,
-                    saveTranscriptMenuItem, quitMenuItem, aboutMenuItem, alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem,
+            for (AbstractButton b : new AbstractButton[]
+                   {newMenuItem, saveMenuItem, saveAsMenuItem, loadMenuItem, endMenuItem, saveTranscriptMenuItem,
+                    quitMenuItem, aboutMenuItem, alwaysLookCheckBoxMenuItem, musicCheckBoxMenuItem,
                     soundCheckBoxMenuItem, promptToQuitCheckBoxMenuItem, webSiteMenuItem, scrollbackMenuItem,
                     chooseFontsMenuItem, onlineManualMenuItem, lookButton, waitButton})
                 b.addActionListener(this);
@@ -306,6 +308,10 @@ final class MainFrame implements ActionListener, ListSelectionListener
         alwaysLookCheckBoxMenuItem.setSelected(ui.handler.isAlwaysLook());
         promptToQuitCheckBoxMenuItem.setSelected(Utils.booleanPref("prompt-to-quit", true));
 
+        suppressValueChanged = true;
+        ui.clearRoomEntities();
+        ui.clearInventoryEntities();
+        suppressValueChanged = false;
         ui.clearActions();
         ui.clearExits();
         ui.clearText();
@@ -504,6 +510,12 @@ final class MainFrame implements ActionListener, ListSelectionListener
             if (r == JFileChooser.APPROVE_OPTION) {
                 currentSaveFile = fc.getSelectedFile();
                 saveMenuItem.doClick();
+            }
+        } else if (source == endMenuItem) {
+            if (ui.handler.isGameActive()) {
+                int r = ui.showTextDialogImpl("End Game", "Are you sure you want to end the game?", "Yes", "No");
+                if (r == 0)
+                    ui.handler.endGame();
             }
         } else if (source == saveTranscriptMenuItem) {
             int r = fc.showSaveDialog(frame);
