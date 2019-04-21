@@ -3,6 +3,9 @@ package com.illcode.meterman2.loader;
 import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.Meterman2;
 import com.illcode.meterman2.Utils;
+import com.illcode.meterman2.model.Entity;
+import com.illcode.meterman2.model.GameObjectProperties;
+import com.illcode.meterman2.model.Room;
 import org.apache.commons.lang3.StringUtils;
 import org.jdom2.Element;
 
@@ -130,5 +133,25 @@ public final class LoaderHelper
             if (attrNum != -1)
                 attributes.set(attrNum);
         }
+    }
+
+    /**
+     * Sets custom entity properties found in a <em>properties</em> element.
+     * @param e entity whose definition we're wrapping
+     * @param objectProps game-object properties instance in which we register any
+     * properties found.
+     */
+    public void setProps(Entity e, GameObjectProperties objectProps) {
+
+    }
+
+    /**
+     * Sets custom room properties found in a <em>properties</em> element.
+     * @param r room whose definition we're wrapping
+     * @param objectProps game-object properties instance in which we register any
+     * properties found.
+     */
+    public void setProps(Room r, GameObjectProperties objectProps) {
+
     }
 }
