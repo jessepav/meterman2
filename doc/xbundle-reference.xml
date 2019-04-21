@@ -36,6 +36,15 @@
       <attr>moveable</attr>
       <attr>lightsource</attr>
     </attributes>
+
+    <!-- Entities and rooms can have custom string, integer, and boolean properties.
+         These are handled by an instance of GameObjectProperties, and saved and restored
+         with the game-state. -->
+    <properties>
+      <prop name="food" val="Lasagna" />  <!-- string property-->
+      <prop name="calories" intval="425" />  <!-- integer property-->
+      <prop name="healthy" boolval="false" />  <!-- boolean property-->
+    </properties>
   </entity>
 
   <!-- You specify the initial placement of an entity by including either an 'inRoom' attribute
