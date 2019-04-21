@@ -37,7 +37,7 @@ public class BaseRoomLoader implements RoomLoader
     protected Element el;
     protected Room r;
     protected GameObjectResolver resolver;
-    protected boolean processConnections;
+    protected boolean newGame;
     protected LoaderHelper helper;
     protected Map<String,MMScript.ScriptedMethod> methodMap;
 
@@ -68,13 +68,13 @@ public class BaseRoomLoader implements RoomLoader
     }
 
     public void loadRoomProperties(XBundle bundle, Element el, Room r, GameObjectResolver resolver,
-                                   boolean processConnections)
+                                   boolean newGame)
     {
         this.bundle = bundle;
         this.el = el;
         this.r = r;
         this.resolver = resolver;
-        this.processConnections = processConnections;
+        this.newGame = newGame;
         helper = LoaderHelper.wrap(el);
         methodMap.clear();
 
@@ -93,7 +93,7 @@ public class BaseRoomLoader implements RoomLoader
         this.el = null;
         this.r = null;
         this.resolver = null;
-        this.processConnections = false;
+        this.newGame = false;
         helper = null;
         methodMap.clear();
     }
@@ -128,7 +128,7 @@ public class BaseRoomLoader implements RoomLoader
                 r.setDelegate(scriptedImpl, roomMethodSet);
         }
 
-        if (processConnections) {
+        if (newGame) {
             final Element exits = el.getChild("exits");
             if (exits != null) {
                 for (Element exit : exits.getChildren("exit")) {

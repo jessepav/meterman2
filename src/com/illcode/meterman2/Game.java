@@ -1,7 +1,5 @@
 package com.illcode.meterman2;
 
-import com.illcode.meterman2.MMScript;
-import com.illcode.meterman2.MMTemplate;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Player;
@@ -109,10 +107,10 @@ public interface Game
      * Instantiate all rooms and entities as they will be at the start of a game. Called both for new
      * and loaded games. It is only after calling this method that {@link #getEntityIdMap()} and {@link
      * #getRoomIdMap()} will return valid values.
-     * @param processContainment true if entities should be put into their containers and rooms should have
-     * their exits linked. When a new game is started, this will be true; when a game is loaded, this will be false.
+     * @param newGame true if this is being called at the start of a new game, and entities should be put
+     * into their containers, rooms should have their exits linked, etc.
      */
-    void constructWorld(boolean processContainment);
+    void constructWorld(boolean newGame);
 
     /**
      * Return a mapping from entity IDs to the actual Entity instances for all entities in the game.

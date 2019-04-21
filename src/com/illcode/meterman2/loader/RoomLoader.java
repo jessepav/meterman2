@@ -30,8 +30,9 @@ public interface RoomLoader
      * @param el the XML element containing the room defintion
      * @param r the room whose properties will be set from values in the XML element.
      * @param resolver used to resolve references in the room, for instance if it refers to
-     * @param processConnections true if we should link the rooms via their specified exits
+     * @param newGame true if we are being called at the start of a new game, and should
+     * link the rooms via their specified exits, etc.
      */
     void loadRoomProperties(XBundle bundle, Element el, Room r,
-                            GameObjectResolver resolver, boolean processConnections);
+                            GameObjectResolver resolver, boolean newGame);
 }

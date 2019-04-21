@@ -40,10 +40,10 @@ public final class WorldLoader implements GameObjectResolver
 
     /**
      * Load all the <em>entity</em> and <em>room</em> elements found in the bundle group.
-     * @param processContainment true if entities should be put into their specified containers
-     * and rooms should have their exits connected.
+     * @param newGame true if this is called at the start of a new game, and entities should be put
+     * into their specified containers, rooms should have their exits connected, etc.
      */
-    public void loadAllGameObjects(boolean processContainment) {
+    public void loadAllGameObjects(boolean newGame) {
         // Create entities and rooms, populating the entityLoadInfoMap and roomLoadInfoMap
         for (Pair<Element,XBundle> pair : group.getElementsAndBundles("entity"))
             createEntity(pair.getLeft(), pair.getRight());
@@ -52,13 +52,13 @@ public final class WorldLoader implements GameObjectResolver
 
         // and load their properties.
         for (LoadInfo<Entity,EntityLoader> eli : entityLoadInfoMap.values())
-            eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this, processContainment);
+            eli.loader.loadEntityProperties(eli.bundle, eli.element, eli.gameObject, this, newGame);
         for (LoadInfo<Room,RoomLoader> rli : roomLoadInfoMap.values())
-            rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this, processContainment);
+            rli.loader.loadRoomProperties(rli.bundle, rli.element, rli.gameObject, this, newGame);
 
         // Load the player.
         player = new Player();
-        if (processContainment) {
+        if (newGame) {
             Element playerEl = group.getElement("player");
             if (playerEl != null) {
                 LoaderHelper helper = LoaderHelper.wrap(playerEl);

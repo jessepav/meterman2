@@ -30,7 +30,8 @@ public interface EntityLoader
      * @param el the XML element containing the entity defintion
      * @param e the entity whose properties will be set from values in the XML element.
      * @param resolver used to resolve references in the entity, for instance if a door refers
-     * @param processContainment true if the containment of the entity should be processed
+     * @param newGame true if we are being called at the start of a new game, and the containment of
+     * the entity should be processed, etc.
      */
-    void loadEntityProperties(XBundle bundle, Element el, Entity e, GameObjectResolver resolver, boolean processContainment);
+    void loadEntityProperties(XBundle bundle, Element el, Entity e, GameObjectResolver resolver, boolean newGame);
 }

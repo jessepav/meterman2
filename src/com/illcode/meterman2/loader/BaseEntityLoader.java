@@ -47,7 +47,7 @@ public class BaseEntityLoader implements EntityLoader
     protected Element el;
     protected Entity e;
     protected GameObjectResolver resolver;
-    protected boolean processContainment;
+    protected boolean newGame;
     protected LoaderHelper helper;
     protected Map<String,MMScript.ScriptedMethod> methodMap;
 
@@ -100,13 +100,13 @@ public class BaseEntityLoader implements EntityLoader
     }
 
     public void loadEntityProperties(final XBundle bundle, final Element el, final Entity e,
-                                     final GameObjectResolver resolver, final boolean processContainment)
+                                     final GameObjectResolver resolver, final boolean newGame)
     {
         this.bundle = bundle;
         this.el = el;
         this.e = e;
         this.resolver = resolver;
-        this.processContainment = processContainment;
+        this.newGame = newGame;
         helper = LoaderHelper.wrap(el);
         methodMap.clear();
 
@@ -122,7 +122,7 @@ public class BaseEntityLoader implements EntityLoader
             if (e.getImpl() instanceof DoorImpl) {
                 final DoorImpl doorImpl = (DoorImpl) e.getImpl();
                 if (loadDoorProperties(doorImpl)) {
-                    if (processContainment) {
+                    if (newGame) {
                         doorImpl.updateRoomConnections(e);  // connect/disconnect rooms
                         // Put the door into both its rooms
                         GameUtils.putInContainer(e, null);  // it is a strange creation, nowhere...
@@ -167,7 +167,7 @@ public class BaseEntityLoader implements EntityLoader
         this.el = null;
         this.e = null;
         this.resolver = null;
-        this.processContainment = false;
+        this.newGame = false;
         helper = null;
         methodMap.clear();
     }
@@ -202,7 +202,7 @@ public class BaseEntityLoader implements EntityLoader
                 e.setDelegate(scriptedImpl, entityMethodSet);
         }
 
-        if (processContainment) {
+        if (newGame) {
             final String room = helper.getValue("inRoom");
             if (room != null) {
                 Room r = resolver.getRoom(room);
