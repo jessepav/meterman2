@@ -50,6 +50,7 @@ public class BaseEntityLoader implements EntityLoader
     protected boolean newGame;
     protected LoaderHelper helper;
     protected Map<String,MMScript.ScriptedMethod> methodMap;
+    protected GameObjectProperties objectProps;
 
     private BaseEntityLoader() {
         methodMap = new HashMap<>();
@@ -109,6 +110,7 @@ public class BaseEntityLoader implements EntityLoader
         this.newGame = newGame;
         helper = LoaderHelper.wrap(el);
         methodMap.clear();
+        objectProps = Meterman2.gm.objectProps();
 
         loadScriptedMethods();
 
@@ -170,6 +172,7 @@ public class BaseEntityLoader implements EntityLoader
         this.newGame = false;
         helper = null;
         methodMap.clear();
+        objectProps = null;
     }
 
     // Read all 'script' elements and populate the methodMap.

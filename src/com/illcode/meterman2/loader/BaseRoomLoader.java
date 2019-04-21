@@ -40,6 +40,7 @@ public class BaseRoomLoader implements RoomLoader
     protected boolean newGame;
     protected LoaderHelper helper;
     protected Map<String,MMScript.ScriptedMethod> methodMap;
+    protected GameObjectProperties objectProps;
 
     private BaseRoomLoader() {
         methodMap = new HashMap<>();
@@ -77,6 +78,7 @@ public class BaseRoomLoader implements RoomLoader
         this.newGame = newGame;
         helper = LoaderHelper.wrap(el);
         methodMap.clear();
+        objectProps = Meterman2.gm.objectProps();
 
         loadScriptedMethods();
 
@@ -96,6 +98,7 @@ public class BaseRoomLoader implements RoomLoader
         this.newGame = false;
         helper = null;
         methodMap.clear();
+        objectProps = null;
     }
 
     // Read all 'script' elements and populate the methodMap.
