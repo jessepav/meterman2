@@ -31,14 +31,27 @@ public final class GameObjectProperties
 
     /** Intended for internal serialization purposes. */
     public void restoreFromIdMaps(HashMap<String,HashMap<String,Object>> entityIdPropertyMap,
-                                  HashMap<String,HashMap<String,Object>> roomIdPropertyMap) {
+                                  HashMap<String,HashMap<String,Object>> roomIdPropertyMap,
+                                  Map<String,Entity> entityIdMap,
+                                  Map<String,Room> roomIdMap)
+    {
+
 
     }
 
     /** Intended for internal serialization purposes. */
     public void saveToIdMaps(HashMap<String,HashMap<String,Object>> entityIdPropertyMap,
                              HashMap<String,HashMap<String,Object>> roomIdPropertyMap) {
-
+        for (Map.Entry<Entity,Map<String,Object>> entry : entityPropertyMap.entrySet()) {
+            final Map<String,Object> m = entry.getValue();
+            if (m != null)
+                entityIdPropertyMap.put(entry.getKey().getId(), new HashMap<>(m));
+        }
+        for (Map.Entry<Room,Map<String,Object>> entry : roomPropertyMap.entrySet()) {
+            final Map<String,Object> m = entry.getValue();
+            if (m != null)
+                roomIdPropertyMap.put(entry.getKey().getId(), new HashMap<>(m));
+        }
     }
 
     /**

@@ -37,6 +37,7 @@ public final class GameManager
     private int numTurns;
 
     private EventHandlerManager handlerManager;
+    private GameObjectProperties objectProps;
 
     private StringBuilder outputBuilder;  // To be used in composing text before sending it off to the UI.
     private StringBuilder transcript;  // the game transcript
@@ -65,6 +66,7 @@ public final class GameManager
 
     GameManager() {
         handlerManager = new EventHandlerManager();
+        objectProps = new GameObjectProperties();
 
         outputBuilder = new StringBuilder(2048);
         transcript = new StringBuilder(262144);
@@ -90,12 +92,16 @@ public final class GameManager
 
         player = null;
         handlerManager = null;
+        objectProps = null;
         outputBuilder = null;
+        transcript = null;
         commonTextBuilder = null;
         paragraphBuilder = null;
-        transcript = null;
-
         actions = null;
+        changedEntities = null;
+        changedRooms = null;
+        roomProcessingList = null;
+        entityList = null;
     }
 
     /**
@@ -118,6 +124,7 @@ public final class GameManager
         gameStateMap = game.getInitialGameStateMap();
         putBindings(gameStateMap);
         putBinding("game", game);
+        putBinding("props", objectProps);
         game.constructWorld(true);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
@@ -164,6 +171,7 @@ public final class GameManager
         game.setGameStateMap(gameStateMap);
         putBindings(gameStateMap);
         putBinding("game", game);
+        putBinding("props", objectProps);
         game.constructWorld(false);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
@@ -199,6 +207,7 @@ public final class GameManager
 
     private void closeGame() {
         handlerManager.clearListenerLists();
+        objectProps.clear();
         player = null;
         currentRoom = null;
         gameStateMap = null;
@@ -268,6 +277,11 @@ public final class GameManager
     /** Return the game state object with the given name, or null if not found. */
     public Object getGameStateObject(String name) {
         return gameStateMap.get(name);
+    }
+
+    /** Return the custom object properties instance being used. */
+    public GameObjectProperties objectProps() {
+        return objectProps;
     }
 
     /** Set whether we should always "Look" when entering a room, even if it's been visited before. */
@@ -840,6 +854,9 @@ public final class GameManager
             r.restoreState(roomState.stateObj);
         }
 
+        // restore custom object properties
+        objectProps.restoreFromIdMaps(state.entityIdPropertyMap, state.roomIdPropertyMap, entityIdMap, roomIdMap);
+
         // restore player state from state.playerState
         final GameState.PlayerState playerState = state.playerState;
         populateContainer(player, playerState.inventoryEntityIds);
@@ -948,6 +965,9 @@ public final class GameManager
             }
             state.gameHandlers.put(listName, handlerIds.toArray(new String[0]));
         }
+        state.entityIdPropertyMap = Utils.createSizedHashMap(objectProps.getEntityPropertyMap());
+        state.roomIdPropertyMap = Utils.createSizedHashMap(objectProps.getRoomPropertyMap());
+        objectProps.saveToIdMaps(state.entityIdPropertyMap, state.roomIdPropertyMap);
         state.currentRoomId = currentRoom.getId();
         state.numTurns = numTurns;
         Meterman2.persistence.saveGameState(state, out);
