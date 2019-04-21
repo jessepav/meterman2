@@ -67,6 +67,7 @@ public final class GameManager
     GameManager() {
         handlerManager = new EventHandlerManager();
         objectProps = new GameObjectProperties();
+        putBinding("props", objectProps);
 
         outputBuilder = new StringBuilder(2048);
         transcript = new StringBuilder(262144);
@@ -124,7 +125,6 @@ public final class GameManager
         gameStateMap = game.getInitialGameStateMap();
         putBindings(gameStateMap);
         putBinding("game", game);
-        putBinding("props", objectProps);
         game.constructWorld(true);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
@@ -171,7 +171,6 @@ public final class GameManager
         game.setGameStateMap(gameStateMap);
         putBindings(gameStateMap);
         putBinding("game", game);
-        putBinding("props", objectProps);
         game.constructWorld(false);
         entityIdMap = game.getEntityIdMap();
         roomIdMap = game.getRoomIdMap();
@@ -853,7 +852,6 @@ public final class GameManager
             populateContainer(r, roomState.contentIds);
             r.restoreState(roomState.stateObj);
         }
-
         // restore custom object properties
         objectProps.restoreFromIdMaps(state.entityIdPropertyMap, state.roomIdPropertyMap, entityIdMap, roomIdMap);
 

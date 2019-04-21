@@ -33,10 +33,19 @@ public final class GameObjectProperties
     public void restoreFromIdMaps(HashMap<String,HashMap<String,Object>> entityIdPropertyMap,
                                   HashMap<String,HashMap<String,Object>> roomIdPropertyMap,
                                   Map<String,Entity> entityIdMap,
-                                  Map<String,Room> roomIdMap)
-    {
-
-
+                                  Map<String,Room> roomIdMap) {
+        for (Map.Entry<String,HashMap<String,Object>> entry : entityIdPropertyMap.entrySet()) {
+            final Map<String,Object> m = entry.getValue();
+            final Entity e = entityIdMap.get(entry.getKey());
+            if (e != null && m != null)
+                entityPropertyMap.put(e, m);
+        }
+        for (Map.Entry<String,HashMap<String,Object>> entry : roomIdPropertyMap.entrySet()) {
+            final Map<String,Object> m = entry.getValue();
+            final Room r = roomIdMap.get(entry.getKey());
+            if (r != null && m != null)
+                roomPropertyMap.put(r, m);
+        }
     }
 
     /** Intended for internal serialization purposes. */
@@ -185,7 +194,7 @@ public final class GameObjectProperties
      * @return string property value or null if not found.
      */
     public String getProp(Entity e, String name) {
-        Object o = getEntityProp(e, name);
+        final Object o = getEntityProp(e, name);
         if (o instanceof String)
             return (String) o;
         else
@@ -200,7 +209,7 @@ public final class GameObjectProperties
      * @return integer property value or default value if not found.
      */
     public int getIntProp(Entity e, String name, int defaultVal) {
-        Object o = getEntityProp(e, name);
+        final Object o = getEntityProp(e, name);
         if (o instanceof Integer)
             return ((Integer) o).intValue();
         else
@@ -225,7 +234,7 @@ public final class GameObjectProperties
      * @return boolean property value or default value if not found.
      */
     public boolean getBooleanProp(Entity e, String name, boolean defaultVal) {
-        Object o = getEntityProp(e, name);
+        final Object o = getEntityProp(e, name);
         if (o instanceof Boolean)
             return ((Boolean) o).booleanValue();
         else
@@ -249,7 +258,7 @@ public final class GameObjectProperties
      * @return string property value or null if not found.
      */
     public String getProp(Room r, String name) {
-        Object o = getRoomProp(r, name);
+        final Object o = getRoomProp(r, name);
         if (o instanceof String)
             return (String) o;
         else
@@ -264,7 +273,7 @@ public final class GameObjectProperties
      * @return integer property value or default value if not found.
      */
     public int getIntProp(Room r, String name, int defaultVal) {
-        Object o = getRoomProp(r, name);
+        final Object o = getRoomProp(r, name);
         if (o instanceof Integer)
             return ((Integer) o).intValue();
         else
@@ -289,7 +298,7 @@ public final class GameObjectProperties
      * @return boolean property value or default value if not found.
      */
     public boolean getBooleanProp(Room r, String name, boolean defaultVal) {
-        Object o = getRoomProp(r, name);
+        final Object o = getRoomProp(r, name);
         if (o instanceof Boolean)
             return ((Boolean) o).booleanValue();
         else
