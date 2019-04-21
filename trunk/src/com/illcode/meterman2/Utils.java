@@ -291,6 +291,7 @@ public final class Utils
      * @return new HashMap
      */
     public static <T,S> HashMap<T,S> createSizedHashMap(Map<?,?> m) {
-        return new HashMap<T,S>((int) (m.size() * 1.4f), 0.75f);
+        final int initialCapacity = Math.max(8, (int) (m.size() * 1.4f));
+        return new HashMap<T,S>(initialCapacity, 0.75f);
     }
 }
