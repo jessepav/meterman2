@@ -4,6 +4,7 @@ import com.illcode.meterman2.AttributeSet;
 import com.illcode.meterman2.event.GameEventHandler;
 import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.Game;
+import com.illcode.meterman2.model.GameObjectProperties;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIConstants;
 
@@ -55,6 +56,14 @@ public final class GameState
 
     /** Persists the objects returned by {@link GameEventHandler#getHandlerState()}. */
     public HashMap<String,Object> handlerStateMap;
+
+    /** Holds custom entity properties (keyed by entity ID).
+        @see GameObjectProperties */
+    public HashMap<String,HashMap<String,Object>> entityIdPropertyMap;
+
+    /** Holds custom room properties (keyed by room ID).
+        @see GameObjectProperties */
+    public HashMap<String,HashMap<String,Object>> roomIdPropertyMap;
 
     /** The ID of the room where the action left off. */
     public String currentRoomId;
