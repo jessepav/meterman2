@@ -75,9 +75,9 @@ public class RiverboatGame implements Game
         this.gameStateMap = gameStateMap;
     }
 
-    public void constructWorld(boolean processContainment) {
+    public void constructWorld(boolean newGame) {
         worldLoader = new WorldLoader(Meterman2.bundles);
-        worldLoader.loadAllGameObjects(processContainment);
+        worldLoader.loadAllGameObjects(newGame);
         roomIdMap = worldLoader.getRoomIdMap();
         entityIdMap = worldLoader.getEntityIdMap();
     }
