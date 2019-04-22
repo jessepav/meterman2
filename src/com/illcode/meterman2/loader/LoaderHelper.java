@@ -142,7 +142,7 @@ public final class LoaderHelper
      * properties found.
      */
     public void setProps(Entity e, GameObjectProperties objectProps) {
-
+        setPropsImpl(e, null, objectProps);
     }
 
     /**
@@ -152,6 +152,35 @@ public final class LoaderHelper
      * properties found.
      */
     public void setProps(Room r, GameObjectProperties objectProps) {
+        setPropsImpl(null, r, objectProps);
+    }
 
+    private void setPropsImpl(Entity e, Room r, GameObjectProperties objectProps) {
+        final Element properties = el.getChild("properties");
+        if (properties == null)
+            return;
+        for (Element prop : properties.getChildren("prop")) {
+            final String name = prop.getAttributeValue("name");
+            final String type = prop.getAttributeValue("type", "string");
+            final String val = prop.getAttributeValue("val");
+            if (name == null || val == null)
+                continue;
+            switch (type) {
+            case "string":
+                if (e != null)      objectProps.setProp(e, name, val);
+                else if (r != null) objectProps.setProp(r, name, val);
+                break;
+            case "int":
+                final int intval = Utils.parseInt(val, -1);
+                if (e != null)      objectProps.setIntProp(e, name, intval);
+                else if (r != null) objectProps.setIntProp(r, name, intval);
+                break;
+            case "boolean":
+                final boolean boolval = Utils.parseBoolean(val);
+                if (e != null)      objectProps.setBooleanProp(e, name, boolval);
+                else if (r != null) objectProps.setBooleanProp(r, name, boolval);
+                break;
+            }
+        }
     }
 }

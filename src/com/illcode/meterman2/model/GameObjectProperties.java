@@ -191,14 +191,25 @@ public final class GameObjectProperties
      * Get a string entity property.
      * @param e entity
      * @param name property name
-     * @return string property value or null if not found.
+     * @param defaultVal default value
+     * @return string property value or default value if not found.
      */
-    public String getProp(Entity e, String name) {
+    public String getProp(Entity e, String name, String defaultVal) {
         final Object o = getEntityProp(e, name);
         if (o instanceof String)
             return (String) o;
         else
-            return null;
+            return defaultVal;
+    }
+
+    /**
+     * Get a string entity property.
+     * @param e entity
+     * @param name property name
+     * @return string property value or null if not found.
+     */
+    public String getProp(Entity e, String name) {
+        return getProp(e, name, null);
     }
 
     /**
@@ -255,14 +266,25 @@ public final class GameObjectProperties
      * Get a string room property.
      * @param r room
      * @param name property name
-     * @return string property value or null if not found.
+     * @param defaultVal default value
+     * @return string property value or default value if not found.
      */
-    public String getProp(Room r, String name) {
+    public String getProp(Room r, String name, String defaultVal) {
         final Object o = getRoomProp(r, name);
         if (o instanceof String)
             return (String) o;
         else
-            return null;
+            return defaultVal;
+    }
+
+    /**
+     * Get a string room property.
+     * @param r room
+     * @param name property name
+     * @return string property value or null if not found.
+     */
+    public String getProp(Room r, String name) {
+        return getProp(r, name, null);
     }
 
     /**

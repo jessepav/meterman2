@@ -25,6 +25,11 @@
       <exit room="starting-room" pos="S"/>
       <exit room="canyon" pos="W" />
     </exits>
+    <properties>
+      <prop name="saferoom" type="boolean" val="false" />
+      <prop name="fun" val="Lots" />
+      <prop name="temperature" type="int" val="72" />
+    </properties>
   </room>
 
   <entity id="stick" name="Stick" attributes="takeable, equippable" inRoom="starting-room">
@@ -247,6 +252,11 @@ void eachTurn(Entity e) {
     }
 }
     </script>
+    <properties>
+      <prop name="friendly" type="boolean" val="true" />
+      <prop name="dude" val="Extremely" />
+      <prop name="money" type="int" val="455" />
+    </properties>
   </entity>
 
   <entity id="ui-tester" name="UI Tester" inRoom="starting-room">

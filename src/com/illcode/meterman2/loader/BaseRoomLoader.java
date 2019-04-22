@@ -132,6 +132,7 @@ public class BaseRoomLoader implements RoomLoader
         }
 
         if (newGame) {
+            // Connections
             final Element exits = el.getChild("exits");
             if (exits != null) {
                 for (Element exit : exits.getChildren("exit")) {
@@ -144,6 +145,8 @@ public class BaseRoomLoader implements RoomLoader
                     }
                 }
             }
+            // Properties
+            helper.setProps(r, objectProps);
         }
     }
 

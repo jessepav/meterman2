@@ -41,9 +41,9 @@
          These are handled by an instance of GameObjectProperties, and saved and restored
          with the game-state. -->
     <properties>
-      <prop name="food" val="Lasagna" />  <!-- string property-->
-      <prop name="calories" intval="425" />  <!-- integer property-->
-      <prop name="healthy" boolval="false" />  <!-- boolean property-->
+      <prop name="food" val="Lasagna" />  <!-- You can also use type="string" -->
+      <prop name="calories" type="int" val="425" />
+      <prop name="healthy" type="boolean" val="false" />
     </properties>
   </entity>
 
