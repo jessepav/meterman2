@@ -206,6 +206,7 @@ public class BaseEntityLoader implements EntityLoader
         }
 
         if (newGame) {
+            // Containment
             final String room = helper.getValue("inRoom");
             if (room != null) {
                 Room r = resolver.getRoom(room);
@@ -219,6 +220,8 @@ public class BaseEntityLoader implements EntityLoader
                         GameUtils.putInContainer(e, (EntityContainer) c);
                 }
             }
+            // Properties
+            helper.setProps(e, objectProps);
         }
     }
 
