@@ -10,6 +10,7 @@ import com.illcode.meterman2.handler.*;
 import com.illcode.meterman2.loader.WorldLoader;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
+import com.illcode.meterman2.util.Dialogs;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,7 +40,7 @@ public class RiverboatGame implements Game
     Map<String,Entity> entityIdMap;
     Map<String,Object> gameStateMap;
 
-    GameUtils.DialogPassage aboutDialogPassage;
+    Dialogs.DialogPassage aboutDialogPassage;
     MMScript.ScriptedMethod startMethod;
 
     public String getName() {
@@ -168,7 +169,7 @@ public class RiverboatGame implements Game
 
     public void about() {
         if (aboutDialogPassage == null)
-            aboutDialogPassage = GameUtils.loadDialogPassage("about");
+            aboutDialogPassage = Dialogs.loadDialogPassage("about");
         aboutDialogPassage.show();
         Meterman2.gm.outputText();
     }

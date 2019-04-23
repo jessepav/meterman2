@@ -76,8 +76,8 @@ public final class MMScript
         systemNameSpace.importPackage("com.illcode.meterman2.model");
         systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
         systemNameSpace.importClass("com.illcode.meterman2.model.TopicMap.Topic");
-        systemNameSpace.importClass("com.illcode.meterman2.GameUtils.DialogPassage");
-        systemNameSpace.importClass("com.illcode.meterman2.GameUtils.DialogSequence");
+        systemNameSpace.importClass("com.illcode.meterman2.util.Dialogs.DialogPassage");
+        systemNameSpace.importClass("com.illcode.meterman2.util.Dialogs.DialogSequence");
 
         outputBuilder = new StringBuilder(1024);
         try {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- For for information, see the source for these classes:
-      XBundle, WorldLoader, BaseEntityLoader, BaseRoomLoader, GameUtils -->
+      XBundle, WorldLoader, BaseEntityLoader, BaseRoomLoader, GameUtils, Dialogs -->
 
 <!-- You can set the formatting properties of the XBundle by including certain attributes
      in its root element. These correspond to the setXxx() methods of the XBundle class.
@@ -137,7 +137,7 @@
     <description fileRef="ivory-watch-description.ftl" format="ftl" />
   </entity>
 
-  <!-- For use with GameUtils.loadDialogPassage()-->
+  <!-- For use with Dialogs.loadDialogPassage()-->
   <dialog id="elephant-message" header="Elephant" button="Yes">
     Do you like elephants?
   </dialog>
@@ -145,7 +145,7 @@
     Do you like dolphins?
   </dialog>
 
-  <!-- For use with GameUtils.loadDialogSequence(). Note that the names of the child elements - in this
+  <!-- For use with Dialogs.loadDialogSequence(). Note that the names of the child elements - in this
        case 'dialog' - don't matter, so long as they have the correct attributes.
        If noEscape="true" the user won't be allowed to terminate the sequence early by hitting escape
        or closing a dialog window. -->
@@ -228,13 +228,13 @@
       </text>
     </topic>
     <topic id="grain-elevator" label="Grain Elevator">
-      <!-- A dialog will be displayed if a <dialog> element is given. See GameUtils.loadDialogPassage() -->
+      <!-- A dialog will be displayed if a <dialog> element is given. See Dialogs.loadDialogPassage() -->
       <dialog header="Elevator" button="Whoa">
         The grain elevator is outstanding.
       </dialog>
     </topic>
     <topic id="family" label="Your family">
-      <!-- Multiple dialogs will be displayed if a <sequence> element is given. See GameUtils.loadDialogSequence() -->
+      <!-- Multiple dialogs will be displayed if a <sequence> element is given. See Dialogs.loadDialogSequence() -->
       <sequence defaultHeader="Family" defaultButton="And...">
         <item>My father was a farmer...</item>
         <item>...my mother was a farmer...</item>
