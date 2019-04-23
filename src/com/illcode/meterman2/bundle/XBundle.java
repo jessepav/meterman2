@@ -294,7 +294,7 @@ public final class XBundle
      * @return the actual ID of <em>e</em>, a synthesized ID element as described above, or null
      *          if no element up through the root has an 'id' attribute.
      */
-    public String getElementIdAttribute(Element e) {
+     private String getElementIdAttribute(Element e) {
         String id = e.getAttributeValue("id");
         if (id != null)
             return id;
