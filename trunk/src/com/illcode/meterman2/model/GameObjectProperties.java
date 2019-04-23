@@ -196,10 +196,12 @@ public final class GameObjectProperties
      */
     public String getProp(Entity e, String name, String defaultVal) {
         final Object o = getEntityProp(e, name);
-        if (o instanceof String)
+        if (o == null)
+            return defaultVal;
+        else if (o instanceof String)
             return (String) o;
         else
-            return defaultVal;
+            return o.toString();
     }
 
     /**
@@ -271,10 +273,12 @@ public final class GameObjectProperties
      */
     public String getProp(Room r, String name, String defaultVal) {
         final Object o = getRoomProp(r, name);
-        if (o instanceof String)
+        if (o == null)
+            return defaultVal;
+        else if (o instanceof String)
             return (String) o;
         else
-            return defaultVal;
+            return o.toString();
     }
 
     /**
