@@ -15,6 +15,12 @@
     </exits>
   </room>
 
+  <properties id="default-props">
+    <prop name="saferoom" type="boolean" val="true" />
+    <prop name="energy" type="int" val="45" />
+    <prop name="password" val="secretfruit" />
+  </properties>
+
   <room id="playroom" name="Child's Playroom" exitName="Playroom">
     <description script="bsh">
       out("To the east is a " + rooms.get("dungeon").getName().toLowerCase());
@@ -389,7 +395,7 @@ List getActions(Entity e) {
 boolean processAction(Entity e, Action action) {
     if (action.equals(jump)) {
         if (jumpPassage == null)
-            jumpPassage = GameUtils.loadDialogPassage("jump-passage");
+            jumpPassage = Dialogs.loadDialogPassage("jump-passage");
         jumpPassage.show();
         gm.endGame();
         return true;
