@@ -10,6 +10,7 @@ public final class GameObjectProperties
 {
     private Map<Entity,Map<String,Object>> entityPropertyMap;
     private Map<Room,Map<String,Object>> roomPropertyMap;
+    private Map<String,Object> defaultPropertyMap;
 
     /**
      * Create an empty game object properties instance.
@@ -17,6 +18,7 @@ public final class GameObjectProperties
     public GameObjectProperties() {
         entityPropertyMap = new HashMap<>();
         roomPropertyMap = new HashMap<>();
+        defaultPropertyMap = new HashMap<>();
     }
 
     /** Intended for internal serialization purposes. */
@@ -69,6 +71,22 @@ public final class GameObjectProperties
     public void clear() {
         entityPropertyMap.clear();
         roomPropertyMap.clear();
+        defaultPropertyMap.clear();
+    }
+
+    /** Set a default string property. */
+    public void setDefaultProp(String name, String value) {
+        defaultPropertyMap.put(name, value);
+    }
+
+    /** Set a default integer property. */
+    public void setDefaultIntProp(String name, int value) {
+        defaultPropertyMap.put(name, Integer.valueOf(value));
+    }
+
+    /** Set a default boolean property. */
+    public void setDefaultBooleanProp(String name, boolean value) {
+        defaultPropertyMap.put(name, Boolean.valueOf(value));
     }
 
     /**
@@ -165,26 +183,34 @@ public final class GameObjectProperties
      * Get an entity property.
      * @param e entity
      * @param name property name
-     * @return property value or null if not found.
+     * @return property value or default value if not found; if there is no default
+     * value either, return null.
      */
     private Object getEntityProp(Entity e, String name) {
+        Object val = null;
         final Map<String,Object> m = entityPropertyMap.get(e);
-        if (m == null)
-            return null;
-        return m.get(name);
+        if (m != null)
+            val = m.get(name);
+        else
+            val = defaultPropertyMap.get(name);
+        return val;
     }
 
     /**
      * Get a room property.
      * @param r room
      * @param name property name
-     * @return property value or null if not found.
+     * @return property value or default value if not found; if there is no default
+     * value either, return null.
      */
     private Object getRoomProp(Room r, String name) {
+        Object val = null;
         final Map<String,Object> m = roomPropertyMap.get(r);
-        if (m == null)
-            return null;
-        return m.get(name);
+        if (m != null)
+            val = m.get(name);
+        else
+            val = defaultPropertyMap.get(name);
+        return val;
     }
 
     /**
