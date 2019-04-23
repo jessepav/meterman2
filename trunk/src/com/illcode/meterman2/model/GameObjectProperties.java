@@ -191,7 +191,7 @@ public final class GameObjectProperties
         final Map<String,Object> m = entityPropertyMap.get(e);
         if (m != null)
             val = m.get(name);
-        else
+        if (val == null)
             val = defaultPropertyMap.get(name);
         return val;
     }
@@ -208,7 +208,7 @@ public final class GameObjectProperties
         final Map<String,Object> m = roomPropertyMap.get(r);
         if (m != null)
             val = m.get(name);
-        else
+        if (val == null)
             val = defaultPropertyMap.get(name);
         return val;
     }
