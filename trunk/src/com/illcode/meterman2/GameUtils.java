@@ -437,4 +437,41 @@ public final class GameUtils
         }
     }
 
+    /**
+     * Load default properties from a bundle element.
+     * @param id element ID in system bundle group
+     */
+    public static void loadDefaultProperties(String id) {
+        loadDefaultProperties(Meterman2.bundles.getElement(id));
+    }
+
+    /**
+     * Load default properties from a bundle element.
+     * @param el bundle element
+     */
+    public static void loadDefaultProperties(Element el) {
+        if (el == null)
+            return;
+        final GameObjectProperties props = Meterman2.gm.objectProps();
+        for (Element prop : el.getChildren("prop")) {
+            final String name = prop.getAttributeValue("name");
+            final String type = prop.getAttributeValue("type", "string");
+            final String val = prop.getAttributeValue("val");
+            if (name == null || val == null)
+                continue;
+            switch (type) {
+            case "string":
+                props.setDefaultProp(name, val);
+                break;
+            case "int":
+                final int intval = Utils.parseInt(val, -1);
+                props.setDefaultIntProp(name, intval);
+                break;
+            case "boolean":
+                final boolean boolval = Utils.parseBoolean(val);
+                props.setDefaultBooleanProp(name, boolval);
+                break;
+            }
+        }
+    }
 }

@@ -56,7 +56,7 @@ public class RiverboatGame implements Game
             getScriptedMethods("game-start-script", GameUtils.readGameAsset("game-start.bsh"));
         if (!methods.isEmpty())
             startMethod = methods.get(0);
-
+        GameUtils.loadDefaultProperties("default-props");
     }
 
     public void dispose() {

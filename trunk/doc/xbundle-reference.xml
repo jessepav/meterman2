@@ -47,6 +47,15 @@
     </properties>
   </entity>
 
+  <!-- For use with GameUtils.loadDefaultProperties(): custom entity and room properties can have
+       default values that are used if a specific game object doesn't have a value for a given
+       property name. -->
+  <properties id="default-props">
+    <prop name="food" type="string" val="Unidentifiable Food" />
+    <prop name="calories" type="int" val="88" />
+    <prop name="healthy" type="boolean" val="true" />
+  </properties>
+
   <!-- You specify the initial placement of an entity by including either an 'inRoom' attribute
        or child element to place it in a room, or an 'inContainer' attribute or child element to
        place it in another entity (which must be a container). -->
