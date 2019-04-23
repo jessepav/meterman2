@@ -1,5 +1,14 @@
 // bsh script to set up the system namespace
 
+import com.illcode.meterman2.*;
+import com.illcode.meterman2.model.*;
+import com.illcode.meterman2.MMActions.Action;
+import com.illcode.meterman2.model.TopicMap.Topic;
+import com.illcode.meterman2.util.Pathfinder;
+import com.illcode.meterman2.util.Dialogs;
+import com.illcode.meterman2.util.Dialogs.DialogPassage;
+import com.illcode.meterman2.util.Dialogs.DialogSequence;
+
 // put all the SystemAttributes into the global namespace
 
 int CONCEALED        = SystemAttributes.CONCEALED   ;

@@ -72,13 +72,6 @@ public final class MMScript
     }
 
     private void initSystemNameSpace() {
-        systemNameSpace.importPackage("com.illcode.meterman2");
-        systemNameSpace.importPackage("com.illcode.meterman2.model");
-        systemNameSpace.importClass("com.illcode.meterman2.MMActions.Action");
-        systemNameSpace.importClass("com.illcode.meterman2.model.TopicMap.Topic");
-        systemNameSpace.importClass("com.illcode.meterman2.util.Dialogs.DialogPassage");
-        systemNameSpace.importClass("com.illcode.meterman2.util.Dialogs.DialogSequence");
-
         outputBuilder = new StringBuilder(1024);
         try {
             systemNameSpace.setTypedVariable("outputBuilder", StringBuilder.class, outputBuilder, null);
