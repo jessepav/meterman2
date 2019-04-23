@@ -20,6 +20,10 @@ public final class StringSource implements TextSource
         this.bundle = bundle;
     }
 
+    public void dispose() {
+        // empty
+    }
+
     public String getText() {
         if (bundle != null)
             // the text was already normalized when it was passed into the constructor
