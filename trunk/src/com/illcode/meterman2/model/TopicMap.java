@@ -1,16 +1,16 @@
 package com.illcode.meterman2.model;
 
-import com.illcode.meterman2.GameUtils;
 import com.illcode.meterman2.bundle.XBundle;
 import com.illcode.meterman2.loader.LoaderHelper;
 import com.illcode.meterman2.text.TextSource;
+import com.illcode.meterman2.util.Dialogs;
 import org.jdom2.Element;
 import org.mini2Dx.gdx.utils.ObjectMap;
 
 import java.util.*;
 
-import static com.illcode.meterman2.GameUtils.DialogPassage;
-import static com.illcode.meterman2.GameUtils.DialogSequence;
+import static com.illcode.meterman2.util.Dialogs.DialogPassage;
+import static com.illcode.meterman2.util.Dialogs.DialogSequence;
 
 /**
  * Used to store topics for interactive discussion.
@@ -68,10 +68,10 @@ public final class TopicMap
                     topics.put(id, new Topic(id, label, addTopics, removeTopics, b.elementTextSource(e)));
                     break;
                 case "dialog":
-                    topics.put(id, new Topic(id, label, addTopics, removeTopics, GameUtils.loadDialogPassage(b, e)));
+                    topics.put(id, new Topic(id, label, addTopics, removeTopics, Dialogs.loadDialogPassage(b, e)));
                     break;
                 case "sequence":
-                    topics.put(id, new Topic(id, label, addTopics, removeTopics, GameUtils.loadDialogSequence(b, e)));
+                    topics.put(id, new Topic(id, label, addTopics, removeTopics, Dialogs.loadDialogSequence(b, e)));
                     break;
                 }
             }
@@ -147,7 +147,7 @@ public final class TopicMap
             if (dialog != null)
                 dialog.show();
             else if (sequence != null)
-                GameUtils.showDialogSequence(sequence);
+                Dialogs.showDialogSequence(sequence);
         }
 
         public TextSource getText() {
