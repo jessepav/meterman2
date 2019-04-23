@@ -68,7 +68,7 @@ List getActions(Entity e) {
     </script>
   </entity>
 
-  <entity id="mirror" name="Magic Mirror" attributes="takeable">
+  <entity id="mirror" name="Magic Mirror" attributes="takeable, equippable">
     <description format="ftl">
       First we look at the chest:
       @p
@@ -115,7 +115,7 @@ void exitingScope(Entity e) {
     </script>
   </entity>
 
-  <entity id="wood-key" name="Wood Key" inRoom="starting-room" attributes="takeable">
+  <entity id="wood-key" name="Wood Key" inRoom="starting-room" attributes="takeable, equippable">
     <description script="bsh">
       out("You look at " + entity.getDefName() + " and feel a little strange");
     </description>
@@ -413,4 +413,10 @@ boolean processAction(Entity e, Action action) {
     @p
     @t@t GAME OVER
   </dialog>
+
+  <equippables id="equip-table">
+    <category name="hands" limit="2" items="stick, mirror, wood-key">
+      <limitMessage>You only have two hands!</limitMessage>
+    </category>
+  </equippables>
 </xbundle>

@@ -7,13 +7,13 @@ import com.illcode.meterman2.model.Entity;
 import com.illcode.meterman2.model.Room;
 import com.illcode.meterman2.ui.UIConstants;
 import com.illcode.meterman2.util.ActionSet;
+import com.illcode.meterman2.util.EquipTable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.illcode.meterman2.GameUtils.hasAttr;
-import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
 import static com.illcode.meterman2.GameUtils.getPassageWithArgs;
+import static com.illcode.meterman2.GameUtils.printPassageWithArgs;
 import static com.illcode.meterman2.Meterman2.gm;
 import static com.illcode.meterman2.Meterman2.ui;
 
@@ -35,6 +35,8 @@ public class BasicWorldHandler
     protected int statusLabelPos;
     protected List<Room> roomList;  // temprary list to avoid allocation
     protected ActionSet actionSet;
+
+    protected EquipTable equipTable;
 
     /**
      * Create a basic world handler.
@@ -76,6 +78,15 @@ public class BasicWorldHandler
         this.statusLabelPos = statusLabelPos;
     }
 
+    /**
+     * Set the equip-table to be used in determining the number of entities that can
+     * be equipped for each category.
+     * @param equipTable equip-table
+     */
+    public void setEquipTable(EquipTable equipTable) {
+        this.equipTable = equipTable;
+    }
+
     // Implement EntityActionsProcessor
     @Override
     public void processEntityActions(Entity e, List<MMActions.Action> actions) {
@@ -114,8 +125,28 @@ public class BasicWorldHandler
             gm.moveEntity(e, gm.getPlayer());
             printPassageWithArgs("take-message", e.getDefName());
         } else if (action.equals(SystemActions.EQUIP)) {
-            gm.setEquipped(e, true);
-            printPassageWithArgs("equip-message", e.getDefName());
+            boolean limitReached = false;
+            if (equipTable != null) {
+                final EquipTable.Category cat = equipTable.getCategory(e);
+                if (cat != null) {
+                    // We check how many items in the entity's category are already equipped, and
+                    // refuse to equip the entity if the limit has been reached.
+                    int numEquipped = 0;
+                    for (Entity item : gm.getPlayer().getEquippedEntities()) {
+                        final EquipTable.Category itemCat = equipTable.getCategory(item);
+                        if (itemCat == cat)
+                            numEquipped++;
+                    }
+                    if (numEquipped >= cat.limit) {
+                        limitReached = true;
+                        gm.println(cat.limitMessage);
+                    }
+                }
+            }
+            if (!limitReached) {
+                gm.setEquipped(e, true);
+                printPassageWithArgs("equip-message", e.getDefName());
+            }
         } else if (action.equals(SystemActions.UNEQUIP)) {
             gm.setEquipped(e, false);
             printPassageWithArgs("unequip-message", e.getDefName());

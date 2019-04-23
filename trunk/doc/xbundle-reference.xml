@@ -341,4 +341,21 @@
     <image name="mike-portrait" entities="mike" />
     <image name="cup" entities="iron-cup, brass-mug, coffee-cup" />
   </entity-images>
+
+  <!-- For use with EquipTable.loadFromElement() -->
+  <equippables id="equip-table">
+    <category name="hands" limit="2">
+      <limitMessage>You only have two hands!</limitMessage>
+      <items>
+        <item>torch</item>
+        <item>sword</item>
+        <item>lamp</item>
+        <item>wand</item>
+      </items>
+    </category>
+    <category name="head" limit="1"
+              items="helmet, hat, beret">
+      <limitMessage>You'll need to take something off your head first.</limitMessage>
+    </category>
+  </equippables>
 </xbundle>

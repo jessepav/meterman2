@@ -11,6 +11,7 @@ import com.illcode.meterman2.loader.WorldLoader;
 import com.illcode.meterman2.model.*;
 import com.illcode.meterman2.ui.UIConstants;
 import com.illcode.meterman2.util.Dialogs;
+import com.illcode.meterman2.util.EquipTable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +123,7 @@ public class RiverboatGame implements Game
             if (basicWorldHandler == null) {
                 basicWorldHandler = new BasicWorldHandler(BASIC_HANDLER_ID);
                 basicWorldHandler.setStatusLabelPos(UIConstants.RIGHT_LABEL);
+                basicWorldHandler.setEquipTable(EquipTable.createFromElement(b.getElement("equip-table"), entityIdMap));
             }
             return basicWorldHandler;
         case TIME_HANDLER_ID:
