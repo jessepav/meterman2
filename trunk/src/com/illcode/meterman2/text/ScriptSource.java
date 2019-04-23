@@ -26,6 +26,10 @@ public final class ScriptSource implements TextSource
         this.bundle = bundle;
     }
 
+    public void dispose() {
+        // empty
+    }
+
     public String getText() {
         return getTextWithArgs((Object[]) null);
     }

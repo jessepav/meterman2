@@ -5,6 +5,9 @@ package com.illcode.meterman2.text;
  */
 public interface TextSource
 {
+    /** Release any resources used by this source. */
+    void dispose();
+
     /** Return the text represented by this source. */
     String getText();
 

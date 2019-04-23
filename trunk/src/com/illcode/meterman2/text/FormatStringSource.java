@@ -33,6 +33,10 @@ public final class FormatStringSource implements TextSource
         this.bundle = bundle;
     }
 
+    public void dispose() {
+        // empty
+    }
+
     /**
      * With no format arguments, just return the format string itself.
      */
