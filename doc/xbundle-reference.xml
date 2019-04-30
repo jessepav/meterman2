@@ -61,6 +61,7 @@
        place it in another entity (which must be a container). -->
   <entity id="basic-entity-variant-2" name="New Tractor" indefiniteArticle="a"
           attributes="moveable, lightsource" inRoom="grassy-field">
+    <!-- Any text-source element can refer to a top-level passage by including a 'passageRef' attribute. -->
     <description passageRef="equipment-description" />
     <script>
       <![CDATA[
@@ -84,6 +85,9 @@
     <connects room1="dark-cave" pos1="N" room2="grassy-field" pos2="SW" />
   </entity>
 
+  <!-- Container definitions (type="container") can specify the prepositions used when putting
+       something in/on (inPrep) and taking something out/off (outPrep), as well as the capacity,
+       and the key needed to unlock it. -->
   <entity id="iron-chest" type="container" inPrep="in" outPrep="from"
           capacity="10" attributes="closed, locked">
     <inRoom>small-hut</inRoom>
@@ -253,7 +257,7 @@
     <topic id="done" label="Nothing else, I guess">
       <text>Be seein' ya.</text>
     </topic>
-    <!-- If a topic with an ID of "OTHER" is present, it will be displayed at the end of the topic list,
+    <!-- If a topic with an ID of "OTHER" is present, it will be displayed near the end of the topic list,
          and handling will be delegated to the scripted or subclassed interactOther() method. OTHER topics
          have no add- or remove-topics lists. -->
     <topic id="OTHER" label="Actually, I was thinking about...">
@@ -291,6 +295,7 @@
     </noTopicsMessage>
   </entity>
 
+  <!-- See LampImpl for details. -->
   <entity id="oil-lamp" type="lamp" name="Oil Lamp" attributes="takeable"
           burnsFuel="true" fuelRemaining="20" lowFuelAmount="5"
           onText="lit" offText="doused" lightAction="Light" douseAction="Douse">
