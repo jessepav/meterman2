@@ -10,7 +10,7 @@
     </CLASSES>
     <JAVADOC>
       <root url="jar://$PROJECT_DIR$/docjars/paulscode-sound-javadoc.zip!/" />
-      <root url="file://$PROJECT_DIR$/expanded-javadoc/paulscode-sound-javadoc" />
+      <root url="file://$PROJECT_DIR$/Extras/expanded-javadoc/paulscode-sound-javadoc" />
     </JAVADOC>
     <SOURCES>
       <root url="jar://$PROJECT_DIR$/srcjars/paulscode-src.zip!/" />
