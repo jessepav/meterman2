@@ -8,3 +8,6 @@
 /.idea/tasks.xml
 /.idea/workspace.xml
 /assets/riverboat
+/config/meterman2.properties
+/glue/riverboat-glue.xml
+
