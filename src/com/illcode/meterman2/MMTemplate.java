@@ -7,6 +7,7 @@ import com.illcode.meterman2.util.PassageHash;
 import freemarker.cache.MruCacheStorage;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.core.Environment;
+import freemarker.core.TemplateClassResolver;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.*;
@@ -48,6 +49,7 @@ public class MMTemplate
         b.setExposeFields(true);
         wrapper = b.build();
         cfg.setObjectWrapper(wrapper);
+        cfg.setNewBuiltinClassResolver(TemplateClassResolver.UNRESTRICTED_RESOLVER);
         strLoader = new StringTemplateLoader();
         cfg.setTemplateLoader(strLoader);
         cfg.setTemplateUpdateDelayMilliseconds(10000);
